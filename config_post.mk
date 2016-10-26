@@ -7,5 +7,8 @@ clean:
 .c.o:
 	${CC} -fPIC ${CFLAGS} -c $< -o $(<:.c=.o)
 
+.cpp.o:
+	${CC} -lstdc++ -fPIC ${CFLAGS} -c $< -o $(<:.cpp=.o)
+
 install:
 	install ${NAME}.so ${PLUG_DIR}
