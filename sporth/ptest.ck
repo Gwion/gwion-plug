@@ -40,6 +40,5 @@ while(1)
     s.p(0, base + scale[stp] + 12 * Math.rand2(-1, 1));
     s.p(2, Math.rand2f(0.1, 3));
     t * 0.25 => now;
-//    (stp + 1) % scale.size() => stp;
-	(stp + 1) % 4 => stp;
+    (stp + 1) % scale.size() => stp;
 }
