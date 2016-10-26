@@ -1,5 +1,5 @@
 #Gwion-plug#
-plugins for [Gwion](github.com/fennecdjay/Gwion)
+plugins for [Gwion](github.com/fennecdjay/Gwion)  
 actually a Gwion submodule
 ##Configure##
 If you're not building from within Gwion, please edit config.mk
