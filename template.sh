@@ -10,6 +10,6 @@ echo "\
 include ../config.mk
 NAME=$1
 #CFLAGS+=-I<more include>
-#LDFLAGS+=-I<more LIBS>
+#LDFLAGS+=-l<more LIBS>
 include ../config_post.mk
 " > $1/Makefile
