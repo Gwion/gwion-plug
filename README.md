@@ -19,3 +19,5 @@ make install
 
 will try to install the plugin (a .so file) in /usr/lib/Gwion/plug, which is the default place for a gwion plug.  
 this behavior can be changed by editing include/defs.h in Gwion and rebuilding it.
+
+For now, the plugin must be installed in order to run.
