@@ -1,27 +1,10 @@
 Sporth s => dac;
 
-//"0 p 0.01 port mtof 1 p 0.003 port 1 1 2 p 0.01 port fm 0.5 * dup dup 0.94 10000 revsc drop 0.1 * +" => 
-//	string str;
-//"0.5 * dup dup 0.94 10000 revsc drop 0.1 * +" +=> str;
-//"0 p 0.01 port mtof 1 p 0.003"
-// => string str;
-
-//s.parse("0 p 0.01 port mtof 1 p 0.003 port 1 1 2 p 0.01 port fm 0.5 * dup dup 0.94 10000 revsc drop 0.1 * +");
-//<<<str>>>;
-//str => s.parse;
-
 s.parse("0 p 0.01 port mtof 1 p 0.003 port 1 1 2 p 0.01 port fm 0.5 * dup dup 0.94 10000 revsc drop 0.1 * +");
+
 110 => float bpm;
-
 (60.0 / bpm) :: second => dur t;
-
-//[0, 3, 7, 10] @=> int scale[];
-int scale[4];
-0  => scale[0];
-3  => scale[1];
-7  => scale[2];
-10 => scale[3];
-
+[0, 3, 7, 10] @=> int scale[];
 0 => int stp;
 s.p(1, 0.5);
 0 => int nbars;
