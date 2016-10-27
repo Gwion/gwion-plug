@@ -1,14 +1,10 @@
+USE_LD=1
 include ../config.mk
 NAME=sporth
-LDFLAGS+=-lsporth_dyn
-#LDFLAGS+=-lsporth
+#LDFLAGS+=-lsporth_dyn
+LDFLAGS+=-lsporth
+#LDFLAGS+=/usr/lib/libsporth.a
 include ../config_post.mk
 
-# all: ${PLUG}
-#
-#	${PLUG}: ${C_OBJECTS} $(CXX_OBJECTS)
-#	=> ${PLUG}: ${OBJ}
-# ar rv 
-
-sporth.so: sporth.o
-	$(LD) -o $@ $(LDFLAGS) ${OBJ}
+#sporth.so: ${OBJ}
+#	$(LD) -o $@ $(LDFLAGS) $^

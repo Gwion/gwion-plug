@@ -1,6 +1,9 @@
 default: ${OBJ}
-	${CC} ${LDFLAGS} ${OBJ} -o ${NAME}.so
-
+ifeq (${USE_LD}, 1)
+	${LD} $^ -o ${NAME}.so ${LDFLAGS}
+else
+	${CC} $^ -o ${NAME}.so ${LDFLAGS}
+endif
 clean:
 	rm -f ${OBJ} ${NAME}.so
 
