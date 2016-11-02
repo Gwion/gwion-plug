@@ -1,9 +1,12 @@
-default: ${OBJ}
+default: ${NAME}.so
+
+${NAME}.so: ${OBJ}
 ifeq (${USE_LD}, 1)
 	${LD} $^ -o ${NAME}.so ${LDFLAGS}
 else
 	${CC} $^ -o ${NAME}.so ${LDFLAGS}
 endif
+
 clean:
 	rm -f ${OBJ} ${NAME}.so
 
@@ -13,5 +16,8 @@ clean:
 .cpp.o:
 	${CC} -lstdc++ -fPIC ${CFLAGS} -c $< -o $(<:.cpp=.o)
 
-install:
+install: ${NAME}.so
 	install ${NAME}.so ${PLUG_DIR}
+
+uninstall:
+	rm ${PLUG_DIR}/${NAME}.so

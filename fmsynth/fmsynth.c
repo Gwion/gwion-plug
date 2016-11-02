@@ -16,7 +16,6 @@
 #include <time.h>
 
 #include <pthread.h>
-#include <iup/iup.h>
 #include "fmsynth.h"
 static struct Type_ t_fmsynth = {"FMSynth", SZ_INT, &t_ugen };
 static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;

@@ -1,0 +1,23 @@
+"01|0:121|1:01|2:1" =>
+//"a|a:ab|b:ba" => 
+string str;
+Lsys lsys => dac;
+samp => now;
+Dmetro m => blackhole;
+m ]=> lsys;
+<<<lsys>>>;
+lsys => dac;
+.2 => m.time;
+
+/* just check it does not fail when not initialized */
+// lsys.reset();
+// samp => now;
+
+(5, str) => lsys.parse;
+<<<lsys.size()>>>;
+
+second => now;
+second => now;
+second => now;
+<<<m>>>;
+<<<lsys.get()>>>;

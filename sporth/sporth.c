@@ -72,7 +72,7 @@ CTOR(sporth_ctor)
 	data->parsed = 0;
 	data->in = 0;
 	data->sp = shred->vm_ref->bbq->sp;
-
+printf("data->sp->sr %i\n", data->sp->sr);
 	plumber_register(&data->pd);
 	data->pd.sporth.flist[SPORTH_IN - SPORTH_FOFFSET].func = sporth_chuck_in;
 	plumber_init(&data->pd);
@@ -85,6 +85,7 @@ CTOR(sporth_ctor)
 DTOR(sporth_dtor)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
+/*
 	if(data)
 	{
 #ifdef DEBUG_MODE
@@ -94,6 +95,7 @@ DTOR(sporth_dtor)
 		sp_destroy(&data->sp);
     free(data);
    }
+*/
 }
 
 MFUN(sporth_setp)
