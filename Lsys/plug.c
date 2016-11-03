@@ -116,7 +116,7 @@ static MFUN(gw_lsys_get)
 	RETURN->v_uint = (m_uint)new_String(str);
 }
 
-m_bool import(Env env)
+IMPORT
 {
   DL_Func*  fun;
 	CHECK_BB(add_global_type(env, &t_lsys))

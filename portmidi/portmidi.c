@@ -196,7 +196,7 @@ static MFUN(midiin_read)
   vector_remove(MSG(o), 0);
 }
 
-m_bool import(Env env)
+IMPORT
 {
   DL_Func* fun;
   CHECK_BB(add_global_type(env, &t_portmidi))

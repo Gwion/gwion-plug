@@ -360,7 +360,7 @@ static MFUN(oscin_rem)
   }
 }
 
-static void oscin_get_i(M_Object o, DL_Return * RETURN, VM_Shred shred)
+static MFUN(oscin_get_i)
 {
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
@@ -369,7 +369,7 @@ static void oscin_get_i(M_Object o, DL_Return * RETURN, VM_Shred shred)
   release_Arg(arg);
 }
 
-static void oscin_get_f(M_Object o, DL_Return * RETURN, VM_Shred shred)
+static MFUN(oscin_get_f)
 {
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
@@ -378,7 +378,7 @@ static void oscin_get_f(M_Object o, DL_Return * RETURN, VM_Shred shred)
   release_Arg(arg);
 }
 
-static void oscin_get_s(M_Object o, DL_Return * RETURN, VM_Shred shred)
+static MFUN(oscin_get_s)
 {
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
@@ -387,7 +387,7 @@ static void oscin_get_s(M_Object o, DL_Return * RETURN, VM_Shred shred)
   release_Arg(arg);
 }
 
-m_bool import(Env env)
+IMPORT
 {
   DL_Func* fun;
   CHECK_BB(add_global_type(env, &t_lo))

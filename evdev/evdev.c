@@ -52,7 +52,7 @@ typedef struct
   Vector args;
 } EvdevInfo;
 
-void evdev_ctor(M_Object o, VM_Shred shred)
+CTOR(evdev_ctor)
 {
   EvdevInfo* info = calloc(1, sizeof(EvdevInfo));
   info->evdev    =  libevdev_new();
@@ -66,7 +66,7 @@ void evdev_ctor(M_Object o, VM_Shred shred)
   INFO(o)        = info;
 }
 
-void evdev_dtor(M_Object o, VM_Shred shred)
+DTOR(evdev_dtor)
 {
   EvdevInfo* info = INFO(o);
   if(libevdev_get_fd(info->evdev) != -1)
@@ -80,13 +80,13 @@ void evdev_dtor(M_Object o, VM_Shred shred)
   free_Vector(info->args);
 }
 
-static void evdev_get_index(M_Object o, DL_Return * RETURN, VM_Shred shred)
+static MFUN(evdev_get_index)
 {
   EvdevInfo* info = INFO(o);
   RETURN->v_uint = info->index;
 }
 
-static void evdev_name(M_Object o, DL_Return * RETURN, VM_Shred shred)
+static MFUN(evdev_name)
 {
   M_Object ret = new_M_Object();
   EvdevInfo* info = INFO(o);
@@ -94,7 +94,7 @@ static void evdev_name(M_Object o, DL_Return * RETURN, VM_Shred shred)
   RETURN->v_object = ret;
 }
 
-static void evdev_index(M_Object o, DL_Return * RETURN, VM_Shred shred)
+static MFUN(evdev_index)
 {
   char c[256];
   m_int index = *(m_int*)(shred->mem + SZ_INT);
@@ -122,7 +122,7 @@ static void evdev_index(M_Object o, DL_Return * RETURN, VM_Shred shred)
   RETURN->v_uint = index;
 }
 
-static void evdev_recv(M_Object o, DL_Return * RETURN, VM_Shred shred)
+static MFUN(evdev_recv)
 {
 #ifdef DEBUG_INSTR
   debug_msg("instr", "evdev recv");
@@ -168,7 +168,8 @@ void* evdev_process(void* arg)
   return NULL;
 
 }
-m_bool import(Env env)
+
+IMPORT
 {
   DL_Func* fun;
 

@@ -29,19 +29,19 @@
  *
  * ## LSYS in Sporth
  *
- * LSYS is implemented as a Sporth UGen, which takes in 
+ * LSYS is implemented as a Sporth UGen, which takes in
  * 3 arguments. From left to right, they are:
  *
  * 1. trigger signal, which iterates through the L-System
  * 2. The order N of the L-System (init-time only)
  * 3. The code itself.
  *
- * The signal output by the LSYS ugen a number in 
+ * The signal output by the LSYS ugen a number in
  * the range of 0-35, which correspond to the base-36
  * numbering system:
  *
  * 0123456789abcdefghijklmnopqrstuvwxyz
- * 
+ *
  * In the example above, the signal would be alternating between
  * 10 and 11.
  *
@@ -61,6 +61,7 @@
  *
  * 01101121011210101101121011210101121010110112101
  *
+ * Modified To fit Gwion.
  */
 
 #include <stdio.h>
@@ -68,24 +69,26 @@
 #include <stdlib.h>
 #include "lsys.h"
 
+/* static funcs */
 static int toint(unsigned char a) {
-    if(a >= 97) 
+    if(a >= 97)
         return a - 87;
     else
         return a - 48;
 }
 
-#ifdef LSYS_STANDALONE
-static int tochar(int c) {
-    if(c >= 10) {
-        return c + 87;
-    } else {
-        return c + 48;
-    }
+static int lsys_list_append(lsys_d *lsys, lsys_list *lst, char c)
+{
+    lsys_item *new = malloc(sizeof(lsys_item));
+    new->ent = &lsys->ent[toint(c)];
+    lst->last->nxt = new;
+    lst->last = new;
+    lst->size++;
+    return 0;
 }
-#endif
 
-/* static */
+
+/* non static funcs */
 int lsys_init(lsys_d *ls)
 {
     ls->pos = 0;
@@ -103,9 +106,7 @@ int lsys_init(lsys_d *ls)
     return 0;
 }
 
-/* static */
-unsigned int lsys_parse(lsys_d *ls, 
-    char *ref, char *str, unsigned int len)
+unsigned int lsys_parse(lsys_d *ls, char *ref, char *str, unsigned int len)
 {
     ls->pos++;
     switch(ls->mode) {
@@ -164,16 +165,6 @@ int lsys_list_destroy(lsys_list *lst)
     return 0;
 }
 
-static int lsys_list_append(lsys_d *lsys, lsys_list *lst, char c)
-{
-    lsys_item *new = malloc(sizeof(lsys_item));
-    new->ent = &lsys->ent[toint(c)];
-    lst->last->nxt = new;
-    lst->last = new;
-    lst->size++;
-    return 0;
-}
-
 /* static */
 int lsys_make_list(lsys_d *lsys,
     lsys_list *lst, char *str, char c, int N)
@@ -213,109 +204,3 @@ unsigned int lsys_list_iter(lsys_list *lst, lsys_entry **ent, unsigned pos)
     lst->last = lst->last->nxt;
     return (pos + 1) % lst->size;
 }
-
-/*
-#ifdef LSYS_STANDALONE
-int main(int argc, char *argv[])
-{
-    if(argc < 3) {
-        printf("Usage: %s order string\n", argv[0]);
-        return 0;
-    }
-    lsys_d lsys;
-    char *str = argv[2];
-    int ord = atoi(argv[1]);
-    lsys_init(&lsys);
-    lsys_parse(&lsys, str, str, strlen(str));
-    lsys_list lst;
-    lsys_list_init(&lst);
-    lsys_make_list(&lsys, &lst, str, 0, ord);
-    lsys_list_reset(&lst);
-    unsigned int i;
-    unsigned int pos = 0;
-    lsys_entry *ent;
-    for(i = 0; i < lst.size; i++) {
-        pos = lsys_list_iter(&lst, &ent, pos);
-        printf("%c", tochar(ent->val + 1));
-        fflush(stdin);
-    }
-    lsys_list_destroy(&lst);
-    return 0;
-}
-#else
-#include "plumber.h"
-
-typedef struct {
-    lsys_d lsys;
-    lsys_list lst;
-    uint32_t ord;
-    uint32_t pos;
-    lsys_entry *ent;
-    char init;
-} sporth_lsys_d;
-
-int sporth_lsys(sporth_stack *stack, void *ud)
-{
-    plumber_data *pd = ud;
-    sporth_lsys_d *lsys;
-    char *str;
-    switch(pd->mode) {
-        case PLUMBER_CREATE:
-            lsys = malloc(sizeof(sporth_lsys_d));
-            plumber_add_ugen(pd, SPORTH_LSYS, lsys);
-            if(sporth_check_args(stack, "ffs") != SPORTH_OK) {
-                fprintf(stderr,"Not enough arguments for ling\n");
-                stack->error++;
-                return PLUMBER_NOTOK;
-            }
-            str = sporth_stack_pop_string(stack);
-            sporth_stack_pop_float(stack);
-            sporth_stack_pop_float(stack);
-            sporth_stack_push_float(stack, 0);
-            break;
-
-        case PLUMBER_INIT:
-            lsys = pd->last->ud;
-
-            str = sporth_stack_pop_string(stack);
-            lsys->ord = (uint32_t)sporth_stack_pop_float(stack);
-            sporth_stack_pop_float(stack);
-            lsys_init(&lsys->lsys);
-            lsys_list_init(&lsys->lst);
-            lsys_parse(&lsys->lsys, str, str, strlen(str));
-            lsys_make_list(&lsys->lsys, &lsys->lst, str, 0, lsys->ord);
-            lsys_list_reset(&lsys->lst);
-            lsys->pos = 0;
-            lsys->init = 1;
-            sporth_stack_push_float(stack, 0);
-            break;
-        case PLUMBER_COMPUTE:
-            lsys = pd->last->ud;
-            sporth_stack_pop_float(stack);
-
-            if(sporth_stack_pop_float(stack) != 0 && lsys->lst.size > 0) {
-                lsys->pos = lsys_list_iter(&lsys->lst, 
-                    &lsys->ent,
-                    lsys->pos);
-                lsys->init = 0;
-            }
-
-            if(lsys->init) 
-                sporth_stack_push_float(stack, -1);
-            else
-                sporth_stack_push_float(stack, lsys->ent->val + 1);
-                
-            break;
-        case PLUMBER_DESTROY:
-            lsys = pd->last->ud;
-            lsys_list_destroy(&lsys->lst);
-            free(lsys);
-            break;
-        default:
-            fprintf(stderr, "lsys: Unknown mode!\n");
-            break;
-    }
-    return PLUMBER_OK;
-}
-#endif
-*/

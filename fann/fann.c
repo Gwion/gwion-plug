@@ -11,16 +11,16 @@
 #include "err_msg.h"
 #include "lang.h"
 
-static struct Type_ t_fann_connect = { "FANN_connect",      sizeof(m_uint), &t_object };
-static struct Type_ t_fann_base = { "FANN_base",      sizeof(m_uint), &t_object };
-static struct Type_ t_fann = { "FANN",      sizeof(m_uint), &t_fann_base };
-static struct Type_ t_fann_data = { "FANN_data",      sizeof(m_uint), &t_fann_base };
+static struct Type_ t_fann_connect = { "FANN_connect", sizeof(m_uint), &t_object };
+static struct Type_ t_fann_base =    { "FANN_base",    sizeof(m_uint), &t_object };
+static struct Type_ t_fann =         { "FANN",         sizeof(m_uint), &t_fann_base };
+static struct Type_ t_fann_data =    { "FANN_data",    sizeof(m_uint), &t_fann_base };
 
 static m_int o_fann_error, o_fann_from, o_fann_to, o_fann_weight;
 
 #define ERROR(o) *(struct fann_error**)(o->data + o_fann_error)
-#define FANN(o) *(struct fann **)(o->data + o_fann_error)
-#define DATA(o) *(struct fann_train_data **)(o->data + o_fann_error)
+#define FANN(o)  *(struct fann **)(o->data + o_fann_error)
+#define DATA(o)  *(struct fann_train_data **)(o->data + o_fann_error)
 
 static DTOR(fann_dtor)
 {
@@ -1181,6 +1181,7 @@ MFUN(set_cascade_num_candidate_groups)
   fann_set_cascade_num_candidate_groups(FANN(o), RETURN->v_uint);
 }
 
+//IMPORT
 m_bool import(Env env)
 {
   DL_Func* fun;

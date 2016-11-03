@@ -198,7 +198,7 @@ static m_uint nonul   = FMSYNTH_STATUS_NO_NUL_TERMINATE;
 static m_uint format  = FMSYNTH_STATUS_INVALID_FORMAT;
 static m_uint unknown = FMSYNTH_STATUS_MESSAGE_UNKNOWN;
 
-m_bool import(Env env)
+IMPORT
 {
   DL_Func*  fun;
   DL_Value* arg;
