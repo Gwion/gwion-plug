@@ -5,7 +5,7 @@
 
 ##description##
 
-use [Lsys](https://github.com/.../Lsys) L-Systems for Gwion.  
+L-Systems for Gwion.  
 ported from [Sporth](https://github.com/paulbatchelor/Sporth)
 
 
