@@ -37,6 +37,6 @@ function void loop_me(Sporth s, int base)
 }
 spork ~loop_me(s1, 60);
 spork ~loop_me(s2, 36);
-me.yield();
+//me.yield();
 minute => now;
 //loop_me(s1, 60);
