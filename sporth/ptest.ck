@@ -2,6 +2,7 @@ Sporth s1 => dac;
 s1.parse("0 p 0.01 port mtof 1 p 0.003 port 1 1 2 p 0.01 port fm 0.5 * dup dup 0.94 10000 revsc drop 0.1 * +");
 s1.p(1, 0.5);
 
+
 Sporth s2 => dac;
 s2.parse("0 p 0.01 port mtof 1 p 0.003 port 1 1 2 p 0.01 port fm 0.5 * dup dup 0.94 10000 revsc drop 0.1 * +");
 s2.p(1, 0.5);
@@ -14,6 +15,7 @@ s2.p(1, 0.5);
 0 => int nbars;
 58 => int base;
 3 => int block;
+
 function void loop_me(Sporth s, int base)
 {
 	while(1)
@@ -35,8 +37,10 @@ function void loop_me(Sporth s, int base)
 //			Math.rand2(-4, 4) +=> base;
 	}
 }
+
 spork ~loop_me(s1, 60);
 spork ~loop_me(s2, 36);
 //me.yield();
 minute => now;
 //loop_me(s1, 60);
+
