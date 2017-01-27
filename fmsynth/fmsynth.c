@@ -299,6 +299,15 @@ IMPORT
   o_target2 = import_svar(env, "int", "TARGET2",      1, 0, target2,
     "The linear amplitide reached in the envelope after (FMSYNTH_PARAM_DELAY0 + FMSYNTH_PARAM_DELAY1 + FMSYNTH_PARAM_DELAY2) seconds.");
   CHECK_BB(o_target2)
+  o_delay0 = import_svar(env, "int", "DELAY0",      1, 0, delay0,
+    "The time in seconds for the envelope to reach FMSYNTH_PARAM_ENVELOPE_TARGET0.");
+  CHECK_BB(o_delay0)
+  o_delay1 = import_svar(env, "int", "DELAY1",      1, 0, delay1,
+    "The time in seconds for the envelope to reach FMSYNTH_PARAM_ENVELOPE_TARGET1.");
+  CHECK_BB(o_delay0)
+  o_delay2 = import_svar(env, "int", "DELAY2",      1, 0, delay2,
+    "The time in seconds for the envelope to reach FMSYNTH_PARAM_ENVELOPE_TARGET2..");
+  CHECK_BB(o_delay2)
   o_rel = import_svar(env, "int", "RELEASE",      1, 0, rel,
     " After releasing the key, the time it takes for the operator to attenuate 60 dB.");
   CHECK_BB(o_rel)
