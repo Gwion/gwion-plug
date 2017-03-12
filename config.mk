@@ -8,4 +8,4 @@ CFLAGS   = -I${INC}
 CFLAGS  += -I..
 CFLAGS  += -DSPFLOAT=double
 LDFLAGS  = -shared -fPIC
-PLUG_DIR = /usr/lib/Gwion/plug
+PLUG_DIR = /usr/lib/Gwion/add
