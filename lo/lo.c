@@ -45,7 +45,7 @@ void release_method(struct Server* s, struct Method* m)
   if(!--m->ref)
   {
     lo_server_thread_del_method(s->thread, m->path, m->type);
-    vector_remove(s->method, vector_find(s->method, m));
+    vector_remove(s->method, vector_find(s->method, (vtype)m));
     free(m);
   }
 }
@@ -54,7 +54,7 @@ void release_server(struct Server* s)
 {
   if(!--s->ref)
   {
-    map_remove(map, (m_uint*)s->port);
+    map_remove(map, (vtype)s->port);
     lo_server_thread_stop(s->thread);
     lo_server_thread_free(s->thread);
     if(!map_size(map))
@@ -147,7 +147,7 @@ static INSTR(oscsend_add_int)
   debug_msg("instr", "int => oscsend");
 #endif
   shred->reg -= SZ_INT;
-  vector_append(ARGS((**(M_Object**)shred->reg)), new_Arg('i', shred->reg));
+  vector_append(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('i', shred->reg));
   release(**(M_Object**)shred->reg, shred);
 }
 
@@ -157,7 +157,7 @@ static INSTR(oscsend_add_float)
   debug_msg("instr", "float => oscsend");
 #endif
   shred->reg -= SZ_INT;
-  vector_append(ARGS((**(M_Object**)shred->reg)), new_Arg('d', shred->reg));
+  vector_append(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('d', shred->reg));
   release(**(M_Object**)shred->reg, shred);
 }
 
@@ -167,7 +167,7 @@ static INSTR(oscsend_add_string)
   debug_msg("instr", "string => oscsend");
 #endif
   shred->reg -= SZ_INT;
-  vector_append(ARGS((**(M_Object**)shred->reg)), new_Arg('s', shred->reg));
+  vector_append(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('s', shred->reg));
   release(**(M_Object**)shred->reg, shred);
 }
 
@@ -209,7 +209,7 @@ static int osc_method_handler(const char* path, const char* type,
         return 1;
     }
     arg->t = type[i];
-    vector_set(v, i, arg);
+    vector_set(v, i, (vtype)arg);
   }
   for(i = 0; i < vector_size(m->client); i++)
   {
@@ -217,7 +217,7 @@ static int osc_method_handler(const char* path, const char* type,
       ((struct Arg*)vector_at(v, j))->ref++;
     o = (M_Object)vector_at(m->client, i);
     broadcast(o);
-    vector_append(ARGS(o), vector_copy(v));
+    vector_append(ARGS(o), (vtype)vector_copy(v));
   }
   for(i = 0; i < argc; i++)
     release_Arg((struct Arg*)vector_at(v, i));
@@ -244,7 +244,7 @@ static MFUN(osc_port)
   if(SERV(o))
     release_server(SERV(o));
   if(map)
-    s = (struct Server*)map_get(map, (m_uint*)port);
+    s = (struct Server*)map_get(map, (vtype)port);
   if(!s)
   {
     sprintf(c, "%i", port);
@@ -262,7 +262,7 @@ static MFUN(osc_port)
     s->ref = 0;
     if(!map)
       map = new_Map();
-    map_set(map, (m_uint*)port, s);
+    map_set(map, (vtype)port, (vtype)s);
   }
   s->ref++;
   SERV(o) = s;
@@ -280,7 +280,7 @@ static MFUN(osc_add_method)
     return;
   for(i = 0; i < vector_size(s->method); i++)
   {
-    m = vector_at(s->method, i);
+    m = (struct Method*)vector_at(s->method, i);
     if(strcmp(m->path, path))
       continue;
     if(!strcmp(m->type, type))
@@ -291,14 +291,14 @@ static MFUN(osc_add_method)
   m->type = type;
   m->client = new_Vector();
   m->method = lo_server_thread_add_method(s->thread, path, type, osc_method_handler, m);
-  vector_append(s->method, m);
+  vector_append(s->method, (vtype)m);
   m->ref = 0;
 found:
   m->ref++;
-  if(vector_find(m->client, o) < 0)
-    vector_append(m->client, o);
-  if(vector_find(METH(o), m) < 0)
-    vector_append(METH(o), m);
+  if(vector_find(m->client, (vtype)o) < 0)
+    vector_append(m->client, (vtype)o);
+  if(vector_find(METH(o), (vtype)m) < 0)
+    vector_append(METH(o), (vtype)m);
   RETURN->d.v_uint = 1;
 }
 
@@ -329,7 +329,7 @@ static MFUN(oscin_start)
 static MFUN(osc_recv)
 {
   Vector c_arg = ARGS(o);
-  CURR(o) = vector_at(c_arg, 0);
+  CURR(o) = (Vector)vector_at(c_arg, 0);
   RETURN->d.v_uint = CURR(o) ? 1 : 0;
   vector_remove(ARGS(o), 0);
 }
@@ -344,15 +344,15 @@ static MFUN(oscin_rem)
     return;
   for(i = 0; i < vector_size(METH(o)); i++)
   {
-    m = vector_at(METH(o), i);
+    m = (struct Method*)vector_at(METH(o), i);
     if(strcmp(m->path, path))
       continue;
     if(!strcmp(m->type, type))
     {
-      if((i = vector_find(m->client, o)) >= 0)
-        vector_remove(m->client, i);
-      if((i = vector_find(METH(o), m)) >= 0)
-        vector_remove(METH(o), i);
+      if((i = vector_find(m->client, (vtype)o)) >= 0)
+        vector_remove(m->client, (vtype)i);
+      if((i = vector_find(METH(o), (vtype)m)) >= 0)
+        vector_remove(METH(o), (vtype)i);
       release_method(SERV(o), m);
       RETURN->d.v_uint = 1;
       return;

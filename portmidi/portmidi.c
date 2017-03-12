@@ -33,7 +33,7 @@ static MidiInfo* get(VM* vm, m_uint i)
     map = new_Map();
     Pm_Initialize();
   }
-  MidiInfo* info = map_get(map, (m_uint*)i+1);
+  MidiInfo* info = (MidiInfo*)map_get(map, (vtype)i+1);
   if(!info)
   {
     info = malloc(sizeof(MidiInfo));
@@ -41,17 +41,17 @@ static MidiInfo* get(VM* vm, m_uint i)
     info->client = new_Vector();
     info->thread = 0;
     info->vm = vm;
-    map_set(map, (m_uint*)i+1, (m_uint*)info);
+    map_set(map, i+1, (vtype)info);
   }
   return info;
 }
 
 static void release_info(m_uint i, M_Object o)
 {
-  MidiInfo* info = map_get(map, (m_uint*)i+i);
+  MidiInfo* info = (MidiInfo*)map_get(map, (vtype)i+i);
   if(info)
   {
-    vector_remove(info->client, vector_find(info->client, o));
+    vector_remove(info->client, vector_find(info->client, (vtype)o));
     if(!vector_size(info->client))
     {
       if(info->thread)
@@ -125,7 +125,7 @@ static MFUN(midiout_open)
     release_info(ID(o), o);
   ID(o) = *(m_uint*)(shred->mem + SZ_INT);
   MidiInfo* info = get(shred->vm_ref, ID(o));
-  vector_append(info->client, o);
+  vector_append(info->client, (vtype)o);
   if(!info->stream)
     Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
   STREAM(o) = info->stream;
@@ -158,7 +158,7 @@ static void* pm_recv(void* data)
       for(i = 0; i < vector_size(info->client); i++)
       {
         M_Object o = (M_Object)vector_at(info->client, i);
-        vector_append(MSG(o), (void*)(m_uint)event.message);
+        vector_append(MSG(o), (vtype)(m_uint)event.message);
         if(info->last != now);
         broadcast(o);
       }
@@ -178,7 +178,7 @@ static MFUN(midiin_open)
     Pm_OpenInput(&info->stream, ID(o), 0, 0, NULL, NULL);
     pthread_create(&info->thread, NULL, pm_recv, info);
   }
-  vector_append(info->client, o);
+  vector_append(info->client, (vtype)o);
   STREAM(o) = info->stream;
 }
 
@@ -193,7 +193,7 @@ static MFUN(midiin_read)
   STATUS(o) = Pm_MessageStatus(msg);
   DATA1(o)  = Pm_MessageData1(msg);
   DATA2(o)  = Pm_MessageData2(msg);
-  vector_remove(MSG(o), 0);
+  vector_remove(MSG(o), (vtype)0);
 }
 
 IMPORT
