@@ -94,7 +94,7 @@ CTOR(linuxsampler_ctor)
   if(!sampler)
     sampler = new LinuxSampler::Sampler();
 	std::map<String,LinuxSampler::DeviceCreationParameter*> param;
-  myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->bbq->sp->sr);
+  myLinuxSampler* ls = *(myLinuxSampler**)(o->d.data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->bbq->sp->sr);
   o->ugen->ug = ls;
   o->ugen->n_in = 0;
   o->ugen->n_out = 2;
@@ -111,75 +111,75 @@ CTOR(linuxsampler_ctor)
 
 DTOR(linuxsampler_dtor)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
   delete ls_obj;
 }
 
 MFUN(linuxsampler_load)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data + o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data + o_ls_data);
   ls_obj->load(STRING(*(M_Object*)(shred->mem + SZ_INT)), 0);
 }
 
 
 MFUN(linuxsampler_load_instrument)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data + o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data + o_ls_data);
   ls_obj->load(STRING(*(M_Object*)(shred->mem + SZ_INT)), *(m_uint*)(shred->mem + SZ_INT*2));
 }
 
 MFUN(linuxsampler_noteOn)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOn(
-    (RETURN->v_uint = *(m_int*)(shred->mem + SZ_INT)), *(m_int*)(shred->mem + SZ_INT*2), 0 );
+    (RETURN->d.v_uint = *(m_int*)(shred->mem + SZ_INT)), *(m_int*)(shred->mem + SZ_INT*2), 0 );
 }
 
 MFUN(linuxsampler_noteOff)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOff(
-    (RETURN->v_uint = *(m_int*)(shred->mem + SZ_INT)), *(m_int*)(shred->mem + SZ_INT*2),0 );
+    (RETURN->d.v_uint = *(m_int*)(shred->mem + SZ_INT)), *(m_int*)(shred->mem + SZ_INT*2),0 );
 }
 
 MFUN(linuxsampler_pitchbend)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendPitchbend(
     *(m_int*)(shred->mem + SZ_INT), *(m_int*)(shred->mem + SZ_INT*2), 0 );
 }
 
 MFUN(linuxsampler_status)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->v_uint = ls_obj->Engine() ? ls_obj->Engine()->InstrumentStatus() : 0;
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  RETURN->d.v_uint = ls_obj->Engine() ? ls_obj->Engine()->InstrumentStatus() : 0;
 }
 
 MFUN(linuxsampler_getgain)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->v_float = ls_obj->Engine() ? ls_obj->Engine()->Volume() : 0;
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  RETURN->d.v_float = ls_obj->Engine() ? ls_obj->Engine()->Volume() : 0;
 }
 
 MFUN(linuxsampler_setgain)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->v_float = *(m_float*)(shred->mem + SZ_INT);
-  if( ls_obj->Engine() ) ls_obj->Engine()->Volume(RETURN->v_float);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  RETURN->d.v_float = *(m_float*)(shred->mem + SZ_INT);
+  if( ls_obj->Engine() ) ls_obj->Engine()->Volume(RETURN->d.v_float);
 }
 
 MFUN(linuxsampler_getpan)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->v_float = ls_obj->Engine() ? ls_obj->Engine()->Pan() : 0;
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  RETURN->d.v_float = ls_obj->Engine() ? ls_obj->Engine()->Pan() : 0;
 }
 
 MFUN(linuxsampler_setpan)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->v_float = *(m_float*)(shred->mem + SZ_INT);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  RETURN->d.v_float = *(m_float*)(shred->mem + SZ_INT);
   if(ls_obj->Engine())
-    ls_obj->Engine()->Pan(RETURN->v_float);
+    ls_obj->Engine()->Pan(RETURN->d.v_float);
 }
 
 extern "C"

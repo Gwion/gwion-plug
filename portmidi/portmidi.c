@@ -77,25 +77,25 @@ static m_int o_pm_data1;
 static m_int o_pm_data2;
 static m_int o_pm_msg;
 
-#define STREAM(o) *(PmStream**)(o->data + o_pm_stream)
-#define ID(o)     *(m_int*)    (o->data + o_pm_id)
-#define STATUS(o) *(m_uint*)   (o->data + o_pm_status)
-#define DATA1(o) *(m_uint*)    (o->data + o_pm_data1)
-#define DATA2(o) *(m_uint*)    (o->data + o_pm_data2)
-#define MSG(o) *(Vector*)      (o->data + o_pm_msg)
+#define STREAM(o) *(PmStream**)(o->d.data + o_pm_stream)
+#define ID(o)     *(m_int*)    (o->d.data + o_pm_id)
+#define STATUS(o) *(m_uint*)   (o->d.data + o_pm_status)
+#define DATA1(o) *(m_uint*)    (o->d.data + o_pm_data1)
+#define DATA2(o) *(m_uint*)    (o->d.data + o_pm_data2)
+#define MSG(o) *(Vector*)      (o->d.data + o_pm_msg)
 
 static MFUN(pm_name)
 {
   const PmDeviceInfo* info = Pm_GetDeviceInfo(ID(o));
   if(!info)
-    RETURN->v_uint = (m_uint)new_String("no device");
+    RETURN->d.v_uint = (m_uint)new_String("no device");
   else
-    RETURN->v_uint = (m_uint)new_String((m_str)info->name);
+    RETURN->d.v_uint = (m_uint)new_String((m_str)info->name);
 }
 
 static SFUN(pm_error)
 {
-  RETURN->v_uint = (m_uint)new_String((m_str)Pm_GetErrorText(*(m_int*)(shred->mem + SZ_INT)));
+  RETURN->d.v_uint = (m_uint)new_String((m_str)Pm_GetErrorText(*(m_int*)(shred->mem + SZ_INT)));
 }
 
 static MFUN(pm_close)
@@ -103,7 +103,7 @@ static MFUN(pm_close)
   release_info(ID(o), o);
   STREAM(o) = NULL;
   ID(o) = -1;
-  RETURN->v_uint = 1;
+  RETURN->d.v_uint = 1;
 }
 
 static CTOR(pm_ctor)
@@ -129,18 +129,18 @@ static MFUN(midiout_open)
   if(!info->stream)
     Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
   STREAM(o) = info->stream;
-  RETURN->v_uint = 1;
+  RETURN->d.v_uint = 1;
 }
 
 static MFUN(midiout_send_self)
 {
-  RETURN->v_uint = Pm_WriteShort(STREAM(o), 0, 
+  RETURN->d.v_uint = Pm_WriteShort(STREAM(o), 0, 
     Pm_Message(STATUS(o), DATA1(o), DATA2(o)));
 }
 
 static MFUN(midiout_send)
 {
-  RETURN->v_uint = Pm_WriteShort(STREAM(o), 0, 
+  RETURN->d.v_uint = Pm_WriteShort(STREAM(o), 0, 
     Pm_Message(*(m_uint*)(shred->mem + SZ_INT), *(m_uint*)(shred->mem + SZ_INT*2), *(m_uint*)(shred->mem + SZ_INT*3)));
 }
 
@@ -184,7 +184,7 @@ static MFUN(midiin_open)
 
 static MFUN(midiin_recv)
 {
-  RETURN->v_uint = vector_size(MSG(o)) ? 1 : 0;
+  RETURN->d.v_uint = vector_size(MSG(o)) ? 1 : 0;
 }
 
 static MFUN(midiin_read)

@@ -17,13 +17,13 @@
 // TODO: release former fd if any
 
 
-#define INFO(o) *(EvdevInfo**)(o->data + o_evdev_info)
+#define INFO(o) *(EvdevInfo**)(o->d.data + o_evdev_info)
 
 
-#define VALUE(o) *(m_uint*)(o->data + o_evdev_value)
-#define CODE(o) *(m_uint*)(o->data + o_evdev_code)
-#define TYPE(o) *(m_uint*)(o->data + o_evdev_type)
-#define TIME(o) *(m_float*)(o->data + o_evdev_time)
+#define VALUE(o) *(m_uint*)(o->d.data + o_evdev_value)
+#define CODE(o) *(m_uint*)(o->d.data + o_evdev_code)
+#define TYPE(o) *(m_uint*)(o->d.data + o_evdev_type)
+#define TIME(o) *(m_float*)(o->d.data + o_evdev_time)
 
 struct Type_ t_evdev = { "Evdev",     sizeof(m_uint), &t_event };
 
@@ -83,7 +83,7 @@ DTOR(evdev_dtor)
 static MFUN(evdev_get_index)
 {
   EvdevInfo* info = INFO(o);
-  RETURN->v_uint = info->index;
+  RETURN->d.v_uint = info->index;
 }
 
 static MFUN(evdev_name)
@@ -91,7 +91,7 @@ static MFUN(evdev_name)
   M_Object ret = new_M_Object();
   EvdevInfo* info = INFO(o);
   ret = new_String((m_str)libevdev_get_name(info->evdev));
-  RETURN->v_object = ret;
+  RETURN->d.v_object = ret;
 }
 
 static MFUN(evdev_index)
@@ -119,7 +119,7 @@ static MFUN(evdev_index)
   }
   info->index = index;
   pthread_create(&info->thread, NULL, evdev_process, o);
-  RETURN->v_uint = index;
+  RETURN->d.v_uint = index;
 }
 
 static MFUN(evdev_recv)
@@ -132,7 +132,7 @@ static MFUN(evdev_recv)
   EvdevArg* arg = (EvdevArg*)vector_front(v);
   if(!arg)
   {
-    RETURN->v_uint = 0;
+    RETURN->d.v_uint = 0;
     return;
   }
   TIME(o)   = arg->time.tv_sec + (arg->time.tv_usec / 1000000.);
@@ -141,11 +141,11 @@ static MFUN(evdev_recv)
   VALUE(o)  = arg->value;
   vector_remove(v, 0);
   free(arg);
-  RETURN->v_uint = 1;
+  RETURN->d.v_uint = 1;
 }
 // loop thread
 void* evdev_process(void* arg)
-{  
+{
   int rc;
   struct input_event event;
   M_Object o = (M_Object)arg;
@@ -161,8 +161,8 @@ void* evdev_process(void* arg)
       ev->type  = event.type;
       ev->code  = event.code;
       ev->value = event.value;
-      vector_append(v, ev);
-      broadcast(o);   
+      vector_append(v, (vtype)ev);
+      broadcast(o);
     }
   } while((rc == 1 || rc == 0 || rc == -11));
   return NULL;
@@ -177,24 +177,24 @@ IMPORT
   CHECK_BB(import_class_begin(env, &t_evdev, env->global_nspc, evdev_ctor, evdev_dtor))
 	env->class_def->doc =  "Evdev interface";
 
-  
+
   import_mvar(env, "int", "@dummy",  0, 0, "evdev info");
-  
+
   o_evdev_info = import_mvar(env, "int", "@info",  0, 0, "evdev info");
   CHECK_BB(o_evdev_info)
 
   o_evdev_time  = import_mvar(env, "float", "time",  1, 0, "time");
   CHECK_BB(o_evdev_time)
-  
+
   o_evdev_type  = import_mvar(env, "int", "type",  1, 0, "type");
   CHECK_BB(o_evdev_type)
-  
+
   o_evdev_code  = import_mvar(env, "int", "code",  1, 0, "code");
   CHECK_BB(o_evdev_code)
-  
+
   o_evdev_value = import_mvar(env, "int", "value",  1, 0, "value");
   CHECK_BB(o_evdev_value)
-  
+
   fun = new_DL_Func("int", "index", (m_uint)evdev_get_index);
   CHECK_OB(import_mfun(env, fun))
 
@@ -208,6 +208,6 @@ IMPORT
   fun = new_DL_Func("int", "recv", (m_uint)evdev_recv);
   CHECK_OB(import_mfun(env, fun))
 
-  CHECK_BB(import_class_end(env))  
+  CHECK_BB(import_class_end(env))
   return 1;
 }

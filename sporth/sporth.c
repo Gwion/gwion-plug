@@ -104,7 +104,7 @@ MFUN(sporth_setp)
 	int i = *(m_uint*)(shred->mem + SZ_INT);
 	m_float val = *(m_float*)(shred->mem + SZ_INT*2);
 	data->pd.p[i] = val;
-	RETURN->v_float = val;
+	RETURN->d.v_float = val;
 }
 
 MFUN(sporth_set_table)
@@ -130,7 +130,7 @@ MFUN(sporth_set_table)
 		ft->tbl[i] = val;
 	}
 	free(ftname);
-	RETURN->v_float = val;
+	RETURN->d.v_float = val;
 }
 
 MFUN(sporth_get_table)
@@ -152,9 +152,9 @@ MFUN(sporth_get_table)
 	}
 	free(ftname);
 	if(!err) {
-  	RETURN->v_float = ft->tbl[i];
+  	RETURN->d.v_float = ft->tbl[i];
   } else {
-		RETURN->v_float = 0;
+		RETURN->d.v_float = 0;
 	}
 }
 
@@ -162,7 +162,7 @@ MFUN(sporth_getp)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
 	int i = *(m_uint*)(shred->mem + SZ_INT);
-  RETURN->v_float = data->pd.p[i];
+  RETURN->d.v_float = data->pd.p[i];
 }
 
 MFUN(sporth_parse_string)
@@ -178,7 +178,7 @@ MFUN(sporth_parse_string)
 		plumber_recompile_string(&data->pd, str);
   }
   free(str);
-  RETURN->v_float = data->var;
+  RETURN->d.v_float = data->var;
 }
 
 MFUN(sporth_parse_file)
@@ -197,7 +197,7 @@ MFUN(sporth_parse_file)
    }
    plumber_close_file(&data->pd);
    free(str);
-   RETURN->v_float = data->var;
+   RETURN->d.v_float = data->var;
 	}
 }
 

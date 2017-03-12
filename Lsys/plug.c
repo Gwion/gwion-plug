@@ -96,7 +96,7 @@ static MFUN(gw_lsys_reset)
 static MFUN(gw_lsys_size)
 {
 	Lsys*  ptr = LSYS(o);
-	RETURN->v_uint = ptr->is_init ? ptr->lst.size : -1;
+	RETURN->d.v_uint = ptr->is_init ? ptr->lst.size : -1;
 }
 
 static MFUN(gw_lsys_get)
@@ -105,7 +105,7 @@ static MFUN(gw_lsys_get)
 	Lsys*  ptr   = LSYS(o);
 	if(!ptr->is_init)
 	{
-		RETURN->v_uint = 0;
+		RETURN->d.v_uint = 0;
 		return;
 	}
 	char str[ptr->lst.size];
@@ -113,7 +113,7 @@ static MFUN(gw_lsys_get)
 		ptr->pos = lsys_list_iter(&ptr->lst, &ptr->ent, ptr->pos);
 		str[i] = tochar(ptr->ent->val + 1);
 	}
-	RETURN->v_uint = (m_uint)new_String(str);
+	RETURN->d.v_uint = (m_uint)new_String(str);
 }
 
 IMPORT

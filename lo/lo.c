@@ -87,11 +87,11 @@ static struct Type_ t_loin     = { "OscIn",  SZ_INT, &t_lo };
 static struct Type_ t_loout    = { "OscOut", SZ_INT, &t_lo };
 
 static m_int o_lo_addr, o_lo_args, o_lo_serv, o_lo_meth, o_lo_curr;
-#define ADDR(o) *(lo_address*)    (o->data + o_lo_addr)
-#define ARGS(o) *(Vector*)        (o->data + o_lo_args)
-#define SERV(o) *(struct Server**)(o->data + o_lo_serv)
-#define METH(o) *(Vector*)        (o->data + o_lo_meth)
-#define CURR(o) *(Vector*)     (o->data + o_lo_curr)
+#define ADDR(o) *(lo_address*)    (o->d.data + o_lo_addr)
+#define ARGS(o) *(Vector*)        (o->d.data + o_lo_args)
+#define SERV(o) *(struct Server**)(o->d.data + o_lo_serv)
+#define METH(o) *(Vector*)        (o->d.data + o_lo_meth)
+#define CURR(o) *(Vector*)     (o->d.data + o_lo_curr)
 
 static MFUN(osc_addr)
 {
@@ -99,7 +99,7 @@ static MFUN(osc_addr)
     lo_address_free(ADDR(o));
   m_str host = STRING(*(M_Object*)(shred->mem + SZ_INT)); 
   m_str port = STRING(*(M_Object*)(shred->mem + SZ_INT * 2));
-  RETURN->v_uint = (ADDR(o) = lo_address_new(host, port)) ? 1 : 0;
+  RETURN->d.v_uint = (ADDR(o) = lo_address_new(host, port)) ? 1 : 0;
 }
 
 static MFUN(osc_send)
@@ -138,7 +138,7 @@ static MFUN(osc_send)
     release_Arg(arg);
   }
   vector_clear(ARGS(o));
-  RETURN->v_uint = lo_send_message(ADDR(o), STRING(*(M_Object*)(shred->mem + SZ_INT)), msg) ? 1 : 0;
+  RETURN->d.v_uint = lo_send_message(ADDR(o), STRING(*(M_Object*)(shred->mem + SZ_INT)), msg) ? 1 : 0;
 }
 
 static INSTR(oscsend_add_int)
@@ -228,7 +228,7 @@ static int osc_method_handler(const char* path, const char* type,
 static MFUN(osc_get_port)
 {
   struct Server* s = SERV(o);
-  RETURN->v_uint = s ? s->port : -1;
+  RETURN->d.v_uint = s ? s->port : -1;
 }
 
 static MFUN(osc_port)
@@ -266,7 +266,7 @@ static MFUN(osc_port)
   }
   s->ref++;
   SERV(o) = s;
-  RETURN->v_uint = s->port = port;
+  RETURN->d.v_uint = s->port = port;
 }
 
 static MFUN(osc_add_method)
@@ -299,7 +299,7 @@ found:
     vector_append(m->client, o);
   if(vector_find(METH(o), m) < 0)
     vector_append(METH(o), m);
-  RETURN->v_uint = 1;
+  RETURN->d.v_uint = 1;
 }
 
 CTOR(lo_ctor){ ARGS(o) = new_Vector(); }
@@ -311,7 +311,7 @@ CTOR(loin_dtor){ free_Vector(METH(o)); free_Vector(CURR(o));}
 static MFUN(oscin_stop)
 {
   struct Server* s = SERV(o);
-  RETURN->v_uint = lo_server_thread_stop(s->thread);
+  RETURN->d.v_uint = lo_server_thread_stop(s->thread);
 }
 
 static MFUN(oscin_start)
@@ -320,17 +320,17 @@ static MFUN(oscin_start)
   if(lo_server_thread_start(s->thread) < 0)
   {
     release_server(s);
-    RETURN->v_uint = -1;
+    RETURN->d.v_uint = -1;
     return;
   }
-  RETURN->v_uint = 1;
+  RETURN->d.v_uint = 1;
 }
 
 static MFUN(osc_recv)
 {
   Vector c_arg = ARGS(o);
   CURR(o) = vector_at(c_arg, 0);
-  RETURN->v_uint = CURR(o) ? 1 : 0;
+  RETURN->d.v_uint = CURR(o) ? 1 : 0;
   vector_remove(ARGS(o), 0);
 }
 static MFUN(oscin_rem)
@@ -354,7 +354,7 @@ static MFUN(oscin_rem)
       if((i = vector_find(METH(o), m)) >= 0)
         vector_remove(METH(o), i);
       release_method(SERV(o), m);
-      RETURN->v_uint = 1;
+      RETURN->d.v_uint = 1;
       return;
     }
   }
@@ -365,7 +365,7 @@ static MFUN(oscin_get_i)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_remove(c_arg, 0);
-  RETURN->v_uint = arg->data.i;
+  RETURN->d.v_uint = arg->data.i;
   release_Arg(arg);
 }
 
@@ -374,7 +374,7 @@ static MFUN(oscin_get_f)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_remove(c_arg, 0);
-  RETURN->v_float = arg->data.f;
+  RETURN->d.v_float = arg->data.f;
   release_Arg(arg);
 }
 
@@ -383,7 +383,7 @@ static MFUN(oscin_get_s)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_remove(c_arg, 0);
-  RETURN->v_uint = (m_uint)new_String(arg->data.s);
+  RETURN->d.v_uint = (m_uint)new_String(arg->data.s);
   release_Arg(arg);
 }
 

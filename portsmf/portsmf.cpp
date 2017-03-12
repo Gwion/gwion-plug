@@ -2,13 +2,13 @@
 #include <string.h>
 #include <portsmf/allegro.h>
 #include "Gwion.hpp"
-#define TYPE(o)  *(m_uint*)(o->data + o_midiev_type)
-#define START(o) *(m_float*)(o->data + o_midiev_start)
-#define PITCH(o) *(m_float*)(o->data + o_midiev_pitch)
-#define LOUD(o)  *(m_float*)(o->data + o_midiev_loud)
-#define END(o)   *(m_float*)(o->data + o_midiev_end)
-#define DUR(o)   *(m_float*)(o->data + o_midiev_dur)
-#define SEQ(o)   *(Alg_seq**)(o->data + o_midifile_seq)
+#define TYPE(o)  *(m_uint*)(o->d.data + o_midiev_type)
+#define START(o) *(m_float*)(o->d.data + o_midiev_start)
+#define PITCH(o) *(m_float*)(o->d.data + o_midiev_pitch)
+#define LOUD(o)  *(m_float*)(o->d.data + o_midiev_loud)
+#define END(o)   *(m_float*)(o->d.data + o_midiev_end)
+#define DUR(o)   *(m_float*)(o->d.data + o_midiev_dur)
+#define SEQ(o)   *(Alg_seq**)(o->d.data + o_midifile_seq)
 struct Type_ t_midifileev = { (m_str)"MidiFileEv", SZ_INT, &t_object };
 struct Type_ t_midifile = { (m_str)"MidiFile",  SZ_INT, &t_object };
 m_int o_midifile_seq;
@@ -110,7 +110,7 @@ MFUN(midifile_open)
 MFUN(midifile_tracks)
 {
   Alg_seq* seq = SEQ(o);
-  RETURN->v_uint = seq->tracks();
+  RETURN->d.v_uint = seq->tracks();
 }
 
 MFUN(midifile_add_track)
@@ -121,7 +121,7 @@ MFUN(midifile_add_track)
 MFUN(midifile_track_len)
 {
   Alg_seq* seq = SEQ(o);
-  RETURN->v_uint = seq->track(*(m_uint*)(shred->mem + SZ_INT))->length();
+  RETURN->d.v_uint = seq->track(*(m_uint*)(shred->mem + SZ_INT))->length();
 
 }
 MFUN(midifile_event)
@@ -150,7 +150,7 @@ MFUN(midifile_event)
       DUR(obj)   = ev->get_duration()   * shred->vm_ref->bbq->sp->sr;
     }
   }
-  RETURN->v_uint = (m_uint)obj;
+  RETURN->d.v_uint = (m_uint)obj;
 }
 
 MFUN(midifile_add_note)

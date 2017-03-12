@@ -19,9 +19,9 @@
 #include "fmsynth.h"
 static struct Type_ t_fmsynth = {"FMSynth", SZ_INT, &t_ugen };
 static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
-#define SYNTH(o) *(fmsynth_t**)(o->data + o_fmsynth_data)
-#define NAME(o) *(M_Object*)(o->data + o_fmsynth_name)
-#define AUTHOR(o) *(M_Object*)(o->data + o_fmsynth_author)
+#define SYNTH(o) *(fmsynth_t**)(o->d.data + o_fmsynth_data)
+#define NAME(o) *(M_Object*)(o->d.data + o_fmsynth_name)
+#define AUTHOR(o) *(M_Object*)(o->d.data + o_fmsynth_author)
 #define POLYPHONY 64
 
 static m_bool fmsynth_tick(UGen u)
@@ -112,18 +112,18 @@ MFUN(load)
   FILE* file = fopen(filename, "r");
   if(!file)
   {
-    RETURN->v_uint = -1;
+    RETURN->d.v_uint = -1;
     return;
   }
   void* buf;
   size_t len = fread(buf,fmsynth_preset_size(), 1, file);
   if(len != 1)
   {
-    RETURN->v_uint = -1;
+    RETURN->d.v_uint = -1;
     return;
   }
   fclose(file);
-  RETURN->v_uint = fmsynth_preset_load(SYNTH(o), metadata,
+  RETURN->d.v_uint = fmsynth_preset_load(SYNTH(o), metadata,
       buf, fmsynth_preset_size());
   free(STRING(NAME(o)));
   free(STRING(AUTHOR(o)));
@@ -138,7 +138,7 @@ MFUN(save)
   FILE* file = fopen(filename, "w");
   if(!file)
   {
-    RETURN->v_uint = -1;
+    RETURN->d.v_uint = -1;
     return;
   }
   void* buf;
@@ -146,13 +146,13 @@ MFUN(save)
   memset(metadata, 0, sizeof(metadata));
   strcat(metadata->name, STRING(NAME(o)));
   strcat(metadata->author, STRING(AUTHOR(o)));
-  RETURN->v_uint = fmsynth_preset_save(SYNTH(o), metadata,
+  RETURN->d.v_uint = fmsynth_preset_save(SYNTH(o), metadata,
       buf, fmsynth_preset_size());
   fwrite(buf, fmsynth_preset_size(), 1, file);
   size_t len = fwrite(buf,fmsynth_preset_size(), 1, file);
   if(len != 1)
   {
-    RETURN->v_uint = -1;
+    RETURN->d.v_uint = -1;
     return;
   }
   fclose(file);
