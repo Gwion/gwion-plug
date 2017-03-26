@@ -30,14 +30,15 @@ class myLinuxSampler : public ChuckOutput
 public:
   myLinuxSampler(std::map<String,LinuxSampler::DeviceCreationParameter*> param, m_float fs) : ChuckOutput(param, fs, 512), count(0)
   {
-		channel = sampler->AddSamplerChannel();
+    channel = sampler->AddSamplerChannel();
     channel->SetAudioOutputDevice(this);
   }
 
   ~myLinuxSampler()
   {
-    pthread_join(thread, NULL);
-		sampler->RemoveSamplerChannel(channel);
+    if(thread)
+      pthread_join(thread, NULL);
+    sampler->RemoveSamplerChannel(channel);
   }
 
   void tick(m_float* l, m_float* r)
@@ -68,7 +69,7 @@ public:
 private:
   m_uint count;
   std::string s;
-	pthread_t thread;
+	pthread_t thread = 0;
   LinuxSampler::SamplerChannel* channel;
 	static void* run(void *arg)
 	{
