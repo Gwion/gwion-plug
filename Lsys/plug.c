@@ -113,7 +113,7 @@ static MFUN(gw_lsys_get)
 		ptr->pos = lsys_list_iter(&ptr->lst, &ptr->ent, ptr->pos);
 		str[i] = tochar(ptr->ent->val + 1);
 	}
-	RETURN->d.v_uint = (m_uint)new_String(str);
+	RETURN->d.v_uint = (m_uint)new_String(shred, str);
 }
 
 IMPORT

@@ -102,10 +102,10 @@ CTOR(linuxsampler_ctor)
   o->ugen->tick = tick;
   o->ugen->ugen = new_Vector();
   o->ugen->channel = (M_Object*)calloc(2, sizeof(struct M_Object_));
-  o->ugen->channel[0] = new_M_UGen();
+  o->ugen->channel[0] = new_M_UGen(NULL);
   o->ugen->channel[0]->ugen->ugen = new_Vector();
   o->ugen->channel[0]->ugen->ref = o->ugen;
-  o->ugen->channel[1] = new_M_UGen();
+  o->ugen->channel[1] = new_M_UGen(NULL);
   o->ugen->channel[1]->ugen->ugen = new_Vector();
   o->ugen->channel[1]->ugen->ref = o->ugen;
 }

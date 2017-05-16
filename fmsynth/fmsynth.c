@@ -37,8 +37,8 @@ static m_bool fmsynth_tick(UGen u)
 
 CTOR(ctor)
 {
-  NAME(o) = new_String("name");
-  AUTHOR(o) = new_String("author");
+  NAME(o) = new_String(NULL, "name");
+  AUTHOR(o) = new_String(NULL, "author");
   SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, POLYPHONY);
   assign_ugen(o->ugen, 1, 2, 0, SYNTH(o));
   o->ugen->tick = fmsynth_tick;

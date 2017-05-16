@@ -33,4 +33,4 @@ make
 make install
 ```
 ##usage##
-check .ck files in the directory." > $1/README.md
+check .gw files in the directory." > $1/README.md

@@ -95,3 +95,7 @@ typedef struct VM_Shred_* VM_Shred;
 #define import_mvar(a, b, c, d, e, f) import_mvar(a, (m_str)b , (m_str)c, d, e, (m_str)f)
 #define dl_func_add_arg(a, b, c)      dl_func_add_arg(a, (m_str)b , (m_str)c) 
 #define new_DL_Func(a, b, c)          new_DL_Func((m_str)a, (m_str)b, (m_uint)c)               
+extern "C" {
+extern M_Object new_M_Object(VM_Shred shred);
+extern M_Object new_M_UGen(VM_Shred shred);
+}

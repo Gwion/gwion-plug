@@ -88,9 +88,8 @@ static MFUN(evdev_get_index)
 
 static MFUN(evdev_name)
 {
-  M_Object ret = new_M_Object();
   EvdevInfo* info = INFO(o);
-  ret = new_String((m_str)libevdev_get_name(info->evdev));
+  M_Object ret = new_String(shred, (m_str)libevdev_get_name(info->evdev));
   RETURN->d.v_object = ret;
 }
 

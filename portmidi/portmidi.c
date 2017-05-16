@@ -88,14 +88,14 @@ static MFUN(pm_name)
 {
   const PmDeviceInfo* info = Pm_GetDeviceInfo(ID(o));
   if(!info)
-    RETURN->d.v_uint = (m_uint)new_String("no device");
+    RETURN->d.v_uint = (m_uint)new_String(shred, "no device");
   else
-    RETURN->d.v_uint = (m_uint)new_String((m_str)info->name);
+    RETURN->d.v_uint = (m_uint)new_String(shred, (m_str)info->name);
 }
 
 static SFUN(pm_error)
 {
-  RETURN->d.v_uint = (m_uint)new_String((m_str)Pm_GetErrorText(*(m_int*)(shred->mem + SZ_INT)));
+  RETURN->d.v_uint = (m_uint)new_String(shred, (m_str)Pm_GetErrorText(*(m_int*)(shred->mem + SZ_INT)));
 }
 
 static MFUN(pm_close)

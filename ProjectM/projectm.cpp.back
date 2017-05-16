@@ -1,0 +1,354 @@
+/* ProjectM includes */
+#include <SDL2/SDL.h>
+
+#ifdef __linux__
+#ifdef USE_GLES1
+#include <GLES/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#endif
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <SDL2/SDL.h>
+#include <CoreAudio/CoreAudio.h>
+#endif
+
+#include <projectM.hpp>
+#include <iostream>
+const float FPS = 60;
+
+const int PROJECTM_BUFSIZE = 512;
+
+typedef long          int m_int;
+typedef long unsigned int m_uint;
+typedef short         int m_bool;
+typedef float             m_float;
+//typedef char *            m_str;
+typedef struct Map_* Map;
+typedef struct Context_* Context;
+typedef struct M_Object_* M_Object;
+typedef struct UGen_* UGen;
+typedef struct Vector_* Vector;
+typedef m_bool (*f_tick) (UGen ug);
+typedef struct M_Vector;
+typedef struct Type_* Type;
+typedef struct VM_Shred_* VM_Shred;
+//typedef struct Env_* Env;
+typedef struct DL_Func;
+typedef struct DL_Value;
+typedef char* m_str;
+typedef unsigned int te_type;
+//typedef struct Namespace_* NameSpace;
+typedef struct GW_Func_* GW_Func;
+typedef struct VM_Object_* VM_Object;
+typedef struct Class_Def_* Class_Def;
+typedef struct Func_Def_* Func_Def;
+//#include "import.h"
+typedef void (f_ctor)(M_Object o, VM_Shred sh);
+typedef void (f_dtor)(M_Object o, VM_Shred sh);
+
+#define CHECK_BB(f) if(f < 0) return -1;
+#define CHECK_OB(f) if(!f)    return -1;
+#define CHECK_BO(f) if(f < 0) return NULL;
+#define CHECK_OO(f) if(!f)    return NULL;
+/*
+struct Env_ {
+  NameSpace curr;
+  NameSpace global_nspc;
+//  NameSpace user_nspc;
+  m_uint    class_scope;
+  Context   global_context;
+  Context   context;
+  Vector    contexts;
+  Vector    nspc_stack;
+  Vector    class_stack;
+  Vector    breaks;
+  Vector    conts;
+  Type      class_def;
+  GW_Func   func;
+  VM_Object obj;
+  Map known_ctx;
+};
+*/
+Vector new_Vector();
+M_Object new_M_UGen();
+
+struct M_Object_ {
+  Vector vtable;
+  Type type_ref;
+  m_uint size, ref;
+  union {
+    M_Vector* array;
+    unsigned char* data;
+  } d;
+  UGen ugen;
+};
+
+struct UGen_ {
+  m_bool done;
+  m_uint n_in, n_out, n_chan;
+//  m_float *in, *out;
+  m_float in, out, last;
+//  m_float last;
+  m_int op;
+//  union {
+  Vector ugen, to; // store connected UGens
+  M_Object* channel;
+//  };
+//  e_ugen_type type;
+  M_Object trig;
+  f_tick tick;
+  UGen ref; // for stereo ?
+
+  void* ug;
+};
+
+struct Type_ {
+  m_str     name;
+  m_uint    size;
+  Type      parent;
+  te_type   xid;
+  NameSpace info;
+  NameSpace owner;
+  GW_Func   func;
+  Type      actual_type;
+  m_uint    array_depth;
+  Type      array_type;
+  m_bool    is_complete;
+  Class_Def def;
+  VM_Object obj;
+  m_str      doc;
+  m_uint    obj_size;
+  m_bool has_constructor;
+  m_bool has_destructor;
+  m_bool initialize; // hack for gack
+//  UGenInfo ugen_info;
+};
+
+m_bool projectm_tick(UGen u)
+{
+//	myLinuxSampler* ls = (myLinuxSampler*)u->ug;
+	u->channel[0]->ugen->out = u->channel[0]->ugen->in;
+	u->channel[1]->ugen->out = u->channel[1]->ugen->out;
+}
+
+/* Gwion include */
+
+//#include "Gwion2.hpp"
+//#include "ugen.h"
+
+typedef struct {
+    projectM *pm;
+    SDL_Window *win;
+    SDL_Renderer *rend;
+    bool done;
+    projectM::Settings settings;
+    SDL_AudioDeviceID audioInputDevice;
+// added for Gwion
+	UGen u;
+	float data[PROJECTM_BUFSIZE *2];
+} projectMApp;
+
+void renderFrame(projectMApp *app) {
+    int i;
+//    short pcm_data[2][512]; // orig
+//    float pcm_data[2][512]; // no support for double in projectM for now // Gwion
+    float pcm_data[PROJECTM_BUFSIZE *2]; // no support for double in projectM for now
+    SDL_Event evt;
+    
+    SDL_PollEvent(&evt);
+    switch (evt.type) {
+        case SDL_KEYDOWN:
+            // ...
+            break;
+        case SDL_QUIT:
+            app->done = true;
+            break;
+    }
+
+
+//        projectMEvent evt;
+//        projectMKeycode key;
+//        projectMModifier mod;
+//
+//        /** Process SDL events */
+//        SDL_Event event;
+//        while ( SDL_PollEvent( &event ) ) {
+//            /** Translate into projectM codes and process */
+//            evt = sdl2pmEvent( event );
+//            key = sdl2pmKeycode( event.key.keysym.sym );
+//            mod = sdl2pmModifier( (SDLMod)event.key.keysym.mod );
+//            if ( evt == PROJECTM_KEYDOWN ) {
+//                pm->key_handler( evt, key, mod );
+//              }
+//          }
+
+    /** Produce some fake PCM data to stuff into projectM */
+//    for ( i = 0 ; i < 1024 ; i += 2 ) {
+//		pcm_data[i] = app->u->channel[0]->ugen->in;
+//		pcm_data[i+1] = app->u->channel[1]->ugen->in;
+//		pcm_data[1][i] = app->u->in[1];
+/*
+        if ( i % 2 == 0 ) {
+            pcm_data[0][i] = (float)( rand() / ( (float)RAND_MAX ) * (pow(2,14) ) );
+            pcm_data[1][i] = (float)( rand() / ( (float)RAND_MAX ) * (pow(2,14) ) );
+          } else {
+            pcm_data[0][i] = (float)( rand() / ( (float)RAND_MAX ) * (pow(2,14) ) );
+            pcm_data[1][i] = (float)( rand() / ( (float)RAND_MAX ) * (pow(2,14) ) );
+          }
+        if ( i % 2 == 1 ) {
+            pcm_data[0][i] = -pcm_data[0][i];
+            pcm_data[1][i] = -pcm_data[1][i];
+          }
+*/
+//    }
+    /** Add the waveform data */
+//    app->pm->pcm()->addPCM16(pcm_data);
+//	app->pm->pcm()->addPCMfloat(pcm_data, 1024);
+	app->pm->pcm()->addPCMfloat(app->data, 1024);
+
+    glClearColor( 0.0, 0.5, 0.0, 0.0 );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    app->pm->renderFrame();
+    glFlush();
+
+    SDL_RenderPresent(app->rend);
+}
+
+void projectm_ctor(M_Object o, VM_Shred shred) {
+	projectMApp* app = new projectMApp();
+	o->ugen->ug = app;
+	o->ugen->n_in = 0;
+	o->ugen->n_out = 2;
+	o->ugen->tick = projectm_tick;
+	o->ugen->ugen = new_Vector();
+	o->ugen->channel = (M_Object*)calloc(2, sizeof(struct M_Object_));
+	o->ugen->channel[0] = new_M_UGen();
+	o->ugen->channel[0]->ugen->ugen = new_Vector();
+ 	o->ugen->channel[0]->ugen->ref = o->ugen;
+	o->ugen->channel[1] = new_M_UGen();
+	o->ugen->channel[1]->ugen->ugen = new_Vector();
+	o->ugen->channel[1]->ugen->ref = o->ugen;
+
+    int width = 784,
+        height = 784;
+
+    SDL_Init(SDL_INIT_VIDEO);
+
+    app->win = SDL_CreateWindow("projectM", 0, 0, width, height, 0);
+    app->rend = SDL_CreateRenderer(app->win, 0, SDL_RENDERER_ACCELERATED);
+    if (! app->rend) {
+        fprintf(stderr, "Failed to create renderer: %s\n", SDL_GetError());
+//        return PROJECTM_ERROR;
+// TODO add execpt
+		return;
+    }
+    SDL_SetWindowTitle(app->win, "SDL Fun Party Time");
+    printf("SDL init version 2\n");
+
+
+}
+
+void projectm_dtor(M_Object o, VM_Shred shred) {
+	projectMApp* app = (projectMApp*)o->ugen->ug;
+	delete app;
+}
+void* projectm_process(void* data) {
+	UGen u = (UGen)data;
+    projectMApp app;
+    app.done = 0;
+
+    int width = 784,
+        height = 784;
+
+    SDL_Init(SDL_INIT_VIDEO);
+
+    app.win = SDL_CreateWindow("projectM", 0, 0, width, height, 0);
+    app.rend = SDL_CreateRenderer(app.win, 0, SDL_RENDERER_ACCELERATED);
+    if (! app.rend) {
+        fprintf(stderr, "Failed to create renderer: %s\n", SDL_GetError());
+//        return PROJECTM_ERROR;
+		return NULL;
+    }
+    SDL_SetWindowTitle(app.win, "SDL Fun Party Time");
+    printf("SDL init version 2\n");
+
+    #ifdef PANTS
+    if ( fsaa ) {
+        SDL_GL_GetAttribute( SDL_GL_MULTISAMPLEBUFFERS, &value );
+        printf( "SDL_GL_MULTISAMPLEBUFFERS: requested 1, got %d\n", value );
+        SDL_GL_GetAttribute( SDL_GL_MULTISAMPLESAMPLES, &value );
+        printf( "SDL_GL_MULTISAMPLESAMPLES: requested %d, got %d\n", fsaa, value );
+    }
+    #endif
+
+    app.settings.meshX = 1;
+    app.settings.meshY = 1;
+    app.settings.fps   = FPS;
+    app.settings.textureSize = 2048;  // idk?
+    app.settings.windowWidth = width;
+    app.settings.windowHeight = height;
+    app.settings.smoothPresetDuration = 3; // seconds
+    app.settings.presetDuration = 5; // seconds
+    app.settings.beatSensitivity = 0.8;
+    app.settings.aspectCorrection = 1;
+    app.settings.easterEgg = 0; // ???
+    app.settings.shuffleEnabled = 1;
+    app.settings.softCutRatingsEnabled = 1; // ???
+    app.settings.presetURL = "presets/presets_tryptonaut";
+    app.settings.menuFontURL = "fonts/Vera.ttf";
+    app.settings.titleFontURL = "fonts/Vera.ttf";
+    
+    // init projectM
+    app.pm = new projectM(app.settings);
+    app.pm->selectRandom(true);
+    app.pm->projectM_resetGL(width, height);
+
+    // standard main loop
+    const Uint32 frame_delay = 1000/FPS;
+    Uint32 last_time = SDL_GetTicks();
+    while (! app.done) {
+        renderFrame(&app);
+        Uint32 elapsed = SDL_GetTicks() - last_time;
+        if (elapsed < frame_delay)
+            SDL_Delay(frame_delay - elapsed);
+        last_time = SDL_GetTicks();
+    }
+
+//    return PROJECTM_SUCCESS;
+	return NULL;
+}
+
+extern "C"
+{
+#include "env.h"
+extern m_bool add_global_type(Env env, Type type);
+extern struct Type_ t_ugen;
+static struct Type_ t_projectm= { "ProjectM", sizeof(m_uint), &t_ugen };
+Func import_mfun(Env env, DL_Func * fun);
+Func import_sfun(Env env, DL_Func * fun);
+
+Func_Def make_dll_as_fun(DL_Func * dl_fun, m_bool is_static);
+m_int import_svar(Env env, const m_str type,
+                  const m_str name, m_bool is_const, m_bool is_ref, m_uint* addr, const m_str doc );
+m_int import_mvar(Env env, const m_str type,
+                  const m_str name, const m_bool is_const, const m_bool is_ref, const m_str doc );
+m_bool import_class_end(Env env);
+Type import_class_begin(Env env, Type type, NameSpace where, f_ctor pre_ctor, f_dtor dtor);
+
+
+
+m_bool import(Env env)
+{
+  DL_Func* fun;
+  DL_Value* arg;
+//    Func f;
+  CHECK_BB(add_global_type(env, &t_projectm))
+  CHECK_BB(import_class_begin(env, &t_projectm, env->global_nspc, projectm_ctor, projectm_dtor))
+  CHECK_BB(import_class_end(env));
+
+}
+}

@@ -1,0 +1,21 @@
+float data[8][4];
+int labl[8];
+float instance[3][4];
+float cent[3][4];
+2 => int k;
+int i, j;
+for(0 => i; i < 8; i++) {
+	(0, 1) => Math.rand2 => labl[i];
+	for(0 => j; j < 4; j++)
+		() => Math.randf => data[i][j];
+}
+
+for(0 => i; i < 3; i++)
+	for(0 => j; j < 4; j++)
+		() => Math.randf => instance[i][j];
+
+<<<K.means(data, cent, k, false, .0001)[0]>>>;
+<<<K.nn(data, labl, instance, 2)[0]>>>;
+K.fine_means(data, 3, 3, 2)[0];
+	
+

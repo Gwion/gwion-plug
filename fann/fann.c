@@ -57,7 +57,7 @@ static MFUN(reset_errno)
 static MFUN(errstr)
 {
   m_str str = fann_get_errstr(ERROR(o));
-  RETURN->d.v_uint = (m_uint)new_String(str ? str : "no error");
+  RETURN->d.v_uint = (m_uint)new_String(shred, str ? str : "no error");
 }
 
 static MFUN(reset_errstr)
@@ -219,7 +219,7 @@ static struct fann_connection to_fann(M_Object o)
 }
 static M_Object from_fann(struct fann_connection c)
 {
-  M_Object o= new_M_Object();
+  M_Object o= new_M_Object(NULL);
   initialize_object(o, &t_fann_connect);
   *(m_uint*)(o->d.data + o_fann_from)    = c.from_neuron;
   *(m_uint*)(o->d.data + o_fann_to)      = c.to_neuron;
@@ -331,7 +331,7 @@ static SFUN(type_str)
     RETURN->d.v_uint = 0;
     return;
   }
-  RETURN->d.v_uint = (m_uint)new_String((m_str)FANN_NETTYPE_NAMES[i]);
+  RETURN->d.v_uint = (m_uint)new_String(shred, (m_str)FANN_NETTYPE_NAMES[i]);
 }
 
 static MFUN(load)
@@ -709,7 +709,7 @@ static MFUN(train_save)
 
 static SFUN(train_merge)
 {
-  M_Object ret = new_M_Object();
+  M_Object ret = new_M_Object(shred);
   M_Object l = *(M_Object*)(shred->mem + SZ_INT);
   M_Object r = *(M_Object*)(shred->mem + SZ_INT*2);
   initialize_object(ret, &t_fann_data);
@@ -719,7 +719,7 @@ static SFUN(train_merge)
 
 static SFUN(train_duplicate)
 {
-  M_Object ret = new_M_Object();
+  M_Object ret = new_M_Object(shred);
   M_Object l = *(M_Object*)(shred->mem + SZ_INT);
   M_Object r = *(M_Object*)(shred->mem + SZ_INT*2);
   initialize_object(ret, &t_fann_data);
@@ -729,7 +729,7 @@ static SFUN(train_duplicate)
 
 static MFUN(train_do_subset)
 {
-  M_Object ret = new_M_Object();
+  M_Object ret = new_M_Object(shred);
   m_uint pos = *(m_uint*)(shred->mem + SZ_INT);
   m_uint len = *(m_uint*)(shred->mem + SZ_INT*2);
   initialize_object(ret, &t_fann_data);
