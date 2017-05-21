@@ -4,7 +4,6 @@
 #include "lang.h"
 #include "import.h"
 
-#include "object.h"
 #include "shreduler.h"
 #include <pthread.h>
 #include <string.h>

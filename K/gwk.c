@@ -8,7 +8,14 @@
 // TODO: thread
 static struct Type_ t_k = { "K", 0, NULL };
 
-static m_float** gw2c(M_Vector* vec, m_uint* x, m_uint* y) {
+struct M_Vector_ {
+  char*  ptr;   // data
+  m_uint len;   // number of elements * size
+  m_uint size;  // size of objects
+  m_uint depth;
+};
+
+static m_float** gw2c(M_Vector vec, m_uint* x, m_uint* y) {
 	m_uint i, j;
 	*x = m_vector_size(vec);
   M_Object a = (M_Object)i_vector_at(vec, 0);
@@ -28,7 +35,6 @@ static SFUN(gw_knn)
   M_Object labl_obj = *(M_Object*)(shred->mem + SZ_INT*2);
   M_Object inst_obj = *(M_Object*)(shred->mem + SZ_INT*3);
   m_uint k          = *(m_uint*)  (shred->mem + SZ_INT*4);
-
 
   m_uint data_x, data_y;
   m_uint inst_x, inst_y;

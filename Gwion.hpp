@@ -9,6 +9,16 @@ extern m_int o_string_data;
 #include <complex.h>
 #include "map.h"
 
+struct M_Object_ {
+  Vector vtable;
+  Type type_ref;
+  m_uint size, ref;
+  union {
+    M_Vector array;
+    unsigned char* data;
+  } d;
+  UGen ugen;
+};
 typedef struct VM_Vector_* VM_Vector;
 typedef struct {
   m_uint length;
@@ -18,12 +28,6 @@ typedef struct {
   m_bool is_ref;
   m_uint stack_offset;
 } VM_Array_Info;
-
-typedef struct {
-  char*  ptr;   // data
-  m_uint len;   // number of elements * size
-  m_uint size;  // size of objects
-} M_Vector;
 
 struct VM_Array_ {
   M_Vector* vector;
