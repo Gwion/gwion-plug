@@ -45,7 +45,7 @@ void release_method(struct Server* s, struct Method* m)
   if(!--m->ref)
   {
     lo_server_thread_del_method(s->thread, m->path, m->type);
-    vector_remove(s->method, vector_find(s->method, (vtype)m));
+    vector_rem(s->method, vector_find(s->method, (vtype)m));
     free(m);
   }
 }
@@ -58,7 +58,7 @@ void release_server(struct Server* s)
     lo_server_thread_stop(s->thread);
     lo_server_thread_free(s->thread);
     if(!map_size(map))
-      free_Map(map);
+      free_map(map);
   }
 }
 
@@ -147,7 +147,7 @@ static INSTR(oscsend_add_int)
   debug_msg("instr", "int => oscsend");
 #endif
   shred->reg -= SZ_INT;
-  vector_append(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('i', shred->reg));
+  vector_add(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('i', shred->reg));
   release(**(M_Object**)shred->reg, shred);
 }
 
@@ -157,7 +157,7 @@ static INSTR(oscsend_add_float)
   debug_msg("instr", "float => oscsend");
 #endif
   shred->reg -= SZ_INT;
-  vector_append(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('d', shred->reg));
+  vector_add(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('d', shred->reg));
   release(**(M_Object**)shred->reg, shred);
 }
 
@@ -167,7 +167,7 @@ static INSTR(oscsend_add_string)
   debug_msg("instr", "string => oscsend");
 #endif
   shred->reg -= SZ_INT;
-  vector_append(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('s', shred->reg));
+  vector_add(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('s', shred->reg));
   release(**(M_Object**)shred->reg, shred);
 }
 
@@ -181,8 +181,8 @@ static int osc_method_handler(const char* path, const char* type,
   struct Method* m = (struct Method*)data;
   M_Object o;
   Vector v;
-  
-  v = new_Vector_fixed(argc);
+
+  v = new_vector();
   for(i = 0; i < argc; i++)
   {
     struct Arg* arg = malloc(sizeof(struct Arg));
@@ -209,7 +209,7 @@ static int osc_method_handler(const char* path, const char* type,
         return 1;
     }
     arg->t = type[i];
-    vector_set(v, i, (vtype)arg);
+    vector_add(v, (vtype)arg);
   }
   for(i = 0; i < vector_size(m->client); i++)
   {
@@ -217,11 +217,11 @@ static int osc_method_handler(const char* path, const char* type,
       ((struct Arg*)vector_at(v, j))->ref++;
     o = (M_Object)vector_at(m->client, i);
     broadcast(o);
-    vector_append(ARGS(o), (vtype)vector_copy(v));
+    vector_add(ARGS(o), (vtype)vector_copy(v));
   }
   for(i = 0; i < argc; i++)
     release_Arg((struct Arg*)vector_at(v, i));
-  free_Vector(v);
+  free_vector(v);
   return 0;
 }
 
@@ -234,11 +234,11 @@ static MFUN(osc_get_port)
 static MFUN(osc_port)
 {
   struct Server* s = NULL;
-  if(!o)
-  {
-    Except(shred)
-    return;
-  }
+  /*if(!o)*/
+  /*{*/
+  /*Except(shred)*/
+  /*return;*/
+  /*}*/
   m_int port = *(m_int*)(shred->mem + SZ_INT);
   char c[256];
   if(SERV(o))
@@ -258,10 +258,10 @@ static MFUN(osc_port)
       return;
     }
     lo_server_enable_coercion(lo_server_thread_get_server(s->thread), 0);
-    s->method = new_Vector();
+    s->method = new_vector();
     s->ref = 0;
     if(!map)
-      map = new_Map();
+      map = new_map();
     map_set(map, (vtype)port, (vtype)s);
   }
   s->ref++;
@@ -289,24 +289,24 @@ static MFUN(osc_add_method)
   m = (struct Method*)calloc(1, sizeof(struct Method));
   m->path = path;
   m->type = type;
-  m->client = new_Vector();
+  m->client = new_vector();
   m->method = lo_server_thread_add_method(s->thread, path, type, osc_method_handler, m);
-  vector_append(s->method, (vtype)m);
+  vector_add(s->method, (vtype)m);
   m->ref = 0;
 found:
   m->ref++;
   if(vector_find(m->client, (vtype)o) < 0)
-    vector_append(m->client, (vtype)o);
+    vector_add(m->client, (vtype)o);
   if(vector_find(METH(o), (vtype)m) < 0)
-    vector_append(METH(o), (vtype)m);
+    vector_add(METH(o), (vtype)m);
   RETURN->d.v_uint = 1;
 }
 
-CTOR(lo_ctor){ ARGS(o) = new_Vector(); }
-CTOR(loin_ctor){ METH(o) = new_Vector(); CURR(o) = new_Vector();}
-CTOR(lo_dtor) { free_Vector(ARGS(o)); }
+CTOR(lo_ctor){ ARGS(o) = new_vector(); }
+CTOR(loin_ctor){ METH(o) = new_vector(); CURR(o) = new_vector();}
+CTOR(lo_dtor) { free_vector(ARGS(o)); }
 CTOR(loout_dtor){ if(ADDR(o))lo_address_free(ADDR(o));}
-CTOR(loin_dtor){ free_Vector(METH(o)); free_Vector(CURR(o));}
+CTOR(loin_dtor){ free_vector(METH(o)); free_vector(CURR(o));}
 
 static MFUN(oscin_stop)
 {
@@ -331,7 +331,7 @@ static MFUN(osc_recv)
   Vector c_arg = ARGS(o);
   CURR(o) = (Vector)vector_at(c_arg, 0);
   RETURN->d.v_uint = CURR(o) ? 1 : 0;
-  vector_remove(ARGS(o), 0);
+  vector_rem(ARGS(o), 0);
 }
 static MFUN(oscin_rem)
 {
@@ -350,9 +350,9 @@ static MFUN(oscin_rem)
     if(!strcmp(m->type, type))
     {
       if((i = vector_find(m->client, (vtype)o)) >= 0)
-        vector_remove(m->client, (vtype)i);
+        vector_rem(m->client, (vtype)i);
       if((i = vector_find(METH(o), (vtype)m)) >= 0)
-        vector_remove(METH(o), (vtype)i);
+        vector_rem(METH(o), (vtype)i);
       release_method(SERV(o), m);
       RETURN->d.v_uint = 1;
       return;
@@ -364,7 +364,7 @@ static MFUN(oscin_get_i)
 {
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
-  vector_remove(c_arg, 0);
+  vector_rem(c_arg, 0);
   RETURN->d.v_uint = arg->data.i;
   release_Arg(arg);
 }
@@ -373,7 +373,7 @@ static MFUN(oscin_get_f)
 {
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
-  vector_remove(c_arg, 0);
+  vector_rem(c_arg, 0);
   RETURN->d.v_float = arg->data.f;
   release_Arg(arg);
 }
@@ -382,7 +382,7 @@ static MFUN(oscin_get_s)
 {
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
-  vector_remove(c_arg, 0);
+  vector_rem(c_arg, 0);
   RETURN->d.v_uint = (m_uint)new_String(shred, arg->data.s);
   release_Arg(arg);
 }
@@ -400,11 +400,11 @@ IMPORT
   CHECK_BB(import_class_begin(env, &t_loout, env->global_nspc, NULL, loout_dtor))
   o_lo_addr = import_mvar(env, "int",  "@addr", 0, 0, "lo adress");
   CHECK_BB(o_lo_addr)
-  fun = new_DL_Func("int", "addr", (m_uint)osc_addr);
+  fun = new_dl_func("int", "addr", (m_uint)osc_addr);
     dl_func_add_arg(fun, "string", "host");
     dl_func_add_arg(fun, "string", "port");
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "send", (m_uint)osc_send);
+  fun = new_dl_func("int", "send", (m_uint)osc_send);
     dl_func_add_arg(fun, "string", "path");
   CHECK_OB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))
@@ -417,27 +417,27 @@ IMPORT
   CHECK_BB(o_lo_meth)
   o_lo_curr = import_mvar(env, "int",  "@curr", 0, 0, "Arg Vector");
   CHECK_BB(o_lo_curr)
-  fun = new_DL_Func("int", "add", (m_uint)osc_add_method);
+  fun = new_dl_func("int", "add", (m_uint)osc_add_method);
     dl_func_add_arg(fun, "string", "path");
     dl_func_add_arg(fun, "string", "type");
   CHECK_OB(import_mfun(env, fun))
 
-  fun = new_DL_Func("int", "port", (m_uint)osc_get_port);
+  fun = new_dl_func("int", "port", (m_uint)osc_get_port);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "port", (m_uint)osc_port);
+  fun = new_dl_func("int", "port", (m_uint)osc_port);
     dl_func_add_arg(fun, "int", "port");
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "start", (m_uint)oscin_start);
+  fun = new_dl_func("int", "start", (m_uint)oscin_start);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "stop", (m_uint)oscin_stop);
+  fun = new_dl_func("int", "stop", (m_uint)oscin_stop);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "recv", (m_uint)osc_recv);
+  fun = new_dl_func("int", "recv", (m_uint)osc_recv);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "get_i", (m_uint)oscin_get_i);
+  fun = new_dl_func("int", "get_i", (m_uint)oscin_get_i);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("float", "get_f", (m_uint)oscin_get_f);
+  fun = new_dl_func("float", "get_f", (m_uint)oscin_get_f);
   CHECK_OB(import_mfun(env, fun))  
-  fun = new_DL_Func("string", "get_s", (m_uint)oscin_get_s);
+  fun = new_dl_func("string", "get_s", (m_uint)oscin_get_s);
   CHECK_OB(import_mfun(env, fun))
 
 

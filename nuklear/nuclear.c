@@ -277,7 +277,7 @@ static void nk_ctor(M_Object o, VM_Shred shred)
 {
   GWindow* gw = malloc(sizeof(GWindow));
   gw->win = malloc(sizeof(XWindow));
-  gw->widget = new_Vector();
+  gw->widget = new_vector();
   gw_nk_init(gw, shred);
   last_window = gw;
   pthread_create(&gw->thread, NULL, &_loop, gw);
@@ -320,7 +320,7 @@ static void widget_ctor(M_Object o, VM_Shred shred)
   (*(M_Object*)(o->d.data + o_nk_parent)) = last_widget;
   if(last_widget && strcmp(o->type_ref->name, "NkLayout")
     && strcmp(o->type_ref->name, "NkMenu"))
-    vector_append(LIST(last_widget), (vtype)o);
+    vector_add(LIST(last_widget), (vtype)o);
 }
 
 static m_uint o_nk_align;
@@ -446,12 +446,12 @@ static void group_exec(M_Object o, struct nk_context* ctx)
 }
 static void group_ctor(M_Object o, VM_Shred shred)
 {
-  LIST(o)= new_Vector();
+  LIST(o)= new_vector();
   last_widget = o;
 }
 static void group_dtor(M_Object o, VM_Shred shred)
 {
-  free_Vector(LIST(o));
+  free_vector(LIST(o));
   last_widget = o;
 }
 static void group_end(M_Object o, DL_Return * RETURN, VM_Shred sh)
@@ -535,9 +535,9 @@ static void layout_ctor(M_Object o, VM_Shred shred)
     if(obj)
     {
       if(vector_find(LIST(obj), (vtype)o) > -1)
-      vector_remove(LIST(obj), vector_find(LIST(obj), (vtype)o));
+      vector_rem(LIST(obj), vector_find(LIST(obj), (vtype)o));
     }
-    vector_append(last_window->widget, (vtype)o);
+    vector_add(last_window->widget, (vtype)o);
   }
 }
 
@@ -588,7 +588,7 @@ static void combo_ctor(M_Object o, VM_Shred shred)
 }
 static void combo_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
 {
-  vector_append(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
+  vector_add(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
   RETURN->d.v_uint = (m_uint)*(M_Object*)(sh->mem + SZ_INT);
 }
 
@@ -607,7 +607,7 @@ static void menubar_ctor(M_Object o, VM_Shred shred)
 }
 static void menubar_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
 {
-  vector_append(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
+  vector_add(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
   RETURN->d.v_uint = (m_uint)*(M_Object*)(sh->mem + SZ_INT);
 }
 
@@ -639,7 +639,7 @@ static void menu_ctor(M_Object o, VM_Shred shred)
 }
 static void menu_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
 {
-  vector_append(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
+  vector_add(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
   RETURN->d.v_uint = (m_uint)*(M_Object*)(sh->mem + SZ_INT);
 }
 
@@ -828,9 +828,9 @@ m_bool import(Env env)
   CHECK_BB(add_global_type(env, &t_group));
   CHECK_BB(import_class_begin(env, &t_group, env->global_nspc, group_ctor, group_dtor))
   o_nk_list = import_mvar(env, "int", "&widget",   0, 0, "widget vector");
-  fun = new_DL_Func("void", "begin", (m_uint)group_begin);
+  fun = new_dl_func("void", "begin", (m_uint)group_begin);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "end", (m_uint)group_end);
+  fun = new_dl_func("void", "end", (m_uint)group_end);
   CHECK_OB(import_mfun(env, fun))
   CHECK_BB(o_nk_list)
   CHECK_BB(import_class_end(env))
@@ -888,7 +888,7 @@ m_bool import(Env env)
   CHECK_BB(import_class_begin(env, &t_combo, env->global_nspc, combo_ctor, NULL))
   o_nk_comboval = import_mvar(env,  "int",  "val", 0, 0, "int value");
   CHECK_BB(o_nk_comboval)
-  fun = new_DL_Func("string", "add", (m_uint)combo_add);
+  fun = new_dl_func("string", "add", (m_uint)combo_add);
   dl_func_add_arg(fun, "string", "s");
   CHECK_OB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))
@@ -897,14 +897,14 @@ m_bool import(Env env)
   CHECK_BB(import_class_begin(env, &t_menu, env->global_nspc, menu_ctor, NULL))
   o_nk_menuval = import_mvar(env,  "int",  "val", 0, 0, "int value");
   CHECK_BB(o_nk_menuval)
-  fun = new_DL_Func("string", "add", (m_uint)menu_add);
+  fun = new_dl_func("string", "add", (m_uint)menu_add);
   dl_func_add_arg(fun, "string", "s");
   CHECK_OB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(add_global_type(env, &t_menubar));
   CHECK_BB(import_class_begin(env, &t_menubar, env->global_nspc, menubar_ctor, NULL))
-  fun = new_DL_Func("void", "add", (m_uint)menubar_add);
+  fun = new_dl_func("void", "add", (m_uint)menubar_add);
   dl_func_add_arg(fun, "NkMenu", "s");
   CHECK_OB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))

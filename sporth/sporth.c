@@ -207,31 +207,31 @@ IMPORT
   CHECK_BB(add_global_type(env, &t_gworth))
   CHECK_BB(import_class_begin(env, &t_gworth, env->global_nspc, sporth_ctor, sporth_dtor))
 
-	fun = new_DL_Func("float", "p", (m_uint)sporth_setp);
+	fun = new_dl_func("float", "p", (m_uint)sporth_setp);
 		dl_func_add_arg(fun, "int", "index");
 		dl_func_add_arg(fun, "float", "val");
 	CHECK_OB(import_mfun(env, fun))
 
-	fun = new_DL_Func("float", "p", (m_uint)sporth_getp);
+	fun = new_dl_func("float", "p", (m_uint)sporth_getp);
 		dl_func_add_arg(fun, "int", "index");
 	CHECK_OB(import_mfun(env, fun))
 
-	fun = new_DL_Func("float", "t", (m_uint)sporth_set_table);
+	fun = new_dl_func("float", "t", (m_uint)sporth_set_table);
 		dl_func_add_arg(fun, "int", "index");
 		dl_func_add_arg(fun, "float", "val");
 		dl_func_add_arg(fun, "string", "table");
 	CHECK_OB(import_mfun(env, fun))
 
-	fun = new_DL_Func("float", "t", (m_uint)sporth_get_table);
+	fun = new_dl_func("float", "t", (m_uint)sporth_get_table);
 		dl_func_add_arg(fun, "int", "index");
 		dl_func_add_arg(fun, "string", "table");
 	CHECK_OB(import_mfun(env, fun))
 
-	fun = new_DL_Func("string", "parse", (m_uint)sporth_parse_string);
+	fun = new_dl_func("string", "parse", (m_uint)sporth_parse_string);
 		dl_func_add_arg(fun, "string", "arg");
 	CHECK_OB(import_mfun(env, fun))
 
-	fun = new_DL_Func("string", "parsefile", (m_uint)sporth_parse_file);
+	fun = new_dl_func("string", "parsefile", (m_uint)sporth_parse_file);
 		dl_func_add_arg(fun, "string", "arg");
 	CHECK_OB(import_mfun(env, fun))
 

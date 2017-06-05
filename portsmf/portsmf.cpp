@@ -2,6 +2,8 @@
 #include <string.h>
 #include <portsmf/allegro.h>
 #include "Gwion.hpp"
+#include "import.h"
+#include "object.h"
 #define TYPE(o)  *(m_uint*)(o->d.data + o_midiev_type)
 #define START(o) *(m_float*)(o->d.data + o_midiev_start)
 #define PITCH(o) *(m_float*)(o->d.data + o_midiev_pitch)
@@ -54,33 +56,33 @@ m_bool import(Env env)
   CHECK_BB(import_class_begin(env, &t_midifile, env->global_nspc, ctor, dtor))
   o_midifile_seq = import_mvar(env, "int", "@seq", 0, 0, "the place for sequencer");
   CHECK_BB(o_midifile_seq);
-  fun = new_DL_Func("void", "open", (m_uint)midifile_open);
+  fun = new_dl_func("void", "open", (m_uint)midifile_open);
     dl_func_add_arg(fun, "string", "filename");
     dl_func_add_arg(fun, "int", "smf");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "tracks", (m_uint)midifile_tracks);
+  fun = new_dl_func("int", "tracks", (m_uint)midifile_tracks);
   CHECK_BB(import_mfun(env, fun))
 
-  fun = new_DL_Func("int", "len", (m_uint)midifile_track_len);
+  fun = new_dl_func("int", "len", (m_uint)midifile_track_len);
     dl_func_add_arg(fun, "int", "track");
   CHECK_BB(import_mfun(env, fun))
 
-  fun = new_DL_Func("MidiFileEv", "event", (m_uint)midifile_event);
+  fun = new_dl_func("MidiFileEv", "event", (m_uint)midifile_event);
     dl_func_add_arg(fun, "int", "track");
     dl_func_add_arg(fun, "int", "event_number");
 //    dl_func_add_arg(fun, "MidiFileEv", "event");
   CHECK_BB(import_mfun(env, fun))
 
-  fun = new_DL_Func("void", "add_track", (m_uint)midifile_add_track);
+  fun = new_dl_func("void", "add_track", (m_uint)midifile_add_track);
     dl_func_add_arg(fun, "int", "number");
   CHECK_BB(import_mfun(env, fun))
 
-  fun = new_DL_Func("int", "add_note", (m_uint)midifile_add_note);
+  fun = new_dl_func("int", "add_note", (m_uint)midifile_add_note);
     dl_func_add_arg(fun, "int", "track");
     dl_func_add_arg(fun, "MidiFileEv", "note");
   CHECK_BB(import_mfun(env, fun))
 
-  fun = new_DL_Func("void", "write", (m_uint)midifile_write);
+  fun = new_dl_func("void", "write", (m_uint)midifile_write);
     dl_func_add_arg(fun, "string", "filename");
   CHECK_BB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))

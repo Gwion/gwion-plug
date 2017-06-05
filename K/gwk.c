@@ -48,7 +48,7 @@ static SFUN(gw_knn)
 
   M_Object ret_obj = new_M_Array(SZ_INT, inst_x, 1);
   RETURN->d.v_uint = (m_uint)ret_obj;
-  vector_append(shred->gc, (vtype)ret_obj);
+  vector_add(shred->gc, (vtype)ret_obj);
   matrix_release(data);
   matrix_release(inst);
   free(ret);
@@ -73,7 +73,7 @@ static SFUN(gw_kmeans)
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 1);
   RETURN->d.v_uint = (m_uint)ret_obj;
-  vector_append(shred->gc, (vtype)ret_obj);
+  vector_add(shred->gc, (vtype)ret_obj);
   memcpy(ret_obj->d.array->ptr, ret, data_y * sizeof(m_uint));
   matrix_release(data);
   matrix_release(cent);
@@ -96,12 +96,12 @@ static SFUN(gw_kmeans_refine)
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 2);
   RETURN->d.v_uint = (m_uint)ret_obj;
-  vector_append(shred->gc, (vtype)ret_obj);
+  vector_add(shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
     M_Object obj = new_M_Array(SZ_FLOAT, data_y, 1);
     memcpy(obj->d.array->ptr, ret[i], data_y * sizeof(m_float));
     i_vector_set(ret_obj->d.array, i, (m_uint)obj);
-    vector_append(shred->gc, (vtype)obj);
+    vector_add(shred->gc, (vtype)obj);
   }
   release(data_obj, shred);
   matrix_release(ret);
@@ -115,14 +115,14 @@ IMPORT
   CHECK_BB(add_global_type(env, &t_k))
   CHECK_BB(import_class_begin(env, &t_k, env->global_nspc, NULL, NULL))
 
-  fun = new_DL_Func("int[]", "nn", (m_uint)gw_knn);
+  fun = new_dl_func("int[]", "nn", (m_uint)gw_knn);
     dl_func_add_arg(fun, "float", "data[][]");
     dl_func_add_arg(fun, "int", "labels[]");
     dl_func_add_arg(fun, "float", "instances[][]");
     dl_func_add_arg(fun, "int", "k");
   CHECK_OB(import_sfun(env, fun))
 
-  fun = new_DL_Func("int[]", "means", (m_uint)gw_kmeans);
+  fun = new_dl_func("int[]", "means", (m_uint)gw_kmeans);
     dl_func_add_arg(fun, "float", "data[][]");
     dl_func_add_arg(fun, "float", "centroid[][]");
     dl_func_add_arg(fun, "int", "k");
@@ -130,7 +130,7 @@ IMPORT
     dl_func_add_arg(fun, "float", "theta");
   CHECK_OB(import_sfun(env, fun))
   
-  fun = new_DL_Func("int[]", "fine_means", (m_uint)gw_kmeans_refine);
+  fun = new_dl_func("int[]", "fine_means", (m_uint)gw_kmeans_refine);
     dl_func_add_arg(fun, "float", "data[][]");
     dl_func_add_arg(fun, "int", "iter");
     dl_func_add_arg(fun, "int", "n_points");

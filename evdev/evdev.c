@@ -61,7 +61,7 @@ CTOR(evdev_ctor)
     shred->is_done    = 1;
   }
   info->index    = -1;
-  info->args     = new_Vector();
+  info->args     = new_vector();
   INFO(o)        = info;
 }
 
@@ -76,7 +76,7 @@ DTOR(evdev_dtor)
     free(info->args);
     free(INFO(o));
   }
-  free_Vector(info->args);
+  free_vector(info->args);
 }
 
 static MFUN(evdev_get_index)
@@ -137,7 +137,7 @@ static MFUN(evdev_recv)
   TYPE(o)   = arg->type;
   CODE(o)   = arg->code;
   VALUE(o)  = arg->value;
-  vector_remove(v, 0);
+  vector_rem(v, 0);
   free(arg);
   RETURN->d.v_uint = 1;
 }
@@ -159,7 +159,7 @@ void* evdev_process(void* arg)
       ev->type  = event.type;
       ev->code  = event.code;
       ev->value = event.value;
-      vector_append(v, (vtype)ev);
+      vector_add(v, (vtype)ev);
       broadcast(o);
     }
   } while((rc == 1 || rc == 0 || rc == -11));
@@ -193,17 +193,17 @@ IMPORT
   o_evdev_value = import_mvar(env, "int", "value",  1, 0, "value");
   CHECK_BB(o_evdev_value)
 
-  fun = new_DL_Func("int", "index", (m_uint)evdev_get_index);
+  fun = new_dl_func("int", "index", (m_uint)evdev_get_index);
   CHECK_OB(import_mfun(env, fun))
 
-  fun = new_DL_Func("int", "index", (m_uint)evdev_index);
+  fun = new_dl_func("int", "index", (m_uint)evdev_index);
     dl_func_add_arg(fun, "int", "i");
   CHECK_OB(import_mfun(env, fun))
 
-  fun = new_DL_Func("string", "name", (m_uint)evdev_name);
+  fun = new_dl_func("string", "name", (m_uint)evdev_name);
   CHECK_OB(import_mfun(env, fun))
 
-  fun = new_DL_Func("int", "recv", (m_uint)evdev_recv);
+  fun = new_dl_func("int", "recv", (m_uint)evdev_recv);
   CHECK_OB(import_mfun(env, fun))
 
   CHECK_BB(import_class_end(env))

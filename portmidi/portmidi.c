@@ -30,7 +30,7 @@ static MidiInfo* get(VM* vm, m_uint i)
 {
   if(!map)
   {
-    map = new_Map();
+    map = new_map();
     Pm_Initialize();
   }
   MidiInfo* info = (MidiInfo*)map_get(map, (vtype)i+1);
@@ -38,7 +38,7 @@ static MidiInfo* get(VM* vm, m_uint i)
   {
     info = malloc(sizeof(MidiInfo));
     info->stream = NULL;
-    info->client = new_Vector();
+    info->client = new_vector();
     info->thread = 0;
     info->vm = vm;
     map_set(map, i+1, (vtype)info);
@@ -51,19 +51,19 @@ static void release_info(m_uint i, M_Object o)
   MidiInfo* info = (MidiInfo*)map_get(map, (vtype)i+i);
   if(info)
   {
-    vector_remove(info->client, vector_find(info->client, (vtype)o));
+    vector_rem(info->client, vector_find(info->client, (vtype)o));
     if(!vector_size(info->client))
     {
       if(info->thread)
         pthread_cancel(info->thread);
       Pm_Close(info->stream);
-      free_Vector(info->client);
+      free_vector(info->client);
       free(info);
     }
   }
   if(!map_size(map))
   {
-    free_Map(map);
+    free_map(map);
     map = NULL;
     Pm_Terminate();
   }
@@ -109,12 +109,12 @@ static MFUN(pm_close)
 static CTOR(pm_ctor)
 {
   ID(o) = -1;
-  MSG(o) = new_Vector();
+  MSG(o) = new_vector();
 }
 
 static DTOR(pm_dtor)
 {
-  free_Vector(MSG(o));
+  free_vector(MSG(o));
   if(get(shred->vm_ref, ID(o)))
     release_info(ID(o), o);
 }
@@ -125,7 +125,7 @@ static MFUN(midiout_open)
     release_info(ID(o), o);
   ID(o) = *(m_uint*)(shred->mem + SZ_INT);
   MidiInfo* info = get(shred->vm_ref, ID(o));
-  vector_append(info->client, (vtype)o);
+  vector_add(info->client, (vtype)o);
   if(!info->stream)
     Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
   STREAM(o) = info->stream;
@@ -158,7 +158,7 @@ static void* pm_recv(void* data)
       for(i = 0; i < vector_size(info->client); i++)
       {
         M_Object o = (M_Object)vector_at(info->client, i);
-        vector_append(MSG(o), (vtype)(m_uint)event.message);
+        vector_add(MSG(o), (vtype)(m_uint)event.message);
         if(info->last != now);
         broadcast(o);
       }
@@ -178,7 +178,7 @@ static MFUN(midiin_open)
     Pm_OpenInput(&info->stream, ID(o), 0, 0, NULL, NULL);
     pthread_create(&info->thread, NULL, pm_recv, info);
   }
-  vector_append(info->client, (vtype)o);
+  vector_add(info->client, (vtype)o);
   STREAM(o) = info->stream;
 }
 
@@ -193,7 +193,7 @@ static MFUN(midiin_read)
   STATUS(o) = Pm_MessageStatus(msg);
   DATA1(o)  = Pm_MessageData1(msg);
   DATA2(o)  = Pm_MessageData2(msg);
-  vector_remove(MSG(o), (vtype)0);
+  vector_rem(MSG(o), (vtype)0);
 }
 
 IMPORT
@@ -214,23 +214,23 @@ IMPORT
   CHECK_BB(o_pm_data2)
   o_pm_msg = import_mvar(env, "int",  "@msg",   0, 0, "place for midi event vector");
   CHECK_BB(o_pm_msg)
-  fun = new_DL_Func("string", "name", (m_uint)pm_name);
+  fun = new_dl_func("string", "name", (m_uint)pm_name);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("string", "error", (m_uint)pm_error);
+  fun = new_dl_func("string", "error", (m_uint)pm_error);
     dl_func_add_arg(fun, "int", "id");
   CHECK_OB(import_sfun(env, fun))
-  fun = new_DL_Func("int", "close", (m_uint)pm_close);
+  fun = new_dl_func("int", "close", (m_uint)pm_close);
   CHECK_OB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(add_global_type(env, &t_midiout))
   CHECK_BB(import_class_begin(env, &t_midiout, env->global_nspc, NULL, NULL))
-  fun = new_DL_Func("int", "open", (m_uint)midiout_open);
+  fun = new_dl_func("int", "open", (m_uint)midiout_open);
     dl_func_add_arg(fun, "int", "id");
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "send", (m_uint)midiout_send_self);
+  fun = new_dl_func("int", "send", (m_uint)midiout_send_self);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "send", (m_uint)midiout_send);
+  fun = new_dl_func("int", "send", (m_uint)midiout_send);
     dl_func_add_arg(fun, "int", "status");
     dl_func_add_arg(fun, "int", "data1");
     dl_func_add_arg(fun, "int", "data2");
@@ -239,12 +239,12 @@ IMPORT
 
   CHECK_BB(add_global_type(env, &t_midiin))
   CHECK_BB(import_class_begin(env, &t_midiin, env->global_nspc, NULL, NULL))
-  fun = new_DL_Func("int", "open", (m_uint)midiin_open);
+  fun = new_dl_func("int", "open", (m_uint)midiin_open);
     dl_func_add_arg(fun, "int", "id");
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "recv", (m_uint)midiin_recv);
+  fun = new_dl_func("int", "recv", (m_uint)midiin_recv);
   CHECK_OB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "read", (m_uint)midiin_read);
+  fun = new_dl_func("int", "read", (m_uint)midiin_read);
   CHECK_OB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))
 

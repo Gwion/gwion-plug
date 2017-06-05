@@ -386,42 +386,42 @@ lfo_value has a range of [-1, 1].");
     "Provided MIDI message is unknown.");
   CHECK_BB(o_unknown)
   
-  fun = new_DL_Func("void", "init", (m_uint)init);
+  fun = new_dl_func("void", "init", (m_uint)init);
     dl_func_add_arg(fun, "int", "plyphony");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "parameter", (m_uint)parameter);
+  fun = new_dl_func("void", "parameter", (m_uint)parameter);
     dl_func_add_arg(fun, "int", "parameter");
     dl_func_add_arg(fun, "int", "operator_index");
     dl_func_add_arg(fun, "float", "value");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "parameter", (m_uint)global_parameter);
+  fun = new_dl_func("void", "parameter", (m_uint)global_parameter);
     dl_func_add_arg(fun, "int", "parameter");
     dl_func_add_arg(fun, "float", "value");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "noteon", (m_uint)noteon);
+  fun = new_dl_func("void", "noteon", (m_uint)noteon);
     dl_func_add_arg(fun, "int", "note");
     dl_func_add_arg(fun, "int", "velocity");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "reset", (m_uint)synth_reset);
+  fun = new_dl_func("void", "reset", (m_uint)synth_reset);
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "noteoff", (m_uint)noteoff);
+  fun = new_dl_func("void", "noteoff", (m_uint)noteoff);
     dl_func_add_arg(fun, "int", "note");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "sustain", (m_uint)sustain);
+  fun = new_dl_func("void", "sustain", (m_uint)sustain);
     dl_func_add_arg(fun, "int", "enable");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "wheel", (m_uint)wheel);
+  fun = new_dl_func("void", "wheel", (m_uint)wheel);
     dl_func_add_arg(fun, "int", "value");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "bend", (m_uint)bend);
+  fun = new_dl_func("void", "bend", (m_uint)bend);
     dl_func_add_arg(fun, "int", "value");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("void", "release", (m_uint)release_all);
+  fun = new_dl_func("void", "release", (m_uint)release_all);
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "load", (m_uint)load);
+  fun = new_dl_func("int", "load", (m_uint)load);
     dl_func_add_arg(fun, "string", "filename");
   CHECK_BB(import_mfun(env, fun))
-  fun = new_DL_Func("int", "save", (m_uint)save);
+  fun = new_dl_func("int", "save", (m_uint)save);
     dl_func_add_arg(fun, "string", "filename");
   CHECK_BB(import_mfun(env, fun))
   CHECK_BB(import_class_end(env))
