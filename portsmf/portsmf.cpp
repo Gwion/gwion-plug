@@ -3,7 +3,7 @@
 #include <portsmf/allegro.h>
 #include "Gwion.hpp"
 #include "import.h"
-#include "object.h"
+
 #define TYPE(o)  *(m_uint*)(o->d.data + o_midiev_type)
 #define START(o) *(m_float*)(o->d.data + o_midiev_start)
 #define PITCH(o) *(m_float*)(o->d.data + o_midiev_pitch)

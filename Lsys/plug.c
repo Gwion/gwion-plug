@@ -7,7 +7,6 @@
 #include "lang.h"
 #include "vm.h"
 #include "shreduler.h"
-#include "bbq.h"
 #include "ugen.h"
 #include <stdlib.h>
 #include <stdio.h>

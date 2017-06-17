@@ -12,7 +12,6 @@
 #include "lang.h"
 #include "doc.h"
 
-#include "bbq.h"  // for sp_rand also
 #include <err_msg.h>
 #define prepare() \
   Ast ast = NULL; \

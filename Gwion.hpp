@@ -55,7 +55,6 @@ M_Object new_M_Array  (m_uint size, m_uint length);
 
 #include "type.h"
 #include "dl.h"
-#include "bbq.h"
 extern m_bool initialize_object(M_Object o, Type t);
 extern Type import_class_begin(Env env, Type type, Nspc where, f_xtor pre_ctor, f_xtor dtor);
 extern m_bool import_class_end(Env env);

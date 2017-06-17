@@ -3,7 +3,6 @@
 #include "type.h"
 #include "lang.h"
 #include "import.h"
-#include "bbq.h"
 #include "soundpipe.h"
 #include "ugen.h"
 #include "sporth.h"

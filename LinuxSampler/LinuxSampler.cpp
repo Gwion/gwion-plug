@@ -1,7 +1,6 @@
 #include "Gwion.hpp"
 #include "ugen.h"
 #include "import.h"
-#include "object.h"
 #include <linuxsampler/Sampler.h>
 
 m_int o_ls_data = 0;
