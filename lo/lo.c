@@ -443,9 +443,9 @@ IMPORT
 
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(add_binary_op(env, op_chuck, &t_int,    &t_loout, &t_int,    oscsend_add_int,    1))
-  CHECK_BB(add_binary_op(env, op_chuck, &t_float,  &t_loout, &t_float,  oscsend_add_float,  1))
-  CHECK_BB(add_binary_op(env, op_chuck, &t_string, &t_loout, &t_string, oscsend_add_string, 1))
+  CHECK_BB(import_op(env, op_chuck, "int",    "OscOut", "int",    oscsend_add_int,    1))
+  CHECK_BB(import_op(env, op_chuck, "float",  "OscOut", "float",  oscsend_add_float,  1))
+  CHECK_BB(import_op(env, op_chuck, "string", "OscOut", "string", oscsend_add_string, 1))
 
   return 1;
 }
