@@ -202,7 +202,7 @@ static m_uint unknown = FMSYNTH_STATUS_MESSAGE_UNKNOWN;
 */
 IMPORT
 {
-  DL_Func*  fun;
+  DL_Func  fun;
   DL_Value* arg;
 
   m_uint* amp            = malloc(SZ_INT);
@@ -267,162 +267,116 @@ IMPORT
 
   CHECK_BB(add_global_type(env, &t_fmsynth))
   CHECK_BB(import_class_begin(env, &t_fmsynth, env->global_nspc, ctor, dtor))
-  o_fmsynth_data = import_mvar(env, "int", "&synth",   0, 0, "fmsynth object");
+  o_fmsynth_data = import_mvar(env, "int", "&synth",   0, 0);
   CHECK_BB(o_fmsynth_data)
-  o_fmsynth_name = import_mvar(env, "string", "name",   0, 0, "preset name");
+  o_fmsynth_name = import_mvar(env, "string", "name",   0, 0);
   CHECK_BB(o_fmsynth_name)
-  o_fmsynth_author = import_mvar(env, "string", "author",   0, 0, "preset name");
+  o_fmsynth_author = import_mvar(env, "string", "author",   0, 0);
   CHECK_BB(o_fmsynth_author)
 
   // params
-  o_amp = import_svar(env, "int", "AMP",      1, 0, amp,
-    "Linear amplitude for the operator.");
+  o_amp = import_svar(env, "int", "AMP",      1, 0, amp);
   CHECK_BB(o_pan)
-  o_pan = import_svar(env, "int", "PAN",      1, 0, pan,
-    "Panning for operator when it's used as a carrier. -1.0 is left, +1.0 is right, +0.0 is centered.");
+  o_pan = import_svar(env, "int", "PAN",      1, 0, pan);
   CHECK_BB(o_pan)
 
-  o_freq_mod = import_svar(env, "int", "FREQ_MOD",      1, 0, freq_mod,
-    "Frequency mod factor. The base frequency of the operator is note frequency times the freq mod.\
- E.g. A4 with freq mod of 2.0 would be 880 Hz.");
+  o_freq_mod = import_svar(env, "int", "FREQ_MOD",      1, 0, freq_mod);
   CHECK_BB(o_freq_offset)
-  o_freq_offset = import_svar(env, "int", "FREQ_OFFSET",      1, 0, freq_offset,
-    "A constant frequency offset applied to the oscillator.");
+  o_freq_offset = import_svar(env, "int", "FREQ_OFFSET",      1, 0, freq_offset);
   CHECK_BB(o_freq_mod)
-  o_target0 = import_svar(env, "int", "TARGET0",      1, 0, target0,
-    "The linear amplitude reached in the envelope after FMSYNTH_PARAM_DELAY0 seconds. Initial amplitude is 0.");
+  o_target0 = import_svar(env, "int", "TARGET0",      1, 0, target0);
   CHECK_BB(o_target0)
-  o_target1 = import_svar(env, "int", "TARGET1",      1, 0, target1,
-    "The linear amplitude reached in the envelope after (FMSYNTH_PARAM_DELAY0 + FMSYNTH_PARAM_DELAY1) seconds.");
+  o_target1 = import_svar(env, "int", "TARGET1",      1, 0, target1);
   CHECK_BB(o_target1)
-  o_target2 = import_svar(env, "int", "TARGET2",      1, 0, target2,
-    "The linear amplitide reached in the envelope after (FMSYNTH_PARAM_DELAY0 + FMSYNTH_PARAM_DELAY1 + FMSYNTH_PARAM_DELAY2) seconds.");
+  o_target2 = import_svar(env, "int", "TARGET2",      1, 0, target2);
   CHECK_BB(o_target2)
-  o_delay0 = import_svar(env, "int", "DELAY0",      1, 0, delay0,
-    "The time in seconds for the envelope to reach FMSYNTH_PARAM_ENVELOPE_TARGET0.");
+  o_delay0 = import_svar(env, "int", "DELAY0",      1, 0, delay0);
   CHECK_BB(o_delay0)
-  o_delay1 = import_svar(env, "int", "DELAY1",      1, 0, delay1,
-    "The time in seconds for the envelope to reach FMSYNTH_PARAM_ENVELOPE_TARGET1.");
+  o_delay1 = import_svar(env, "int", "DELAY1",      1, 0, delay1);
   CHECK_BB(o_delay0)
-  o_delay2 = import_svar(env, "int", "DELAY2",      1, 0, delay2,
-    "The time in seconds for the envelope to reach FMSYNTH_PARAM_ENVELOPE_TARGET2..");
+  o_delay2 = import_svar(env, "int", "DELAY2",      1, 0, delay2);
   CHECK_BB(o_delay2)
-  o_rel = import_svar(env, "int", "RELEASE",      1, 0, rel,
-    " After releasing the key, the time it takes for the operator to attenuate 60 dB.");
+  o_rel = import_svar(env, "int", "RELEASE",      1, 0, rel);
   CHECK_BB(o_rel)
-  o_mid_point = import_svar(env, "int", "MID_POINT",      1, 0, mid_point,
-    "The frequency which splits the keyboard into a \"low\" and \"high\" section.\
- This frequency only depends on the note itself, not FMSYNTH_PARAM_FREQ_MOD, etc.");
+  o_mid_point = import_svar(env, "int", "MID_POINT",      1, 0, mid_point);
   CHECK_BB(o_mid_point)
-  o_low_fact = import_svar(env, "int", "LOW_FACTOR",      1, 0, low_fact,
- "Amplitude scaling factor pow(note_frequency / SCALING_MID_POINT, SCALING_LOW_FACTOR) if the key pressed\
- is in the \"low\" section of the keyboard.\
- Negative values will boost amplitide for lower frequency keys and attenuate amplitude for higher frequency key\
- E.g. A value of -1.0 will add a 6 dB attenuation per octave.");
+  o_low_fact = import_svar(env, "int", "LOW_FACTOR",      1, 0, low_fact);
   CHECK_BB(o_low_fact)
-  o_high_fact = import_svar(env, "int", "HIGH_FACTOR",      1, 0, high_fact,
- "Amplitude scaling factor pow(note_frequency / SCALING_MID_POINT, SCALING_LOW_FACTOR) if the key pressed\
- is in the \"high\" section of the keyboard.\
- Negative values will boost amplitide for lower frequency keys and attenuate amplitude for higher frequency key\
- E.g. A value of -1.0 will add a 6 dB attenuation per octave.");
+  o_high_fact = import_svar(env, "int", "HIGH_FACTOR",      1, 0, high_fact);
   CHECK_BB(o_high_fact)
-  o_velo_sens = import_svar(env, "int", "VELO_SENS",      1, 0, velo_sens,
-    "Controls velocity sensitivity. If 0.0, operator amplitude is independent of key velocity.\
- If 1.0, the operator amplitude is fully dependent on key velocity.\
- `factor = (1.0 - VELOCITY_SENSITIVITY) + VELOCITY_SENSITIVITY * velocity`.\
- `velocity` is normalized to [0, 1].");
+  o_velo_sens = import_svar(env, "int", "VELO_SENS",      1, 0, velo_sens);
   CHECK_BB(o_velo_sens)
-  o_wheel_sens = import_svar(env, "int", "WHEEL_SENS",      1, 0, wheel_sens,
-    "If 0.0, operator amplitude is independent of mod wheel state.\
- If 1.0, operator amplitude is fully dependent on mod wheel state.\
- `factor = (1.0 - MOD_WHEEL_SENSITIVITY) + MOD_WHEEL_SENSITIVITY * mod_wheel`.\
- `mod_wheel` is normalized to [0, 1].");
+  o_wheel_sens = import_svar(env, "int", "WHEEL_SENS",      1, 0, wheel_sens);
   CHECK_BB(o_wheel_sens)
-  o_lfo_amp_sens = import_svar(env, "int", "LFO_AMP_SENS",      1, 0, lfo_amp_sens,
-    "Specifies how much the LFO modulates amplitude.\
- Modulation factor is: 1.0 + lfo_value * LFO_AMP_SENSITIVITY.\
- lfo_value has a range of [-1, 1].");
+  o_lfo_amp_sens = import_svar(env, "int", "LFO_AMP_SENS",      1, 0, lfo_amp_sens);
   CHECK_BB(o_lfo_amp_sens)
-  o_lfo_freq_mod = import_svar(env, "int", "LFO_FREQ_MOD",      1, 0, lfo_freq_mod,
-    "Specifies how much the LFO modulates frequency.\
-Modulation factor is: 1.0 + lfo_value * LFO_FREQ_MOD_DEPTH.\
-lfo_value has a range of [-1, 1].");
+  o_lfo_freq_mod = import_svar(env, "int", "LFO_FREQ_MOD",      1, 0, lfo_freq_mod);
   CHECK_BB(o_lfo_freq_mod)
-  o_enable = import_svar(env, "int", "ENABLE",      1, 0, enable,
-    "Enable operator if value > 0.5, otherwise, disable.");
+  o_enable = import_svar(env, "int", "ENABLE",      1, 0, enable);
   CHECK_BB(o_enable)
-  o_carriers = import_svar(env, "int", "CARRIERS",      1, 0, carriers,
-    "Set carrier mixing factor. If > 0.0, the operator will generate audio that is mixed into the final output.");
+  o_carriers = import_svar(env, "int", "CARRIERS",      1, 0, carriers);
   CHECK_BB(o_carriers)
-  o_carrier0 = import_svar(env, "int", "CARRIER0",      1, 0, carrier0,
-    "Sets how much the operator will modulate carrier `N`. Use `FMSYNTH_PARAM_MOD_TO_CARRIERS0 + N` to specify which operator is the modulator target.");
+  o_carrier0 = import_svar(env, "int", "CARRIER0",      1, 0, carrier0);
   CHECK_BB(o_carrier0)
 
   // global
-  o_g_vol    = import_svar(env, "int", "GVOL", 1, 0, g_vol, "Overall volume of the synth.");
+  o_g_vol    = import_svar(env, "int", "GVOL", 1, 0, g_vol);
   CHECK_BB(o_g_vol)
 
-  o_g_lfo    = import_svar(env, "int", "GLFO",      1, 0, g_lfo,
-    "Overall volume of the synth.");
+  o_g_lfo    = import_svar(env, "int", "GLFO",      1, 0, g_lfo);
   CHECK_BB(o_g_lfo)
   // status
-  o_ok    = import_svar(env, "int", "OK",      1, 0, ok,
-    " Operation completed successfully.");
+  o_ok    = import_svar(env, "int", "OK",      1, 0, ok);
   CHECK_BB(o_ok)
-  o_busy   = import_svar(env, "int", "BUSY",   1, 0, busy,
-    "Operation could not complete due to insufficient resources at the moment.");
+  o_busy   = import_svar(env, "int", "BUSY",   1, 0, busy);
   CHECK_BB(o_busy)
-  o_small  = import_svar(env, "int", "SMALL",   1, 0, small,
-    "Provided buffer is too small.");
+  o_small  = import_svar(env, "int", "SMALL",   1, 0, small);
   CHECK_BB(o_small)
-  o_nonul  = import_svar(env, "int", "NONUL",   1, 0, nonul,
-    "Metadata string was not properly NUL-terminated.");
+  o_nonul  = import_svar(env, "int", "NONUL",   1, 0, nonul);
   CHECK_BB(o_nonul)
-  o_format = import_svar(env, "int", "FORMAT",   1, 0, format,
-    " Provided buffer does not adhere to specified format.");
+  o_format = import_svar(env, "int", "FORMAT",   1, 0, format);
   CHECK_BB(o_format)
-  o_unknown = import_svar(env, "int", "UNKNOWN",   1, 0, unknown,
-    "Provided MIDI message is unknown.");
+  o_unknown = import_svar(env, "int", "UNKNOWN",   1, 0, unknown);
   CHECK_BB(o_unknown)
-  
-  fun = new_dl_func("void", "init", (m_uint)init);
-    dl_func_add_arg(fun, "int", "plyphony");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "parameter", (m_uint)parameter);
-    dl_func_add_arg(fun, "int", "parameter");
-    dl_func_add_arg(fun, "int", "operator_index");
-    dl_func_add_arg(fun, "float", "value");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "parameter", (m_uint)global_parameter);
-    dl_func_add_arg(fun, "int", "parameter");
-    dl_func_add_arg(fun, "float", "value");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "noteon", (m_uint)noteon);
-    dl_func_add_arg(fun, "int", "note");
-    dl_func_add_arg(fun, "int", "velocity");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "reset", (m_uint)synth_reset);
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "noteoff", (m_uint)noteoff);
-    dl_func_add_arg(fun, "int", "note");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "sustain", (m_uint)sustain);
-    dl_func_add_arg(fun, "int", "enable");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "wheel", (m_uint)wheel);
-    dl_func_add_arg(fun, "int", "value");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "bend", (m_uint)bend);
-    dl_func_add_arg(fun, "int", "value");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "release", (m_uint)release_all);
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("int", "load", (m_uint)load);
-    dl_func_add_arg(fun, "string", "filename");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("int", "save", (m_uint)save);
-    dl_func_add_arg(fun, "string", "filename");
-  CHECK_BB(import_mfun(env, fun))
+
+  dl_func_init(&fun, "void", "init", (m_uint)init);
+    dl_func_add_arg(&fun, "int", "plyphony");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "parameter", (m_uint)parameter);
+    dl_func_add_arg(&fun, "int", "parameter");
+    dl_func_add_arg(&fun, "int", "operator_index");
+    dl_func_add_arg(&fun, "float", "value");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "parameter", (m_uint)global_parameter);
+    dl_func_add_arg(&fun, "int", "parameter");
+    dl_func_add_arg(&fun, "float", "value");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "noteon", (m_uint)noteon);
+    dl_func_add_arg(&fun, "int", "note");
+    dl_func_add_arg(&fun, "int", "velocity");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "reset", (m_uint)synth_reset);
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "noteoff", (m_uint)noteoff);
+    dl_func_add_arg(&fun, "int", "note");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "sustain", (m_uint)sustain);
+    dl_func_add_arg(&fun, "int", "enable");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "wheel", (m_uint)wheel);
+    dl_func_add_arg(&fun, "int", "value");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "bend", (m_uint)bend);
+    dl_func_add_arg(&fun, "int", "value");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "release", (m_uint)release_all);
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "load", (m_uint)load);
+    dl_func_add_arg(&fun, "string", "filename");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "save", (m_uint)save);
+    dl_func_add_arg(&fun, "string", "filename");
+  CHECK_BB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
   return 1;
 }

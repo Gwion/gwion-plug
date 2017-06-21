@@ -101,13 +101,13 @@ CTOR(linuxsampler_ctor)
   o->ugen->n_in = 0;
   o->ugen->n_out = 2;
   o->ugen->tick = tick;
-  o->ugen->ugen = new_vector();
+  vector_init(&o->ugen->ugen);
   o->ugen->channel = (M_Object*)calloc(2, sizeof(struct M_Object_));
   o->ugen->channel[0] = new_M_UGen(NULL);
-  o->ugen->channel[0]->ugen->ugen = new_vector();
+  vector_init(&o->ugen->channel[0]->ugen->ugen);
   o->ugen->channel[0]->ugen->ref = o->ugen;
   o->ugen->channel[1] = new_M_UGen(NULL);
-  o->ugen->channel[1]->ugen->ugen = new_vector();
+  vector_init(&o->ugen->channel[1]->ugen->ugen);
   o->ugen->channel[1]->ugen->ref = o->ugen;
 }
 
@@ -188,43 +188,42 @@ extern "C"
 {
 m_bool import(Env env)
 {
-  DL_Func* fun;
+  DL_Func fun;
   DL_Value* arg;
  	Func f;
- 
-  CHECK_BB(add_global_type(env, &t_ls))
+
   CHECK_BB(import_class_begin(env, &t_ls, env->global_nspc, linuxsampler_ctor, linuxsampler_dtor))
   o_ls_data = import_mvar(env, (m_str)"int", (m_str)"@sampler", 0, 0, (m_str)"sampler channel");
-  fun = new_dl_func("void", "load", (m_uint)linuxsampler_load);
-    dl_func_add_arg(fun, "string", "filename");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("void", "load", (m_uint)linuxsampler_load_instrument);
-    dl_func_add_arg(fun, "string", "filename");
-    dl_func_add_arg(fun, "int", "index");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("int", "noteOn", (m_uint)linuxsampler_noteOn);
-    dl_func_add_arg(fun, "int", "note");
-    dl_func_add_arg(fun, "int", "velocity");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("int", "noteOff", (m_uint)linuxsampler_noteOff);
-    dl_func_add_arg(fun, "int", "note");
-    dl_func_add_arg(fun, "int", "velocity");
-  fun = new_dl_func("void", "noteOff", (m_uint)linuxsampler_pitchbend);
-    dl_func_add_arg(fun, "int", "pitch");
-    dl_func_add_arg(fun, "int", "note");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("int", "status", (m_uint)linuxsampler_status);
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("float", "gain", (m_uint)linuxsampler_getgain);
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("float", "gain", (m_uint)linuxsampler_setgain);
-    dl_func_add_arg(fun, "float", "f");
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("float", "pan", (m_uint)linuxsampler_getpan);
-  CHECK_BB(import_mfun(env, fun))
-  fun = new_dl_func("float", "pan", (m_uint)linuxsampler_setpan);
-    dl_func_add_arg(fun, "float", "f");
-  CHECK_BB(import_mfun(env, fun))
+  dl_func_init(&fun, "void", "load", (m_uint)linuxsampler_load);
+    dl_func_add_arg(&fun, "string", "filename");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "load", (m_uint)linuxsampler_load_instrument);
+    dl_func_add_arg(&fun, "string", "filename");
+    dl_func_add_arg(&fun, "int", "index");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "noteOn", (m_uint)linuxsampler_noteOn);
+    dl_func_add_arg(&fun, "int", "note");
+    dl_func_add_arg(&fun, "int", "velocity");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "noteOff", (m_uint)linuxsampler_noteOff);
+    dl_func_add_arg(&fun, "int", "note");
+    dl_func_add_arg(&fun, "int", "velocity");
+  dl_func_init(&fun, "void", "noteOff", (m_uint)linuxsampler_pitchbend);
+    dl_func_add_arg(&fun, "int", "pitch");
+    dl_func_add_arg(&fun, "int", "note");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "status", (m_uint)linuxsampler_status);
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "gain", (m_uint)linuxsampler_getgain);
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "gain", (m_uint)linuxsampler_setgain);
+    dl_func_add_arg(&fun, "float", "f");
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "pan", (m_uint)linuxsampler_getpan);
+  CHECK_BB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "pan", (m_uint)linuxsampler_setpan);
+    dl_func_add_arg(&fun, "float", "f");
+  CHECK_BB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env));
   return 1;
 }

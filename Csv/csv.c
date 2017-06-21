@@ -104,86 +104,85 @@ static MFUN(gw_csv_set_field_delim) {
 }
 
 IMPORT{
-	DL_Func* fun;
+	DL_Func fun;
 
 	// start import
-	add_global_type(env, &t_csv);
 	import_class_begin(env, &t_csv, env->curr, csv_ctor, csv_dtor);
 
-	CHECK_BB((o_csv_buffer = import_mvar(env, "int", "@x",   0, 0, "real part")))
+	CHECK_BB((o_csv_buffer = import_mvar(env, "int", "@x",   0, 0)))
 
 	// import functions
-	fun = new_dl_func("int", "load", (m_uint)gw_csv_load);
-		dl_func_add_arg(fun, "string", "filename");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "load", (m_uint)gw_csv_load);
+		dl_func_add_arg(&fun, "string", "filename");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "save", (m_uint)gw_csv_save);
-		dl_func_add_arg(fun, "string", "filename");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "save", (m_uint)gw_csv_save);
+		dl_func_add_arg(&fun, "string", "filename");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "copy", (m_uint)gw_csv_copy_row);
-		dl_func_add_arg(fun, "int", "src_row");
-		dl_func_add_arg(fun, "Csv", "dst");
-		dl_func_add_arg(fun, "int", "dst_row");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "copy", (m_uint)gw_csv_copy_row);
+		dl_func_add_arg(&fun, "int", "src_row");
+		dl_func_add_arg(&fun, "Csv", "dst");
+		dl_func_add_arg(&fun, "int", "dst_row");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "copy", (m_uint)gw_csv_copy_field);
-		dl_func_add_arg(fun, "int", "src_row");
-		dl_func_add_arg(fun, "int", "src_ent");
-		dl_func_add_arg(fun, "Csv", "dst");
-		dl_func_add_arg(fun, "int", "dst_row");
-		dl_func_add_arg(fun, "int", "dst_ent");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "copy", (m_uint)gw_csv_copy_field);
+		dl_func_add_arg(&fun, "int", "src_row");
+		dl_func_add_arg(&fun, "int", "src_ent");
+		dl_func_add_arg(&fun, "Csv", "dst");
+		dl_func_add_arg(&fun, "int", "dst_row");
+		dl_func_add_arg(&fun, "int", "dst_ent");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("string", "get", (m_uint)gw_csv_get_field);
-		dl_func_add_arg(fun, "int", "src_row");
-		dl_func_add_arg(fun, "int", "src_ent");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "string", "get", (m_uint)gw_csv_get_field);
+		dl_func_add_arg(&fun, "int", "src_row");
+		dl_func_add_arg(&fun, "int", "src_ent");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "clear",  (m_uint)gw_csv_clear_field);
-		dl_func_add_arg(fun, "int",    "row");
-		dl_func_add_arg(fun, "int",    "ent");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "clear",  (m_uint)gw_csv_clear_field);
+		dl_func_add_arg(&fun, "int",    "row");
+		dl_func_add_arg(&fun, "int",    "ent");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "clear",  (m_uint)gw_csv_remove_row);
-		dl_func_add_arg(fun, "int",    "row");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "clear",  (m_uint)gw_csv_remove_row);
+		dl_func_add_arg(&fun, "int",    "row");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "clear",  (m_uint)gw_csv_clear_row);
-		dl_func_add_arg(fun, "int",    "row");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "clear",  (m_uint)gw_csv_clear_row);
+		dl_func_add_arg(&fun, "int",    "row");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "height", (m_uint)gw_csv_get_height);
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "height", (m_uint)gw_csv_get_height);
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "width", (m_uint)gw_csv_get_width);
-		dl_func_add_arg(fun, "int",   "row");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "width", (m_uint)gw_csv_get_width);
+		dl_func_add_arg(&fun, "int",   "row");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "length", (m_uint)gw_csv_get_field_length);
-		dl_func_add_arg(fun, "int",    "row");
-		dl_func_add_arg(fun, "int",    "ent");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "length", (m_uint)gw_csv_get_field_length);
+		dl_func_add_arg(&fun, "int",    "row");
+		dl_func_add_arg(&fun, "int",    "ent");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "set",    (m_uint)gw_csv_set_field);
-		dl_func_add_arg(fun, "int",    "row");
-		dl_func_add_arg(fun, "int",    "ent");
-		dl_func_add_arg(fun, "string", "field");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "set",    (m_uint)gw_csv_set_field);
+		dl_func_add_arg(&fun, "int",    "row");
+		dl_func_add_arg(&fun, "int",    "ent");
+		dl_func_add_arg(&fun, "string", "field");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("int", "insert", (m_uint)gw_csv_insert_field);
-		dl_func_add_arg(fun, "int",    "row");
-		dl_func_add_arg(fun, "int",    "ent");
-		dl_func_add_arg(fun, "string", "field");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "int", "insert", (m_uint)gw_csv_insert_field);
+		dl_func_add_arg(&fun, "int",    "row");
+		dl_func_add_arg(&fun, "int",    "ent");
+		dl_func_add_arg(&fun, "string", "field");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("void", "text_delim", (m_uint)gw_csv_set_text_delim);
-		dl_func_add_arg(fun, "int",    "delim");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "void", "text_delim", (m_uint)gw_csv_set_text_delim);
+		dl_func_add_arg(&fun, "int",    "delim");
+	CHECK_OB(import_mfun(env, &fun))
 
-	fun = new_dl_func("void", "field_delim", (m_uint)gw_csv_set_field_delim);
-		dl_func_add_arg(fun, "int",    "delim");
-	CHECK_OB(import_mfun(env, fun))
+	dl_func_init(&fun, "void", "field_delim", (m_uint)gw_csv_set_field_delim);
+		dl_func_add_arg(&fun, "int",    "delim");
+	CHECK_OB(import_mfun(env, &fun))
 
 	// end import
 	import_class_end(env);

@@ -48,7 +48,7 @@ static SFUN(gw_knn)
 
   M_Object ret_obj = new_M_Array(SZ_INT, inst_x, 1);
   RETURN->d.v_uint = (m_uint)ret_obj;
-  vector_add(shred->gc, (vtype)ret_obj);
+  vector_add(&shred->gc, (vtype)ret_obj);
   matrix_release(data);
   matrix_release(inst);
   free(ret);
@@ -73,7 +73,7 @@ static SFUN(gw_kmeans)
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 1);
   RETURN->d.v_uint = (m_uint)ret_obj;
-  vector_add(shred->gc, (vtype)ret_obj);
+  vector_add(&shred->gc, (vtype)ret_obj);
   memcpy(ret_obj->d.array->ptr, ret, data_y * sizeof(m_uint));
   matrix_release(data);
   matrix_release(cent);
@@ -96,12 +96,12 @@ static SFUN(gw_kmeans_refine)
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 2);
   RETURN->d.v_uint = (m_uint)ret_obj;
-  vector_add(shred->gc, (vtype)ret_obj);
+  vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
     M_Object obj = new_M_Array(SZ_FLOAT, data_y, 1);
     memcpy(obj->d.array->ptr, ret[i], data_y * sizeof(m_float));
     i_vector_set(ret_obj->d.array, i, (m_uint)obj);
-    vector_add(shred->gc, (vtype)obj);
+    vector_add(&shred->gc, (vtype)obj);
   }
   release(data_obj, shred);
   matrix_release(ret);
@@ -110,32 +110,31 @@ static SFUN(gw_kmeans_refine)
 
 IMPORT
 {
-  DL_Func* fun;
+  DL_Func fun;
 
-  CHECK_BB(add_global_type(env, &t_k))
   CHECK_BB(import_class_begin(env, &t_k, env->global_nspc, NULL, NULL))
 
-  fun = new_dl_func("int[]", "nn", (m_uint)gw_knn);
-    dl_func_add_arg(fun, "float", "data[][]");
-    dl_func_add_arg(fun, "int", "labels[]");
-    dl_func_add_arg(fun, "float", "instances[][]");
-    dl_func_add_arg(fun, "int", "k");
-  CHECK_OB(import_sfun(env, fun))
+  dl_func_init(&fun, "int[]", "nn", (m_uint)gw_knn);
+    dl_func_add_arg(&fun, "float", "data[][]");
+    dl_func_add_arg(&fun, "int", "labels[]");
+    dl_func_add_arg(&fun, "float", "instances[][]");
+    dl_func_add_arg(&fun, "int", "k");
+  CHECK_OB(import_sfun(env, &fun))
 
-  fun = new_dl_func("int[]", "means", (m_uint)gw_kmeans);
-    dl_func_add_arg(fun, "float", "data[][]");
-    dl_func_add_arg(fun, "float", "centroid[][]");
-    dl_func_add_arg(fun, "int", "k");
-    dl_func_add_arg(fun, "int", "initial_centroid");
-    dl_func_add_arg(fun, "float", "theta");
-  CHECK_OB(import_sfun(env, fun))
+  dl_func_init(&fun, "int[]", "means", (m_uint)gw_kmeans);
+    dl_func_add_arg(&fun, "float", "data[][]");
+    dl_func_add_arg(&fun, "float", "centroid[][]");
+    dl_func_add_arg(&fun, "int", "k");
+    dl_func_add_arg(&fun, "int", "initial_centroid");
+    dl_func_add_arg(&fun, "float", "theta");
+  CHECK_OB(import_sfun(env, &fun))
   
-  fun = new_dl_func("int[]", "fine_means", (m_uint)gw_kmeans_refine);
-    dl_func_add_arg(fun, "float", "data[][]");
-    dl_func_add_arg(fun, "int", "iter");
-    dl_func_add_arg(fun, "int", "n_points");
-    dl_func_add_arg(fun, "int", "k");
-  CHECK_OB(import_sfun(env, fun))
+  dl_func_init(&fun, "int[]", "fine_means", (m_uint)gw_kmeans_refine);
+    dl_func_add_arg(&fun, "float", "data[][]");
+    dl_func_add_arg(&fun, "int", "iter");
+    dl_func_add_arg(&fun, "int", "n_points");
+    dl_func_add_arg(&fun, "int", "k");
+  CHECK_OB(import_sfun(env, &fun))
   
   CHECK_BB(import_class_end(env))
   return 1;

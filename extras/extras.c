@@ -19,7 +19,7 @@ static SFUN(sfun) { /*code here */ }
 
 IMPORT
 {
-  DL_Func* fun;
+  DL_Func fun;
 
   CHECK_BB(add_global_type(env, &t_extras))
   CHECK_BB(import_class_begin(env, &t_extras, env->global_nspc, extras_ctor, extras_dtor))
@@ -29,13 +29,13 @@ IMPORT
   o_extras_static_value = malloc(sizeof(m_int));
   o_extras_static_data = import_svar(env, "int", "static", 1, 0, o_extras_static_value, "doc.");
 
-  fun = new_dl_func("int", "mfun",  (m_uint)mfun);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "mfun",  (m_uint)mfun);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
 
-  fun = new_dl_func("int", "sfun",  (m_uint)sfun);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "sfun",  (m_uint)sfun);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
 
   CHECK_BB(import_class_end(env))
   return 1;

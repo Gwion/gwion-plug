@@ -198,54 +198,54 @@ static MFUN(midiin_read)
 
 IMPORT
 {
-  DL_Func* fun;
+  DL_Func fun;
   CHECK_BB(add_global_type(env, &t_portmidi))
   CHECK_BB(import_class_begin(env, &t_portmidi, env->global_nspc, pm_ctor, pm_dtor))
-   import_mvar(env, "int",  "@dummy",   0, 0, "place for midi stream");
-  o_pm_stream = import_mvar(env, "int",  "@stream",   0, 0, "place for midi stream");
+   import_mvar(env, "int",  "@dummy",   0, 0);
+  o_pm_stream = import_mvar(env, "int",  "@stream",   0, 0);
   CHECK_BB(o_pm_stream)
-  o_pm_id = import_mvar(env, "int",  "id",   0, 0, "place for midi stream");
+  o_pm_id = import_mvar(env, "int",  "id",   0, 0);
   CHECK_BB(o_pm_id)
-  o_pm_status  = import_mvar(env, "int",  "status",   0, 0, "place for midi stream");
+  o_pm_status  = import_mvar(env, "int",  "status",   0, 0);
   CHECK_BB(o_pm_status)
-  o_pm_data1 = import_mvar(env, "int",  "data1",   0, 0, "place for midi stream");
+  o_pm_data1 = import_mvar(env, "int",  "data1",   0, 0);
   CHECK_BB(o_pm_data1)
-  o_pm_data2 = import_mvar(env, "int",  "data2",   0, 0, "place for midi stream");
+  o_pm_data2 = import_mvar(env, "int",  "data2",   0, 0);
   CHECK_BB(o_pm_data2)
-  o_pm_msg = import_mvar(env, "int",  "@msg",   0, 0, "place for midi event vector");
+  o_pm_msg = import_mvar(env, "int",  "@msg",   0, 0);
   CHECK_BB(o_pm_msg)
-  fun = new_dl_func("string", "name", (m_uint)pm_name);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("string", "error", (m_uint)pm_error);
-    dl_func_add_arg(fun, "int", "id");
-  CHECK_OB(import_sfun(env, fun))
-  fun = new_dl_func("int", "close", (m_uint)pm_close);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "string", "name", (m_uint)pm_name);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "string", "error", (m_uint)pm_error);
+    dl_func_add_arg(&fun, "int", "id");
+  CHECK_OB(import_sfun(env, &fun))
+  dl_func_init(&fun, "int", "close", (m_uint)pm_close);
+  CHECK_OB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(add_global_type(env, &t_midiout))
   CHECK_BB(import_class_begin(env, &t_midiout, env->global_nspc, NULL, NULL))
-  fun = new_dl_func("int", "open", (m_uint)midiout_open);
-    dl_func_add_arg(fun, "int", "id");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "send", (m_uint)midiout_send_self);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "send", (m_uint)midiout_send);
-    dl_func_add_arg(fun, "int", "status");
-    dl_func_add_arg(fun, "int", "data1");
-    dl_func_add_arg(fun, "int", "data2");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "open", (m_uint)midiout_open);
+    dl_func_add_arg(&fun, "int", "id");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "send", (m_uint)midiout_send_self);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "send", (m_uint)midiout_send);
+    dl_func_add_arg(&fun, "int", "status");
+    dl_func_add_arg(&fun, "int", "data1");
+    dl_func_add_arg(&fun, "int", "data2");
+  CHECK_OB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(add_global_type(env, &t_midiin))
   CHECK_BB(import_class_begin(env, &t_midiin, env->global_nspc, NULL, NULL))
-  fun = new_dl_func("int", "open", (m_uint)midiin_open);
-    dl_func_add_arg(fun, "int", "id");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "recv", (m_uint)midiin_recv);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "read", (m_uint)midiin_read);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "open", (m_uint)midiin_open);
+    dl_func_add_arg(&fun, "int", "id");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "recv", (m_uint)midiin_recv);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "read", (m_uint)midiin_read);
+  CHECK_OB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
   return 1;

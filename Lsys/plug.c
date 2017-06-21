@@ -117,19 +117,18 @@ static MFUN(gw_lsys_get)
 
 IMPORT
 {
-  DL_Func*  fun;
-	CHECK_BB(add_global_type(env, &t_lsys))
+  DL_Func  fun;
 	CHECK_BB(import_class_begin(env, &t_lsys, env->global_nspc, ctor, dtor))
-	fun = new_dl_func("void", "parse", (m_uint)gw_lsys_parse);
-		dl_func_add_arg(fun, "int",    "ord");
-		dl_func_add_arg(fun, "string", "str");
-	CHECK_BB(import_mfun(env, fun))
-	fun = new_dl_func("void", "reset", (m_uint)gw_lsys_reset);
-	CHECK_BB(import_mfun(env, fun))
-	fun = new_dl_func("int", "size", (m_uint)gw_lsys_size);
-	CHECK_BB(import_mfun(env, fun))
-	fun = new_dl_func("string", "get", (m_uint)gw_lsys_get);
-	CHECK_BB(import_mfun(env, fun))
+	dl_func_init(&fun, "void", "parse", (m_uint)gw_lsys_parse);
+		dl_func_add_arg(&fun, "int",    "ord");
+		dl_func_add_arg(&fun, "string", "str");
+	CHECK_BB(import_mfun(env, &fun))
+	dl_func_init(&fun, "void", "reset", (m_uint)gw_lsys_reset);
+	CHECK_BB(import_mfun(env, &fun))
+	dl_func_init(&fun, "int", "size", (m_uint)gw_lsys_size);
+	CHECK_BB(import_mfun(env, &fun))
+	dl_func_init(&fun, "string", "get", (m_uint)gw_lsys_get);
+	CHECK_BB(import_mfun(env, &fun))
 	CHECK_BB(import_class_end(env))
 	return 1;
 }

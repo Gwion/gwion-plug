@@ -389,56 +389,53 @@ static MFUN(oscin_get_s)
 
 IMPORT
 {
-  DL_Func* fun;
-  CHECK_BB(add_global_type(env, &t_lo))
+  DL_Func fun;
   CHECK_BB(import_class_begin(env, &t_lo, env->global_nspc, lo_ctor, NULL))
-  o_lo_args = import_mvar(env, "int",  "@args", 0, 0, "Arg vector");
+  o_lo_args = import_mvar(env, "int",  "@args", 0, 0);
   CHECK_BB(o_lo_args)
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(add_global_type(env, &t_loout))
   CHECK_BB(import_class_begin(env, &t_loout, env->global_nspc, NULL, loout_dtor))
-  o_lo_addr = import_mvar(env, "int",  "@addr", 0, 0, "lo adress");
+  o_lo_addr = import_mvar(env, "int",  "@addr", 0, 0);
   CHECK_BB(o_lo_addr)
-  fun = new_dl_func("int", "addr", (m_uint)osc_addr);
-    dl_func_add_arg(fun, "string", "host");
-    dl_func_add_arg(fun, "string", "port");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "send", (m_uint)osc_send);
-    dl_func_add_arg(fun, "string", "path");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "addr", (m_uint)osc_addr);
+    dl_func_add_arg(&fun, "string", "host");
+    dl_func_add_arg(&fun, "string", "port");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "send", (m_uint)osc_send);
+    dl_func_add_arg(&fun, "string", "path");
+  CHECK_OB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(add_global_type(env, &t_loin))
   CHECK_BB(import_class_begin(env, &t_loin, env->global_nspc, loin_ctor, NULL))
-  o_lo_serv = import_mvar(env, "int",  "@serv", 0, 0, "Server ref");
+  o_lo_serv = import_mvar(env, "int",  "@serv", 0, 0);
   CHECK_BB(o_lo_serv)
-  o_lo_meth = import_mvar(env, "int",  "@meth", 0, 0, "Method Vector");
+  o_lo_meth = import_mvar(env, "int",  "@meth", 0, 0);
   CHECK_BB(o_lo_meth)
-  o_lo_curr = import_mvar(env, "int",  "@curr", 0, 0, "Arg Vector");
+  o_lo_curr = import_mvar(env, "int",  "@curr", 0, 0);
   CHECK_BB(o_lo_curr)
-  fun = new_dl_func("int", "add", (m_uint)osc_add_method);
-    dl_func_add_arg(fun, "string", "path");
-    dl_func_add_arg(fun, "string", "type");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "add", (m_uint)osc_add_method);
+    dl_func_add_arg(&fun, "string", "path");
+    dl_func_add_arg(&fun, "string", "type");
+  CHECK_OB(import_mfun(env, &fun))
 
-  fun = new_dl_func("int", "port", (m_uint)osc_get_port);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "port", (m_uint)osc_port);
-    dl_func_add_arg(fun, "int", "port");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "start", (m_uint)oscin_start);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "stop", (m_uint)oscin_stop);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "recv", (m_uint)osc_recv);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "get_i", (m_uint)oscin_get_i);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "get_f", (m_uint)oscin_get_f);
-  CHECK_OB(import_mfun(env, fun))  
-  fun = new_dl_func("string", "get_s", (m_uint)oscin_get_s);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "port", (m_uint)osc_get_port);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "port", (m_uint)osc_port);
+    dl_func_add_arg(&fun, "int", "port");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "start", (m_uint)oscin_start);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "stop", (m_uint)oscin_stop);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "recv", (m_uint)osc_recv);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "get_i", (m_uint)oscin_get_i);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "get_f", (m_uint)oscin_get_f);
+  CHECK_OB(import_mfun(env, &fun))  
+  dl_func_init(&fun, "string", "get_s", (m_uint)oscin_get_s);
+  CHECK_OB(import_mfun(env, &fun))
 
 
   CHECK_BB(import_class_end(env))

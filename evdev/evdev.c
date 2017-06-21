@@ -169,42 +169,40 @@ void* evdev_process(void* arg)
 
 IMPORT
 {
-  DL_Func* fun;
+  DL_Func fun;
 
   CHECK_BB(add_global_type(env, &t_evdev))
   CHECK_BB(import_class_begin(env, &t_evdev, env->global_nspc, evdev_ctor, evdev_dtor))
-	env->class_def->doc =  "Evdev interface";
 
+  import_mvar(env, "int", "@dummy",  0, 0);
 
-  import_mvar(env, "int", "@dummy",  0, 0, "evdev info");
-
-  o_evdev_info = import_mvar(env, "int", "@info",  0, 0, "evdev info");
+  o_evdev_info = import_mvar(env, "int", "@info",  0, 0);
   CHECK_BB(o_evdev_info)
 
-  o_evdev_time  = import_mvar(env, "float", "time",  1, 0, "time");
+  o_evdev_time  = import_mvar(env, "float", "time",  1, 0);
   CHECK_BB(o_evdev_time)
 
-  o_evdev_type  = import_mvar(env, "int", "type",  1, 0, "type");
+  o_evdev_type  = import_mvar(env, "int", "type",  1, 0);
   CHECK_BB(o_evdev_type)
 
-  o_evdev_code  = import_mvar(env, "int", "code",  1, 0, "code");
+  o_evdev_code  = import_mvar(env, "int", "code",  1, 0);
   CHECK_BB(o_evdev_code)
 
-  o_evdev_value = import_mvar(env, "int", "value",  1, 0, "value");
+  o_evdev_value = import_mvar(env, "int", "value",  1, 0);
   CHECK_BB(o_evdev_value)
 
-  fun = new_dl_func("int", "index", (m_uint)evdev_get_index);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "index", (m_uint)evdev_get_index);
+  CHECK_OB(import_mfun(env, &fun))
 
-  fun = new_dl_func("int", "index", (m_uint)evdev_index);
-    dl_func_add_arg(fun, "int", "i");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "index", (m_uint)evdev_index);
+    dl_func_add_arg(&fun, "int", "i");
+  CHECK_OB(import_mfun(env, &fun))
 
-  fun = new_dl_func("string", "name", (m_uint)evdev_name);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "string", "name", (m_uint)evdev_name);
+  CHECK_OB(import_mfun(env, &fun))
 
-  fun = new_dl_func("int", "recv", (m_uint)evdev_recv);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "recv", (m_uint)evdev_recv);
+  CHECK_OB(import_mfun(env, &fun))
 
   CHECK_BB(import_class_end(env))
   return 1;

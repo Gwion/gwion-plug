@@ -1189,456 +1189,452 @@ MFUN(set_cascade_num_candidate_groups)
 //IMPORT
 m_bool import(Env env)
 {
-  DL_Func* fun;
-  CHECK_BB(add_global_type(env, &t_fann_connect))
+  DL_Func fun;
   CHECK_BB(import_class_begin(env, &t_fann_connect, env->global_nspc, NULL, NULL))
-  o_fann_from = import_mvar(env, "int",  "from", 0, 0, "Unique number used to identify source neuron");
+  o_fann_from = import_mvar(env, "int",  "from", 0, 0);
   CHECK_BB(o_fann_from)
-  o_fann_to = import_mvar(env, "int",  "to", 0, 0, "Unique number used to identify destination neuron");
+  o_fann_to = import_mvar(env, "int",  "to", 0, 0);
   CHECK_BB(o_fann_to)
-  o_fann_weight = import_mvar(env, "int",  "weight", 0, 0, "The numerical value of the weight");
+  o_fann_weight = import_mvar(env, "int",  "weight", 0, 0);
   CHECK_BB(o_fann_weight)
   CHECK_BB(import_class_end(env))
 
   // this is for error handling
-  CHECK_BB(add_global_type(env, &t_fann_base))
   CHECK_BB(import_class_begin(env, &t_fann_base, env->global_nspc, NULL, NULL))
-  o_fann_error = import_mvar(env, "int",  "@data", 0, 0, "train data");
+  o_fann_error = import_mvar(env, "int",  "@data", 0, 0);
   CHECK_BB(o_fann_error)
-  fun = new_dl_func("void", "log",  (m_uint)error_log);
-    dl_func_add_arg(fun, "FileIO", "f");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "errno",  (m_uint)errno);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "reset_errno",  (m_uint)reset_errno);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "reset_errstr",  (m_uint)reset_errstr);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "errstr",  (m_uint)errstr);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "print_error",  (m_uint)print_error);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "void", "log",  (m_uint)error_log);
+    dl_func_add_arg(&fun, "FileIO", "f");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "errno",  (m_uint)errno);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "reset_errno",  (m_uint)reset_errno);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "reset_errstr",  (m_uint)reset_errstr);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "errstr",  (m_uint)errstr);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "print_error",  (m_uint)print_error);
+  CHECK_OB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
 //  Training Data Manipulation
-  CHECK_BB(add_global_type(env, &t_fann_data))
   CHECK_BB(import_class_begin(env, &t_fann_data, env->global_nspc, NULL, data_dtor))
-  fun = new_dl_func("void", "from_data",  (m_uint)train_from_array);
-    dl_func_add_arg(fun, "int", "num");
-    dl_func_add_arg(fun, "float[][]", "in");
-    dl_func_add_arg(fun, "float[][]", "out");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "load",  (m_uint)train_from_file);
-    dl_func_add_arg(fun, "string", "filename");
-    dl_func_add_arg(fun, "int", "epochs");
-    dl_func_add_arg(fun, "int", "report");
-    dl_func_add_arg(fun, "float", "error");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "save",  (m_uint)train_save);
-    dl_func_add_arg(fun, "string", "filename");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "create",  (m_uint)train_create);
-    dl_func_add_arg(fun, "int", "num_data");
-    dl_func_add_arg(fun, "int", "num_in");
-    dl_func_add_arg(fun, "int", "num_out");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "input",  (m_uint)train_input);
-    dl_func_add_arg(fun, "int", "position");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "output",  (m_uint)train_output);
-    dl_func_add_arg(fun, "int", "position");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "shuffle",  (m_uint)train_shuffle);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "min_in",  (m_uint)train_min_in);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "max_in",  (m_uint)train_max_in);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "max_in",  (m_uint)train_max_in);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "max_out",  (m_uint)train_max_out);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "length",  (m_uint)train_length);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "num_input",  (m_uint)train_num_input);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "num_ouput",  (m_uint)train_num_output);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("FANN_data", "subset",  (m_uint)train_do_subset);
-    dl_func_add_arg(fun, "int", "pos");
-    dl_func_add_arg(fun, "int", "len");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("FANN_data", "merge",  (m_uint)train_merge);
-    dl_func_add_arg(fun, "FANN_data", "l");
-    dl_func_add_arg(fun, "FANN_data", "r");
-  CHECK_OB(import_sfun(env, fun))
-  fun = new_dl_func("FANN_data", "duplicate",  (m_uint)train_duplicate);
-    dl_func_add_arg(fun, "FANN_data", "l");
-  CHECK_OB(import_sfun(env, fun))
+  dl_func_init(&fun, "void", "from_data",  (m_uint)train_from_array);
+    dl_func_add_arg(&fun, "int", "num");
+    dl_func_add_arg(&fun, "float[][]", "in");
+    dl_func_add_arg(&fun, "float[][]", "out");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "load",  (m_uint)train_from_file);
+    dl_func_add_arg(&fun, "string", "filename");
+    dl_func_add_arg(&fun, "int", "epochs");
+    dl_func_add_arg(&fun, "int", "report");
+    dl_func_add_arg(&fun, "float", "error");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "save",  (m_uint)train_save);
+    dl_func_add_arg(&fun, "string", "filename");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "create",  (m_uint)train_create);
+    dl_func_add_arg(&fun, "int", "num_data");
+    dl_func_add_arg(&fun, "int", "num_in");
+    dl_func_add_arg(&fun, "int", "num_out");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "input",  (m_uint)train_input);
+    dl_func_add_arg(&fun, "int", "position");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "output",  (m_uint)train_output);
+    dl_func_add_arg(&fun, "int", "position");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "shuffle",  (m_uint)train_shuffle);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "min_in",  (m_uint)train_min_in);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "max_in",  (m_uint)train_max_in);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "max_in",  (m_uint)train_max_in);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "max_out",  (m_uint)train_max_out);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "length",  (m_uint)train_length);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "num_input",  (m_uint)train_num_input);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "num_ouput",  (m_uint)train_num_output);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "FANN_data", "subset",  (m_uint)train_do_subset);
+    dl_func_add_arg(&fun, "int", "pos");
+    dl_func_add_arg(&fun, "int", "len");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "FANN_data", "merge",  (m_uint)train_merge);
+    dl_func_add_arg(&fun, "FANN_data", "l");
+    dl_func_add_arg(&fun, "FANN_data", "r");
+  CHECK_OB(import_sfun(env, &fun))
+  dl_func_init(&fun, "FANN_data", "duplicate",  (m_uint)train_duplicate);
+    dl_func_add_arg(&fun, "FANN_data", "l");
+  CHECK_OB(import_sfun(env, &fun))
 
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(add_global_type(env, &t_fann))
   CHECK_BB(import_class_begin(env, &t_fann, env->global_nspc, NULL, fann_dtor))
-  fun = new_dl_func("string", "type_str", (m_uint)type_str);
-    dl_func_add_arg(fun, "int", "layer");
-  CHECK_OB(import_sfun(env, fun))
-  fun = new_dl_func("void", "standard", (m_uint)standard);
-    dl_func_add_arg(fun, "int", "layer");
-    dl_func_add_arg(fun, "int[]", "outputs");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "shortcut",  (m_uint)shortcut);
-    dl_func_add_arg(fun, "int", "layer");
-    dl_func_add_arg(fun, "int[]", "outputs");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "sparse",   (m_uint)sparse);
-    dl_func_add_arg(fun, "float", "rate");
-    dl_func_add_arg(fun, "int", "layer");
-    dl_func_add_arg(fun, "int[]", "outputs");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "randomize",  (m_uint)randomize);
-    dl_func_add_arg(fun, "float", "min");
-    dl_func_add_arg(fun, "float", "max");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "init",  (m_uint)init);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "print",  (m_uint)print_connections);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "string", "type_str", (m_uint)type_str);
+    dl_func_add_arg(&fun, "int", "layer");
+  CHECK_OB(import_sfun(env, &fun))
+  dl_func_init(&fun, "void", "standard", (m_uint)standard);
+    dl_func_add_arg(&fun, "int", "layer");
+    dl_func_add_arg(&fun, "int[]", "outputs");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "shortcut",  (m_uint)shortcut);
+    dl_func_add_arg(&fun, "int", "layer");
+    dl_func_add_arg(&fun, "int[]", "outputs");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "sparse",   (m_uint)sparse);
+    dl_func_add_arg(&fun, "float", "rate");
+    dl_func_add_arg(&fun, "int", "layer");
+    dl_func_add_arg(&fun, "int[]", "outputs");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "randomize",  (m_uint)randomize);
+    dl_func_add_arg(&fun, "float", "min");
+    dl_func_add_arg(&fun, "float", "max");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "init",  (m_uint)init);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "print",  (m_uint)print_connections);
+  CHECK_OB(import_mfun(env, &fun))
   // paramters
-  fun = new_dl_func("void", "parameters",  (m_uint)parameters);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "input",  (m_uint)input);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "output",  (m_uint)output);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "neurons",  (m_uint)neurons);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "connections",  (m_uint)connections);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "type",  (m_uint)type);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rate",  (m_uint)rate);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "layer",  (m_uint)layer);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int[]", "layers",  (m_uint)layers);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int[]", "bias",  (m_uint)bias);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("FANN_connect[]", "connection_array",  (m_uint)connection_array);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "weigth_array",  (m_uint)weigth_array);
-    dl_func_add_arg(fun, "FANN_connect[]", "array");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "weigth",  (m_uint)weigth);
-    dl_func_add_arg(fun, "int", "from");
-    dl_func_add_arg(fun, "int", "to");
-    dl_func_add_arg(fun, "float", "weigth");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "weigths",  (m_uint)get_weigths);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "weigths",  (m_uint)set_weigths);
-    dl_func_add_arg(fun, "float[]", "f");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "void", "parameters",  (m_uint)parameters);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "input",  (m_uint)input);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "output",  (m_uint)output);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "neurons",  (m_uint)neurons);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "connections",  (m_uint)connections);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "type",  (m_uint)type);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rate",  (m_uint)rate);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "layer",  (m_uint)layer);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int[]", "layers",  (m_uint)layers);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int[]", "bias",  (m_uint)bias);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "FANN_connect[]", "connection_array",  (m_uint)connection_array);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "weigth_array",  (m_uint)weigth_array);
+    dl_func_add_arg(&fun, "FANN_connect[]", "array");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "weigth",  (m_uint)weigth);
+    dl_func_add_arg(&fun, "int", "from");
+    dl_func_add_arg(&fun, "int", "to");
+    dl_func_add_arg(&fun, "float", "weigth");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "weigths",  (m_uint)get_weigths);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "weigths",  (m_uint)set_weigths);
+    dl_func_add_arg(&fun, "float[]", "f");
+  CHECK_OB(import_mfun(env, &fun))
 // get/set user data
-  fun = new_dl_func("void", "disable_seed",  (m_uint)disable_seed);
-  CHECK_OB(import_sfun(env, fun))
-  fun = new_dl_func("void", "enable_seed",  (m_uint)enable_seed);
-  CHECK_OB(import_sfun(env, fun))
+  dl_func_init(&fun, "void", "disable_seed",  (m_uint)disable_seed);
+  CHECK_OB(import_sfun(env, &fun))
+  dl_func_init(&fun, "void", "enable_seed",  (m_uint)enable_seed);
+  CHECK_OB(import_sfun(env, &fun))
 
-  fun = new_dl_func("void", "load",  (m_uint)load);
-  dl_func_add_arg(fun, "string", "file");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "save",  (m_uint)save);
-    dl_func_add_arg(fun, "string", "file");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "run",  (m_uint)run);
-    dl_func_add_arg(fun, "float[]", "in");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "void", "load",  (m_uint)load);
+  dl_func_add_arg(&fun, "string", "file");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "save",  (m_uint)save);
+    dl_func_add_arg(&fun, "string", "file");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "run",  (m_uint)run);
+    dl_func_add_arg(&fun, "float[]", "in");
+  CHECK_OB(import_mfun(env, &fun))
   // FIXED POINT only
-/*  fun = new_dl_func("void", "decimal_point",  (m_uint)decimal_point);*/
-/*  CHECK_OB(import_mfun(env, fun))*/
-/*  fun = new_dl_func("void", "multiplier",  (m_uint)multiplier);*/
-/*  CHECK_OB(import_mfun(env, fun))*/
+/*  dl_func_init(&fun, "void", "decimal_point",  (m_uint)decimal_point);*/
+/*  CHECK_OB(import_mfun(env, &fun))*/
+/*  dl_func_init(&fun, "void", "multiplier",  (m_uint)multiplier);*/
+/*  CHECK_OB(import_mfun(env, &fun))*/
 
 // training
-  fun = new_dl_func("void", "train",  (m_uint)train);
-    dl_func_add_arg(fun, "float[]", "in");
-    dl_func_add_arg(fun, "float[]", "out");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "test",  (m_uint)test);
-    dl_func_add_arg(fun, "float[]", "in");
-    dl_func_add_arg(fun, "float[]", "out");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "mse",  (m_uint)get_MSE);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "bit_fail",  (m_uint)get_bit_fail);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "reset_mse",  (m_uint)reset_MSE);
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "void", "train",  (m_uint)train);
+    dl_func_add_arg(&fun, "float[]", "in");
+    dl_func_add_arg(&fun, "float[]", "out");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "test",  (m_uint)test);
+    dl_func_add_arg(&fun, "float[]", "in");
+    dl_func_add_arg(&fun, "float[]", "out");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "mse",  (m_uint)get_MSE);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "bit_fail",  (m_uint)get_bit_fail);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "reset_mse",  (m_uint)reset_MSE);
+  CHECK_OB(import_mfun(env, &fun))
   
 // Training Data Training
-  fun = new_dl_func("void", "on_data",  (m_uint)train_on_data);
-    dl_func_add_arg(fun, "FANN_data", "data");
-    dl_func_add_arg(fun, "int",   "epoch");
-    dl_func_add_arg(fun, "int",   "report");
-    dl_func_add_arg(fun, "float", "error");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "on_file",  (m_uint)train_on_file);
-    dl_func_add_arg(fun, "string", "filename");
-    dl_func_add_arg(fun, "int",   "epoch");
-    dl_func_add_arg(fun, "int",   "report");
-    dl_func_add_arg(fun, "float", "error");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "epoch",  (m_uint)train_epoch);
-    dl_func_add_arg(fun, "FANN_data", "data");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "epoch",  (m_uint)test_data);
-    dl_func_add_arg(fun, "FANN_data", "data");
-  CHECK_OB(import_mfun(env, fun))
-/*  fun = new_dl_func("void", "test",  (m_uint)train_test);*/
-/*    dl_func_add_arg(fun, "FANN_data", "data");*/
-/*  CHECK_OB(import_mfun(env, fun))*/
+  dl_func_init(&fun, "void", "on_data",  (m_uint)train_on_data);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+    dl_func_add_arg(&fun, "int",   "epoch");
+    dl_func_add_arg(&fun, "int",   "report");
+    dl_func_add_arg(&fun, "float", "error");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "on_file",  (m_uint)train_on_file);
+    dl_func_add_arg(&fun, "string", "filename");
+    dl_func_add_arg(&fun, "int",   "epoch");
+    dl_func_add_arg(&fun, "int",   "report");
+    dl_func_add_arg(&fun, "float", "error");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "epoch",  (m_uint)train_epoch);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "epoch",  (m_uint)test_data);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+  CHECK_OB(import_mfun(env, &fun))
+/*  dl_func_init(&fun, "void", "test",  (m_uint)train_test);*/
+/*    dl_func_add_arg(&fun, "FANN_data", "data");*/
+/*  CHECK_OB(import_mfun(env, &fun))*/
 
 // Training Data Manipulation
-  fun = new_dl_func("void", "scale",  (m_uint)scale_train);
-    dl_func_add_arg(fun, "FANN_data", "data");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "descale",  (m_uint)descale_train);
-    dl_func_add_arg(fun, "FANN_data", "data");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "in_scaling_params",  (m_uint)input_scaling_params);
-    dl_func_add_arg(fun, "FANN_data", "data");
-    dl_func_add_arg(fun, "float", "min");
-    dl_func_add_arg(fun, "float", "max");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "out_scaling_params",  (m_uint)output_scaling_params);
-    dl_func_add_arg(fun, "FANN_data", "data");
-    dl_func_add_arg(fun, "float", "min");
-    dl_func_add_arg(fun, "float", "max");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "scaling_params",  (m_uint)scaling_params);
-    dl_func_add_arg(fun, "FANN_data", "data");
-    dl_func_add_arg(fun, "float", "imin");
-    dl_func_add_arg(fun, "float", "imax");
-    dl_func_add_arg(fun, "float", "omin");
-    dl_func_add_arg(fun, "float", "omax");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "clear_scaling_params",  (m_uint)scaling_params);
-  CHECK_OB(import_mfun(env, fun))
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "scale_input",  (m_uint)scale_input);
-    dl_func_add_arg(fun, "float[]", "in");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "scale_output",  (m_uint)scale_output);
-    dl_func_add_arg(fun, "float[]", "out");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "descale_input",  (m_uint)descale_input);
-    dl_func_add_arg(fun, "float[]", "in");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "descale_output",  (m_uint)descale_output);
-    dl_func_add_arg(fun, "float[]", "out");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "scale_in",  (m_uint)train_input_scale);
-    dl_func_add_arg(fun, "FANN_data", "data");
-    dl_func_add_arg(fun, "float", "min");
-    dl_func_add_arg(fun, "float", "max");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "scale_out",  (m_uint)train_output_scale);
-    dl_func_add_arg(fun, "FANN_data", "data");
-    dl_func_add_arg(fun, "float", "min");
-    dl_func_add_arg(fun, "float", "max");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("void", "scale",  (m_uint)train_scale);
-    dl_func_add_arg(fun, "FANN_data", "data");
-    dl_func_add_arg(fun, "float", "min");
-    dl_func_add_arg(fun, "float", "max");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "void", "scale",  (m_uint)scale_train);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "descale",  (m_uint)descale_train);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "in_scaling_params",  (m_uint)input_scaling_params);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+    dl_func_add_arg(&fun, "float", "min");
+    dl_func_add_arg(&fun, "float", "max");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "out_scaling_params",  (m_uint)output_scaling_params);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+    dl_func_add_arg(&fun, "float", "min");
+    dl_func_add_arg(&fun, "float", "max");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "scaling_params",  (m_uint)scaling_params);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+    dl_func_add_arg(&fun, "float", "imin");
+    dl_func_add_arg(&fun, "float", "imax");
+    dl_func_add_arg(&fun, "float", "omin");
+    dl_func_add_arg(&fun, "float", "omax");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "clear_scaling_params",  (m_uint)scaling_params);
+  CHECK_OB(import_mfun(env, &fun))
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "scale_input",  (m_uint)scale_input);
+    dl_func_add_arg(&fun, "float[]", "in");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "scale_output",  (m_uint)scale_output);
+    dl_func_add_arg(&fun, "float[]", "out");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "descale_input",  (m_uint)descale_input);
+    dl_func_add_arg(&fun, "float[]", "in");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "descale_output",  (m_uint)descale_output);
+    dl_func_add_arg(&fun, "float[]", "out");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "scale_in",  (m_uint)train_input_scale);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+    dl_func_add_arg(&fun, "float", "min");
+    dl_func_add_arg(&fun, "float", "max");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "scale_out",  (m_uint)train_output_scale);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+    dl_func_add_arg(&fun, "float", "min");
+    dl_func_add_arg(&fun, "float", "max");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "void", "scale",  (m_uint)train_scale);
+    dl_func_add_arg(&fun, "FANN_data", "data");
+    dl_func_add_arg(&fun, "float", "min");
+    dl_func_add_arg(&fun, "float", "max");
+  CHECK_OB(import_mfun(env, &fun))
 
-  fun = new_dl_func("int", "training_algorithm",  (m_uint)get_training_algorithm);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "training_algorithm",  (m_uint)set_training_algorithm);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "learning_rate",  (m_uint)get_learning_rate);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "learning_rate",  (m_uint)set_learning_rate);
-    dl_func_add_arg(fun, "float", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "learning_momentum",  (m_uint)get_learning_momentum);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "learning_momentum",  (m_uint)set_learning_momentum);
-    dl_func_add_arg(fun, "float", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "activation_function",  (m_uint)get_activation_function);
-    dl_func_add_arg(fun, "int", "layer");
-    dl_func_add_arg(fun, "int", "neuron");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "activation_function",  (m_uint)set_activation_function);
-    dl_func_add_arg(fun, "int", "arg");
-    dl_func_add_arg(fun, "int", "layer");
-    dl_func_add_arg(fun, "int", "neuron");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "activation_function_layer",  (m_uint)set_activation_function_layer);
-    dl_func_add_arg(fun, "int", "layer");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "activation_function_output",  (m_uint)set_activation_function_output);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "activation_steepness",  (m_uint)get_activation_steepness);
-    dl_func_add_arg(fun, "int", "layer");
-    dl_func_add_arg(fun, "int", "neuron");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "activation_steepness",  (m_uint)set_activation_steepness);
-    dl_func_add_arg(fun, "int", "arg");
-    dl_func_add_arg(fun, "int", "layer");
-    dl_func_add_arg(fun, "int", "neuron");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "activation_steepness_layer",  (m_uint)set_activation_steepness_layer);
-    dl_func_add_arg(fun, "int", "layer");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "activation_steepness_output",  (m_uint)set_activation_steepness_output);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "train_error_function",  (m_uint)get_train_error_function);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "train_error_function",  (m_uint)set_train_error_function);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "train_stop_function",  (m_uint)get_train_stop_function);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "train_stop_function",  (m_uint)set_train_stop_function);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "bit_fail_limit",  (m_uint)get_bit_fail_limit);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "bit_fail_limit",  (m_uint)set_bit_fail_limit);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "quickprop_decay",  (m_uint)get_quickprop_decay);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "quickprop_decay",  (m_uint)set_quickprop_decay);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "quickprop_mu",  (m_uint)get_quickprop_mu);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "quickprop_mu",  (m_uint)set_quickprop_mu);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_increase_factor",  (m_uint)get_rprop_increase_factor);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_increase_factor",  (m_uint)set_rprop_increase_factor);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_decrease_factor",  (m_uint)get_rprop_decrease_factor);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_decrease_factor",  (m_uint)set_rprop_decrease_factor);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_delta_min",  (m_uint)get_rprop_delta_min);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_delta_min",  (m_uint)set_rprop_delta_min);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_delta_max",  (m_uint)get_rprop_delta_max);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_delta_max",  (m_uint)set_rprop_delta_max);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_delta_zero",  (m_uint)get_rprop_delta_zero);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "rprop_delta_zero",  (m_uint)set_rprop_delta_zero);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "sarprop_weight_decay_shift",  (m_uint)get_sarprop_weight_decay_shift);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "sarprop_weight_decay_shift",  (m_uint)set_sarprop_weight_decay_shift);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "sarprop_step_error_threshold_factor",  (m_uint)get_sarprop_step_error_threshold_factor);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "sarprop_step_error_threshold_factor",  (m_uint)set_sarprop_step_error_threshold_factor);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-   fun = new_dl_func("float", "sarprop_step_error_shift",  (m_uint)get_sarprop_step_error_shift);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "sarprop_step_error_shift",  (m_uint)set_sarprop_step_error_shift);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "sarprop_temperature",  (m_uint)get_sarprop_temperature);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "sarprop_temperature",  (m_uint)set_sarprop_temperature);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_output_change_fraction",  (m_uint)get_cascade_output_change_fraction);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_output_change_fraction",  (m_uint)set_cascade_output_change_fraction);
-    dl_func_add_arg(fun, "float", "arg");
-  CHECK_OB(import_mfun(env, fun))
-   fun = new_dl_func("int", "cascade_output_stagnation_epochs",  (m_uint)get_cascade_output_stagnation_epochs);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_output_stagnation_epochs",  (m_uint)set_cascade_output_stagnation_epochs);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_candidate_change_fraction",  (m_uint)get_cascade_candidate_change_fraction);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_candidate_change_fraction",  (m_uint)set_cascade_candidate_change_fraction);
-    dl_func_add_arg(fun, "float", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_candidate_stagnation_epochs",  (m_uint)get_cascade_candidate_stagnation_epochs);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_candidate_stagnation_epochs",  (m_uint)set_cascade_candidate_stagnation_epochs);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_weight_multiplier",  (m_uint)get_cascade_weight_multiplier);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_weight_multiplier",  (m_uint)set_cascade_weight_multiplier);
-    dl_func_add_arg(fun, "float", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_candidate_limit",  (m_uint)get_cascade_candidate_limit);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float", "cascade_candidate_limit",  (m_uint)set_cascade_candidate_limit);
-    dl_func_add_arg(fun, "float", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_max_out_epochs",  (m_uint)get_cascade_max_out_epochs);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_max_out_epochs",  (m_uint)set_cascade_max_out_epochs);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_min_out_epochs",  (m_uint)get_cascade_min_out_epochs);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_min_out_epochs",  (m_uint)set_cascade_min_out_epochs);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-   fun = new_dl_func("int", "cascade_max_cand_epochs",  (m_uint)get_cascade_max_cand_epochs);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_max_cand_epochs",  (m_uint)set_cascade_max_cand_epochs);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_min_cand_epochs",  (m_uint)get_cascade_min_cand_epochs);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_min_cand_epochs",  (m_uint)set_cascade_min_cand_epochs);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_activation_functions_count",  (m_uint)get_cascade_activation_functions_count);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int[]", "cascade_activation_functions",  (m_uint)get_cascade_activation_functions);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int[]", "cascade_activation_functions",  (m_uint)set_cascade_activation_functions);
-    dl_func_add_arg(fun, "int[]", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_activation_steepnesses_count",  (m_uint)get_cascade_activation_steepnesses_count);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "cascade_activation_steepnesses",  (m_uint)get_cascade_activation_steepnesses);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("float[]", "cascade_activation_steepnesses",  (m_uint)set_cascade_activation_steepnesses);
-    dl_func_add_arg(fun, "float[]", "arg");
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_num_candidate_groups",  (m_uint)get_cascade_num_candidate_groups);
-  CHECK_OB(import_mfun(env, fun))
-  fun = new_dl_func("int", "cascade_num_candidate_groups",  (m_uint)set_cascade_num_candidate_groups);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "training_algorithm",  (m_uint)get_training_algorithm);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "training_algorithm",  (m_uint)set_training_algorithm);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "learning_rate",  (m_uint)get_learning_rate);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "learning_rate",  (m_uint)set_learning_rate);
+    dl_func_add_arg(&fun, "float", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "learning_momentum",  (m_uint)get_learning_momentum);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "learning_momentum",  (m_uint)set_learning_momentum);
+    dl_func_add_arg(&fun, "float", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "activation_function",  (m_uint)get_activation_function);
+    dl_func_add_arg(&fun, "int", "layer");
+    dl_func_add_arg(&fun, "int", "neuron");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "activation_function",  (m_uint)set_activation_function);
+    dl_func_add_arg(&fun, "int", "arg");
+    dl_func_add_arg(&fun, "int", "layer");
+    dl_func_add_arg(&fun, "int", "neuron");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "activation_function_layer",  (m_uint)set_activation_function_layer);
+    dl_func_add_arg(&fun, "int", "layer");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "activation_function_output",  (m_uint)set_activation_function_output);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "activation_steepness",  (m_uint)get_activation_steepness);
+    dl_func_add_arg(&fun, "int", "layer");
+    dl_func_add_arg(&fun, "int", "neuron");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "activation_steepness",  (m_uint)set_activation_steepness);
+    dl_func_add_arg(&fun, "int", "arg");
+    dl_func_add_arg(&fun, "int", "layer");
+    dl_func_add_arg(&fun, "int", "neuron");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "activation_steepness_layer",  (m_uint)set_activation_steepness_layer);
+    dl_func_add_arg(&fun, "int", "layer");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "activation_steepness_output",  (m_uint)set_activation_steepness_output);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "train_error_function",  (m_uint)get_train_error_function);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "train_error_function",  (m_uint)set_train_error_function);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "train_stop_function",  (m_uint)get_train_stop_function);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "train_stop_function",  (m_uint)set_train_stop_function);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "bit_fail_limit",  (m_uint)get_bit_fail_limit);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "bit_fail_limit",  (m_uint)set_bit_fail_limit);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "quickprop_decay",  (m_uint)get_quickprop_decay);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "quickprop_decay",  (m_uint)set_quickprop_decay);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "quickprop_mu",  (m_uint)get_quickprop_mu);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "quickprop_mu",  (m_uint)set_quickprop_mu);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_increase_factor",  (m_uint)get_rprop_increase_factor);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_increase_factor",  (m_uint)set_rprop_increase_factor);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_decrease_factor",  (m_uint)get_rprop_decrease_factor);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_decrease_factor",  (m_uint)set_rprop_decrease_factor);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_delta_min",  (m_uint)get_rprop_delta_min);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_delta_min",  (m_uint)set_rprop_delta_min);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_delta_max",  (m_uint)get_rprop_delta_max);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_delta_max",  (m_uint)set_rprop_delta_max);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_delta_zero",  (m_uint)get_rprop_delta_zero);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "rprop_delta_zero",  (m_uint)set_rprop_delta_zero);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "sarprop_weight_decay_shift",  (m_uint)get_sarprop_weight_decay_shift);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "sarprop_weight_decay_shift",  (m_uint)set_sarprop_weight_decay_shift);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "sarprop_step_error_threshold_factor",  (m_uint)get_sarprop_step_error_threshold_factor);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "sarprop_step_error_threshold_factor",  (m_uint)set_sarprop_step_error_threshold_factor);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+   dl_func_init(&fun, "float", "sarprop_step_error_shift",  (m_uint)get_sarprop_step_error_shift);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "sarprop_step_error_shift",  (m_uint)set_sarprop_step_error_shift);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "sarprop_temperature",  (m_uint)get_sarprop_temperature);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "sarprop_temperature",  (m_uint)set_sarprop_temperature);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_output_change_fraction",  (m_uint)get_cascade_output_change_fraction);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_output_change_fraction",  (m_uint)set_cascade_output_change_fraction);
+    dl_func_add_arg(&fun, "float", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+   dl_func_init(&fun, "int", "cascade_output_stagnation_epochs",  (m_uint)get_cascade_output_stagnation_epochs);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_output_stagnation_epochs",  (m_uint)set_cascade_output_stagnation_epochs);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_candidate_change_fraction",  (m_uint)get_cascade_candidate_change_fraction);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_candidate_change_fraction",  (m_uint)set_cascade_candidate_change_fraction);
+    dl_func_add_arg(&fun, "float", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_candidate_stagnation_epochs",  (m_uint)get_cascade_candidate_stagnation_epochs);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_candidate_stagnation_epochs",  (m_uint)set_cascade_candidate_stagnation_epochs);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_weight_multiplier",  (m_uint)get_cascade_weight_multiplier);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_weight_multiplier",  (m_uint)set_cascade_weight_multiplier);
+    dl_func_add_arg(&fun, "float", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_candidate_limit",  (m_uint)get_cascade_candidate_limit);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float", "cascade_candidate_limit",  (m_uint)set_cascade_candidate_limit);
+    dl_func_add_arg(&fun, "float", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_max_out_epochs",  (m_uint)get_cascade_max_out_epochs);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_max_out_epochs",  (m_uint)set_cascade_max_out_epochs);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_min_out_epochs",  (m_uint)get_cascade_min_out_epochs);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_min_out_epochs",  (m_uint)set_cascade_min_out_epochs);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+   dl_func_init(&fun, "int", "cascade_max_cand_epochs",  (m_uint)get_cascade_max_cand_epochs);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_max_cand_epochs",  (m_uint)set_cascade_max_cand_epochs);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_min_cand_epochs",  (m_uint)get_cascade_min_cand_epochs);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_min_cand_epochs",  (m_uint)set_cascade_min_cand_epochs);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_activation_functions_count",  (m_uint)get_cascade_activation_functions_count);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int[]", "cascade_activation_functions",  (m_uint)get_cascade_activation_functions);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int[]", "cascade_activation_functions",  (m_uint)set_cascade_activation_functions);
+    dl_func_add_arg(&fun, "int[]", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_activation_steepnesses_count",  (m_uint)get_cascade_activation_steepnesses_count);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "cascade_activation_steepnesses",  (m_uint)get_cascade_activation_steepnesses);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "float[]", "cascade_activation_steepnesses",  (m_uint)set_cascade_activation_steepnesses);
+    dl_func_add_arg(&fun, "float[]", "arg");
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_num_candidate_groups",  (m_uint)get_cascade_num_candidate_groups);
+  CHECK_OB(import_mfun(env, &fun))
+  dl_func_init(&fun, "int", "cascade_num_candidate_groups",  (m_uint)set_cascade_num_candidate_groups);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_mfun(env, &fun))
 
   CHECK_BB(import_class_end(env))
   return 1;
