@@ -171,7 +171,6 @@ IMPORT
 {
   DL_Func fun;
 
-  CHECK_BB(add_global_type(env, &t_evdev))
   CHECK_BB(import_class_begin(env, &t_evdev, env->global_nspc, evdev_ctor, evdev_dtor))
 
   import_mvar(env, "int", "@dummy",  0, 0);
@@ -192,17 +191,17 @@ IMPORT
   CHECK_BB(o_evdev_value)
 
   dl_func_init(&fun, "int", "index", (m_uint)evdev_get_index);
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
 
   dl_func_init(&fun, "int", "index", (m_uint)evdev_index);
     dl_func_add_arg(&fun, "int", "i");
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
 
   dl_func_init(&fun, "string", "name", (m_uint)evdev_name);
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
 
   dl_func_init(&fun, "int", "recv", (m_uint)evdev_recv);
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
 
   CHECK_BB(import_class_end(env))
   return 1;

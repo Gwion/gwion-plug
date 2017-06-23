@@ -50,27 +50,14 @@ void      c_vector_set (M_Vector* v, m_uint i, _Complex data);
 void     v3_vector_set (M_Vector* v, m_uint i, m_vec3  data);
 void     v4_vector_set (M_Vector* v, m_uint i, m_vec4  data);
 
-M_Object new_M_Array  (m_uint size, m_uint length);
 #endif
 
 #include "type.h"
 #include "dl.h"
-extern m_bool initialize_object(M_Object o, Type t);
-extern Type import_class_begin(Env env, Type type, Nspc where, f_xtor pre_ctor, f_xtor dtor);
-extern m_bool import_class_end(Env env);
-extern m_bool add_global_type(Env env, Type t);
-m_int import_mvar(Env env, const m_str type,
-  const m_str name, m_bool is_const, m_bool is_ref, const m_str doc );
-extern Func import_mfun(Env env, DL_Func * mfun);
-
-
-}
-
+#include "import.h"
 typedef struct VM_Shred_* VM_Shred;
-//#define import_mvar(a, b, c, d, e, f) import_mvar(a, b , c, d, e, f)
-#define dl_func_add_arg(a, b, c)      dl_func_add_arg(a, (m_str)b , (m_str)c) 
-#define new_DL_Func(a, b, c)          new_DL_Func((m_str)a, (m_str)b, (m_uint)c)               
-extern "C" {
-extern M_Object new_M_Object(VM_Shred shred);
-extern M_Object new_M_UGen(VM_Shred shred);
+#define import_mvar(a, b, c, d, e) import_mvar(a, (m_str)b, (m_str)c, d, e)
+#define dl_func_add_arg(a, b, c)      dl_func_add_arg(a, (m_str)b , (m_str)c)
+#define dl_func_init(a, b, c, d)      dl_func_init(a, (m_str)b, (m_str)c, (m_uint)d)
 }
+

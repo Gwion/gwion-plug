@@ -819,9 +819,9 @@ m_bool import(Env env)
   CHECK_BB(import_class_begin(env, &t_group, env->global_nspc, group_ctor, group_dtor))
   o_nk_list = import_mvar(env, "int", "&widget",   0, 0);
   dl_func_init(&fun, "void", "begin", (m_uint)group_begin);
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
   dl_func_init(&fun, "void", "end", (m_uint)group_end);
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
   CHECK_BB(o_nk_list)
   CHECK_BB(import_class_end(env))
 
@@ -877,7 +877,7 @@ m_bool import(Env env)
   CHECK_BB(o_nk_comboval)
   dl_func_init(&fun, "string", "add", (m_uint)combo_add);
   dl_func_add_arg(&fun, "string", "s");
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_menu, env->global_nspc, menu_ctor, NULL))
@@ -885,13 +885,13 @@ m_bool import(Env env)
   CHECK_BB(o_nk_menuval)
   dl_func_init(&fun, "string", "add", (m_uint)menu_add);
   dl_func_add_arg(&fun, "string", "s");
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_menubar, env->global_nspc, menubar_ctor, NULL))
   dl_func_init(&fun, "void", "add", (m_uint)menubar_add);
   dl_func_add_arg(&fun, "NkMenu", "s");
-  CHECK_OB(import_mfun(env, &fun))
+  CHECK_BB(import_mfun(env, &fun))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_tree, env->global_nspc, tree_ctor, NULL))

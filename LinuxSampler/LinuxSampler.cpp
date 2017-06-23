@@ -1,6 +1,5 @@
 #include "Gwion.hpp"
 #include "ugen.h"
-#include "import.h"
 #include <linuxsampler/Sampler.h>
 
 m_int o_ls_data = 0;
@@ -103,10 +102,10 @@ CTOR(linuxsampler_ctor)
   o->ugen->tick = tick;
   vector_init(&o->ugen->ugen);
   o->ugen->channel = (M_Object*)calloc(2, sizeof(struct M_Object_));
-  o->ugen->channel[0] = new_M_UGen(NULL);
+  o->ugen->channel[0] = new_M_UGen();
   vector_init(&o->ugen->channel[0]->ugen->ugen);
   o->ugen->channel[0]->ugen->ref = o->ugen;
-  o->ugen->channel[1] = new_M_UGen(NULL);
+  o->ugen->channel[1] = new_M_UGen();
   vector_init(&o->ugen->channel[1]->ugen->ugen);
   o->ugen->channel[1]->ugen->ref = o->ugen;
 }
@@ -193,7 +192,7 @@ m_bool import(Env env)
  	Func f;
 
   CHECK_BB(import_class_begin(env, &t_ls, env->global_nspc, linuxsampler_ctor, linuxsampler_dtor))
-  o_ls_data = import_mvar(env, (m_str)"int", (m_str)"@sampler", 0, 0, (m_str)"sampler channel");
+  o_ls_data = import_mvar(env, (m_str)"int", (m_str)"@sampler", 0, 0);
   dl_func_init(&fun, "void", "load", (m_uint)linuxsampler_load);
     dl_func_add_arg(&fun, "string", "filename");
   CHECK_BB(import_mfun(env, &fun))

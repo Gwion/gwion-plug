@@ -2,7 +2,6 @@
 #include <string.h>
 #include <portsmf/allegro.h>
 #include "Gwion.hpp"
-#include "import.h"
 
 #define TYPE(o)  *(m_uint*)(o->d.data + o_midiev_type)
 #define START(o) *(m_float*)(o->d.data + o_midiev_start)
@@ -37,22 +36,22 @@ m_bool import(Env env)
 {
   DL_Func fun;
   CHECK_BB(import_class_begin(env, &t_midifileev, env->global_nspc, NULL, NULL))
-  o_midiev_type = import_mvar(env, "int", "type",   1, 0, "event type");
+  o_midiev_type = import_mvar(env, "int", "type",   1, 0);
   CHECK_BB(o_midiev_type);
-  o_midiev_pitch = import_mvar(env, "float", "pitch", 1, 0, "event pitch      (if note)");
+  o_midiev_pitch = import_mvar(env, "float", "pitch", 1, 0);
   CHECK_BB(o_midiev_pitch);
-  o_midiev_loud  = import_mvar(env, "float", "loud",  1, 0, "event loudness   (if note)");
+  o_midiev_loud  = import_mvar(env, "float", "loud",  1, 0);
   CHECK_BB(o_midiev_loud);
-  o_midiev_start = import_mvar(env, "float", "start", 1, 0, "event start time (if note)");
+  o_midiev_start = import_mvar(env, "float", "start", 1, 0);
   CHECK_BB(o_midiev_start);
-  o_midiev_end   = import_mvar(env, "float", "end",   1, 0, "event end   time (if note)");
+  o_midiev_end   = import_mvar(env, "float", "end",   1, 0);
   CHECK_BB(o_midiev_start);
-  o_midiev_dur   = import_mvar(env, "float", "dur",   1, 0, "event duration   (if note)");
+  o_midiev_dur   = import_mvar(env, "float", "dur",   1, 0);
   CHECK_BB(o_midiev_dur);
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_midifile, env->global_nspc, ctor, dtor))
-  o_midifile_seq = import_mvar(env, "int", "@seq", 0, 0, "the place for sequencer");
+  o_midifile_seq = import_mvar(env, "int", "@seq", 0, 0);
   CHECK_BB(o_midifile_seq);
   dl_func_init(&fun, "void", "open", (m_uint)midifile_open);
     dl_func_add_arg(&fun, "string", "filename");

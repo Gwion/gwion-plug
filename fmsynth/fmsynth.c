@@ -265,7 +265,6 @@ IMPORT
   *format         = FMSYNTH_STATUS_INVALID_FORMAT;
   *unknown        = FMSYNTH_STATUS_MESSAGE_UNKNOWN;
 
-  CHECK_BB(add_global_type(env, &t_fmsynth))
   CHECK_BB(import_class_begin(env, &t_fmsynth, env->global_nspc, ctor, dtor))
   o_fmsynth_data = import_mvar(env, "int", "&synth",   0, 0);
   CHECK_BB(o_fmsynth_data)

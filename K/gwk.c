@@ -119,7 +119,7 @@ IMPORT
     dl_func_add_arg(&fun, "int", "labels[]");
     dl_func_add_arg(&fun, "float", "instances[][]");
     dl_func_add_arg(&fun, "int", "k");
-  CHECK_OB(import_sfun(env, &fun))
+  CHECK_BB(import_sfun(env, &fun))
 
   dl_func_init(&fun, "int[]", "means", (m_uint)gw_kmeans);
     dl_func_add_arg(&fun, "float", "data[][]");
@@ -127,14 +127,14 @@ IMPORT
     dl_func_add_arg(&fun, "int", "k");
     dl_func_add_arg(&fun, "int", "initial_centroid");
     dl_func_add_arg(&fun, "float", "theta");
-  CHECK_OB(import_sfun(env, &fun))
+  CHECK_BB(import_sfun(env, &fun))
   
   dl_func_init(&fun, "int[]", "fine_means", (m_uint)gw_kmeans_refine);
     dl_func_add_arg(&fun, "float", "data[][]");
     dl_func_add_arg(&fun, "int", "iter");
     dl_func_add_arg(&fun, "int", "n_points");
     dl_func_add_arg(&fun, "int", "k");
-  CHECK_OB(import_sfun(env, &fun))
+  CHECK_BB(import_sfun(env, &fun))
   
   CHECK_BB(import_class_end(env))
   return 1;
