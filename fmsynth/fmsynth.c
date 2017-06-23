@@ -50,20 +50,20 @@ DTOR(dtor)
 MFUN(init)
 {
   fmsynth_free(SYNTH(o));
-  SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, *(m_uint*)(shred->mem + SZ_INT));
+  SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, *(m_uint*)MEM(SZ_INT));
   o->ugen->ug = SYNTH(o);
 }
 MFUN(parameter)
 {
   fmsynth_set_parameter(SYNTH(o),
-      *(m_uint*)(shred->mem + SZ_INT), *(m_uint*)(shred->mem + SZ_INT*2), *(m_float*)(shred->mem + SZ_INT*3));
+      *(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2), *(m_float*)MEM(SZ_INT*3));
 }
 
 MFUN(global_parameter)
 {
-  printf("%f\n", *(m_float*)(shred->mem + SZ_INT*2));
+  printf("%f\n", *(m_float*)MEM(SZ_INT*2));
   fmsynth_set_global_parameter(SYNTH(o),
-      *(m_uint*)(shred->mem + SZ_INT), *(m_float*)(shred->mem + SZ_INT*2));
+      *(m_uint*)MEM(SZ_INT), *(m_float*)MEM(SZ_INT*2));
 }
 
 MFUN(synth_reset)
@@ -73,28 +73,28 @@ MFUN(synth_reset)
 
 MFUN(noteon)
 {
- fmsynth_note_on(SYNTH(o), *(m_uint*)(shred->mem + SZ_INT), *(m_uint*)(shred->mem + SZ_INT*2));
+ fmsynth_note_on(SYNTH(o), *(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2));
 
 }
 
 MFUN(noteoff)
 {
- fmsynth_note_off(SYNTH(o), *(m_uint*)(shred->mem + SZ_INT));
+ fmsynth_note_off(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
 MFUN(sustain)
 {
- fmsynth_set_sustain(SYNTH(o), *(m_uint*)(shred->mem + SZ_INT));
+ fmsynth_set_sustain(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
 MFUN(wheel)
 {
- fmsynth_set_mod_wheel(SYNTH(o), *(m_uint*)(shred->mem + SZ_INT));
+ fmsynth_set_mod_wheel(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
 MFUN(bend)
 {
- fmsynth_set_pitch_bend(SYNTH(o), *(m_uint*)(shred->mem + SZ_INT));
+ fmsynth_set_pitch_bend(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
 MFUN(release_all)
@@ -106,7 +106,7 @@ MFUN(load)
 {
   fmsynth_free(SYNTH(o));
   SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, POLYPHONY);
-  m_str filename = STRING( *(M_Object*)(shred->mem + SZ_INT) );
+  m_str filename = STRING( *(M_Object*)MEM(SZ_INT) );
   struct fmsynth_preset_metadata* metadata = malloc(sizeof(struct fmsynth_preset_metadata));
   FILE* file = fopen(filename, "r");
   if(!file)
@@ -133,7 +133,7 @@ MFUN(load)
 
 MFUN(save)
 {
-  m_str filename = STRING( *(M_Object*)(shred->mem + SZ_INT) );
+  m_str filename = STRING( *(M_Object*)MEM(SZ_INT) );
   FILE* file = fopen(filename, "w");
   if(!file)
   {

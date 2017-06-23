@@ -73,8 +73,8 @@ static DTOR(dtor)
 static MFUN(gw_lsys_parse)
 {
 	Lsys*  ptr = LSYS(o);
-	m_uint ord = *(m_uint*)(shred->mem + SZ_INT);
-	m_str  str = STRING(*(M_Object*)(shred->mem + SZ_INT*2));
+	m_uint ord = *(m_uint*)MEM(SZ_INT);
+	m_str  str = STRING(*(M_Object*)MEM(SZ_INT*2));
 
 	lsys_parse(&ptr->lsys, str, str, strlen(str));
 	lsys_list_init(&ptr->lst);

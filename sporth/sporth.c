@@ -100,8 +100,8 @@ DTOR(sporth_dtor)
 MFUN(sporth_setp)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
-	int i = *(m_uint*)(shred->mem + SZ_INT);
-	m_float val = *(m_float*)(shred->mem + SZ_INT*2);
+	int i = *(m_uint*)MEM(SZ_INT);
+	m_float val = *(m_float*)MEM(SZ_INT*2);
 	data->pd.p[i] = val;
 	RETURN->d.v_float = val;
 }
@@ -109,9 +109,9 @@ MFUN(sporth_setp)
 MFUN(sporth_set_table)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
-	int i = *(m_uint*)(shred->mem + SZ_INT);
-	m_float val = *(m_float*)(shred->mem + SZ_INT*2);
-	const char * cstr = STRING(*(M_Object*)(shred->mem + SZ_INT*2 + SZ_FLOAT));
+	int i = *(m_uint*)MEM(SZ_INT);
+	m_float val = *(m_float*)MEM(SZ_INT*2);
+	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT*2 + SZ_FLOAT));
 	char* ftname = strndup(cstr, (strlen(cstr) + 1));
 
   int err = 0;
@@ -135,9 +135,9 @@ MFUN(sporth_set_table)
 MFUN(sporth_get_table)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
-	int i = *(m_uint*)(shred->mem + SZ_INT);
+	int i = *(m_uint*)MEM(SZ_INT);
   sp_ftbl *ft;
-	const char * cstr = STRING(*(M_Object*)(shred->mem + SZ_INT));
+	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
 	char* ftname = strndup(cstr, (strlen(cstr) + 1));
   int err = 0;
 
@@ -160,14 +160,14 @@ MFUN(sporth_get_table)
 MFUN(sporth_getp)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
-	int i = *(m_uint*)(shred->mem + SZ_INT);
+	int i = *(m_uint*)MEM(SZ_INT);
   RETURN->d.v_float = data->pd.p[i];
 }
 
 MFUN(sporth_parse_string)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
-	const char * cstr = STRING(*(M_Object*)(shred->mem + SZ_INT));
+	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
 	char* str = strndup(cstr, (strlen(cstr) + 1));
 	if(!data->parsed) {
   	data->parsed = 1;
@@ -183,7 +183,7 @@ MFUN(sporth_parse_string)
 MFUN(sporth_parse_file)
 {
 	sporthData * data = (sporthData*)o->ugen->ug;
-	const char * cstr = STRING(*(M_Object*)(shred->mem + SZ_INT));
+	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
 	char* str = strndup(cstr, (strlen(cstr) + 1));
 
 	if(plumber_open_file(&data->pd, str) == PLUMBER_OK) {

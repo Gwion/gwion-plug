@@ -101,7 +101,7 @@ static void dtor(M_Object o, VM_Shred shred)
 MFUN(midifile_open)
 {
   delete SEQ(o);
-  SEQ(o) = new Alg_seq(STRING(*(M_Object*)(shred->mem + SZ_INT)), *(m_uint*)(shred->mem + SZ_INT), 0);
+  SEQ(o) = new Alg_seq(STRING(*(M_Object*)MEM(SZ_INT)), *(m_uint*)MEM(SZ_INT), 0);
   Alg_seq* seq = SEQ(o);
   seq->convert_to_seconds();
 }
@@ -115,30 +115,30 @@ MFUN(midifile_tracks)
 MFUN(midifile_add_track)
 {
   Alg_seq* seq = SEQ(o);
-  seq->add_track(*(m_uint*)(shred->mem + SZ_INT));
+  seq->add_track(*(m_uint*)MEM(SZ_INT));
 }
 MFUN(midifile_track_len)
 {
   Alg_seq* seq = SEQ(o);
-  RETURN->d.v_uint = seq->track(*(m_uint*)(shred->mem + SZ_INT))->length();
+  RETURN->d.v_uint = seq->track(*(m_uint*)MEM(SZ_INT))->length();
 
 }
 MFUN(midifile_event)
 {
   Alg_seq* seq = SEQ(o);
-  m_uint track = *(m_uint*)(shred->mem + SZ_INT);
-  m_uint n     = *(m_uint*)(shred->mem + SZ_INT*2);
+  m_uint track = *(m_uint*)MEM(SZ_INT);
+  m_uint n     = *(m_uint*)MEM(SZ_INT*2);
 //  if(track < 0 || track >= seq->tracks())
 //    exit(12);
   Alg_track* tr = seq->track(track);
-//  M_Object obj = *(M_Object*)(shred->mem + SZ_INT*3);
+//  M_Object obj = *(M_Object*)MEM(SZ_INT*3);
   M_Object obj = new_M_Object(shred);
   initialize_object(obj, &t_midifileev);
   if(n < 0 || n >= tr->length())
       TYPE(obj) = 'e'; // error
   else
   {
-    Alg_event* ev = tr[0][*(m_uint*)(shred->mem + SZ_INT*2)];
+    Alg_event* ev = tr[0][*(m_uint*)MEM(SZ_INT*2)];
     TYPE(obj) = ev->get_type();
     if(ev->get_type() == 'n')
     {
@@ -155,7 +155,7 @@ MFUN(midifile_event)
 MFUN(midifile_add_note)
 {
   Alg_seq* seq = SEQ(o);
-  M_Object obj = *(M_Object*)(shred->mem + SZ_INT);
+  M_Object obj = *(M_Object*)MEM(SZ_INT);
   if(TYPE(obj) != 'n')
   {
     err_msg(INSTR_, 0, "not a note.");
@@ -167,14 +167,14 @@ MFUN(midifile_add_note)
   ev->pitch = PITCH(obj);
   ev->loud  = LOUD(obj);
   ev->dur   = DUR(obj);
-  seq->add_event(ev, *(m_uint*)(shred->mem + SZ_INT*2));
-  Alg_track* tr = seq->track(*(m_uint*)(shred->mem + SZ_INT*2));
+  seq->add_event(ev, *(m_uint*)MEM(SZ_INT*2));
+  Alg_track* tr = seq->track(*(m_uint*)MEM(SZ_INT*2));
   tr->set_start_time(ev, START(obj));
 }
 
 MFUN(midifile_write)
 {
   Alg_seq* seq = SEQ(o);
-  seq->write(STRING(*(M_Object*)(shred->mem + SZ_INT)));
+  seq->write(STRING(*(M_Object*)MEM(SZ_INT)));
 
 }

@@ -95,7 +95,7 @@ static MFUN(pm_name)
 
 static SFUN(pm_error)
 {
-  RETURN->d.v_uint = (m_uint)new_String(shred, (m_str)Pm_GetErrorText(*(m_int*)(shred->mem + SZ_INT)));
+  RETURN->d.v_uint = (m_uint)new_String(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(SZ_INT)));
 }
 
 static MFUN(pm_close)
@@ -123,7 +123,7 @@ static MFUN(midiout_open)
 {
   if(ID(o) > -1)
     release_info(ID(o), o);
-  ID(o) = *(m_uint*)(shred->mem + SZ_INT);
+  ID(o) = *(m_uint*)MEM(SZ_INT);
   MidiInfo* info = get(shred->vm_ref, ID(o));
   vector_add(info->client, (vtype)o);
   if(!info->stream)
@@ -141,7 +141,7 @@ static MFUN(midiout_send_self)
 static MFUN(midiout_send)
 {
   RETURN->d.v_uint = Pm_WriteShort(STREAM(o), 0, 
-    Pm_Message(*(m_uint*)(shred->mem + SZ_INT), *(m_uint*)(shred->mem + SZ_INT*2), *(m_uint*)(shred->mem + SZ_INT*3)));
+    Pm_Message(*(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2), *(m_uint*)MEM(SZ_INT*3)));
 }
 
 static void* pm_recv(void* data)
@@ -171,7 +171,7 @@ static void* pm_recv(void* data)
 
 static MFUN(midiin_open)
 {
-  ID(o) = *(m_uint*)(shred->mem + SZ_INT);
+  ID(o) = *(m_uint*)MEM(SZ_INT);
   MidiInfo* info = get(shred->vm_ref, ID(o));
   if(!info->thread)
   {

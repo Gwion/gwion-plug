@@ -97,8 +97,8 @@ static MFUN(osc_addr)
 {
   if(ADDR(o))
     lo_address_free(ADDR(o));
-  m_str host = STRING(*(M_Object*)(shred->mem + SZ_INT)); 
-  m_str port = STRING(*(M_Object*)(shred->mem + SZ_INT * 2));
+  m_str host = STRING(*(M_Object*)MEM(SZ_INT)); 
+  m_str port = STRING(*(M_Object*)MEM(SZ_INT * 2));
   RETURN->d.v_uint = (ADDR(o) = lo_address_new(host, port)) ? 1 : 0;
 }
 
@@ -138,7 +138,7 @@ static MFUN(osc_send)
     release_Arg(arg);
   }
   vector_clear(ARGS(o));
-  RETURN->d.v_uint = lo_send_message(ADDR(o), STRING(*(M_Object*)(shred->mem + SZ_INT)), msg) ? 1 : 0;
+  RETURN->d.v_uint = lo_send_message(ADDR(o), STRING(*(M_Object*)MEM(SZ_INT)), msg) ? 1 : 0;
 }
 
 static INSTR(oscsend_add_int)
@@ -146,9 +146,9 @@ static INSTR(oscsend_add_int)
 #ifdef DEBUG_INSTR
   debug_msg("instr", "int => oscsend");
 #endif
-  shred->reg -= SZ_INT;
-  vector_add(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('i', shred->reg));
-  release(**(M_Object**)shred->reg, shred);
+  POP_REG(shred, SZ_INT);
+  vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('i', REG(0)));
+  release(**(M_Object**)REG(0), shred);
 }
 
 static INSTR(oscsend_add_float)
@@ -156,9 +156,9 @@ static INSTR(oscsend_add_float)
 #ifdef DEBUG_INSTR
   debug_msg("instr", "float => oscsend");
 #endif
-  shred->reg -= SZ_INT;
-  vector_add(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('d', shred->reg));
-  release(**(M_Object**)shred->reg, shred);
+  POP_REG(shred, SZ_INT);
+  vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('d', REG(0)));
+  release(**(M_Object**)REG(0), shred);
 }
 
 static INSTR(oscsend_add_string)
@@ -166,9 +166,9 @@ static INSTR(oscsend_add_string)
 #ifdef DEBUG_INSTR
   debug_msg("instr", "string => oscsend");
 #endif
-  shred->reg -= SZ_INT;
-  vector_add(ARGS((**(M_Object**)shred->reg)), (vtype)new_Arg('s', shred->reg));
-  release(**(M_Object**)shred->reg, shred);
+  POP_REG(shred, SZ_INT);
+  vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('s', REG(0)));
+  release(**(M_Object**)REG(0), shred);
 }
 
 static void osc_error_handler(int num, const char *msg, const char *where)
@@ -239,7 +239,7 @@ static MFUN(osc_port)
   /*Except(shred)*/
   /*return;*/
   /*}*/
-  m_int port = *(m_int*)(shred->mem + SZ_INT);
+  m_int port = *(m_int*)MEM(SZ_INT);
   char c[256];
   if(SERV(o))
     release_server(SERV(o));
@@ -274,8 +274,8 @@ static MFUN(osc_add_method)
   m_uint i;
   struct Method* m = NULL;
   struct Server* s = SERV(o);
-  m_str path = STRING(*(M_Object*)(shred->mem + SZ_INT));
-  m_str type = STRING(*(M_Object*)(shred->mem + SZ_INT * 2));
+  m_str path = STRING(*(M_Object*)MEM(SZ_INT));
+  m_str type = STRING(*(M_Object*)MEM(SZ_INT * 2));
   if(!s)
     return;
   for(i = 0; i < vector_size(s->method); i++)
@@ -337,9 +337,9 @@ static MFUN(oscin_rem)
 {
   m_uint i;
   struct Method* m = NULL;
-  shred->reg -= SZ_INT*2;
-  m_str path = STRING(*(M_Object*)(shred->mem));
-  m_str type = STRING(*(M_Object*)(shred->mem + SZ_INT));
+  POP_REG(shred, SZ_INT*2);
+  m_str path = STRING(*(M_Object*)MEM(0));
+  m_str type = STRING(*(M_Object*)MEM(SZ_INT));
   if(!SERV(o)) // no server
     return;
   for(i = 0; i < vector_size(METH(o)); i++)

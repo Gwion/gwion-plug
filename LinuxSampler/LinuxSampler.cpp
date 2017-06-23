@@ -119,35 +119,35 @@ DTOR(linuxsampler_dtor)
 MFUN(linuxsampler_load)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data + o_ls_data);
-  ls_obj->load(STRING(*(M_Object*)(shred->mem + SZ_INT)), 0);
+  ls_obj->load(STRING(*(M_Object*)MEM(SZ_INT)), 0);
 }
 
 
 MFUN(linuxsampler_load_instrument)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data + o_ls_data);
-  ls_obj->load(STRING(*(M_Object*)(shred->mem + SZ_INT)), *(m_uint*)(shred->mem + SZ_INT*2));
+  ls_obj->load(STRING(*(M_Object*)MEM(SZ_INT)), *(m_uint*)MEM(SZ_INT*2));
 }
 
 MFUN(linuxsampler_noteOn)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOn(
-    (RETURN->d.v_uint = *(m_int*)(shred->mem + SZ_INT)), *(m_int*)(shred->mem + SZ_INT*2), 0 );
+    (RETURN->d.v_uint = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2), 0 );
 }
 
 MFUN(linuxsampler_noteOff)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOff(
-    (RETURN->d.v_uint = *(m_int*)(shred->mem + SZ_INT)), *(m_int*)(shred->mem + SZ_INT*2),0 );
+    (RETURN->d.v_uint = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2),0 );
 }
 
 MFUN(linuxsampler_pitchbend)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendPitchbend(
-    *(m_int*)(shred->mem + SZ_INT), *(m_int*)(shred->mem + SZ_INT*2), 0 );
+    *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2), 0 );
 }
 
 MFUN(linuxsampler_status)
@@ -165,7 +165,7 @@ MFUN(linuxsampler_getgain)
 MFUN(linuxsampler_setgain)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
-  RETURN->d.v_float = *(m_float*)(shred->mem + SZ_INT);
+  RETURN->d.v_float = *(m_float*)MEM(SZ_INT);
   if( ls_obj->Engine() ) ls_obj->Engine()->Volume(RETURN->d.v_float);
 }
 
@@ -178,7 +178,7 @@ MFUN(linuxsampler_getpan)
 MFUN(linuxsampler_setpan)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
-  RETURN->d.v_float = *(m_float*)(shred->mem + SZ_INT);
+  RETURN->d.v_float = *(m_float*)MEM(SZ_INT);
   if(ls_obj->Engine())
     ls_obj->Engine()->Pan(RETURN->d.v_float);
 }

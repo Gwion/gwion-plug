@@ -31,10 +31,10 @@ static m_float** gw2c(M_Vector vec, m_uint* x, m_uint* y) {
 
 static SFUN(gw_knn)
 {
-  M_Object data_obj = *(M_Object*)(shred->mem + SZ_INT);
-  M_Object labl_obj = *(M_Object*)(shred->mem + SZ_INT*2);
-  M_Object inst_obj = *(M_Object*)(shred->mem + SZ_INT*3);
-  m_uint k          = *(m_uint*)  (shred->mem + SZ_INT*4);
+  M_Object data_obj = *(M_Object*)MEM(SZ_INT);
+  M_Object labl_obj = *(M_Object*)MEM(SZ_INT*2);
+  M_Object inst_obj = *(M_Object*)MEM(SZ_INT*3);
+  m_uint k          = *(m_uint*)  MEM(SZ_INT*4);
 
   m_uint data_x, data_y;
   m_uint inst_x, inst_y;
@@ -59,11 +59,11 @@ static SFUN(gw_knn)
 
 static SFUN(gw_kmeans)
 {
-  M_Object data_obj = *(M_Object*)(shred->mem + SZ_INT);
-  M_Object cent_obj = *(M_Object*)(shred->mem + SZ_INT*2);
-  m_uint   k        = *(m_uint*)  (shred->mem + SZ_INT*3);
-  m_uint   initial  = *(m_uint*)  (shred->mem + SZ_INT*4);
-  m_float  theta    = *(m_float*) (shred->mem + SZ_INT*5);
+  M_Object data_obj = *(M_Object*)MEM(SZ_INT);
+  M_Object cent_obj = *(M_Object*)MEM(SZ_INT*2);
+  m_uint   k        = *(m_uint*)  MEM(SZ_INT*3);
+  m_uint   initial  = *(m_uint*)  MEM(SZ_INT*4);
+  m_float  theta    = *(m_float*) MEM(SZ_INT*5);
 
   m_uint data_x, data_y;
   m_uint cent_x, cent_y;
@@ -85,10 +85,10 @@ static SFUN(gw_kmeans)
 static SFUN(gw_kmeans_refine)
 {
   m_uint i;
-  M_Object data_obj = *(M_Object*)(shred->mem + SZ_INT);
-  m_uint   iter     = *(m_uint*)  (shred->mem + SZ_INT*2);
-  m_uint   n_points = *(m_uint*)  (shred->mem + SZ_INT*3);
-  m_uint   n_label  = *(m_uint*)  (shred->mem + SZ_INT*4);
+  M_Object data_obj = *(M_Object*)MEM(SZ_INT);
+  m_uint   iter     = *(m_uint*)  MEM(SZ_INT*2);
+  m_uint   n_points = *(m_uint*)  MEM(SZ_INT*3);
+  m_uint   n_label  = *(m_uint*)  MEM(SZ_INT*4);
 
   m_uint data_x, data_y;
   m_float** data = gw2c(data_obj->d.array, &data_x, &data_y);
