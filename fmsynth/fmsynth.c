@@ -266,76 +266,76 @@ IMPORT
   *unknown        = FMSYNTH_STATUS_MESSAGE_UNKNOWN;
 
   CHECK_BB(import_class_begin(env, &t_fmsynth, env->global_nspc, ctor, dtor))
-  o_fmsynth_data = import_mvar(env, "int", "&synth",   0, 0);
+  o_fmsynth_data = import_var(env, "int", "&synth",   0, NULL);
   CHECK_BB(o_fmsynth_data)
-  o_fmsynth_name = import_mvar(env, "string", "name",   0, 0);
+  o_fmsynth_name = import_var(env, "string", "name",   0, NULL);
   CHECK_BB(o_fmsynth_name)
-  o_fmsynth_author = import_mvar(env, "string", "author",   0, 0);
+  o_fmsynth_author = import_var(env, "string", "author",   0, NULL);
   CHECK_BB(o_fmsynth_author)
 
   // params
-  o_amp = import_svar(env, "int", "AMP",      1, 0, amp);
+  o_amp = import_var(env, "int", "AMP",      ae_flag_static | ae_flag_const, amp);
   CHECK_BB(o_pan)
-  o_pan = import_svar(env, "int", "PAN",      1, 0, pan);
+  o_pan = import_var(env, "int", "PAN",      ae_flag_static | ae_flag_const, pan);
   CHECK_BB(o_pan)
 
-  o_freq_mod = import_svar(env, "int", "FREQ_MOD",      1, 0, freq_mod);
+  o_freq_mod = import_var(env, "int", "FREQ_MOD",      ae_flag_static | ae_flag_const, freq_mod);
   CHECK_BB(o_freq_offset)
-  o_freq_offset = import_svar(env, "int", "FREQ_OFFSET",      1, 0, freq_offset);
+  o_freq_offset = import_var(env, "int", "FREQ_OFFSET",      ae_flag_static | ae_flag_const, freq_offset);
   CHECK_BB(o_freq_mod)
-  o_target0 = import_svar(env, "int", "TARGET0",      1, 0, target0);
+  o_target0 = import_var(env, "int", "TARGET0",      ae_flag_static | ae_flag_const, target0);
   CHECK_BB(o_target0)
-  o_target1 = import_svar(env, "int", "TARGET1",      1, 0, target1);
+  o_target1 = import_var(env, "int", "TARGET1",      ae_flag_static | ae_flag_const, target1);
   CHECK_BB(o_target1)
-  o_target2 = import_svar(env, "int", "TARGET2",      1, 0, target2);
+  o_target2 = import_var(env, "int", "TARGET2",      ae_flag_static | ae_flag_const, target2);
   CHECK_BB(o_target2)
-  o_delay0 = import_svar(env, "int", "DELAY0",      1, 0, delay0);
+  o_delay0 = import_var(env, "int", "DELAY0",      ae_flag_static | ae_flag_const, delay0);
   CHECK_BB(o_delay0)
-  o_delay1 = import_svar(env, "int", "DELAY1",      1, 0, delay1);
+  o_delay1 = import_var(env, "int", "DELAY1",      ae_flag_static | ae_flag_const, delay1);
   CHECK_BB(o_delay0)
-  o_delay2 = import_svar(env, "int", "DELAY2",      1, 0, delay2);
+  o_delay2 = import_var(env, "int", "DELAY2",      ae_flag_static | ae_flag_const, delay2);
   CHECK_BB(o_delay2)
-  o_rel = import_svar(env, "int", "RELEASE",      1, 0, rel);
+  o_rel = import_var(env, "int", "RELEASE",      ae_flag_static | ae_flag_const, rel);
   CHECK_BB(o_rel)
-  o_mid_point = import_svar(env, "int", "MID_POINT",      1, 0, mid_point);
+  o_mid_point = import_var(env, "int", "MID_POINT",      ae_flag_static | ae_flag_const, mid_point);
   CHECK_BB(o_mid_point)
-  o_low_fact = import_svar(env, "int", "LOW_FACTOR",      1, 0, low_fact);
+  o_low_fact = import_var(env, "int", "LOW_FACTOR",      ae_flag_static | ae_flag_const, low_fact);
   CHECK_BB(o_low_fact)
-  o_high_fact = import_svar(env, "int", "HIGH_FACTOR",      1, 0, high_fact);
+  o_high_fact = import_var(env, "int", "HIGH_FACTOR",      ae_flag_static | ae_flag_const, high_fact);
   CHECK_BB(o_high_fact)
-  o_velo_sens = import_svar(env, "int", "VELO_SENS",      1, 0, velo_sens);
+  o_velo_sens = import_var(env, "int", "VELO_SENS",      ae_flag_static | ae_flag_const, velo_sens);
   CHECK_BB(o_velo_sens)
-  o_wheel_sens = import_svar(env, "int", "WHEEL_SENS",      1, 0, wheel_sens);
+  o_wheel_sens = import_var(env, "int", "WHEEL_SENS",      ae_flag_static | ae_flag_const, wheel_sens);
   CHECK_BB(o_wheel_sens)
-  o_lfo_amp_sens = import_svar(env, "int", "LFO_AMP_SENS",      1, 0, lfo_amp_sens);
+  o_lfo_amp_sens = import_var(env, "int", "LFO_AMP_SENS",      ae_flag_static | ae_flag_const, lfo_amp_sens);
   CHECK_BB(o_lfo_amp_sens)
-  o_lfo_freq_mod = import_svar(env, "int", "LFO_FREQ_MOD",      1, 0, lfo_freq_mod);
+  o_lfo_freq_mod = import_var(env, "int", "LFO_FREQ_MOD",      ae_flag_static | ae_flag_const, lfo_freq_mod);
   CHECK_BB(o_lfo_freq_mod)
-  o_enable = import_svar(env, "int", "ENABLE",      1, 0, enable);
+  o_enable = import_var(env, "int", "ENABLE",      ae_flag_static | ae_flag_const, enable);
   CHECK_BB(o_enable)
-  o_carriers = import_svar(env, "int", "CARRIERS",      1, 0, carriers);
+  o_carriers = import_var(env, "int", "CARRIERS",      ae_flag_static | ae_flag_const, carriers);
   CHECK_BB(o_carriers)
-  o_carrier0 = import_svar(env, "int", "CARRIER0",      1, 0, carrier0);
+  o_carrier0 = import_var(env, "int", "CARRIER0",      ae_flag_static | ae_flag_const, carrier0);
   CHECK_BB(o_carrier0)
 
   // global
-  o_g_vol    = import_svar(env, "int", "GVOL", 1, 0, g_vol);
+  o_g_vol    = import_var(env, "int", "GVOL", ae_flag_static | ae_flag_const, g_vol);
   CHECK_BB(o_g_vol)
 
-  o_g_lfo    = import_svar(env, "int", "GLFO",      1, 0, g_lfo);
+  o_g_lfo    = import_var(env, "int", "GLFO",      ae_flag_static | ae_flag_const, g_lfo);
   CHECK_BB(o_g_lfo)
   // status
-  o_ok    = import_svar(env, "int", "OK",      1, 0, ok);
+  o_ok    = import_var(env, "int", "OK",      ae_flag_static | ae_flag_const, ok);
   CHECK_BB(o_ok)
-  o_busy   = import_svar(env, "int", "BUSY",   1, 0, busy);
+  o_busy   = import_var(env, "int", "BUSY",   ae_flag_static | ae_flag_const, busy);
   CHECK_BB(o_busy)
-  o_small  = import_svar(env, "int", "SMALL",   1, 0, small);
+  o_small  = import_var(env, "int", "SMALL",   ae_flag_static | ae_flag_const, small);
   CHECK_BB(o_small)
-  o_nonul  = import_svar(env, "int", "NONUL",   1, 0, nonul);
+  o_nonul  = import_var(env, "int", "NONUL",   ae_flag_static | ae_flag_const, nonul);
   CHECK_BB(o_nonul)
-  o_format = import_svar(env, "int", "FORMAT",   1, 0, format);
+  o_format = import_var(env, "int", "FORMAT",   ae_flag_static | ae_flag_const, format);
   CHECK_BB(o_format)
-  o_unknown = import_svar(env, "int", "UNKNOWN",   1, 0, unknown);
+  o_unknown = import_var(env, "int", "UNKNOWN",   ae_flag_static | ae_flag_const, unknown);
   CHECK_BB(o_unknown)
 
   dl_func_init(&fun, "void", "init", (m_uint)init);

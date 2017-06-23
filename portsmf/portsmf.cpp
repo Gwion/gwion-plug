@@ -36,22 +36,22 @@ m_bool import(Env env)
 {
   DL_Func fun;
   CHECK_BB(import_class_begin(env, &t_midifileev, env->global_nspc, NULL, NULL))
-  o_midiev_type = import_mvar(env, "int", "type",   1, 0);
+  o_midiev_type = import_var(env, "int", "type",   ae_flag_const, NULL);
   CHECK_BB(o_midiev_type);
-  o_midiev_pitch = import_mvar(env, "float", "pitch", 1, 0);
+  o_midiev_pitch = import_var(env, "float", "pitch", ae_flag_const, NULL);
   CHECK_BB(o_midiev_pitch);
-  o_midiev_loud  = import_mvar(env, "float", "loud",  1, 0);
+  o_midiev_loud  = import_var(env, "float", "loud",  ae_flag_const, NULL);
   CHECK_BB(o_midiev_loud);
-  o_midiev_start = import_mvar(env, "float", "start", 1, 0);
+  o_midiev_start = import_var(env, "float", "start", ae_flag_const, NULL);
   CHECK_BB(o_midiev_start);
-  o_midiev_end   = import_mvar(env, "float", "end",   1, 0);
+  o_midiev_end   = import_var(env, "float", "end",   ae_flag_const, NULL);
   CHECK_BB(o_midiev_start);
-  o_midiev_dur   = import_mvar(env, "float", "dur",   1, 0);
+  o_midiev_dur   = import_var(env, "float", "dur",   ae_flag_const, NULL);
   CHECK_BB(o_midiev_dur);
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_midifile, env->global_nspc, ctor, dtor))
-  o_midifile_seq = import_mvar(env, "int", "@seq", 0, 0);
+  o_midifile_seq = import_var(env, "int", "@seq", 0, NULL);
   CHECK_BB(o_midifile_seq);
   dl_func_init(&fun, "void", "open", (m_uint)midifile_open);
     dl_func_add_arg(&fun, "string", "filename");

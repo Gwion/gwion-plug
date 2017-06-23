@@ -173,21 +173,21 @@ IMPORT
 
   CHECK_BB(import_class_begin(env, &t_evdev, env->global_nspc, evdev_ctor, evdev_dtor))
 
-  import_mvar(env, "int", "@dummy",  0, 0);
+  import_var(env, "int", "@dummy",  0, NULL);
 
-  o_evdev_info = import_mvar(env, "int", "@info",  0, 0);
+  o_evdev_info = import_var(env, "int", "@info",  0, NULL);
   CHECK_BB(o_evdev_info)
 
-  o_evdev_time  = import_mvar(env, "float", "time",  1, 0);
+  o_evdev_time  = import_var(env, "float", "time",  ae_flag_const, NULL);
   CHECK_BB(o_evdev_time)
 
-  o_evdev_type  = import_mvar(env, "int", "type",  1, 0);
+  o_evdev_type  = import_var(env, "int", "type",  ae_flag_const, NULL);
   CHECK_BB(o_evdev_type)
 
-  o_evdev_code  = import_mvar(env, "int", "code",  1, 0);
+  o_evdev_code  = import_var(env, "int", "code",  ae_flag_const, NULL);
   CHECK_BB(o_evdev_code)
 
-  o_evdev_value = import_mvar(env, "int", "value",  1, 0);
+  o_evdev_value = import_var(env, "int", "value",  ae_flag_const, NULL);
   CHECK_BB(o_evdev_value)
 
   dl_func_init(&fun, "int", "index", (m_uint)evdev_get_index);

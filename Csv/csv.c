@@ -109,7 +109,7 @@ IMPORT{
 	// start import
 	import_class_begin(env, &t_csv, env->curr, csv_ctor, csv_dtor);
 
-	CHECK_BB((o_csv_buffer = import_mvar(env, "int", "@x",   0, 0)))
+	CHECK_BB((o_csv_buffer = import_var(env, "int", "@x",   0, NULL)))
 
 	// import functions
 	dl_func_init(&fun, "int", "load", (m_uint)gw_csv_load);

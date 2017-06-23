@@ -1191,17 +1191,17 @@ m_bool import(Env env)
 {
   DL_Func fun;
   CHECK_BB(import_class_begin(env, &t_fann_connect, env->global_nspc, NULL, NULL))
-  o_fann_from = import_mvar(env, "int",  "from", 0, 0);
+  o_fann_from = import_var(env, "int",  "from", 0, NULL);
   CHECK_BB(o_fann_from)
-  o_fann_to = import_mvar(env, "int",  "to", 0, 0);
+  o_fann_to = import_var(env, "int",  "to", 0, NULL);
   CHECK_BB(o_fann_to)
-  o_fann_weight = import_mvar(env, "int",  "weight", 0, 0);
+  o_fann_weight = import_var(env, "int",  "weight", 0, NULL);
   CHECK_BB(o_fann_weight)
   CHECK_BB(import_class_end(env))
 
   // this is for error handling
   CHECK_BB(import_class_begin(env, &t_fann_base, env->global_nspc, NULL, NULL))
-  o_fann_error = import_mvar(env, "int",  "@data", 0, 0);
+  o_fann_error = import_var(env, "int",  "@data", 0, NULL);
   CHECK_BB(o_fann_error)
   dl_func_init(&fun, "void", "log",  (m_uint)error_log);
     dl_func_add_arg(&fun, "FileIO", "f");
