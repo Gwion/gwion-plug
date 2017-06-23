@@ -31,11 +31,11 @@ IMPORT
 
   dl_func_init(&fun, "int", "mfun",  (m_uint)mfun);
     dl_func_add_arg(&fun, "int", "arg");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
 
   dl_func_init(&fun, "int", "sfun",  (m_uint)sfun);
     dl_func_add_arg(&fun, "int", "arg");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
 
   CHECK_BB(import_class_end(env))
   return 1;

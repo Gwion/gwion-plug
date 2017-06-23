@@ -191,17 +191,17 @@ IMPORT
   CHECK_BB(o_evdev_value)
 
   dl_func_init(&fun, "int", "index", (m_uint)evdev_get_index);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "int", "index", (m_uint)evdev_index);
     dl_func_add_arg(&fun, "int", "i");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "string", "name", (m_uint)evdev_name);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "int", "recv", (m_uint)evdev_recv);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   CHECK_BB(import_class_end(env))
   return 1;

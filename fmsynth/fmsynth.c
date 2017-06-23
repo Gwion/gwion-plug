@@ -340,42 +340,42 @@ IMPORT
 
   dl_func_init(&fun, "void", "init", (m_uint)init);
     dl_func_add_arg(&fun, "int", "plyphony");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "parameter", (m_uint)parameter);
     dl_func_add_arg(&fun, "int", "parameter");
     dl_func_add_arg(&fun, "int", "operator_index");
     dl_func_add_arg(&fun, "float", "value");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "parameter", (m_uint)global_parameter);
     dl_func_add_arg(&fun, "int", "parameter");
     dl_func_add_arg(&fun, "float", "value");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "noteon", (m_uint)noteon);
     dl_func_add_arg(&fun, "int", "note");
     dl_func_add_arg(&fun, "int", "velocity");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "reset", (m_uint)synth_reset);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "noteoff", (m_uint)noteoff);
     dl_func_add_arg(&fun, "int", "note");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "sustain", (m_uint)sustain);
     dl_func_add_arg(&fun, "int", "enable");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "wheel", (m_uint)wheel);
     dl_func_add_arg(&fun, "int", "value");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "bend", (m_uint)bend);
     dl_func_add_arg(&fun, "int", "value");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "release", (m_uint)release_all);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "load", (m_uint)load);
     dl_func_add_arg(&fun, "string", "filename");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "save", (m_uint)save);
     dl_func_add_arg(&fun, "string", "filename");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
   return 1;
 }

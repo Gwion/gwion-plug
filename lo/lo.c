@@ -401,10 +401,10 @@ IMPORT
   dl_func_init(&fun, "int", "addr", (m_uint)osc_addr);
     dl_func_add_arg(&fun, "string", "host");
     dl_func_add_arg(&fun, "string", "port");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "send", (m_uint)osc_send);
     dl_func_add_arg(&fun, "string", "path");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_loin, env->global_nspc, loin_ctor, NULL))
@@ -417,25 +417,25 @@ IMPORT
   dl_func_init(&fun, "int", "add", (m_uint)osc_add_method);
     dl_func_add_arg(&fun, "string", "path");
     dl_func_add_arg(&fun, "string", "type");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "int", "port", (m_uint)osc_get_port);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "port", (m_uint)osc_port);
     dl_func_add_arg(&fun, "int", "port");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "start", (m_uint)oscin_start);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "stop", (m_uint)oscin_stop);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "recv", (m_uint)osc_recv);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "get_i", (m_uint)oscin_get_i);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "float", "get_f", (m_uint)oscin_get_f);
-  CHECK_BB(import_mfun(env, &fun))  
+  CHECK_BB(import_fun(env, &fun, 0))  
   dl_func_init(&fun, "string", "get_s", (m_uint)oscin_get_s);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
 
   CHECK_BB(import_class_end(env))

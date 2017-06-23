@@ -122,13 +122,13 @@ IMPORT
 	dl_func_init(&fun, "void", "parse", (m_uint)gw_lsys_parse);
 		dl_func_add_arg(&fun, "int",    "ord");
 		dl_func_add_arg(&fun, "string", "str");
-	CHECK_BB(import_mfun(env, &fun))
+	CHECK_BB(import_fun(env, &fun, 0))
 	dl_func_init(&fun, "void", "reset", (m_uint)gw_lsys_reset);
-	CHECK_BB(import_mfun(env, &fun))
+	CHECK_BB(import_fun(env, &fun, 0))
 	dl_func_init(&fun, "int", "size", (m_uint)gw_lsys_size);
-	CHECK_BB(import_mfun(env, &fun))
+	CHECK_BB(import_fun(env, &fun, 0))
 	dl_func_init(&fun, "string", "get", (m_uint)gw_lsys_get);
-	CHECK_BB(import_mfun(env, &fun))
+	CHECK_BB(import_fun(env, &fun, 0))
 	CHECK_BB(import_class_end(env))
 	return 1;
 }

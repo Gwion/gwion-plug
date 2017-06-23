@@ -237,32 +237,32 @@ m_bool import_machine(Env env)
 
   dl_func_init(&fun, "void",  "add",     (m_uint)machine_add);
   dl_func_add_arg(&fun,       "string",  "filename");
-  CHECK_OB(import_sfun(env,  fun))
+  CHECK_OB(import_fun(env,  fun), ae_flag_static))
 
   dl_func_init(&fun, "int[]", "shreds", (m_uint)machine_shreds);
-  CHECK_OB(import_sfun(env,  fun))
+  CHECK_OB(import_fun(env,  fun), ae_flag_static))
 
   dl_func_init(&fun, "void",  "doc",     (m_uint)machine_doc);
   dl_func_add_arg(&fun,       "string",  "context");
-  CHECK_OB(import_sfun(env,  fun))
+  CHECK_OB(import_fun(env,  fun), ae_flag_static))
 
   dl_func_init(&fun, "void",  "doc_update",     (m_uint)machine_doc_update);
-  CHECK_OB(import_sfun(env,  fun))
+  CHECK_OB(import_fun(env,  fun), ae_flag_static))
 
   dl_func_init(&fun, "void",  "adept",     (m_uint)machine_adept);
   dl_func_add_arg(&fun,       "string",  "context");
-  CHECK_OB(import_sfun(env,  fun))
+  CHECK_OB(import_fun(env,  fun), ae_flag_static))
 
 //  dl_func_init(&fun, "string",  "check",     (m_uint)machine_check);
   dl_func_init(&fun, "int",  "check",     (m_uint)machine_check);
   dl_func_add_arg(&fun,       "string",  "prefix");
   dl_func_add_arg(&fun,       "string",  "code");
-  CHECK_OB(import_sfun(env,  fun))
+  CHECK_OB(import_fun(env,  fun), ae_flag_static))
 
   dl_func_init(&fun, "void",  "compile",     (m_uint)machine_compile);
   dl_func_add_arg(&fun,       "string",  "prefix");
   dl_func_add_arg(&fun,       "string",  "filename");
-  CHECK_OB(import_sfun(env,  fun))
+  CHECK_OB(import_fun(env,  fun), ae_flag_static))
 
   CHECK_BB(import_class_end(env))
   return 1;

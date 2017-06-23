@@ -214,37 +214,35 @@ IMPORT
   o_pm_msg = import_mvar(env, "int",  "@msg",   0, 0);
   CHECK_BB(o_pm_msg)
   dl_func_init(&fun, "string", "name", (m_uint)pm_name);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "string", "error", (m_uint)pm_error);
     dl_func_add_arg(&fun, "int", "id");
-  CHECK_BB(import_sfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, ae_flag_static))
   dl_func_init(&fun, "int", "close", (m_uint)pm_close);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(add_global_type(env, &t_midiout))
   CHECK_BB(import_class_begin(env, &t_midiout, env->global_nspc, NULL, NULL))
   dl_func_init(&fun, "int", "open", (m_uint)midiout_open);
     dl_func_add_arg(&fun, "int", "id");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "send", (m_uint)midiout_send_self);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "send", (m_uint)midiout_send);
     dl_func_add_arg(&fun, "int", "status");
     dl_func_add_arg(&fun, "int", "data1");
     dl_func_add_arg(&fun, "int", "data2");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(add_global_type(env, &t_midiin))
   CHECK_BB(import_class_begin(env, &t_midiin, env->global_nspc, NULL, NULL))
   dl_func_init(&fun, "int", "open", (m_uint)midiin_open);
     dl_func_add_arg(&fun, "int", "id");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "recv", (m_uint)midiin_recv);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "read", (m_uint)midiin_read);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
 
   return 1;

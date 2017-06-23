@@ -113,21 +113,21 @@ static m_bool import_sinosc(Env env)
   CHECK_BB(import_class_begin(env, &t_sinosc, env->global_nspc, sinosc_ctor, sinosc_dtor))
   dl_func_init(&fun, "void", "init", (m_uint)sinosc_size);
   dl_func_add_arg(&fun, "int", "size");
-  CHECK_BB((f = import_mfun(env, &fun)))
+  CHECK_BB((f = import_fun(env, &fun)), 0))
   dl_func_init(&fun, "void", "init", (m_uint)sinosc_size_phase);
   dl_func_add_arg(&fun, "int", "size");
   dl_func_add_arg(&fun, "float", "phase");
-  CHECK_BB((f = import_mfun(env, &fun)))
+  CHECK_BB((f = import_fun(env, &fun)), 0))
   dl_func_init(&fun, "float", "freq", (m_uint)sinosc_get_freq);
-  CHECK_BB((f = import_mfun(env, &fun)))
+  CHECK_BB((f = import_fun(env, &fun)), 0))
   dl_func_init(&fun, "float", "freq", (m_uint)sinosc_set_freq);
   arg = dl_func_add_arg(&fun, "float", "freq");
-  CHECK_BB((f = import_mfun(env, &fun)))
+  CHECK_BB((f = import_fun(env, &fun)), 0))
   dl_func_init(&fun, "float", "amp", (m_uint)sinosc_get_amp);
-  CHECK_BB((f = import_mfun(env, &fun)))
+  CHECK_BB((f = import_fun(env, &fun)), 0))
   dl_func_init(&fun, "float", "amp", (m_uint)sinosc_set_amp);
   arg = dl_func_add_arg(&fun, "float", "amp");
-  CHECK_BB((f = import_mfun(env, &fun)))
+  CHECK_BB((f = import_fun(env, &fun)), 0))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -169,10 +169,10 @@ static m_bool import_gain(Env env)
   CHECK_BB(add_global_type(env, &t_gain))
   CHECK_BB(import_class_begin(env, &t_gain, env->global_nspc, gain_ctor, gain_dtor))
   dl_func_init(&fun, "float", "gain", (m_uint)gain_get_gain);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
   dl_func_init(&fun, "float", "gain", (m_uint)gain_set_gain);
   dl_func_add_arg(&fun, "float", "arg0");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -215,10 +215,10 @@ static m_bool import_impulse(Env env)
   CHECK_BB(add_global_type(env, &t_impulse))
   CHECK_BB(import_class_begin(env, &t_impulse, env->global_nspc, impulse_ctor, impulse_dtor))
   dl_func_init(&fun, "float", "next", (m_uint)impulse_get_next);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
   dl_func_init(&fun, "float", "next", (m_uint)impulse_set_next);
   dl_func_add_arg(&fun, "float", "arg0");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -318,10 +318,10 @@ static m_bool import_step(Env env)
   CHECK_BB(add_global_type(env, &t_step))
   CHECK_BB(import_class_begin(env, &t_step, env->global_nspc, step_ctor, step_dtor))
   dl_func_init(&fun, "float", "next", (m_uint)step_get_next);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
   dl_func_init(&fun, "float", "next", (m_uint)step_set_next);
   dl_func_add_arg(&fun, "float", "arg0");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun), 0))
   CHECK_BB(import_class_end(env))
   return 1;
 }

@@ -56,32 +56,32 @@ m_bool import(Env env)
   dl_func_init(&fun, "void", "open", (m_uint)midifile_open);
     dl_func_add_arg(&fun, "string", "filename");
     dl_func_add_arg(&fun, "int", "smf");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "tracks", (m_uint)midifile_tracks);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "int", "len", (m_uint)midifile_track_len);
     dl_func_add_arg(&fun, "int", "track");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "MidiFileEv", "event", (m_uint)midifile_event);
     dl_func_add_arg(&fun, "int", "track");
     dl_func_add_arg(&fun, "int", "event_number");
 //    dl_func_add_arg(&fun, "MidiFileEv", "event");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "void", "add_track", (m_uint)midifile_add_track);
     dl_func_add_arg(&fun, "int", "number");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "int", "add_note", (m_uint)midifile_add_note);
     dl_func_add_arg(&fun, "int", "track");
     dl_func_add_arg(&fun, "MidiFileEv", "note");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
 
   dl_func_init(&fun, "void", "write", (m_uint)midifile_write);
     dl_func_add_arg(&fun, "string", "filename");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
   return 1;
 }

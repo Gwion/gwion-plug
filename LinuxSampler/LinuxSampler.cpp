@@ -195,34 +195,34 @@ m_bool import(Env env)
   o_ls_data = import_mvar(env, (m_str)"int", (m_str)"@sampler", 0, 0);
   dl_func_init(&fun, "void", "load", (m_uint)linuxsampler_load);
     dl_func_add_arg(&fun, "string", "filename");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "load", (m_uint)linuxsampler_load_instrument);
     dl_func_add_arg(&fun, "string", "filename");
     dl_func_add_arg(&fun, "int", "index");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "noteOn", (m_uint)linuxsampler_noteOn);
     dl_func_add_arg(&fun, "int", "note");
     dl_func_add_arg(&fun, "int", "velocity");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "noteOff", (m_uint)linuxsampler_noteOff);
     dl_func_add_arg(&fun, "int", "note");
     dl_func_add_arg(&fun, "int", "velocity");
   dl_func_init(&fun, "void", "noteOff", (m_uint)linuxsampler_pitchbend);
     dl_func_add_arg(&fun, "int", "pitch");
     dl_func_add_arg(&fun, "int", "note");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "int", "status", (m_uint)linuxsampler_status);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "float", "gain", (m_uint)linuxsampler_getgain);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "float", "gain", (m_uint)linuxsampler_setgain);
     dl_func_add_arg(&fun, "float", "f");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "float", "pan", (m_uint)linuxsampler_getpan);
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "float", "pan", (m_uint)linuxsampler_setpan);
     dl_func_add_arg(&fun, "float", "f");
-  CHECK_BB(import_mfun(env, &fun))
+  CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env));
   return 1;
 }
