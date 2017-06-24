@@ -15,6 +15,8 @@
 #include "err_msg.h"
 #include "lang.h"
 
+extern m_int o_fileio_file;
+
 static struct Type_ t_fann_connect = { "FANN_connect", sizeof(m_uint), &t_object };
 static struct Type_ t_fann_base =    { "FANN_base",    sizeof(m_uint), &t_object };
 static struct Type_ t_fann =         { "FANN",         sizeof(m_uint), &t_fann_base };
@@ -1191,17 +1193,17 @@ m_bool import(Env env)
 {
   DL_Func fun;
   CHECK_BB(import_class_begin(env, &t_fann_connect, env->global_nspc, NULL, NULL))
-  o_fann_from = import_var(env, "int",  "from", 0, NULL);
+  o_fann_from = import_var(env, "int",  "from", ae_flag_member, NULL);
   CHECK_BB(o_fann_from)
-  o_fann_to = import_var(env, "int",  "to", 0, NULL);
+  o_fann_to = import_var(env, "int",  "to", ae_flag_member, NULL);
   CHECK_BB(o_fann_to)
-  o_fann_weight = import_var(env, "int",  "weight", 0, NULL);
+  o_fann_weight = import_var(env, "int",  "weight", ae_flag_member, NULL);
   CHECK_BB(o_fann_weight)
   CHECK_BB(import_class_end(env))
 
   // this is for error handling
   CHECK_BB(import_class_begin(env, &t_fann_base, env->global_nspc, NULL, NULL))
-  o_fann_error = import_var(env, "int",  "@data", 0, NULL);
+  o_fann_error = import_var(env, "int",  "@data", ae_flag_member, NULL);
   CHECK_BB(o_fann_error)
   dl_func_init(&fun, "void", "log",  (m_uint)error_log);
     dl_func_add_arg(&fun, "FileIO", "f");

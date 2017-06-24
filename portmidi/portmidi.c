@@ -200,18 +200,18 @@ IMPORT
 {
   DL_Func fun;
   CHECK_BB(import_class_begin(env, &t_portmidi, env->global_nspc, pm_ctor, pm_dtor))
-   import_var(env, "int",  "@dummy",   0, NULL);
-  o_pm_stream = import_var(env, "int",  "@stream",   0, NULL);
+   import_var(env, "int",  "@dummy", ae_flag_member, NULL);
+  o_pm_stream = import_var(env, "int",  "@stream", ae_flag_member, NULL);
   CHECK_BB(o_pm_stream)
-  o_pm_id = import_var(env, "int",  "id",   0, NULL);
+  o_pm_id = import_var(env, "int",  "id", ae_flag_member, NULL);
   CHECK_BB(o_pm_id)
-  o_pm_status  = import_var(env, "int",  "status",   0, NULL);
+  o_pm_status  = import_var(env, "int",  "status", ae_flag_member, NULL);
   CHECK_BB(o_pm_status)
-  o_pm_data1 = import_var(env, "int",  "data1",   0, NULL);
+  o_pm_data1 = import_var(env, "int",  "data1", ae_flag_member, NULL);
   CHECK_BB(o_pm_data1)
-  o_pm_data2 = import_var(env, "int",  "data2",   0, NULL);
+  o_pm_data2 = import_var(env, "int",  "data2", ae_flag_member, NULL);
   CHECK_BB(o_pm_data2)
-  o_pm_msg = import_var(env, "int",  "@msg",   0, NULL);
+  o_pm_msg = import_var(env, "int",  "@msg", ae_flag_member, NULL);
   CHECK_BB(o_pm_msg)
   dl_func_init(&fun, "string", "name", (m_uint)pm_name);
   CHECK_BB(import_fun(env, &fun, 0))

@@ -266,11 +266,11 @@ IMPORT
   *unknown        = FMSYNTH_STATUS_MESSAGE_UNKNOWN;
 
   CHECK_BB(import_class_begin(env, &t_fmsynth, env->global_nspc, ctor, dtor))
-  o_fmsynth_data = import_var(env, "int", "&synth",   0, NULL);
+  o_fmsynth_data = import_var(env, "int", "&synth", ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_data)
-  o_fmsynth_name = import_var(env, "string", "name",   0, NULL);
+  o_fmsynth_name = import_var(env, "string", "name", ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_name)
-  o_fmsynth_author = import_var(env, "string", "author",   0, NULL);
+  o_fmsynth_author = import_var(env, "string", "author", ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_author)
 
   // params

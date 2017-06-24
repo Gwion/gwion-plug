@@ -754,39 +754,39 @@ m_bool import(Env env)
   DL_Value* arg;
 
   CHECK_BB(import_class_begin(env, &t_color, env->global_nspc, NULL, NULL))
-  o_nk_r = import_var(env, "int", "r",   0, NULL);
+  o_nk_r = import_var(env, "int", "r", ae_flag_member, NULL);
   CHECK_BB(o_nk_r)
-  o_nk_g = import_var(env, "int", "g",   0, NULL);
+  o_nk_g = import_var(env, "int", "g", ae_flag_member, NULL);
   CHECK_BB(o_nk_g)
-  o_nk_b = import_var(env, "int", "b",   0, NULL);
+  o_nk_b = import_var(env, "int", "b", ae_flag_member, NULL);
   CHECK_BB(o_nk_b)
-  o_nk_a = import_var(env, "int", "a",   0, NULL);
+  o_nk_a = import_var(env, "int", "a", ae_flag_member, NULL);
   CHECK_BB(o_nk_a)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_panel, env->global_nspc, nk_ctor, nk_dtor))
-  o_nk_data = import_var(env, "int", "@win",   0, NULL);
+  o_nk_data = import_var(env, "int", "@win", ae_flag_member, NULL);
   CHECK_BB(o_nk_data)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_widget, env->global_nspc, widget_ctor, NULL))
-  o_nk_name = import_var(env, "string", "name",   0, NULL);
+  o_nk_name = import_var(env, "string", "name", ae_flag_member, NULL);
   CHECK_BB(o_nk_name);
-  o_nk_parent = import_var(env, "int", "@parent",   0, NULL);
+  o_nk_parent = import_var(env, "int", "@parent", ae_flag_member, NULL);
   CHECK_BB(o_nk_parent);
-  o_nk_exec = import_var(env, "int", "@exe",   0, NULL);
+  o_nk_exec = import_var(env, "int", "@exe", ae_flag_member, NULL);
   CHECK_BB(o_nk_exec)
-  o_nk_gwin = import_var(env, "int", "@win",   0, NULL);
+  o_nk_gwin = import_var(env, "int", "@win", ae_flag_member, NULL);
   CHECK_BB(o_nk_gwin)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_sval, env->global_nspc, sval_ctor, NULL))
-  o_nk_align = import_var(env,  "int",  "align", 0, NULL);
+  o_nk_align = import_var(env,  "int",  "align", ae_flag_member, NULL);
   CHECK_BB(o_nk_align)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_label, env->global_nspc, label_ctor, NULL))
-  o_nk_wrap = import_var(env,  "int",  "wrap", 0, NULL);
+  o_nk_wrap = import_var(env,  "int",  "wrap", ae_flag_member, NULL);
   CHECK_BB(o_nk_wrap)
   o_nk_labelcolor= import_var(env,  "NkColor",  "color", ae_flag_ref, NULL);
   CHECK_BB(o_nk_labelcolor)
@@ -796,28 +796,28 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_slabel, env->global_nspc, slabel_ctor, NULL))
-  o_nk_select = import_var(env,  "int",  "selectable", 0, NULL);
+  o_nk_select = import_var(env,  "int",  "selectable", ae_flag_member, NULL);
   CHECK_BB(o_nk_select)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_prog, env->global_nspc, prog_ctor, NULL))
-  o_nk_prog = import_var(env, "int", "val", 0, NULL);
+  o_nk_prog = import_var(env, "int", "val", ae_flag_member, NULL);
   CHECK_BB(o_nk_prog)
-  o_nk_progmax = import_var(env, "int", "max", 0, NULL);
+  o_nk_progmax = import_var(env, "int", "max", ae_flag_member, NULL);
   CHECK_BB(o_nk_progmax)
-  o_nk_progmod = import_var(env, "int", "mod", 0, NULL);
+  o_nk_progmod = import_var(env, "int", "mod", ae_flag_member, NULL);
   CHECK_BB(o_nk_progmod)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_button, env->global_nspc, button_ctor, NULL))
-  o_nk_behavior = import_var(env,  "int",  "behavior", 0, NULL);
+  o_nk_behavior = import_var(env,  "int",  "behavior", ae_flag_member, NULL);
   CHECK_BB(o_nk_behavior)
   o_nk_button_color= import_var(env,  "NkColor",  "color", ae_flag_ref, NULL);
   CHECK_BB(o_nk_button_color)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_group, env->global_nspc, group_ctor, group_dtor))
-  o_nk_list = import_var(env, "int", "&widget",   0, NULL);
+  o_nk_list = import_var(env, "int", "&widget", ae_flag_member, NULL);
   dl_func_init(&fun, "void", "begin", (m_uint)group_begin);
   CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "void", "end", (m_uint)group_end);
@@ -828,26 +828,26 @@ m_bool import(Env env)
 
 
   CHECK_BB(import_class_begin(env, &t_rowd, env->global_nspc, rowd_ctor, NULL))
-  o_nk_rowh = import_var(env,  "int",  "height", 0, NULL);
+  o_nk_rowh = import_var(env,  "int",  "height", ae_flag_member, NULL);
   CHECK_BB(o_nk_rowh)
-  o_nk_roww = import_var(env,  "int",  "width", 0, NULL);
+  o_nk_roww = import_var(env,  "int",  "width", ae_flag_member, NULL);
   CHECK_BB(o_nk_roww)
-  o_nk_rowcol = import_var(env,  "int",  "col", 0, NULL);
+  o_nk_rowcol = import_var(env,  "int",  "col", ae_flag_member, NULL);
   CHECK_BB(o_nk_rowcol)
-  o_nk_static = import_var(env,  "int",  "static", 0, NULL);
+  o_nk_static = import_var(env,  "int",  "static", ae_flag_member, NULL);
   CHECK_BB(o_nk_static)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_layout, env->global_nspc, layout_ctor, NULL))
-  o_nk_x = import_var(env,  "int",  "x", 0, NULL);
+  o_nk_x = import_var(env,  "int",  "x", ae_flag_member, NULL);
   CHECK_BB(o_nk_x)
-  o_nk_y = import_var(env,  "int",  "y", 0, NULL);
+  o_nk_y = import_var(env,  "int",  "y", ae_flag_member, NULL);
   CHECK_BB(o_nk_y)
-  o_nk_w = import_var(env,  "int",  "w", 0, NULL);
+  o_nk_w = import_var(env,  "int",  "w", ae_flag_member, NULL);
   CHECK_BB(o_nk_w)
-  o_nk_h = import_var(env,  "int",  "h", 0, NULL);
+  o_nk_h = import_var(env,  "int",  "h", ae_flag_member, NULL);
   CHECK_BB(o_nk_h)
-  o_nk_flags = import_var(env,  "int",  "flag", 0, NULL);
+  o_nk_flags = import_var(env,  "int",  "flag", ae_flag_member, NULL);
   CHECK_BB(o_nk_flags)
   m_uint* border  = malloc(sizeof(m_uint));
   *border  = NK_WINDOW_BORDER;
@@ -873,7 +873,7 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_combo, env->global_nspc, combo_ctor, NULL))
-  o_nk_comboval = import_var(env,  "int",  "val", 0, NULL);
+  o_nk_comboval = import_var(env,  "int",  "val", ae_flag_member, NULL);
   CHECK_BB(o_nk_comboval)
   dl_func_init(&fun, "string", "add", (m_uint)combo_add);
   dl_func_add_arg(&fun, "string", "s");
@@ -881,7 +881,7 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_menu, env->global_nspc, menu_ctor, NULL))
-  o_nk_menuval = import_var(env,  "int",  "val", 0, NULL);
+  o_nk_menuval = import_var(env,  "int",  "val", ae_flag_member, NULL);
   CHECK_BB(o_nk_menuval)
   dl_func_init(&fun, "string", "add", (m_uint)menu_add);
   dl_func_add_arg(&fun, "string", "s");
@@ -895,7 +895,7 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_tree, env->global_nspc, tree_ctor, NULL))
-  o_nk_state = import_var(env,  "int",  "state", 0, NULL);
+  o_nk_state = import_var(env,  "int",  "state", ae_flag_member, NULL);
   CHECK_BB(o_nk_state)
   CHECK_BB(import_class_end(env))
 
@@ -909,7 +909,7 @@ m_bool import(Env env)
   * box    = NK_EDIT_BOX;
   * editor = NK_EDIT_EDITOR;
   CHECK_BB(import_class_begin(env, &t_nkstring, env->global_nspc, nkstring_ctor, NULL))
-  o_nk_edit_type= import_var(env, "int", "type",   0, NULL);
+  o_nk_edit_type= import_var(env, "int", "type", ae_flag_member, NULL);
   CHECK_BB(o_nk_edit_type)
   import_var(env, "int", "SIMPLE", ae_flag_static | ae_flag_const, simple);
   import_var(env, "int", "FIELD",  ae_flag_static | ae_flag_const, field);
@@ -918,15 +918,15 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_ival, env->global_nspc, NULL, NULL))
-  o_nk_ival = import_var(env,  "int",  "val", 0, NULL);
+  o_nk_ival = import_var(env,  "int",  "val", ae_flag_member, NULL);
   CHECK_BB(o_nk_ival)
-  o_nk_imin = import_var(env,  "int",  "min", 0, NULL);
+  o_nk_imin = import_var(env,  "int",  "min", ae_flag_member, NULL);
   CHECK_BB(o_nk_imin)
-  o_nk_imax = import_var(env,  "int",  "max", 0, NULL);
+  o_nk_imax = import_var(env,  "int",  "max", ae_flag_member, NULL);
   CHECK_BB(o_nk_imax)
-  o_nk_istp = import_var(env, "int", "step", 0, NULL);
+  o_nk_istp = import_var(env, "int", "step", ae_flag_member, NULL);
   CHECK_BB(o_nk_istp)
-  o_nk_iinc = import_var(env, "float", "inc", 0, NULL);
+  o_nk_iinc = import_var(env, "float", "inc", ae_flag_member, NULL);
   CHECK_BB(o_nk_iinc)
   CHECK_BB(import_class_end(env))
 
@@ -939,16 +939,16 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_fval, env->global_nspc, NULL, NULL))
-  o_nk_fval = import_var(env,  "float",  "val", 0, NULL);
+  o_nk_fval = import_var(env,  "float",  "val", ae_flag_member, NULL);
   CHECK_BB(o_nk_fval)
-  o_nk_fmin = import_var(env,  "float",  "min", 0, NULL);
+  o_nk_fmin = import_var(env,  "float",  "min", ae_flag_member, NULL);
   CHECK_BB(o_nk_fmin)
-  o_nk_fmax = import_var(env,  "float",  "max", 0, NULL);
+  o_nk_fmax = import_var(env,  "float",  "max", ae_flag_member, NULL);
   CHECK_BB(o_nk_fmax)
 
-  o_nk_fstp = import_var(env, "float", "step", 0, NULL);
+  o_nk_fstp = import_var(env, "float", "step", ae_flag_member, NULL);
   CHECK_BB(o_nk_fstp)
-  o_nk_finc = import_var(env, "float", "inc", 0, NULL);
+  o_nk_finc = import_var(env, "float", "inc", ae_flag_member, NULL);
   CHECK_BB(o_nk_finc)
   CHECK_BB(import_class_end(env))
 

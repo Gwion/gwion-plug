@@ -51,7 +51,7 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   CHECK_BB(import_class_begin(env, &t_midifile, env->global_nspc, ctor, dtor))
-  o_midifile_seq = import_var(env, "int", "@seq", 0, NULL);
+  o_midifile_seq = import_var(env, "int", "@seq", ae_flag_member, NULL);
   CHECK_BB(o_midifile_seq);
   dl_func_init(&fun, "void", "open", (m_uint)midifile_open);
     dl_func_add_arg(&fun, "string", "filename");
