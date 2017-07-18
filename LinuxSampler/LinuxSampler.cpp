@@ -83,10 +83,10 @@ private:
 m_bool tick(UGen u)
 {
   myLinuxSampler* ls = (myLinuxSampler*)u->ug;
-u->channel[0]->ugen->out = 0;
-u->channel[1]->ugen->out = 0;
-  ls->tick(&u->channel[0]->ugen->out, &u->channel[1]->ugen->out);
-  u->out = u->last = (u->channel[0]->ugen->out + u->channel[1]->ugen->out)/2;
+  UGEN(u->channel[0])->out = 0;
+  UGEN(u->channel[1])->out = 0;
+  ls->tick(&UGEN(u->channel[0])->out, &UGEN(u->channel[1])->out);
+  u->out = u->last = (UGEN(u->channel[0])->out + UGEN(u->channel[1])->out)/2;
 }
 
 static struct Type_ t_ls= { (m_str)"LinuxSampler", SZ_INT, &t_ugen };
@@ -95,89 +95,89 @@ CTOR(linuxsampler_ctor)
   if(!sampler)
     sampler = new LinuxSampler::Sampler();
 	std::map<String,LinuxSampler::DeviceCreationParameter*> param;
-  myLinuxSampler* ls = *(myLinuxSampler**)(o->d.data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->bbq->sp->sr);
-  o->ugen->ug = ls;
-  o->ugen->n_in = 0;
-  o->ugen->n_out = 2;
-  o->ugen->tick = tick;
-  vector_init(&o->ugen->ugen);
-  o->ugen->channel = (M_Object*)calloc(2, sizeof(struct M_Object_));
-  o->ugen->channel[0] = new_M_UGen();
-  vector_init(&o->ugen->channel[0]->ugen->ugen);
-  o->ugen->channel[0]->ugen->ref = o->ugen;
-  o->ugen->channel[1] = new_M_UGen();
-  vector_init(&o->ugen->channel[1]->ugen->ugen);
-  o->ugen->channel[1]->ugen->ref = o->ugen;
+  myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->bbq->sp->sr);
+  UGEN(o)->ug = ls;
+  UGEN(o)->n_in = 0;
+  UGEN(o)->n_out = 2;
+  UGEN(o)->tick = tick;
+  vector_init(&UGEN(o)->ugen);
+  UGEN(o)->channel = (M_Object*)calloc(2, sizeof(struct M_Object_));
+  UGEN(o)->channel[0] = new_M_UGen();
+  vector_init(&UGEN(UGEN(o)->channel[0])->ugen);
+  UGEN(UGEN(o)->channel[0])->ref = UGEN(o);
+  UGEN(o)->channel[1] = new_M_UGen();
+  vector_init(&UGEN(UGEN(o)->channel[1])->ugen);
+  UGEN(UGEN(o)->channel[1])->ref = UGEN(o);
 }
 
 DTOR(linuxsampler_dtor)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   delete ls_obj;
 }
 
 MFUN(linuxsampler_load)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data + o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data + o_ls_data);
   ls_obj->load(STRING(*(M_Object*)MEM(SZ_INT)), 0);
 }
 
 
 MFUN(linuxsampler_load_instrument)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data + o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data + o_ls_data);
   ls_obj->load(STRING(*(M_Object*)MEM(SZ_INT)), *(m_uint*)MEM(SZ_INT*2));
 }
 
 MFUN(linuxsampler_noteOn)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOn(
     (RETURN->d.v_uint = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2), 0 );
 }
 
 MFUN(linuxsampler_noteOff)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOff(
     (RETURN->d.v_uint = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2),0 );
 }
 
 MFUN(linuxsampler_pitchbend)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendPitchbend(
     *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2), 0 );
 }
 
 MFUN(linuxsampler_status)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   RETURN->d.v_uint = ls_obj->Engine() ? ls_obj->Engine()->InstrumentStatus() : 0;
 }
 
 MFUN(linuxsampler_getgain)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   RETURN->d.v_float = ls_obj->Engine() ? ls_obj->Engine()->Volume() : 0;
 }
 
 MFUN(linuxsampler_setgain)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   RETURN->d.v_float = *(m_float*)MEM(SZ_INT);
   if( ls_obj->Engine() ) ls_obj->Engine()->Volume(RETURN->d.v_float);
 }
 
 MFUN(linuxsampler_getpan)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   RETURN->d.v_float = ls_obj->Engine() ? ls_obj->Engine()->Pan() : 0;
 }
 
 MFUN(linuxsampler_setpan)
 {
-  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->d.data +o_ls_data);
+  myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   RETURN->d.v_float = *(m_float*)MEM(SZ_INT);
   if(ls_obj->Engine())
     ls_obj->Engine()->Pan(RETURN->d.v_float);

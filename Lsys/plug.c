@@ -27,7 +27,7 @@ typedef struct
 	m_bool is_init;
 } Lsys;
 
-#define LSYS(o) ((Lsys*)o->ugen->ug)
+#define LSYS(o) ((Lsys*)UGEN(o)->ug)
 
 static int tochar(int c) {
     if(c >= 10) {
@@ -43,8 +43,8 @@ TICK(tick)
 	u->out = 0;
 	if(!ptr->is_init || !u->trig)
 		return 1;
-	base_tick(u->trig->ugen);
-	if(u->trig->ugen->out)
+	base_tick(UGEN(u->trig));
+	if(UGEN(u->trig)->out)
 	{
 		ptr->pos = lsys_list_iter(&ptr->lst, &ptr->ent, ptr->pos);
 		u->out = ptr->ent->val + 1;
@@ -58,8 +58,8 @@ static CTOR(ctor)
 	lsys_init(&l->lsys);
 	l->is_init = 0;
 	l->pos = 0;
-	assign_ugen(o->ugen, 0, 1, 1, l);
-	o->ugen->tick = tick;
+	assign_ugen(UGEN(o), 0, 1, 1, l);
+	UGEN(o)->tick = tick;
 }
 
 static DTOR(dtor)

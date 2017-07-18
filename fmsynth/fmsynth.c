@@ -18,9 +18,9 @@
 #include "fmsynth.h"
 static struct Type_ t_fmsynth = {"FMSynth", SZ_INT, &t_ugen };
 static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
-#define SYNTH(o) *(fmsynth_t**)(o->d.data + o_fmsynth_data)
-#define NAME(o) *(M_Object*)(o->d.data + o_fmsynth_name)
-#define AUTHOR(o) *(M_Object*)(o->d.data + o_fmsynth_author)
+#define SYNTH(o) *(fmsynth_t**)(o->data + o_fmsynth_data)
+#define NAME(o) *(M_Object*)(o->data + o_fmsynth_name)
+#define AUTHOR(o) *(M_Object*)(o->data + o_fmsynth_author)
 #define POLYPHONY 64
 
 static m_bool fmsynth_tick(UGen u)
@@ -28,8 +28,8 @@ static m_bool fmsynth_tick(UGen u)
   float left;
   float right;
   fmsynth_render(u->ug, &left, &right, 1);
-  u->channel[0]->ugen->out = left;
-  u->channel[1]->ugen->out = right;
+  UGEN(u->channel[0])->out = left;
+  UGEN(u->channel[1])->out = right;
   u->out = left + right;
 }
 
@@ -39,8 +39,8 @@ CTOR(ctor)
   NAME(o) = new_String(NULL, "name");
   AUTHOR(o) = new_String(NULL, "author");
   SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, POLYPHONY);
-  assign_ugen(o->ugen, 1, 2, 0, SYNTH(o));
-  o->ugen->tick = fmsynth_tick;
+  assign_ugen(UGEN(o), 1, 2, 0, SYNTH(o));
+  UGEN(o)->tick = fmsynth_tick;
 }
 DTOR(dtor)
 {
@@ -51,7 +51,7 @@ MFUN(init)
 {
   fmsynth_free(SYNTH(o));
   SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, *(m_uint*)MEM(SZ_INT));
-  o->ugen->ug = SYNTH(o);
+  UGEN(o)->ug = SYNTH(o);
 }
 MFUN(parameter)
 {

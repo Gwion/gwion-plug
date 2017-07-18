@@ -77,12 +77,12 @@ static m_int o_pm_data1;
 static m_int o_pm_data2;
 static m_int o_pm_msg;
 
-#define STREAM(o) *(PmStream**)(o->d.data + o_pm_stream)
-#define ID(o)     *(m_int*)    (o->d.data + o_pm_id)
-#define STATUS(o) *(m_uint*)   (o->d.data + o_pm_status)
-#define DATA1(o) *(m_uint*)    (o->d.data + o_pm_data1)
-#define DATA2(o) *(m_uint*)    (o->d.data + o_pm_data2)
-#define MSG(o) *(Vector*)      (o->d.data + o_pm_msg)
+#define STREAM(o) *(PmStream**)(o->data + o_pm_stream)
+#define ID(o)     *(m_int*)    (o->data + o_pm_id)
+#define STATUS(o) *(m_uint*)   (o->data + o_pm_status)
+#define DATA1(o) *(m_uint*)    (o->data + o_pm_data1)
+#define DATA2(o) *(m_uint*)    (o->data + o_pm_data2)
+#define MSG(o) *(Vector*)      (o->data + o_pm_msg)
 
 static MFUN(pm_name)
 {

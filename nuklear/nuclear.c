@@ -155,17 +155,17 @@ static m_int o_nk_fval;
 
 
 /*m_int o_event_shred = SZ_INT;*/
-#define LIST(o) *(Vector*)(o->d.data + o_nk_list)
-#define NAME(o) STRING(*(M_Object*)(o->d.data + o_nk_name))
+#define LIST(o) *(Vector*)(o->data + o_nk_list)
+#define NAME(o) STRING(*(M_Object*)(o->data + o_nk_name))
 typedef void (*f_nk)(M_Object o, struct nk_context* ctx);
 
 
 static struct Type_ t_color= { "NkColor",  SZ_INT, &t_object};
 static m_int o_nk_r, o_nk_g, o_nk_b, o_nk_a;
-#define R(o) *(o->d.data + o_nk_r)
-#define G(o) *(o->d.data + o_nk_g)
-#define B(o) *(o->d.data + o_nk_b)
-#define A(o) *(o->d.data + o_nk_a)
+#define R(o) *(o->data + o_nk_r)
+#define G(o) *(o->data + o_nk_g)
+#define B(o) *(o->data + o_nk_b)
+#define A(o) *(o->data + o_nk_a)
 #define COLOR(o) (struct nk_color){ R(o), G(o), B(o), A(o) }
 
 static void* _loop(void* data)
@@ -192,7 +192,7 @@ static void* _loop(void* data)
           for(i = 0; i < vector_size(gw->widget); i++)
           {
             M_Object o = (M_Object)vector_at(gw->widget, i);
-            f_nk exec = *(f_nk*)(o->d.data + o_nk_exec);
+            f_nk exec = *(f_nk*)(o->data + o_nk_exec);
             exec(o, ctx);
           }
         /* Draw */
@@ -281,7 +281,7 @@ static void nk_ctor(M_Object o, VM_Shred shred)
   gw_nk_init(gw, shred);
   last_window = gw;
   pthread_create(&gw->thread, NULL, &_loop, gw);
-  *(GWindow**)(o->d.data + o_nk_data) = gw;
+  *(GWindow**)(o->data + o_nk_data) = gw;
 }
 
 static void gw_nk_shutdown(struct XWindow* xw)
@@ -301,11 +301,11 @@ static void gw_nk_shutdown(struct XWindow* xw)
 }
 static void nk_dtor(M_Object o, VM_Shred shred)
 {
-  GWindow* gw = *(GWindow**)(o->d.data + o_nk_data);
+  GWindow* gw = *(GWindow**)(o->data + o_nk_data);
   pthread_cancel(gw->thread);
   pthread_join(gw->thread, NULL);
   gw_nk_shutdown(gw->win);
-  *(GWindow**)(o->d.data + o_nk_data) = NULL;
+  *(GWindow**)(o->data + o_nk_data) = NULL;
 }
 
 
@@ -315,9 +315,9 @@ static void widget_ctor(M_Object o, VM_Shred shred)
 {
   char name[256];
   sprintf(name, "Widget:%p", o);
-  (*(M_Object*)(o->d.data + o_nk_name)) = new_String(NULL, name);
-  (*(GWindow**)(o->d.data + o_nk_gwin)) = last_window;
-  (*(M_Object*)(o->d.data + o_nk_parent)) = last_widget;
+  (*(M_Object*)(o->data + o_nk_name)) = new_String(NULL, name);
+  (*(GWindow**)(o->data + o_nk_gwin)) = last_window;
+  (*(M_Object*)(o->data + o_nk_parent)) = last_widget;
   if(last_widget && strcmp(o->type_ref->name, "NkLayout")
     && strcmp(o->type_ref->name, "NkMenu"))
     vector_add(LIST(last_widget), (vtype)o);
@@ -327,83 +327,83 @@ static m_uint o_nk_align;
 static struct Type_ t_sval = { "NkSval",  SZ_INT, &t_widget};
 static void sval_ctor(M_Object o, VM_Shred shred)
 {
-/*  *(f_nk*)(o->d.data + o_nk_exec) = label_execute;*/
-  *(m_uint*)(o->d.data + o_nk_align) = NK_TEXT_LEFT;
+/*  *(f_nk*)(o->data + o_nk_exec) = label_execute;*/
+  *(m_uint*)(o->data + o_nk_align) = NK_TEXT_LEFT;
 }
 static m_uint o_nk_wrap, o_nk_labelcolor;
 static struct Type_ t_label = { "NkLabel",  SZ_INT, &t_sval};
 static void label_execute(M_Object o, struct nk_context* ctx)
 {
-  if(*(M_Object*)(o->d.data + o_nk_labelcolor))
+  if(*(M_Object*)(o->data + o_nk_labelcolor))
   {
-    M_Object color = *(M_Object*)(o->d.data + o_nk_labelcolor);
-    if(*(m_uint*)(o->d.data + o_nk_wrap))
+    M_Object color = *(M_Object*)(o->data + o_nk_labelcolor);
+    if(*(m_uint*)(o->data + o_nk_wrap))
       nk_label_colored_wrap(ctx, NAME(o), COLOR(color));           
     else
-      nk_label_colored(ctx, NAME(o), *(m_uint*)(o->d.data + o_nk_align), COLOR(color));
+      nk_label_colored(ctx, NAME(o), *(m_uint*)(o->data + o_nk_align), COLOR(color));
   }
   else
   {
-    if(*(m_uint*)(o->d.data + o_nk_wrap))
+    if(*(m_uint*)(o->data + o_nk_wrap))
       nk_label_wrap(ctx, NAME(o));           
     else
-      nk_label(ctx, NAME(o), *(m_uint*)(o->d.data + o_nk_align));
+      nk_label(ctx, NAME(o), *(m_uint*)(o->data + o_nk_align));
   }
 }
 static void label_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = label_execute;
+  *(f_nk*)(o->data + o_nk_exec) = label_execute;
 }
 
 static struct Type_ t_text = { "NkText",  SZ_INT, &t_label};
 static void text_execute(M_Object o, struct nk_context* ctx)
 {
-  if(*(m_uint*)(o->d.data + o_nk_wrap))
+  if(*(m_uint*)(o->data + o_nk_wrap))
     nk_text_wrap(ctx, NAME(o), strlen(NAME(o)));           
   else
-    nk_text(ctx, NAME(o), strlen(NAME(o)), *(m_uint*)(o->d.data + o_nk_align));           
+    nk_text(ctx, NAME(o), strlen(NAME(o)), *(m_uint*)(o->data + o_nk_align));           
 }
 static void text_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = text_execute;
+  *(f_nk*)(o->data + o_nk_exec) = text_execute;
 }
 
 static m_uint o_nk_select;
 static struct Type_ t_slabel = { "NkSLabel",  SZ_INT, &t_sval};
 static void slabel_execute(M_Object o, struct nk_context* ctx)
 {
-  if(nk_selectable_label(ctx, NAME(o), *(m_uint*)(o->d.data + o_nk_align), (int*)&*(m_uint*)(o->d.data + o_nk_select)))
+  if(nk_selectable_label(ctx, NAME(o), *(m_uint*)(o->data + o_nk_align), (int*)&*(m_uint*)(o->data + o_nk_select)))
     broadcast(o);
 }
 static void slabel_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = label_execute;
+  *(f_nk*)(o->data + o_nk_exec) = label_execute;
 }
 
 static struct Type_ t_stext = { "NkStext",  SZ_INT, &t_slabel};
 static void stext_execute(M_Object o, struct nk_context* ctx)
 {
-  if(nk_selectable_text(ctx, NAME(o), strlen(NAME(o)), *(m_uint*)(o->d.data + o_nk_align), (int*)&*(m_uint*)(o->d.data + o_nk_select)))
+  if(nk_selectable_text(ctx, NAME(o), strlen(NAME(o)), *(m_uint*)(o->data + o_nk_align), (int*)&*(m_uint*)(o->data + o_nk_select)))
     broadcast(o);
 }
 static void stext_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = text_execute;
+  *(f_nk*)(o->data + o_nk_exec) = text_execute;
 }
 
 static m_int o_nk_prog, o_nk_progmax, o_nk_progmod;
 static struct Type_ t_prog= { "NkProg",  SZ_INT, &t_widget};
 static void prog_execute(M_Object o, struct nk_context* ctx)
 {
-  if(nk_progress(ctx, (m_uint*)(o->d.data + o_nk_prog), *(m_uint*)(o->d.data + o_nk_progmax), *(m_uint*)(o->d.data + o_nk_progmod)))
+  if(nk_progress(ctx, (m_uint*)(o->data + o_nk_prog), *(m_uint*)(o->data + o_nk_progmax), *(m_uint*)(o->data + o_nk_progmod)))
    broadcast(o);
 }
 static void prog_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = prog_execute;
-  *(m_uint*)(o->d.data + o_nk_prog) = 0;
-  *(m_uint*)(o->d.data + o_nk_progmax) = 100;
-  *(m_uint*)(o->d.data + o_nk_progmod) = 1;
+  *(f_nk*)(o->data + o_nk_exec) = prog_execute;
+  *(m_uint*)(o->data + o_nk_prog) = 0;
+  *(m_uint*)(o->data + o_nk_progmax) = 100;
+  *(m_uint*)(o->data + o_nk_progmod) = 1;
 }
 
 
@@ -411,10 +411,10 @@ static struct Type_ t_button = { "NkButton",  SZ_INT, &t_widget};
 static m_int o_nk_behavior, o_nk_button_color;
 static void button_execute(M_Object o, struct nk_context* ctx)
 {
-  if(*(m_uint*)(o->d.data + o_nk_button_color))
+  if(*(m_uint*)(o->data + o_nk_button_color))
   {
-printf("%p %i %p\n", EV_SHREDS(o), vector_size(EV_SHREDS(o)), *(M_Object*)(o->d.data + o_nk_button_color));
-  M_Object color = *(M_Object*)(o->d.data + o_nk_button_color);
+printf("%p %i %p\n", EV_SHREDS(o), vector_size(EV_SHREDS(o)), *(M_Object*)(o->data + o_nk_button_color));
+  M_Object color = *(M_Object*)(o->data + o_nk_button_color);
 printf("%i %i %i %i\n", R(color), G(color), B(color), A(color));
 struct nk_color c = COLOR(color);
 if(nk_button_color(ctx, COLOR(color)))
@@ -430,7 +430,7 @@ if(nk_button_color(ctx, COLOR(color)))
 }
 static void button_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = button_execute;
+  *(f_nk*)(o->data + o_nk_exec) = button_execute;
 }
 static struct Type_ t_group  = { "NkGroup",  SZ_INT, &t_widget};
 static void group_exec(M_Object o, struct nk_context* ctx)
@@ -440,7 +440,7 @@ static void group_exec(M_Object o, struct nk_context* ctx)
   for(i = 0; i < vector_size(v); i++)
   {
     M_Object obj = (M_Object)vector_at(v, i);
-    f_nk exec = *(f_nk*)(obj->d.data + o_nk_exec);
+    f_nk exec = *(f_nk*)(obj->data + o_nk_exec);
     exec(obj, ctx);
   }
 }
@@ -456,7 +456,7 @@ static void group_dtor(M_Object o, VM_Shred shred)
 }
 static void group_end(M_Object o, DL_Return * RETURN, VM_Shred sh)
 {
-  last_widget = (*(M_Object*)(o->d.data + o_nk_parent));
+  last_widget = (*(M_Object*)(o->data + o_nk_parent));
 }
 
 static void group_begin(M_Object o, DL_Return * RETURN, VM_Shred sh)
@@ -471,12 +471,12 @@ static m_int o_nk_static;
 static struct Type_ t_rowd= { "NkRow",  SZ_INT, &t_group};
 static void row(M_Object o, struct nk_context* ctx)
 {
-  if(*(m_uint*)(o->d.data + o_nk_static))
-    nk_layout_row_static(ctx, *(m_uint*)(o->d.data + o_nk_rowh), 
-      *(m_uint*)(o->d.data + o_nk_roww), *(m_uint*)(o->d.data + o_nk_rowcol));
+  if(*(m_uint*)(o->data + o_nk_static))
+    nk_layout_row_static(ctx, *(m_uint*)(o->data + o_nk_rowh), 
+      *(m_uint*)(o->data + o_nk_roww), *(m_uint*)(o->data + o_nk_rowcol));
   else
-    nk_layout_row_dynamic(ctx, *(m_uint*)(o->d.data + o_nk_rowh), 
-      *(m_uint*)(o->d.data + o_nk_rowcol));
+    nk_layout_row_dynamic(ctx, *(m_uint*)(o->data + o_nk_rowh), 
+      *(m_uint*)(o->data + o_nk_rowcol));
 
 }
 static void rowd_execute(M_Object o, struct nk_context* ctx)
@@ -487,10 +487,10 @@ static void rowd_execute(M_Object o, struct nk_context* ctx)
 
 static void rowd_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)(o->d.data + o_nk_exec)) = rowd_execute;
-  *(m_uint*)(o->d.data + o_nk_rowcol) = 1;
-  *(m_uint*)(o->d.data + o_nk_rowh) = 30;
-  *(m_uint*)(o->d.data + o_nk_roww) = 100;
+  (*(f_nk*)(o->data + o_nk_exec)) = rowd_execute;
+  *(m_uint*)(o->data + o_nk_rowcol) = 1;
+  *(m_uint*)(o->data + o_nk_rowh) = 30;
+  *(m_uint*)(o->data + o_nk_roww) = 100;
 }
 
 static struct Type_ t_layout = { "NkLayout",  SZ_INT, &t_rowd};
@@ -506,11 +506,11 @@ static void layout_execute(M_Object o, struct nk_context* ctx)
   char name[256];
   sprintf(name, "%p", o);
   if (nk_begin_titled(ctx, name,  NAME(o),
-      nk_rect(*(m_uint*)(o->d.data + o_nk_x),
-        *(m_uint*)(o->d.data + o_nk_y),
-        *(m_uint*)(o->d.data + o_nk_w),
-        *(m_uint*)(o->d.data + o_nk_h)),
-    *(m_uint*)(o->d.data + o_nk_flags)))
+      nk_rect(*(m_uint*)(o->data + o_nk_x),
+        *(m_uint*)(o->data + o_nk_y),
+        *(m_uint*)(o->data + o_nk_w),
+        *(m_uint*)(o->data + o_nk_h)),
+    *(m_uint*)(o->data + o_nk_flags)))
   {
     row(o, ctx);
     group_exec(o, ctx);
@@ -520,12 +520,12 @@ static void layout_execute(M_Object o, struct nk_context* ctx)
 
 static void layout_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)(o->d.data + o_nk_exec))    = layout_execute;
-  (*(m_uint*)(o->d.data + o_nk_x))     = 50;
-  (*(m_uint*)(o->d.data + o_nk_y))     = 50;
-  (*(m_uint*)(o->d.data + o_nk_w))     = 400;
-  (*(m_uint*)(o->d.data + o_nk_h))     = 400;
-  (*(m_uint*)(o->d.data + o_nk_flags)) = 
+  (*(f_nk*)(o->data + o_nk_exec))    = layout_execute;
+  (*(m_uint*)(o->data + o_nk_x))     = 50;
+  (*(m_uint*)(o->data + o_nk_y))     = 50;
+  (*(m_uint*)(o->data + o_nk_w))     = 400;
+  (*(m_uint*)(o->data + o_nk_h))     = 400;
+  (*(m_uint*)(o->data + o_nk_flags)) = 
     NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
     NK_WINDOW_CLOSABLE|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE;
   
@@ -548,7 +548,7 @@ static void tree_execute(M_Object o, struct nk_context* ctx)
   int i;
   if(nk_widget_is_mouse_clicked(ctx, NK_BUTTON_LEFT))
     broadcast(o);
-  if(nk_tree_push_id(ctx, *(m_uint*)(o->d.data + o_nk_state), NAME(o), i, (m_uint)o))
+  if(nk_tree_push_id(ctx, *(m_uint*)(o->data + o_nk_state), NAME(o), i, (m_uint)o))
   {
     row(o, ctx);
     group_exec(o, ctx);
@@ -557,8 +557,8 @@ static void tree_execute(M_Object o, struct nk_context* ctx)
 }
 static void tree_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)(o->d.data + o_nk_exec)) = tree_execute;
-  (*(m_uint*)(o->d.data + o_nk_state)) = NK_TREE_TAB;
+  (*(f_nk*)(o->data + o_nk_exec)) = tree_execute;
+  (*(m_uint*)(o->data + o_nk_state)) = NK_TREE_TAB;
 }
 
 static m_int o_nk_comboval;
@@ -574,7 +574,7 @@ static void combo_execute(M_Object o, struct nk_context* ctx)
     {
       if(nk_combo_item_label(ctx, STRING(vector_at(LIST(o), i)), NK_TEXT_LEFT))
       {
-        *(m_uint*)(o->d.data + o_nk_comboval) = i;
+        *(m_uint*)(o->data + o_nk_comboval) = i;
         broadcast(o);
         break;
       }
@@ -584,7 +584,7 @@ static void combo_execute(M_Object o, struct nk_context* ctx)
 }
 static void combo_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = combo_execute;
+  *(f_nk*)(o->data + o_nk_exec) = combo_execute;
 }
 static void combo_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
 {
@@ -603,7 +603,7 @@ static void menubar_execute(M_Object o, struct nk_context* ctx)
 }
 static void menubar_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = menubar_execute;
+  *(f_nk*)(o->data + o_nk_exec) = menubar_execute;
 }
 static void menubar_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
 {
@@ -624,7 +624,7 @@ static void menu_execute(M_Object o, struct nk_context* ctx)
       row(o, ctx);
       if(nk_menu_item_label(ctx, STRING(vector_at(LIST(o), i)), NK_TEXT_LEFT))
       {
-        *(m_uint*)(o->d.data + o_nk_comboval) = i;
+        *(m_uint*)(o->data + o_nk_comboval) = i;
         broadcast(o);
         break;
       }
@@ -635,7 +635,7 @@ static void menu_execute(M_Object o, struct nk_context* ctx)
 
 static void menu_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = menu_execute;
+  *(f_nk*)(o->data + o_nk_exec) = menu_execute;
 }
 static void menu_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
 {
@@ -651,15 +651,15 @@ static void nkstring_execute(M_Object o, struct nk_context* ctx)
   memset(c, 0, 512);
   strcat(c, NAME(o));
   nk_layout_row_static(ctx, 180, 278, 1);
-  nk_edit_string_zero_terminated(ctx, *(m_uint*)(o->d.data + o_nk_edit_type), c, 512, nk_filter_default);           
+  nk_edit_string_zero_terminated(ctx, *(m_uint*)(o->data + o_nk_edit_type), c, 512, nk_filter_default);           
   NAME(o) = strdup(c);
 }
 
 static void nkstring_ctor(M_Object o, VM_Shred shred)
 {
-  *(f_nk*)(o->d.data + o_nk_exec) = nkstring_execute;
-  *(m_uint*)(o->d.data + o_nk_edit_type) = NK_EDIT_SIMPLE;
-/*  *(m_uint*)(o->d.data + o_nk_edit_type) = NK_EDIT_BOX;*/
+  *(f_nk*)(o->data + o_nk_exec) = nkstring_execute;
+  *(m_uint*)(o->data + o_nk_edit_type) = NK_EDIT_SIMPLE;
+/*  *(m_uint*)(o->data + o_nk_edit_type) = NK_EDIT_BOX;*/
 }
 
 static struct Type_ t_ival = { "NkIval",  SZ_INT, &t_widget};
@@ -668,84 +668,84 @@ static struct Type_ t_fval = { "NkFval",  SZ_INT, &t_widget};
 static struct Type_ t_check = { "NkCheck",  SZ_INT, &t_ival};
 static void check_execute(M_Object o, struct nk_context* ctx)
 {
-  if(nk_checkbox_label(ctx, NAME(o), (int*)&*(m_int*)(o->d.data + o_nk_ival)))
+  if(nk_checkbox_label(ctx, NAME(o), (int*)&*(m_int*)(o->data + o_nk_ival)))
     broadcast(o);
 }
 static void check_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)(o->d.data + o_nk_exec)) = check_execute;
+  (*(f_nk*)(o->data + o_nk_exec)) = check_execute;
 }
 
 static struct Type_ t_propi = { "NkPropI",  SZ_INT, &t_ival};
 static void propi_execute(M_Object o, struct nk_context* ctx)
 {
-  m_int property = *(m_int*)(o->d.data + o_nk_ival);
-  nk_property_int(ctx, NAME(o), *(m_int*)(o->d.data + o_nk_imin), (int*)&*(m_int*)(o->d.data + o_nk_ival),
-    *(m_int*)(o->d.data + o_nk_imax), *(m_int*)(o->d.data + o_nk_istp), *(m_float*)(o->d.data + o_nk_iinc));
-  if(property != *(m_int*)(o->d.data + o_nk_ival))
+  m_int property = *(m_int*)(o->data + o_nk_ival);
+  nk_property_int(ctx, NAME(o), *(m_int*)(o->data + o_nk_imin), (int*)&*(m_int*)(o->data + o_nk_ival),
+    *(m_int*)(o->data + o_nk_imax), *(m_int*)(o->data + o_nk_istp), *(m_float*)(o->data + o_nk_iinc));
+  if(property != *(m_int*)(o->data + o_nk_ival))
     broadcast(o);
 }
 static void propi_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)(o->d.data + o_nk_exec)) = propi_execute;
-  *(m_int*)(o->d.data + o_nk_imax) = 100;
-  *(m_int*)(o->d.data + o_nk_istp) = 10;
-  *(m_float*)(o->d.data + o_nk_iinc) = 1.0;
+  (*(f_nk*)(o->data + o_nk_exec)) = propi_execute;
+  *(m_int*)(o->data + o_nk_imax) = 100;
+  *(m_int*)(o->data + o_nk_istp) = 10;
+  *(m_float*)(o->data + o_nk_iinc) = 1.0;
 }
 
 static struct Type_ t_slideri = { "NkSliderI",  SZ_INT, &t_ival};
 static void slideri_execute(M_Object o, struct nk_context* ctx)
 {
-  if(nk_slider_int(ctx, *(m_int*)(o->d.data + o_nk_imin), (int*)&*(m_int*)(o->d.data + o_nk_ival),
-    *(m_int*)(o->d.data + o_nk_imax), *(m_int*)(o->d.data + o_nk_istp)))
+  if(nk_slider_int(ctx, *(m_int*)(o->data + o_nk_imin), (int*)&*(m_int*)(o->data + o_nk_ival),
+    *(m_int*)(o->data + o_nk_imax), *(m_int*)(o->data + o_nk_istp)))
     broadcast(o);
 }
 static void slideri_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)(o->d.data + o_nk_exec)) = slideri_execute;
-  *(m_int*)(o->d.data + o_nk_imax) = 1.0;
-  *(m_int*)(o->d.data + o_nk_ival) = 0.0;
-  *((m_int*)((M_Object)o)->d.data + o_nk_istp) = 0.1; // ? BUG
+  (*(f_nk*)(o->data + o_nk_exec)) = slideri_execute;
+  *(m_int*)(o->data + o_nk_imax) = 1.0;
+  *(m_int*)(o->data + o_nk_ival) = 0.0;
+  *((m_int*)((M_Object)o)->data + o_nk_istp) = 0.1; // ? BUG
 }
 
 static struct Type_ t_propf = { "NkPropF",  SZ_INT, &t_fval};
 static void propf_execute(M_Object o, struct nk_context* ctx)
 {
-  m_float property = *(m_float*)(o->d.data + o_nk_fval);
+  m_float property = *(m_float*)(o->data + o_nk_fval);
 #ifdef USE_DOUBLE
-  nk_property_double(ctx, NAME(o), *(m_float*)(o->d.data + o_nk_fmin), &*(m_float*)(o->d.data + o_nk_fval),
+  nk_property_double(ctx, NAME(o), *(m_float*)(o->data + o_nk_fmin), &*(m_float*)(o->data + o_nk_fval),
 #else
-  nk_property_float(ctx, NAME(o), *(m_float*)(o->d.data + o_nk_fmin), &*(m_float*)(o->d.data + o_nk_fval),
+  nk_property_float(ctx, NAME(o), *(m_float*)(o->data + o_nk_fmin), &*(m_float*)(o->data + o_nk_fval),
 #endif
-    *(m_float*)(o->d.data + o_nk_fmax), 0.1, *(m_float*)(o->d.data + o_nk_finc));
-  if(property != *(m_float*)(o->d.data + o_nk_fval))
+    *(m_float*)(o->data + o_nk_fmax), 0.1, *(m_float*)(o->data + o_nk_finc));
+  if(property != *(m_float*)(o->data + o_nk_fval))
     broadcast(o);
 }
 static void propf_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)(o->d.data + o_nk_exec)) = propf_execute;
-  *(m_float*)(o->d.data + o_nk_fmax) = 1.0;
-  *(m_float*)(o->d.data + o_nk_fval) = 0.0;
-  *(m_float*)(o->d.data + o_nk_fstp) = 1;
-  *(m_float*)(o->d.data + o_nk_finc) = .5;
+  (*(f_nk*)(o->data + o_nk_exec)) = propf_execute;
+  *(m_float*)(o->data + o_nk_fmax) = 1.0;
+  *(m_float*)(o->data + o_nk_fval) = 0.0;
+  *(m_float*)(o->data + o_nk_fstp) = 1;
+  *(m_float*)(o->data + o_nk_finc) = .5;
 }
 
 static struct Type_ t_slider= { "NkSlider",  SZ_INT, &t_fval};
 static void slider_execute(M_Object o, struct nk_context* ctx)
 {
-  if(nk_slider_float(ctx, *(m_float*)(o->d.data + o_nk_fmin), (float*)&*(m_float*)(o->d.data + o_nk_fval),
-    *(m_float*)(o->d.data + o_nk_fmax), .01))
-    /*if(nk_slider_float(ctx, *(m_float*)(o->d.data + o_nk_fmin), (float*)&*(m_float*)(o->d.data + o_nk_fval),*/
-    /**(m_float*)(o->d.data + o_nk_fmax), *((m_float*)((M_Object)o)->d.data + o_nk_fstp)))*/
+  if(nk_slider_float(ctx, *(m_float*)(o->data + o_nk_fmin), (float*)&*(m_float*)(o->data + o_nk_fval),
+    *(m_float*)(o->data + o_nk_fmax), .01))
+    /*if(nk_slider_float(ctx, *(m_float*)(o->data + o_nk_fmin), (float*)&*(m_float*)(o->data + o_nk_fval),*/
+    /**(m_float*)(o->data + o_nk_fmax), *((m_float*)((M_Object)o)->d.data + o_nk_fstp)))*/
     broadcast(o);
 }
 static void slider_ctor(M_Object o, VM_Shred shred)
 {
-  (*(f_nk*)   (o->d.data + o_nk_exec)) = slider_execute;
-  *(m_float*)(o->d.data + o_nk_fmax)  = 1.0;
-  *(m_float*)(o->d.data + o_nk_fval)  = 0.0;
-  *(m_float*)(o->d.data + o_nk_fstp)  = 0.1; // ? BUG
-  *(m_float*)(o->d.data + o_nk_finc)  = .11;
+  (*(f_nk*)   (o->data + o_nk_exec)) = slider_execute;
+  *(m_float*)(o->data + o_nk_fmax)  = 1.0;
+  *(m_float*)(o->data + o_nk_fval)  = 0.0;
+  *(m_float*)(o->data + o_nk_fstp)  = 0.1; // ? BUG
+  *(m_float*)(o->data + o_nk_finc)  = .11;
 }
 
 m_bool import(Env env)

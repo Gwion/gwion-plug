@@ -77,13 +77,13 @@ printf("data->sp->sr %i\n", data->sp->sr);
 	plumber_init(&data->pd);
 	data->pd.sp = data->sp;
 	data->pd.ud = data;
-	o->ugen->tick = sporth_tick;
-	assign_ugen(o->ugen, 1, 1, 0, data);
+	assign_ugen(UGEN(o), 1, 1, 0, data);
+	UGEN(o)->tick = sporth_tick;
 }
 
 DTOR(sporth_dtor)
 {
-	sporthData * data = (sporthData*)o->ugen->ug;
+	sporthData * data = (sporthData*)UGEN(o)->ug;
 /*
 	if(data)
 	{
@@ -99,7 +99,7 @@ DTOR(sporth_dtor)
 
 MFUN(sporth_setp)
 {
-	sporthData * data = (sporthData*)o->ugen->ug;
+	sporthData * data = (sporthData*)UGEN(o)->ug;
 	int i = *(m_uint*)MEM(SZ_INT);
 	m_float val = *(m_float*)MEM(SZ_INT*2);
 	data->pd.p[i] = val;
@@ -108,7 +108,7 @@ MFUN(sporth_setp)
 
 MFUN(sporth_set_table)
 {
-	sporthData * data = (sporthData*)o->ugen->ug;
+	sporthData * data = (sporthData*)UGEN(o)->ug;
 	int i = *(m_uint*)MEM(SZ_INT);
 	m_float val = *(m_float*)MEM(SZ_INT*2);
 	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT*2 + SZ_FLOAT));
@@ -134,7 +134,7 @@ MFUN(sporth_set_table)
 
 MFUN(sporth_get_table)
 {
-	sporthData * data = (sporthData*)o->ugen->ug;
+	sporthData * data = (sporthData*)UGEN(o)->ug;
 	int i = *(m_uint*)MEM(SZ_INT);
   sp_ftbl *ft;
 	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
@@ -159,14 +159,14 @@ MFUN(sporth_get_table)
 
 MFUN(sporth_getp)
 {
-	sporthData * data = (sporthData*)o->ugen->ug;
+	sporthData * data = (sporthData*)UGEN(o)->ug;
 	int i = *(m_uint*)MEM(SZ_INT);
   RETURN->d.v_float = data->pd.p[i];
 }
 
 MFUN(sporth_parse_string)
 {
-	sporthData * data = (sporthData*)o->ugen->ug;
+	sporthData * data = (sporthData*)UGEN(o)->ug;
 	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
 	char* str = strndup(cstr, (strlen(cstr) + 1));
 	if(!data->parsed) {
@@ -182,7 +182,7 @@ MFUN(sporth_parse_string)
 
 MFUN(sporth_parse_file)
 {
-	sporthData * data = (sporthData*)o->ugen->ug;
+	sporthData * data = (sporthData*)UGEN(o)->ug;
 	const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
 	char* str = strndup(cstr, (strlen(cstr) + 1));
 

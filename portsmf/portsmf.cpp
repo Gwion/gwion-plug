@@ -3,13 +3,13 @@
 #include <portsmf/allegro.h>
 #include "Gwion.hpp"
 
-#define TYPE(o)  *(m_uint*)(o->d.data + o_midiev_type)
-#define START(o) *(m_float*)(o->d.data + o_midiev_start)
-#define PITCH(o) *(m_float*)(o->d.data + o_midiev_pitch)
-#define LOUD(o)  *(m_float*)(o->d.data + o_midiev_loud)
-#define END(o)   *(m_float*)(o->d.data + o_midiev_end)
-#define DUR(o)   *(m_float*)(o->d.data + o_midiev_dur)
-#define SEQ(o)   *(Alg_seq**)(o->d.data + o_midifile_seq)
+#define TYPE(o)  *(m_uint*)(o->data + o_midiev_type)
+#define START(o) *(m_float*)(o->data + o_midiev_start)
+#define PITCH(o) *(m_float*)(o->data + o_midiev_pitch)
+#define LOUD(o)  *(m_float*)(o->data + o_midiev_loud)
+#define END(o)   *(m_float*)(o->data + o_midiev_end)
+#define DUR(o)   *(m_float*)(o->data + o_midiev_dur)
+#define SEQ(o)   *(Alg_seq**)(o->data + o_midifile_seq)
 struct Type_ t_midifileev = { (m_str)"MidiFileEv", SZ_INT, &t_object };
 struct Type_ t_midifile = { (m_str)"MidiFile",  SZ_INT, &t_object };
 m_int o_midifile_seq;
@@ -160,7 +160,7 @@ MFUN(midifile_add_note)
   {
     err_msg(INSTR_, 0, "not a note.");
     shred->is_running = 0;
-    shred->is_done = 1;
+    shred->me = NULL;
     return;
   }
   Alg_note* ev = new Alg_note();

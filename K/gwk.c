@@ -19,12 +19,12 @@ static m_float** gw2c(M_Vector vec, m_uint* x, m_uint* y) {
 	m_uint i, j;
 	*x = m_vector_size(vec);
   M_Object a = (M_Object)i_vector_at(vec, 0);
-	*y = m_vector_size(a->d.array);
+	*y = m_vector_size(ARRAY(a));
 	m_float** ret = matrix_alloc(*x, *y);
   for(i = 0; i < *x; i++) {
     a = (M_Object)i_vector_at(vec, i);
     for(j = 0; j < *y; j++)
-      ret[i][j] = f_vector_at(a->d.array, j);
+      ret[i][j] = f_vector_at(ARRAY(a), j);
   } 
 	return ret;
 }
@@ -39,10 +39,10 @@ static SFUN(gw_knn)
   m_uint data_x, data_y;
   m_uint inst_x, inst_y;
  
-  m_float** data = gw2c(data_obj->d.array, &data_x, &data_y);
-  m_float** inst = gw2c(inst_obj->d.array, &inst_x, &inst_y);
-  m_uint n_labl = m_vector_size(labl_obj->d.array);
-  m_uint* labl = (m_uint*)labl_obj->d.array->ptr;
+  m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
+  m_float** inst = gw2c(ARRAY(inst_obj), &inst_x, &inst_y);
+  m_uint n_labl = m_vector_size(ARRAY(labl_obj));
+  m_uint* labl = (m_uint*)ARRAY(labl_obj)->ptr;
   m_uint* ret = knn_classify_multi(data_x, data_y, data, n_labl, labl, inst_x, inst, k);
 
 
@@ -67,14 +67,14 @@ static SFUN(gw_kmeans)
 
   m_uint data_x, data_y;
   m_uint cent_x, cent_y;
-  m_float** data = gw2c(data_obj->d.array, &data_x, &data_y);
-  m_float** cent = gw2c(cent_obj->d.array, &cent_x, &cent_y);
+  m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
+  m_float** cent = gw2c(ARRAY(cent_obj), &cent_x, &cent_y);
   m_uint* ret = kmeans(data_x, data_y, data, k, theta, cent, initial);
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 1);
   RETURN->d.v_uint = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
-  memcpy(ret_obj->d.array->ptr, ret, data_y * sizeof(m_uint));
+  memcpy(ARRAY(ret_obj)->ptr, ret, data_y * sizeof(m_uint));
   matrix_release(data);
   matrix_release(cent);
   free(ret);
@@ -91,7 +91,7 @@ static SFUN(gw_kmeans_refine)
   m_uint   n_label  = *(m_uint*)  MEM(SZ_INT*4);
 
   m_uint data_x, data_y;
-  m_float** data = gw2c(data_obj->d.array, &data_x, &data_y);
+  m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** ret = kmeans_refine(data_x, data_y, data, iter, n_points, n_label);
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 2);
@@ -99,8 +99,8 @@ static SFUN(gw_kmeans_refine)
   vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
     M_Object obj = new_M_Array(SZ_FLOAT, data_y, 1);
-    memcpy(obj->d.array->ptr, ret[i], data_y * sizeof(m_float));
-    i_vector_set(ret_obj->d.array, i, (m_uint)obj);
+    memcpy(ARRAY(obj)->ptr, ret[i], data_y * sizeof(m_float));
+    i_vector_set(ARRAY(ret_obj), i, (m_uint)obj);
     vector_add(&shred->gc, (vtype)obj);
   }
   release(data_obj, shred);

@@ -87,11 +87,11 @@ static struct Type_ t_loin     = { "OscIn",  SZ_INT, &t_lo };
 static struct Type_ t_loout    = { "OscOut", SZ_INT, &t_lo };
 
 static m_int o_lo_addr, o_lo_args, o_lo_serv, o_lo_meth, o_lo_curr;
-#define ADDR(o) *(lo_address*)    (o->d.data + o_lo_addr)
-#define ARGS(o) *(Vector*)        (o->d.data + o_lo_args)
-#define SERV(o) *(struct Server**)(o->d.data + o_lo_serv)
-#define METH(o) *(Vector*)        (o->d.data + o_lo_meth)
-#define CURR(o) *(Vector*)     (o->d.data + o_lo_curr)
+#define ADDR(o) *(lo_address*)    (o->data + o_lo_addr)
+#define ARGS(o) *(Vector*)        (o->data + o_lo_args)
+#define SERV(o) *(struct Server**)(o->data + o_lo_serv)
+#define METH(o) *(Vector*)        (o->data + o_lo_meth)
+#define CURR(o) *(Vector*)     (o->data + o_lo_curr)
 
 static MFUN(osc_addr)
 {
@@ -111,7 +111,7 @@ static MFUN(osc_send)
   {
     err_msg(INSTR_, 0, "oscsend address not set. shred[%i] exiting.", shred->xid);
     shred->is_running = 0;
-    shred->is_done = 1;
+    shred->me = NULL;
     return;
   }
   msg = lo_message_new();
@@ -131,7 +131,7 @@ static MFUN(osc_send)
         break;
       default:
           err_msg(INSTR_, 0, "oscsend invalid type: '%c'  in arg '%i'\n", arg->t, i);
-          shred->is_done = 1;
+          shred->me = NULL;
           shred->is_running = 0;
           return;
     }
@@ -253,7 +253,7 @@ static MFUN(osc_port)
     if(!s->thread)
     {
       free(s);
-      shred->is_done = 1;
+      shred->me = NULL;
       shred->is_running= 0;
       return;
     }
