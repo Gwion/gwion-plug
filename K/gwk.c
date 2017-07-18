@@ -2,6 +2,7 @@
 #include "type.h"
 #include "err_msg.h"
 #include "lang.h"
+#include "instr.h"
 #include "import.h"
 #include "array.h"
 #include "k.h"
@@ -47,7 +48,7 @@ static SFUN(gw_knn)
 
 
   M_Object ret_obj = new_M_Array(SZ_INT, inst_x, 1);
-  RETURN->d.v_uint = (m_uint)ret_obj;
+  *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   matrix_release(data);
   matrix_release(inst);
@@ -72,7 +73,7 @@ static SFUN(gw_kmeans)
   m_uint* ret = kmeans(data_x, data_y, data, k, theta, cent, initial);
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 1);
-  RETURN->d.v_uint = (m_uint)ret_obj;
+  *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   memcpy(ARRAY(ret_obj)->ptr, ret, data_y * sizeof(m_uint));
   matrix_release(data);
@@ -95,7 +96,7 @@ static SFUN(gw_kmeans_refine)
   m_float** ret = kmeans_refine(data_x, data_y, data, iter, n_points, n_label);
 
   M_Object ret_obj = new_M_Array(SZ_INT, data_x, 2);
-  RETURN->d.v_uint = (m_uint)ret_obj;
+  *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
     M_Object obj = new_M_Array(SZ_FLOAT, data_y, 1);

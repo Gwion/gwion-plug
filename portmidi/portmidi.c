@@ -5,6 +5,7 @@
 #include "defs.h"
 #include "vm.h"
 #include "lang.h"
+#include "instr.h"
 #include "import.h"
 #include "shreduler.h"
 
@@ -88,14 +89,14 @@ static MFUN(pm_name)
 {
   const PmDeviceInfo* info = Pm_GetDeviceInfo(ID(o));
   if(!info)
-    RETURN->d.v_uint = (m_uint)new_String(shred, "no device");
+    *(m_uint*)RETURN = (m_uint)new_String(shred, "no device");
   else
-    RETURN->d.v_uint = (m_uint)new_String(shred, (m_str)info->name);
+    *(m_uint*)RETURN = (m_uint)new_String(shred, (m_str)info->name);
 }
 
 static SFUN(pm_error)
 {
-  RETURN->d.v_uint = (m_uint)new_String(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(SZ_INT)));
+  *(m_uint*)RETURN = (m_uint)new_String(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(SZ_INT)));
 }
 
 static MFUN(pm_close)
@@ -103,7 +104,7 @@ static MFUN(pm_close)
   release_info(ID(o), o);
   STREAM(o) = NULL;
   ID(o) = -1;
-  RETURN->d.v_uint = 1;
+  *(m_uint*)RETURN = 1;
 }
 
 static CTOR(pm_ctor)
@@ -129,18 +130,18 @@ static MFUN(midiout_open)
   if(!info->stream)
     Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
   STREAM(o) = info->stream;
-  RETURN->d.v_uint = 1;
+  *(m_uint*)RETURN = 1;
 }
 
 static MFUN(midiout_send_self)
 {
-  RETURN->d.v_uint = Pm_WriteShort(STREAM(o), 0, 
+  *(m_uint*)RETURN = Pm_WriteShort(STREAM(o), 0, 
     Pm_Message(STATUS(o), DATA1(o), DATA2(o)));
 }
 
 static MFUN(midiout_send)
 {
-  RETURN->d.v_uint = Pm_WriteShort(STREAM(o), 0, 
+  *(m_uint*)RETURN = Pm_WriteShort(STREAM(o), 0, 
     Pm_Message(*(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2), *(m_uint*)MEM(SZ_INT*3)));
 }
 
@@ -149,7 +150,7 @@ static void* pm_recv(void* data)
   m_uint i;
   PmEvent event;
   MidiInfo* info = (MidiInfo*)data;
-  m_float now = get_now(info->vm->shreduler);
+  m_float now = info->vm->bbq->sp->pos;
   while(1)
   {
     while(Pm_Poll(info->stream) == 1)
@@ -184,7 +185,7 @@ static MFUN(midiin_open)
 
 static MFUN(midiin_recv)
 {
-  RETURN->d.v_uint = vector_size(MSG(o)) ? 1 : 0;
+  *(m_uint*)RETURN = vector_size(MSG(o)) ? 1 : 0;
 }
 
 static MFUN(midiin_read)

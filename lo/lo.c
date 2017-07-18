@@ -1,11 +1,11 @@
+#include <string.h>
+#include <lo/lo.h>
 #include "defs.h"
 #include "type.h"
 #include "err_msg.h"
 #include "lang.h"
+#include "instr.h"
 #include "import.h"
-
-#include <string.h>
-#include <lo/lo.h>
 
 static Map map = NULL;
 struct Arg
@@ -99,7 +99,7 @@ static MFUN(osc_addr)
     lo_address_free(ADDR(o));
   m_str host = STRING(*(M_Object*)MEM(SZ_INT)); 
   m_str port = STRING(*(M_Object*)MEM(SZ_INT * 2));
-  RETURN->d.v_uint = (ADDR(o) = lo_address_new(host, port)) ? 1 : 0;
+  *(m_uint*)RETURN = (ADDR(o) = lo_address_new(host, port)) ? 1 : 0;
 }
 
 static MFUN(osc_send)
@@ -110,7 +110,6 @@ static MFUN(osc_send)
   if(!ADDR(o))
   {
     err_msg(INSTR_, 0, "oscsend address not set. shred[%i] exiting.", shred->xid);
-    shred->is_running = 0;
     shred->me = NULL;
     return;
   }
@@ -132,13 +131,12 @@ static MFUN(osc_send)
       default:
           err_msg(INSTR_, 0, "oscsend invalid type: '%c'  in arg '%i'\n", arg->t, i);
           shred->me = NULL;
-          shred->is_running = 0;
           return;
     }
     release_Arg(arg);
   }
   vector_clear(ARGS(o));
-  RETURN->d.v_uint = lo_send_message(ADDR(o), STRING(*(M_Object*)MEM(SZ_INT)), msg) ? 1 : 0;
+  *(m_uint*)RETURN = lo_send_message(ADDR(o), STRING(*(M_Object*)MEM(SZ_INT)), msg) ? 1 : 0;
 }
 
 static INSTR(oscsend_add_int)
@@ -228,7 +226,7 @@ static int osc_method_handler(const char* path, const char* type,
 static MFUN(osc_get_port)
 {
   struct Server* s = SERV(o);
-  RETURN->d.v_uint = s ? s->port : -1;
+  *(m_uint*)RETURN = s ? s->port : -1;
 }
 
 static MFUN(osc_port)
@@ -254,7 +252,6 @@ static MFUN(osc_port)
     {
       free(s);
       shred->me = NULL;
-      shred->is_running= 0;
       return;
     }
     lo_server_enable_coercion(lo_server_thread_get_server(s->thread), 0);
@@ -266,7 +263,7 @@ static MFUN(osc_port)
   }
   s->ref++;
   SERV(o) = s;
-  RETURN->d.v_uint = s->port = port;
+  *(m_uint*)RETURN = s->port = port;
 }
 
 static MFUN(osc_add_method)
@@ -299,7 +296,7 @@ found:
     vector_add(m->client, (vtype)o);
   if(vector_find(METH(o), (vtype)m) < 0)
     vector_add(METH(o), (vtype)m);
-  RETURN->d.v_uint = 1;
+  *(m_uint*)RETURN = 1;
 }
 
 CTOR(lo_ctor){ ARGS(o) = new_vector(); }
@@ -311,7 +308,7 @@ CTOR(loin_dtor){ free_vector(METH(o)); free_vector(CURR(o));}
 static MFUN(oscin_stop)
 {
   struct Server* s = SERV(o);
-  RETURN->d.v_uint = lo_server_thread_stop(s->thread);
+  *(m_uint*)RETURN = lo_server_thread_stop(s->thread);
 }
 
 static MFUN(oscin_start)
@@ -320,17 +317,17 @@ static MFUN(oscin_start)
   if(lo_server_thread_start(s->thread) < 0)
   {
     release_server(s);
-    RETURN->d.v_uint = -1;
+    *(m_uint*)RETURN = -1;
     return;
   }
-  RETURN->d.v_uint = 1;
+  *(m_uint*)RETURN = 1;
 }
 
 static MFUN(osc_recv)
 {
   Vector c_arg = ARGS(o);
   CURR(o) = (Vector)vector_at(c_arg, 0);
-  RETURN->d.v_uint = CURR(o) ? 1 : 0;
+  *(m_uint*)RETURN = CURR(o) ? 1 : 0;
   vector_rem(ARGS(o), 0);
 }
 static MFUN(oscin_rem)
@@ -354,7 +351,7 @@ static MFUN(oscin_rem)
       if((i = vector_find(METH(o), (vtype)m)) >= 0)
         vector_rem(METH(o), (vtype)i);
       release_method(SERV(o), m);
-      RETURN->d.v_uint = 1;
+      *(m_uint*)RETURN = 1;
       return;
     }
   }
@@ -365,7 +362,7 @@ static MFUN(oscin_get_i)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_rem(c_arg, 0);
-  RETURN->d.v_uint = arg->data.i;
+  *(m_uint*)RETURN = arg->data.i;
   release_Arg(arg);
 }
 
@@ -374,7 +371,7 @@ static MFUN(oscin_get_f)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_rem(c_arg, 0);
-  RETURN->d.v_float = arg->data.f;
+  *(m_float*)RETURN = arg->data.f;
   release_Arg(arg);
 }
 
@@ -383,7 +380,7 @@ static MFUN(oscin_get_s)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_rem(c_arg, 0);
-  RETURN->d.v_uint = (m_uint)new_String(shred, arg->data.s);
+  *(m_uint*)RETURN = (m_uint)new_String(shred, arg->data.s);
   release_Arg(arg);
 }
 

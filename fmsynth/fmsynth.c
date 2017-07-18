@@ -1,9 +1,9 @@
 #include "map.h"
 #include "vm.h"
 #include "type.h"
-#include "dl.h"
 #include "err_msg.h"
 #include "import.h"
+#include "instr.h"
 #include "lang.h"
 #include "vm.h"
 #include "shreduler.h"
@@ -111,18 +111,18 @@ MFUN(load)
   FILE* file = fopen(filename, "r");
   if(!file)
   {
-    RETURN->d.v_uint = -1;
+    *(m_uint*)RETURN = -1;
     return;
   }
   void* buf;
   size_t len = fread(buf,fmsynth_preset_size(), 1, file);
   if(len != 1)
   {
-    RETURN->d.v_uint = -1;
+    *(m_uint*)RETURN = -1;
     return;
   }
   fclose(file);
-  RETURN->d.v_uint = fmsynth_preset_load(SYNTH(o), metadata,
+  *(m_uint*)RETURN = fmsynth_preset_load(SYNTH(o), metadata,
       buf, fmsynth_preset_size());
   free(STRING(NAME(o)));
   free(STRING(AUTHOR(o)));
@@ -137,7 +137,7 @@ MFUN(save)
   FILE* file = fopen(filename, "w");
   if(!file)
   {
-    RETURN->d.v_uint = -1;
+    *(m_uint*)RETURN = -1;
     return;
   }
   void* buf;
@@ -145,13 +145,13 @@ MFUN(save)
   memset(metadata, 0, sizeof(metadata));
   strcat(metadata->name, STRING(NAME(o)));
   strcat(metadata->author, STRING(AUTHOR(o)));
-  RETURN->d.v_uint = fmsynth_preset_save(SYNTH(o), metadata,
+  *(m_uint*)RETURN = fmsynth_preset_save(SYNTH(o), metadata,
       buf, fmsynth_preset_size());
   fwrite(buf, fmsynth_preset_size(), 1, file);
   size_t len = fwrite(buf,fmsynth_preset_size(), 1, file);
   if(len != 1)
   {
-    RETURN->d.v_uint = -1;
+    *(m_uint*)RETURN = -1;
     return;
   }
   fclose(file);

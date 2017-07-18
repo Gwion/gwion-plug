@@ -1,8 +1,8 @@
 #include "map.h"
 #include "vm.h"
 #include "type.h"
-#include "dl.h"
 #include "err_msg.h"
+#include "instr.h"
 #include "import.h"
 #include "lang.h"
 #include "vm.h"
@@ -95,7 +95,7 @@ static MFUN(gw_lsys_reset)
 static MFUN(gw_lsys_size)
 {
 	Lsys*  ptr = LSYS(o);
-	RETURN->d.v_uint = ptr->is_init ? ptr->lst.size : -1;
+	*(m_uint*)RETURN = ptr->is_init ? ptr->lst.size : -1;
 }
 
 static MFUN(gw_lsys_get)
@@ -104,7 +104,7 @@ static MFUN(gw_lsys_get)
 	Lsys*  ptr   = LSYS(o);
 	if(!ptr->is_init)
 	{
-		RETURN->d.v_uint = 0;
+		*(m_uint*)RETURN = 0;
 		return;
 	}
 	char str[ptr->lst.size];
@@ -112,7 +112,7 @@ static MFUN(gw_lsys_get)
 		ptr->pos = lsys_list_iter(&ptr->lst, &ptr->ent, ptr->pos);
 		str[i] = tochar(ptr->ent->val + 1);
 	}
-	RETURN->d.v_uint = (m_uint)new_String(shred, str);
+	*(m_uint*)RETURN = (m_uint)new_String(shred, str);
 }
 
 IMPORT

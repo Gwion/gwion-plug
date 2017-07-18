@@ -1,12 +1,4 @@
-/* nuklear - v1.09 - public domain */
-#include "defs.h"
-#include "env.h"
-/*#include "map.h"*/
-/*#include "map.h"*/
-/*#include "vm.h"*/
-#include "type.h"
 #include <pthread.h>
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,10 +9,12 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <time.h>
+#include "defs.h"
+#include "env.h"
+#include "type.h"
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
-/*#define NK_INCLUDE_STANDARD_VARARGS*/
 #define NK_INCLUDE_DEFAULT_ALLOCATOR
 #define NK_IMPLEMENTATION
 #define NK_XLIB_IMPLEMENTATION
@@ -41,8 +35,8 @@
 
 //#include "style.c"
 
-#include "dl.h"
 #include "err_msg.h"
+#include "instr.h"
 #include "import.h"
 #include "lang.h"
 #include "vm.h"
@@ -454,12 +448,12 @@ static void group_dtor(M_Object o, VM_Shred shred)
   free_vector(LIST(o));
   last_widget = o;
 }
-static void group_end(M_Object o, DL_Return * RETURN, VM_Shred sh)
+static MFUN(group_end)
 {
   last_widget = (*(M_Object*)(o->data + o_nk_parent));
 }
 
-static void group_begin(M_Object o, DL_Return * RETURN, VM_Shred sh)
+static MFUN(group_begin)
 {
   last_widget = o;
 }
@@ -586,10 +580,10 @@ static void combo_ctor(M_Object o, VM_Shred shred)
 {
   *(f_nk*)(o->data + o_nk_exec) = combo_execute;
 }
-static void combo_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
+static MFUN(combo_add)
 {
-  vector_add(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
-  RETURN->d.v_uint = (m_uint)*(M_Object*)(sh->mem + SZ_INT);
+  vector_add(LIST(o), (vtype)*(M_Object*)(shred->mem + SZ_INT));
+  *(m_uint*)RETURN = (m_uint)*(M_Object*)(shred->mem + SZ_INT);
 }
 
 static struct Type_ t_menubar = { "NkMenuBar",  SZ_INT, &t_group};
@@ -605,10 +599,10 @@ static void menubar_ctor(M_Object o, VM_Shred shred)
 {
   *(f_nk*)(o->data + o_nk_exec) = menubar_execute;
 }
-static void menubar_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
+static MFUN(menubar_add)
 {
-  vector_add(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
-  RETURN->d.v_uint = (m_uint)*(M_Object*)(sh->mem + SZ_INT);
+  vector_add(LIST(o), (vtype)*(M_Object*)(shred->mem + SZ_INT));
+  *(m_uint*)RETURN = (m_uint)*(M_Object*)(shred->mem + SZ_INT);
 }
 
 static m_int  o_nk_menuval;
@@ -637,10 +631,10 @@ static void menu_ctor(M_Object o, VM_Shred shred)
 {
   *(f_nk*)(o->data + o_nk_exec) = menu_execute;
 }
-static void menu_add(M_Object o, DL_Return * RETURN, VM_Shred sh)
+static MFUN(menu_add)
 {
-  vector_add(LIST(o), (vtype)*(M_Object*)(sh->mem + SZ_INT));
-  RETURN->d.v_uint = (m_uint)*(M_Object*)(sh->mem + SZ_INT);
+  vector_add(LIST(o), (vtype)*(M_Object*)(shred->mem + SZ_INT));
+  *(m_uint*)RETURN = (m_uint)*(M_Object*)(shred->mem + SZ_INT);
 }
 
 static m_int o_nk_edit_type;

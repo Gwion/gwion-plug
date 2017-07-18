@@ -53,7 +53,7 @@ void     v4_vector_set (M_Vector* v, m_uint i, m_vec4  data);
 #endif
 
 #include "type.h"
-#include "dl.h"
+#include "instr.h"
 #include "import.h"
 typedef struct VM_Shred_* VM_Shred;
 #define import_var(a, b, c, d, e) import_var(a, (m_str)b, (m_str)c, (ae_flag)d, e)

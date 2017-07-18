@@ -2,8 +2,8 @@
 #include "defs.h"
 #include "type.h"
 #include "lang.h"
+#include "instr.h"
 #include "import.h"
-#include "soundpipe.h"
 #include "ugen.h"
 #include "sporth.h"
 
@@ -103,7 +103,7 @@ MFUN(sporth_setp)
 	int i = *(m_uint*)MEM(SZ_INT);
 	m_float val = *(m_float*)MEM(SZ_INT*2);
 	data->pd.p[i] = val;
-	RETURN->d.v_float = val;
+	*(m_float*)RETURN = val;
 }
 
 MFUN(sporth_set_table)
@@ -129,7 +129,7 @@ MFUN(sporth_set_table)
 		ft->tbl[i] = val;
 	}
 	free(ftname);
-	RETURN->d.v_float = val;
+	*(m_float*)RETURN = val;
 }
 
 MFUN(sporth_get_table)
@@ -151,9 +151,9 @@ MFUN(sporth_get_table)
 	}
 	free(ftname);
 	if(!err) {
-  	RETURN->d.v_float = ft->tbl[i];
+  	*(m_float*)RETURN = ft->tbl[i];
   } else {
-		RETURN->d.v_float = 0;
+		*(m_float*)RETURN = 0;
 	}
 }
 
@@ -161,7 +161,7 @@ MFUN(sporth_getp)
 {
 	sporthData * data = (sporthData*)UGEN(o)->ug;
 	int i = *(m_uint*)MEM(SZ_INT);
-  RETURN->d.v_float = data->pd.p[i];
+  *(m_float*)RETURN = data->pd.p[i];
 }
 
 MFUN(sporth_parse_string)
@@ -177,7 +177,7 @@ MFUN(sporth_parse_string)
 		plumber_recompile_string(&data->pd, str);
   }
   free(str);
-  RETURN->d.v_float = data->var;
+  *(m_float*)RETURN = data->var;
 }
 
 MFUN(sporth_parse_file)
@@ -196,7 +196,7 @@ MFUN(sporth_parse_file)
    }
    plumber_close_file(&data->pd);
    free(str);
-   RETURN->d.v_float = data->var;
+   *(m_float*)RETURN = data->var;
 	}
 }
 

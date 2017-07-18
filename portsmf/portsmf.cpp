@@ -109,7 +109,7 @@ MFUN(midifile_open)
 MFUN(midifile_tracks)
 {
   Alg_seq* seq = SEQ(o);
-  RETURN->d.v_uint = seq->tracks();
+  *(m_uint*)RETURN = seq->tracks();
 }
 
 MFUN(midifile_add_track)
@@ -120,7 +120,7 @@ MFUN(midifile_add_track)
 MFUN(midifile_track_len)
 {
   Alg_seq* seq = SEQ(o);
-  RETURN->d.v_uint = seq->track(*(m_uint*)MEM(SZ_INT))->length();
+  *(m_uint*)RETURN = seq->track(*(m_uint*)MEM(SZ_INT))->length();
 
 }
 MFUN(midifile_event)
@@ -149,7 +149,7 @@ MFUN(midifile_event)
       DUR(obj)   = ev->get_duration()   * shred->vm_ref->bbq->sp->sr;
     }
   }
-  RETURN->d.v_uint = (m_uint)obj;
+  *(m_uint*)RETURN = (m_uint)obj;
 }
 
 MFUN(midifile_add_note)
@@ -159,7 +159,6 @@ MFUN(midifile_add_note)
   if(TYPE(obj) != 'n')
   {
     err_msg(INSTR_, 0, "not a note.");
-    shred->is_running = 0;
     shred->me = NULL;
     return;
   }

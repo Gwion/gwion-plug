@@ -133,14 +133,14 @@ MFUN(linuxsampler_noteOn)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOn(
-    (RETURN->d.v_uint = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2), 0 );
+    (*(m_uint*)RETURN = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2), 0 );
 }
 
 MFUN(linuxsampler_noteOff)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOff(
-    (RETURN->d.v_uint = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2),0 );
+    (*(m_uint*)RETURN = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2),0 );
 }
 
 MFUN(linuxsampler_pitchbend)
@@ -153,34 +153,34 @@ MFUN(linuxsampler_pitchbend)
 MFUN(linuxsampler_status)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->d.v_uint = ls_obj->Engine() ? ls_obj->Engine()->InstrumentStatus() : 0;
+  *(m_uint*)RETURN = ls_obj->Engine() ? ls_obj->Engine()->InstrumentStatus() : 0;
 }
 
 MFUN(linuxsampler_getgain)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->d.v_float = ls_obj->Engine() ? ls_obj->Engine()->Volume() : 0;
+  *(m_float*)RETURN = ls_obj->Engine() ? ls_obj->Engine()->Volume() : 0;
 }
 
 MFUN(linuxsampler_setgain)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->d.v_float = *(m_float*)MEM(SZ_INT);
-  if( ls_obj->Engine() ) ls_obj->Engine()->Volume(RETURN->d.v_float);
+  *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
+  if( ls_obj->Engine() ) ls_obj->Engine()->Volume(*(m_float*)RETURN);
 }
 
 MFUN(linuxsampler_getpan)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->d.v_float = ls_obj->Engine() ? ls_obj->Engine()->Pan() : 0;
+  *(m_float*)RETURN = ls_obj->Engine() ? ls_obj->Engine()->Pan() : 0;
 }
 
 MFUN(linuxsampler_setpan)
 {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
-  RETURN->d.v_float = *(m_float*)MEM(SZ_INT);
+  *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   if(ls_obj->Engine())
-    ls_obj->Engine()->Pan(RETURN->d.v_float);
+    ls_obj->Engine()->Pan(*(m_float*)RETURN);
 }
 
 extern "C"
