@@ -1,4 +1,4 @@
-default: ${NAME}.so
+all: ${NAME}.so
 
 ${NAME}.so: ${OBJ}
 ifeq (${USE_LD}, 1)

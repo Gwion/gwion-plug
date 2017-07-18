@@ -1,6 +1,6 @@
 DIR=$(wildcard */)
 
-default:
+all:
 	 @ $(foreach dir,$(DIR), make -s            -C $(dir);)
 
 install:
