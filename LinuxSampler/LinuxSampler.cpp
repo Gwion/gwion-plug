@@ -1,6 +1,6 @@
+#include <linuxsampler/Sampler.h>
 #include "Gwion.hpp"
 #include "ugen.h"
-#include <linuxsampler/Sampler.h>
 
 m_int o_ls_data = 0;
 static LinuxSampler::Sampler * sampler = NULL;
