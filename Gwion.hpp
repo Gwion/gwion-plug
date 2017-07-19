@@ -2,23 +2,7 @@ extern "C"
 {
 #include "defs.h"
 #include "err_msg.h"
-//typedef _Complex complex;
 extern m_int o_string_data;
-#ifndef __ARRAY
-#define __ARRAY
-#include <complex.h>
-#include "map.h"
-
-typedef struct VM_Vector_* VM_Vector;
-
-struct VM_Array_ {
-  M_Vector* vector;
-//  Map    map;
-  Type type;
-  m_bool is_obj;
-};
-#endif
-
 #include "type.h"
 #include "instr.h"
 #include "import.h"
