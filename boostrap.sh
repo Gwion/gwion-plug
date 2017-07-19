@@ -1,5 +1,6 @@
 #!/bin/sh
 #needs an argument
+set -e
 [ "$1" ] || {
 	echo "usage: $0 <plugin name>"
 	exit 1
@@ -38,43 +39,43 @@ EOF
 
 cat << EOF > $1/${1,,}.c
 #include "type.h"
-#include "dl.h"
+#include "instr.h"
 #include "import.h"
-#include "err_msg.h"
-#include "lang.h"
+//#include "err_msg.h"
+//#include "lang.h"
+//#include "ugen.h"
 
 static struct Type_ t_${1,,} = { "$1", SZ_INT, &t_object };
 
-CTOR($1_ctor) { /*code here */ }
+CTOR(${1,,}_ctor) { /*code here */ }
 
-DTOR($1_dtor) { /*code here */ }
+DTOR(${1,,}_dtor) { /*code here */ }
 
-m_int o_${1}_member_data;
-m_int o_${1}_static_data;
-m_int* o_${1}_static_value;
+m_int o_${1,,}_member_data;
+m_int o_${1,,}_static_data;
+m_int* ${1,,}_static_value;
 
 static MFUN(mfun) { /*code here */ }
 static SFUN(sfun) { /*code here */ }
 
 IMPORT
 {
-  DL_Func* fun;
+  DL_Func fun;
 
-  CHECK_BB(add_global_type(env, &t_${1,,}))
-  CHECK_BB(import_class_begin(env, &t_${1,,}, env->global_nspc, ${1}_ctor, ${1}_dtor))
+  CHECK_BB(import_class_begin(env, &t_${1,,}, env->global_nspc, ${1,,}_ctor, ${1,,}_dtor))
 
-  o_${1}_member_data = import_mvar(env, "int",  "member", 0, 0, "doc");
+  o_${1,,}_member_data = import_var(env, "int",  "member", ae_flag_member, NULL);
 
-  o_${1}_static_value = malloc(sizeof(m_int));
-  o_${1}_static_data = import_svar(env, "int", "static", 1, 0, o_${1}_static_value, "doc.");
+  ${1,,}_static_value = malloc(sizeof(m_int));
+  o_${1,,}_static_data = import_var(env, "int", "static", ae_flag_static, ${1,,}_static_value);
 
-  fun = new_DL_Func("int", "mfun",  (m_uint)mfun);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "mfun",  (m_uint)mfun);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_fun(env, &fun, ae_flag_member))
 
-  fun = new_DL_Func("int", "sfun",  (m_uint)sfun);
-    dl_func_add_arg(fun, "int", "arg");
-  CHECK_OB(import_mfun(env, fun))
+  dl_func_init(&fun, "int", "sfun",  (m_uint)sfun);
+    dl_func_add_arg(&fun, "int", "arg");
+  CHECK_OB(import_fun(env, &fun, ae_flag_static))
 
   CHECK_BB(import_class_end(env))
   return 1;
