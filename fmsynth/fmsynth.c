@@ -38,7 +38,7 @@ CTOR(ctor)
 {
   NAME(o) = new_String(NULL, "name");
   AUTHOR(o) = new_String(NULL, "author");
-  SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, POLYPHONY);
+  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
   assign_ugen(UGEN(o), 1, 2, 0, SYNTH(o));
   UGEN(o)->tick = fmsynth_tick;
 }
@@ -50,7 +50,7 @@ DTOR(dtor)
 MFUN(init)
 {
   fmsynth_free(SYNTH(o));
-  SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, *(m_uint*)MEM(SZ_INT));
+  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, *(m_uint*)MEM(SZ_INT));
   UGEN(o)->ug = SYNTH(o);
 }
 MFUN(parameter)
@@ -105,7 +105,7 @@ MFUN(release_all)
 MFUN(load)
 {
   fmsynth_free(SYNTH(o));
-  SYNTH(o) = fmsynth_new(shred->vm_ref->bbq->sp->sr, POLYPHONY);
+  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
   m_str filename = STRING( *(M_Object*)MEM(SZ_INT) );
   struct fmsynth_preset_metadata* metadata = malloc(sizeof(struct fmsynth_preset_metadata));
   FILE* file = fopen(filename, "r");

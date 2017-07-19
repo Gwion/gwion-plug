@@ -70,8 +70,7 @@ CTOR(sporth_ctor)
 	sporthData * data = malloc(sizeof(sporthData));
 	data->parsed = 0;
 	data->in = 0;
-	data->sp = shred->vm_ref->bbq->sp;
-printf("data->sp->sr %i\n", data->sp->sr);
+	data->sp = shred->vm_ref->sp;
 	plumber_register(&data->pd);
 	data->pd.sporth.flist[SPORTH_IN - SPORTH_FOFFSET].func = sporth_chuck_in;
 	plumber_init(&data->pd);

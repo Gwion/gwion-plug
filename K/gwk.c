@@ -4,7 +4,6 @@
 #include "lang.h"
 #include "instr.h"
 #include "import.h"
-#include "array.h"
 #include "k.h"
 // TODO: thread
 static struct Type_ t_k = { "K", 0, NULL };

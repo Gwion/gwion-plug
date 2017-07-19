@@ -95,7 +95,7 @@ CTOR(linuxsampler_ctor)
   if(!sampler)
     sampler = new LinuxSampler::Sampler();
 	std::map<String,LinuxSampler::DeviceCreationParameter*> param;
-  myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->bbq->sp->sr);
+  myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->sp->sr);
   UGEN(o)->ug = ls;
   UGEN(o)->n_in = 0;
   UGEN(o)->n_out = 2;

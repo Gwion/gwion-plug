@@ -150,7 +150,7 @@ static void* pm_recv(void* data)
   m_uint i;
   PmEvent event;
   MidiInfo* info = (MidiInfo*)data;
-  m_float now = info->vm->bbq->sp->pos;
+  m_float now = info->vm->sp->pos;
   while(1)
   {
     while(Pm_Poll(info->stream) == 1)

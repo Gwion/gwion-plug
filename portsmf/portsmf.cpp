@@ -144,9 +144,9 @@ MFUN(midifile_event)
     {
       PITCH(obj) = ev->get_pitch();
       LOUD(obj)  = ev->get_loud();
-      START(obj) = ev->get_start_time() * shred->vm_ref->bbq->sp->sr;
-      END(obj)   = ev->get_end_time()   * shred->vm_ref->bbq->sp->sr;
-      DUR(obj)   = ev->get_duration()   * shred->vm_ref->bbq->sp->sr;
+      START(obj) = ev->get_start_time() * shred->vm_ref->sp->sr;
+      END(obj)   = ev->get_end_time()   * shred->vm_ref->sp->sr;
+      DUR(obj)   = ev->get_duration()   * shred->vm_ref->sp->sr;
     }
   }
   *(m_uint*)RETURN = (m_uint)obj;
