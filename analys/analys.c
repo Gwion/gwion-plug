@@ -691,7 +691,7 @@ static m_bool import_fc(Env env) {
   return 1;
 }
 
-m_bool import_analys(Env env) {
+m_bool import(Env env) {
   CHECK_BB(import_fft(env))
   CHECK_BB(import_ana(env))
   CHECK_BB(import_centroid(env))
