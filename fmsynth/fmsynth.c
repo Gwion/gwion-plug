@@ -6,7 +6,6 @@
 #include "instr.h"
 #include "lang.h"
 #include "vm.h"
-#include "shreduler.h"
 #include "ugen.h"
 #include <stdlib.h>
 #include <stdio.h>

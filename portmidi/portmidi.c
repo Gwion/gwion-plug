@@ -7,7 +7,6 @@
 #include "lang.h"
 #include "instr.h"
 #include "import.h"
-#include "shreduler.h"
 
 #include <portmidi.h>
 #include <pthread.h>

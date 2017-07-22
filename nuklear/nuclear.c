@@ -40,7 +40,6 @@
 #include "import.h"
 #include "lang.h"
 #include "vm.h"
-#include "shreduler.h"
 
 static m_uint active = 0;
 /*static struct nk_context* CTX = NULL;*/
