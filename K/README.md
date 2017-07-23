@@ -1,14 +1,14 @@
-#K#
+# K
   a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
-##description##
+## Description
 use [K](https://github.com/.../K)
-##configuration##
+##Configuration
 check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
-##building##
+## Building
 ensure [K](https://github.com/.../K) is installed
 
-##instalation##
+## Instalation
 
-##usage##
+## usage
 check .gw files in the directory.
