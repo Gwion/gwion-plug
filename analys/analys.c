@@ -2,6 +2,7 @@
 #include <math.h>
 #include "absyn.h"
 #include "err_msg.h"
+#include "type.h"
 #include "instr.h"
 #include "import.h"
 #include "ugen.h"
