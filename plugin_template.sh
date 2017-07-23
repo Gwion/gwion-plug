@@ -1,6 +1,7 @@
 #!/bin/sh
-#needs an argument
+
 set -e
+
 [ "$1" ] || {
 	echo "usage: $0 <plugin name>"
 	exit 1
@@ -17,23 +18,21 @@ include ../config_post.mk
 EOF
 
 cat << EOF > $1/README.md
-#$1#
+# $1
   a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
-##description##
+## Description
 use [$1](https://github.com/.../$1)
-##configuration##
+## Configuration
 check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
-##building##
+## Building
 ensure [$1](https://github.com/.../$1) is installed
 \`\`\`
 make
-\`\`\`
-##instalation##
-\`\`\`
+# optionnal
 make install
 \`\`\`
-##usage##
+# Usage
 check .gw files in the directory.
 EOF
 

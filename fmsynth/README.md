@@ -1,18 +1,18 @@
-#fmsynth#
+# Fmsynth
   a [Gwion](https://github.com/fennecdjay/Gwion) plugin.
-##description##
+# Description
 use [libfmsynth](https://github.com/Themaister/libfmsynth) FM synthesizer 
-##configuration##
+# Configuration
 check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)
 edit Makefile
-##building##
+# Building
 ensure [libfmsynth](https://github.com/Themaister/libfmsynth) is installed
 ```
 make
 ```
-##instalation##
+# Instalation
 ```
 make install
 ```
-##usage##
+# Usage
 check .ck files in the directory.
