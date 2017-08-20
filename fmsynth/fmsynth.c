@@ -168,65 +168,35 @@ IMPORT
   DL_Func  fun;
   DL_Value* arg;
 
-  m_uint* amp            = malloc(SZ_INT);
-  m_uint* pan            = malloc(SZ_INT);
-  m_uint* freq_mod       = malloc(SZ_INT);
-  m_uint* freq_offset    = malloc(SZ_INT);
-  m_uint* target0        = malloc(SZ_INT);
-  m_uint* target1        = malloc(SZ_INT);
-  m_uint* target2        = malloc(SZ_INT);
-  m_uint* delay0         = malloc(SZ_INT);
-  m_uint* delay1         = malloc(SZ_INT);
-  m_uint* delay2         = malloc(SZ_INT);
-  m_uint* rel            = malloc(SZ_INT);
-  m_uint* mid_point      = malloc(SZ_INT);
-  m_uint* low_fact       = malloc(SZ_INT);
-  m_uint* high_fact      = malloc(SZ_INT);
-  m_uint* velo_sens      = malloc(SZ_INT);
-  m_uint* wheel_sens     = malloc(SZ_INT);
-  m_uint* lfo_amp_sens   = malloc(SZ_INT);
-  m_uint* lfo_freq_mod   = malloc(SZ_INT);
-  m_uint* enable         = malloc(SZ_INT);
-  m_uint* carriers       = malloc(SZ_INT);
-  m_uint* carrier0       = malloc(SZ_INT);
-  m_uint* g_vol          = malloc(SZ_INT);
-  m_uint* g_lfo          = malloc(SZ_INT);
-  m_uint* ok             = malloc(SZ_INT);
-  m_uint* busy           = malloc(SZ_INT);
-  m_uint* small          = malloc(SZ_INT);
-  m_uint* nonul          = malloc(SZ_INT);
-  m_uint* format         = malloc(SZ_INT);
-  m_uint* unknown        = malloc(SZ_INT);
-
-  *amp            = FMSYNTH_PARAM_AMP;
-  *pan            = FMSYNTH_PARAM_PAN;
-  *freq_mod       = FMSYNTH_PARAM_FREQ_MOD;
-  *freq_offset    = FMSYNTH_PARAM_FREQ_OFFSET;
-  *target0        = FMSYNTH_PARAM_ENVELOPE_TARGET0;
-  *target1        = FMSYNTH_PARAM_ENVELOPE_TARGET1;
-  *target2        = FMSYNTH_PARAM_ENVELOPE_TARGET2;
-  *delay0         = FMSYNTH_PARAM_DELAY0;
-  *delay1         = FMSYNTH_PARAM_DELAY1;
-  *delay2         = FMSYNTH_PARAM_DELAY2;
-  *rel            = FMSYNTH_PARAM_RELEASE_TIME;
-  *mid_point      = FMSYNTH_PARAM_KEYBOARD_SCALING_MID_POINT;
-  *low_fact       = FMSYNTH_PARAM_KEYBOARD_SCALING_LOW_FACTOR;
-  *high_fact      = FMSYNTH_PARAM_KEYBOARD_SCALING_HIGH_FACTOR;
-  *velo_sens      = FMSYNTH_PARAM_VELOCITY_SENSITIVITY;
-  *wheel_sens     = FMSYNTH_PARAM_MOD_WHEEL_SENSITIVITY;
-  *lfo_amp_sens   = FMSYNTH_PARAM_LFO_AMP_SENSITIVITY;
-  *lfo_freq_mod   = FMSYNTH_PARAM_LFO_FREQ_MOD_DEPTH;
-  *enable         = FMSYNTH_PARAM_ENABLE;
-  *carriers       = FMSYNTH_PARAM_CARRIERS;
-  *carrier0       = FMSYNTH_PARAM_MOD_TO_CARRIERS0;
-  *g_vol          = FMSYNTH_GLOBAL_PARAM_VOLUME;
-  *g_lfo          = FMSYNTH_GLOBAL_PARAM_LFO_FREQ;
-  *ok             = FMSYNTH_STATUS_OK;
-  *busy           = FMSYNTH_STATUS_BUSY;
-  *small          = FMSYNTH_STATUS_BUFFER_TOO_SMALL;
-  *nonul          = FMSYNTH_STATUS_NO_NUL_TERMINATE;
-  *format         = FMSYNTH_STATUS_INVALID_FORMAT;
-  *unknown        = FMSYNTH_STATUS_MESSAGE_UNKNOWN;
+  ALLOC_PTR(amp, m_uint, FMSYNTH_PARAM_AMP);
+  ALLOC_PTR(pan, m_uint, FMSYNTH_PARAM_PAN);
+  ALLOC_PTR(freq_mod, m_uint, FMSYNTH_PARAM_FREQ_MOD);
+  ALLOC_PTR(freq_offset, m_uint, FMSYNTH_PARAM_FREQ_OFFSET);
+  ALLOC_PTR(target0, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET0);
+  ALLOC_PTR(target1, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET1);
+  ALLOC_PTR(target2, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET2);
+  ALLOC_PTR(delay0, m_uint, FMSYNTH_PARAM_DELAY0);
+  ALLOC_PTR(delay1, m_uint, FMSYNTH_PARAM_DELAY1);
+  ALLOC_PTR(delay2, m_uint, FMSYNTH_PARAM_DELAY2);
+  ALLOC_PTR(rel, m_uint, FMSYNTH_PARAM_RELEASE_TIME);
+  ALLOC_PTR(mid_point, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_MID_POINT);
+  ALLOC_PTR(low_fact, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_LOW_FACTOR);
+  ALLOC_PTR(high_fact, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_HIGH_FACTOR);
+  ALLOC_PTR(velo_sens, m_uint, FMSYNTH_PARAM_VELOCITY_SENSITIVITY);
+  ALLOC_PTR(wheel_sens, m_uint, FMSYNTH_PARAM_MOD_WHEEL_SENSITIVITY);
+  ALLOC_PTR(lfo_amp_sens, m_uint, FMSYNTH_PARAM_LFO_AMP_SENSITIVITY);
+  ALLOC_PTR(lfo_freq_mod, m_uint, FMSYNTH_PARAM_LFO_FREQ_MOD_DEPTH);
+  ALLOC_PTR(enable, m_uint, FMSYNTH_PARAM_ENABLE);
+  ALLOC_PTR(carriers, m_uint, FMSYNTH_PARAM_CARRIERS);
+  ALLOC_PTR(carrier0, m_uint, FMSYNTH_PARAM_MOD_TO_CARRIERS0);
+  ALLOC_PTR(g_vol, m_uint, FMSYNTH_GLOBAL_PARAM_VOLUME);
+  ALLOC_PTR(g_lfo, m_uint, FMSYNTH_GLOBAL_PARAM_LFO_FREQ);
+  ALLOC_PTR(ok, m_uint, FMSYNTH_STATUS_OK);
+  ALLOC_PTR(busy, m_uint, FMSYNTH_STATUS_BUSY);
+  ALLOC_PTR(small, m_uint, FMSYNTH_STATUS_BUFFER_TOO_SMALL);
+  ALLOC_PTR(nonul, m_uint, FMSYNTH_STATUS_NO_NUL_TERMINATE);
+  ALLOC_PTR(format, m_uint, FMSYNTH_STATUS_INVALID_FORMAT);
+  ALLOC_PTR(unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
   CHECK_BB(import_class_begin(env, &t_fmsynth, env->global_nspc, ctor, dtor))
   o_fmsynth_data = import_var(env, "int", "&synth", ae_flag_member, NULL);
@@ -237,68 +207,68 @@ IMPORT
   CHECK_BB(o_fmsynth_author)
 
   // params
-  o_amp = import_var(env, "int", "AMP",      ae_flag_static | ae_flag_const, amp);
+  o_amp = import_var(env, "int", "AMP", ae_flag_static | ae_flag_const, amp);
   CHECK_BB(o_pan)
-  o_pan = import_var(env, "int", "PAN",      ae_flag_static | ae_flag_const, pan);
+  o_pan = import_var(env, "int", "PAN", ae_flag_static | ae_flag_const, pan);
   CHECK_BB(o_pan)
 
-  o_freq_mod = import_var(env, "int", "FREQ_MOD",      ae_flag_static | ae_flag_const, freq_mod);
+  o_freq_mod = import_var(env, "int", "FREQ_MOD", ae_flag_static | ae_flag_const, freq_mod);
   CHECK_BB(o_freq_offset)
-  o_freq_offset = import_var(env, "int", "FREQ_OFFSET",      ae_flag_static | ae_flag_const, freq_offset);
+  o_freq_offset = import_var(env, "int", "FREQ_OFFSET", ae_flag_static | ae_flag_const, freq_offset);
   CHECK_BB(o_freq_mod)
-  o_target0 = import_var(env, "int", "TARGET0",      ae_flag_static | ae_flag_const, target0);
+  o_target0 = import_var(env, "int", "TARGET0", ae_flag_static | ae_flag_const, target0);
   CHECK_BB(o_target0)
-  o_target1 = import_var(env, "int", "TARGET1",      ae_flag_static | ae_flag_const, target1);
+  o_target1 = import_var(env, "int", "TARGET1", ae_flag_static | ae_flag_const, target1);
   CHECK_BB(o_target1)
-  o_target2 = import_var(env, "int", "TARGET2",      ae_flag_static | ae_flag_const, target2);
+  o_target2 = import_var(env, "int", "TARGET2", ae_flag_static | ae_flag_const, target2);
   CHECK_BB(o_target2)
-  o_delay0 = import_var(env, "int", "DELAY0",      ae_flag_static | ae_flag_const, delay0);
+  o_delay0 = import_var(env, "int", "DELAY0", ae_flag_static | ae_flag_const, delay0);
   CHECK_BB(o_delay0)
-  o_delay1 = import_var(env, "int", "DELAY1",      ae_flag_static | ae_flag_const, delay1);
+  o_delay1 = import_var(env, "int", "DELAY1", ae_flag_static | ae_flag_const, delay1);
   CHECK_BB(o_delay0)
-  o_delay2 = import_var(env, "int", "DELAY2",      ae_flag_static | ae_flag_const, delay2);
+  o_delay2 = import_var(env, "int", "DELAY2", ae_flag_static | ae_flag_const, delay2);
   CHECK_BB(o_delay2)
-  o_rel = import_var(env, "int", "RELEASE",      ae_flag_static | ae_flag_const, rel);
+  o_rel = import_var(env, "int", "RELEASE", ae_flag_static | ae_flag_const, rel);
   CHECK_BB(o_rel)
-  o_mid_point = import_var(env, "int", "MID_POINT",      ae_flag_static | ae_flag_const, mid_point);
+  o_mid_point = import_var(env, "int", "MID_POINT", ae_flag_static | ae_flag_const, mid_point);
   CHECK_BB(o_mid_point)
-  o_low_fact = import_var(env, "int", "LOW_FACTOR",      ae_flag_static | ae_flag_const, low_fact);
+  o_low_fact = import_var(env, "int", "LOW_FACTOR", ae_flag_static | ae_flag_const, low_fact);
   CHECK_BB(o_low_fact)
-  o_high_fact = import_var(env, "int", "HIGH_FACTOR",      ae_flag_static | ae_flag_const, high_fact);
+  o_high_fact = import_var(env, "int", "HIGH_FACTOR", ae_flag_static | ae_flag_const, high_fact);
   CHECK_BB(o_high_fact)
-  o_velo_sens = import_var(env, "int", "VELO_SENS",      ae_flag_static | ae_flag_const, velo_sens);
+  o_velo_sens = import_var(env, "int", "VELO_SENS", ae_flag_static | ae_flag_const, velo_sens);
   CHECK_BB(o_velo_sens)
-  o_wheel_sens = import_var(env, "int", "WHEEL_SENS",      ae_flag_static | ae_flag_const, wheel_sens);
+  o_wheel_sens = import_var(env, "int", "WHEEL_SENS", ae_flag_static | ae_flag_const, wheel_sens);
   CHECK_BB(o_wheel_sens)
-  o_lfo_amp_sens = import_var(env, "int", "LFO_AMP_SENS",      ae_flag_static | ae_flag_const, lfo_amp_sens);
+  o_lfo_amp_sens = import_var(env, "int", "LFO_AMP_SENS", ae_flag_static | ae_flag_const, lfo_amp_sens);
   CHECK_BB(o_lfo_amp_sens)
-  o_lfo_freq_mod = import_var(env, "int", "LFO_FREQ_MOD",      ae_flag_static | ae_flag_const, lfo_freq_mod);
+  o_lfo_freq_mod = import_var(env, "int", "LFO_FREQ_MOD", ae_flag_static | ae_flag_const, lfo_freq_mod);
   CHECK_BB(o_lfo_freq_mod)
-  o_enable = import_var(env, "int", "ENABLE",      ae_flag_static | ae_flag_const, enable);
+  o_enable = import_var(env, "int", "ENABLE", ae_flag_static | ae_flag_const, enable);
   CHECK_BB(o_enable)
-  o_carriers = import_var(env, "int", "CARRIERS",      ae_flag_static | ae_flag_const, carriers);
+  o_carriers = import_var(env, "int", "CARRIERS", ae_flag_static | ae_flag_const, carriers);
   CHECK_BB(o_carriers)
-  o_carrier0 = import_var(env, "int", "CARRIER0",      ae_flag_static | ae_flag_const, carrier0);
+  o_carrier0 = import_var(env, "int", "CARRIER0", ae_flag_static | ae_flag_const, carrier0);
   CHECK_BB(o_carrier0)
 
   // global
   o_g_vol    = import_var(env, "int", "GVOL", ae_flag_static | ae_flag_const, g_vol);
   CHECK_BB(o_g_vol)
 
-  o_g_lfo    = import_var(env, "int", "GLFO",      ae_flag_static | ae_flag_const, g_lfo);
+  o_g_lfo    = import_var(env, "int", "GLFO", ae_flag_static | ae_flag_const, g_lfo);
   CHECK_BB(o_g_lfo)
   // status
-  o_ok    = import_var(env, "int", "OK",      ae_flag_static | ae_flag_const, ok);
+  o_ok    = import_var(env, "int", "OK", ae_flag_static | ae_flag_const, ok);
   CHECK_BB(o_ok)
-  o_busy   = import_var(env, "int", "BUSY",   ae_flag_static | ae_flag_const, busy);
+  o_busy   = import_var(env, "int", "BUSY", ae_flag_static | ae_flag_const, busy);
   CHECK_BB(o_busy)
-  o_small  = import_var(env, "int", "SMALL",   ae_flag_static | ae_flag_const, small);
+  o_small  = import_var(env, "int", "SMALL", ae_flag_static | ae_flag_const, small);
   CHECK_BB(o_small)
-  o_nonul  = import_var(env, "int", "NONUL",   ae_flag_static | ae_flag_const, nonul);
+  o_nonul  = import_var(env, "int", "NONUL", ae_flag_static | ae_flag_const, nonul);
   CHECK_BB(o_nonul)
-  o_format = import_var(env, "int", "FORMAT",   ae_flag_static | ae_flag_const, format);
+  o_format = import_var(env, "int", "FORMAT", ae_flag_static | ae_flag_const, format);
   CHECK_BB(o_format)
-  o_unknown = import_var(env, "int", "UNKNOWN",   ae_flag_static | ae_flag_const, unknown);
+  o_unknown = import_var(env, "int", "UNKNOWN", ae_flag_static | ae_flag_const, unknown);
   CHECK_BB(o_unknown)
 
   dl_func_init(&fun, "void", "init", (m_uint)init);
