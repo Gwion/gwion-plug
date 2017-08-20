@@ -32,15 +32,15 @@ static m_bool fmsynth_tick(UGen u)
   u->out = left + right;
 }
 
-
 CTOR(ctor)
 {
   NAME(o) = new_String(NULL, "name");
   AUTHOR(o) = new_String(NULL, "author");
   SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
-  assign_ugen(UGEN(o), 1, 2, 0, SYNTH(o));
   UGEN(o)->tick = fmsynth_tick;
+  assign_ugen(UGEN(o), 0, 2, 0, SYNTH(o));
 }
+
 DTOR(dtor)
 {
   fmsynth_free(SYNTH(o));
@@ -60,7 +60,6 @@ MFUN(parameter)
 
 MFUN(global_parameter)
 {
-  printf("%f\n", *(m_float*)MEM(SZ_INT*2));
   fmsynth_set_global_parameter(SYNTH(o),
       *(m_uint*)MEM(SZ_INT), *(m_float*)MEM(SZ_INT*2));
 }
@@ -103,31 +102,30 @@ MFUN(release_all)
 
 MFUN(load)
 {
+  m_uint size = fmsynth_preset_size();
+  char* buf[size];
+  struct fmsynth_preset_metadata metadata;
   fmsynth_free(SYNTH(o));
-  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
   m_str filename = STRING( *(M_Object*)MEM(SZ_INT) );
-  struct fmsynth_preset_metadata* metadata = malloc(sizeof(struct fmsynth_preset_metadata));
   FILE* file = fopen(filename, "r");
-  if(!file)
-  {
+
+  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
+  if(!file) {
     *(m_uint*)RETURN = -1;
     return;
   }
-  void* buf;
-  size_t len = fread(buf,fmsynth_preset_size(), 1, file);
-  if(len != 1)
-  {
+  size_t len = fread(buf, size, 1, file);
+  if(len != 1) {
     *(m_uint*)RETURN = -1;
     return;
   }
   fclose(file);
-  *(m_uint*)RETURN = fmsynth_preset_load(SYNTH(o), metadata,
+  *(m_uint*)RETURN = fmsynth_preset_load(SYNTH(o), &metadata,
       buf, fmsynth_preset_size());
   free(STRING(NAME(o)));
   free(STRING(AUTHOR(o)));
-  STRING(NAME(o)) = strdup(metadata->name);
-  STRING(AUTHOR(o)) = strdup(metadata->author);
-  free(metadata);
+  STRING(NAME(o)) = strdup(metadata.name);
+  STRING(AUTHOR(o)) = strdup(metadata.author);
 }
 
 MFUN(save)
@@ -148,14 +146,14 @@ MFUN(save)
       buf, fmsynth_preset_size());
   fwrite(buf, fmsynth_preset_size(), 1, file);
   size_t len = fwrite(buf,fmsynth_preset_size(), 1, file);
-  if(len != 1)
-  {
+  if(len != 1) {
     *(m_uint*)RETURN = -1;
     return;
   }
   fclose(file);
   free(metadata);
 }
+
 // params
 static m_int o_amp, o_pan, o_freq_mod, o_freq_offset,
   o_target0, o_target1, o_target2, o_delay0, o_delay1, o_delay2,
@@ -164,41 +162,7 @@ static m_int o_amp, o_pan, o_freq_mod, o_freq_offset,
   o_carriers, o_carrier0,
   o_g_vol, o_g_lfo,
   o_ok, o_busy, o_small, o_nonul, o_format, o_unknown;
-/*
-static m_uint amp            = FMSYNTH_PARAM_AMP;
-static m_uint pan            = FMSYNTH_PARAM_PAN;
-static m_uint freq_mod       = FMSYNTH_PARAM_FREQ_MOD;
-static m_uint freq_offset    = FMSYNTH_PARAM_FREQ_OFFSET;
-static m_uint target0        = FMSYNTH_PARAM_ENVELOPE_TARGET0;
-static m_uint target1        = FMSYNTH_PARAM_ENVELOPE_TARGET1;
-static m_uint target2        = FMSYNTH_PARAM_ENVELOPE_TARGET2;
-static m_uint delay0         = FMSYNTH_PARAM_DELAY0;
-static m_uint delay1         = FMSYNTH_PARAM_DELAY1;
-static m_uint delay2         = FMSYNTH_PARAM_DELAY2;
-static m_uint rel            = FMSYNTH_PARAM_RELEASE_TIME;
-static m_uint mid_point      = FMSYNTH_PARAM_KEYBOARD_SCALING_MID_POINT;
-static m_uint low_fact       = FMSYNTH_PARAM_KEYBOARD_SCALING_LOW_FACTOR;
-static m_uint high_fact      = FMSYNTH_PARAM_KEYBOARD_SCALING_HIGH_FACTOR;
-static m_uint velo_sens      = FMSYNTH_PARAM_VELOCITY_SENSITIVITY;
-static m_uint wheel_sens     = FMSYNTH_PARAM_MOD_WHEEL_SENSITIVITY;
-static m_uint lfo_amp_sens   = FMSYNTH_PARAM_LFO_AMP_SENSITIVITY;
-static m_uint lfo_freq_mod   = FMSYNTH_PARAM_LFO_FREQ_MOD_DEPTH;
-static m_uint enable         = FMSYNTH_PARAM_ENABLE;
-static m_uint carriers       = FMSYNTH_PARAM_CARRIERS;
-static m_uint carrier0       = FMSYNTH_PARAM_MOD_TO_CARRIERS0;
-// global paramters
-static m_int o_g_vol, o_g_lfo;
-static m_uint g_vol = FMSYNTH_GLOBAL_PARAM_VOLUME;
-static m_uint g_lfo = FMSYNTH_GLOBAL_PARAM_LFO_FREQ;
 
-static m_int o_ok, o_busy, o_small, o_nonul, o_format, o_unknown;
-static m_uint ok      = FMSYNTH_STATUS_OK;
-static m_uint busy    = FMSYNTH_STATUS_BUSY;
-static m_uint small   = FMSYNTH_STATUS_BUFFER_TOO_SMALL;
-static m_uint nonul   = FMSYNTH_STATUS_NO_NUL_TERMINATE;
-static m_uint format  = FMSYNTH_STATUS_INVALID_FORMAT;
-static m_uint unknown = FMSYNTH_STATUS_MESSAGE_UNKNOWN;
-*/
 IMPORT
 {
   DL_Func  fun;
@@ -380,3 +344,4 @@ IMPORT
 }
 
 // MISS: reset
+// metadata can be heap

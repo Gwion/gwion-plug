@@ -1,0 +1,17 @@
+// simple soundchain
+LinuxSampler ls => dac;
+
+// check args
+!me.args() ? "/usr/share/sounds/maestro/maestro_concert_grand_v2.gig" : me.arg(0) => ls.load;
+
+// wait for file to load
+while( ls.status() < 100)
+	.25::second => now;
+
+// play for 10 seconds
+now + 10::second => time t;
+while(now < t)
+{
+	(Math.rand2(50,76), Math.rand2(50,80) )=> ls.noteOn;
+	.25::second => now;
+}

@@ -1,6 +1,5 @@
 #include <linuxsampler/Sampler.h>
 #include "Gwion.hpp"
-#include "ugen.h"
 
 m_int o_ls_data = 0;
 static LinuxSampler::Sampler * sampler = NULL;
@@ -79,7 +78,6 @@ private:
 	}
 };
 
-
 m_bool tick(UGen u)
 {
   myLinuxSampler* ls = (myLinuxSampler*)u->ug;
@@ -94,20 +92,10 @@ CTOR(linuxsampler_ctor)
 {
   if(!sampler)
     sampler = new LinuxSampler::Sampler();
-	std::map<String,LinuxSampler::DeviceCreationParameter*> param;
+  std::map<String,LinuxSampler::DeviceCreationParameter*> param;
   myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->sp->sr);
-  UGEN(o)->ug = ls;
-  UGEN(o)->n_in = 0;
-  UGEN(o)->n_out = 2;
   UGEN(o)->tick = tick;
-  vector_init(&UGEN(o)->ugen);
-  UGEN(o)->channel = (M_Object*)calloc(2, sizeof(struct M_Object_));
-  UGEN(o)->channel[0] = new_M_UGen();
-  vector_init(&UGEN(UGEN(o)->channel[0])->ugen);
-  UGEN(UGEN(o)->channel[0])->ref = UGEN(o);
-  UGEN(o)->channel[1] = new_M_UGen();
-  vector_init(&UGEN(UGEN(o)->channel[1])->ugen);
-  UGEN(UGEN(o)->channel[1])->ref = UGEN(o);
+  assign_ugen(UGEN(o), 0, 2, 0, (void*)ls);
 }
 
 DTOR(linuxsampler_dtor)

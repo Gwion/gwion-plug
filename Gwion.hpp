@@ -5,6 +5,7 @@ extern "C"
 #include "type.h"
 #include "instr.h"
 #include "import.h"
+#include "ugen.h"
 
 #define import_var(a, b, c, d, e) import_var(a, (m_str)b, (m_str)c, (ae_flag)d, e)
 #define import_fun(a, b, c)        import_fun(a, b, (ae_flag)c)
