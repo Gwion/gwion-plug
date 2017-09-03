@@ -117,7 +117,7 @@ static MFUN(gw_lsys_get)
 IMPORT
 {
   DL_Func  fun;
-	CHECK_BB(import_class_begin(env, &t_lsys, env->global_nspc, ctor, dtor))
+	CHECK_BB(import_class_begin(env, &t_lsys, ctor, dtor))
 	dl_func_init(&fun, "void", "parse", (m_uint)gw_lsys_parse);
 		dl_func_add_arg(&fun, "int",    "ord");
 		dl_func_add_arg(&fun, "string", "str");

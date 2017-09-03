@@ -202,7 +202,7 @@ MFUN(sporth_parse_file)
 IMPORT
 {
 	DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_gworth, env->global_nspc, sporth_ctor, sporth_dtor))
+  CHECK_BB(import_class_begin(env, &t_gworth, sporth_ctor, sporth_dtor))
 
 	dl_func_init(&fun, "float", "p", (m_uint)sporth_setp);
 		dl_func_add_arg(&fun, "int", "index");

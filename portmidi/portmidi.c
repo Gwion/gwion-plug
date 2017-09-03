@@ -200,7 +200,7 @@ static MFUN(midiin_read)
 IMPORT
 {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_portmidi, env->global_nspc, pm_ctor, pm_dtor))
+  CHECK_BB(import_class_begin(env, &t_portmidi, pm_ctor, pm_dtor))
    import_var(env, "int",  "@dummy", ae_flag_member, NULL);
   o_pm_stream = import_var(env, "int",  "@stream", ae_flag_member, NULL);
   CHECK_BB(o_pm_stream)
@@ -223,7 +223,7 @@ IMPORT
   CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(import_class_begin(env, &t_midiout, env->global_nspc, NULL, NULL))
+  CHECK_BB(import_class_begin(env, &t_midiout, NULL, NULL))
   dl_func_init(&fun, "int", "open", (m_uint)midiout_open);
     dl_func_add_arg(&fun, "int", "id");
   CHECK_BB(import_fun(env, &fun, 0))
@@ -236,7 +236,7 @@ IMPORT
   CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(import_class_begin(env, &t_midiin, env->global_nspc, NULL, NULL))
+  CHECK_BB(import_class_begin(env, &t_midiin, NULL, NULL))
   dl_func_init(&fun, "int", "open", (m_uint)midiin_open);
     dl_func_add_arg(&fun, "int", "id");
   CHECK_BB(import_fun(env, &fun, 0))

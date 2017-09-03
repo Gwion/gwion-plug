@@ -35,7 +35,7 @@ MFUN(midifile_write);
 m_bool import(Env env)
 {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_midifileev, env->global_nspc, NULL, NULL))
+  CHECK_BB(import_class_begin(env, &t_midifileev, NULL, NULL))
   o_midiev_type = import_var(env, "int", "type",   ae_flag_const, NULL);
   CHECK_BB(o_midiev_type);
   o_midiev_pitch = import_var(env, "float", "pitch", ae_flag_const, NULL);
@@ -50,7 +50,7 @@ m_bool import(Env env)
   CHECK_BB(o_midiev_dur);
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(import_class_begin(env, &t_midifile, env->global_nspc, ctor, dtor))
+  CHECK_BB(import_class_begin(env, &t_midifile, ctor, dtor))
   o_midifile_seq = import_var(env, "int", "@seq", ae_flag_member, NULL);
   CHECK_BB(o_midifile_seq);
   dl_func_init(&fun, "void", "open", (m_uint)midifile_open);

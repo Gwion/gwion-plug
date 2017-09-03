@@ -112,7 +112,7 @@ IMPORT
 {
   DL_Func fun;
 
-  CHECK_BB(import_class_begin(env, &t_k, env->global_nspc, NULL, NULL))
+  CHECK_BB(import_class_begin(env, &t_k, NULL, NULL))
 
   dl_func_init(&fun, "int[]", "nn", (m_uint)gw_knn);
     dl_func_add_arg(&fun, "float", "data[][]");

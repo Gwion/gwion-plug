@@ -132,7 +132,7 @@ static MFUN(fft_compute) {
 
 static m_bool import_fft(Env env) {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_fft, env->global_nspc, fft_ctor, fft_dtor))
+  CHECK_BB(import_class_begin(env, &t_fft, fft_ctor, fft_dtor))
   dl_func_init(&fun, "int", "init", (m_uint)fft_init);
   dl_func_add_arg(&fun, "int", "size");
   CHECK_BB(import_fun(env, &fun, 0))
@@ -471,7 +471,7 @@ static DTOR(ana_dtor) {
 
 static m_bool import_ana(Env env) {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_ana, env->global_nspc, ana_ctor, ana_dtor))
+  CHECK_BB(import_class_begin(env, &t_ana, ana_ctor, ana_dtor))
   o_ana_ana = import_var(env, "int", "@_fft", ae_flag_member, NULL);
   CHECK_BB(o_ana_ana)
   o_ana_fft = import_var(env, "FFT", "@fft",  ae_flag_ref, NULL);
@@ -494,7 +494,7 @@ static CTOR(centroid_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_centroid;
 }
 static m_bool import_centroid(Env env) {
-  CHECK_BB(import_class_begin(env, &t_centroid, env->global_nspc, centroid_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_centroid, centroid_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -504,7 +504,7 @@ static CTOR(spread_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_spread;
 }
 static m_bool import_spread(Env env) {
-  CHECK_BB(import_class_begin(env, &t_spread, env->global_nspc, spread_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_spread, spread_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -514,7 +514,7 @@ static CTOR(skewness_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_skewness;
 }
 static m_bool import_skewness(Env env) {
-  CHECK_BB(import_class_begin(env, &t_skewness, env->global_nspc, skewness_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_skewness, skewness_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -524,7 +524,7 @@ static CTOR(kurtosis_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_kurtosis;
 }
 static m_bool import_kurtosis(Env env) {
-  CHECK_BB(import_class_begin(env, &t_kurtosis, env->global_nspc, kurtosis_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_kurtosis, kurtosis_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -534,7 +534,7 @@ static CTOR(rms_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rms;
 }
 static m_bool import_rms(Env env) {
-  CHECK_BB(import_class_begin(env, &t_rms, env->global_nspc, rms_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_rms, rms_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -553,7 +553,7 @@ static MFUN(rolloff_set_percent) {
 }
 static m_bool import_rolloff(Env env) {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_rolloff, env->global_nspc, rolloff_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_rolloff, rolloff_ctor, NULL))
   dl_func_init(&fun, "float", "percent", (m_uint)rolloff_get_percent);
   CHECK_BB(import_fun(env, &fun, 0))
   dl_func_init(&fun, "float", "percent", (m_uint)rolloff_set_percent);
@@ -568,7 +568,7 @@ static CTOR(freq_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_freq;
 }
 static m_bool import_freq(Env env) {
-  CHECK_BB(import_class_begin(env, &t_freq, env->global_nspc, freq_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_freq, freq_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -578,7 +578,7 @@ static CTOR(asc_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_asc;
 }
 static m_bool import_asc(Env env) {
-  CHECK_BB(import_class_begin(env, &t_asc, env->global_nspc, asc_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_asc, asc_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -588,7 +588,7 @@ static CTOR(ass_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_ass;
 }
 static m_bool import_ass(Env env) {
-  CHECK_BB(import_class_begin(env, &t_ass, env->global_nspc, ass_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_ass, ass_ctor, NULL))
   CHECK_BB(import_class_end(env))
   return 1;
 }
@@ -677,7 +677,7 @@ INSTR(fc_disconnect) {
 
 static m_bool import_fc(Env env) {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_fc, env->global_nspc, fc_ctor, fc_dtor))
+  CHECK_BB(import_class_begin(env, &t_fc, fc_ctor, fc_dtor))
   o_fc_vector = import_var(env, "int", "@vector", ae_flag_member, NULL);
   CHECK_BB(o_fc_vector)
   dl_func_init(&fun, "float[]", "compute", (m_uint)fc_compute);

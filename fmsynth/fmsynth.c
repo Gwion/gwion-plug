@@ -198,7 +198,7 @@ IMPORT
   ALLOC_PTR(format, m_uint, FMSYNTH_STATUS_INVALID_FORMAT);
   ALLOC_PTR(unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
-  CHECK_BB(import_class_begin(env, &t_fmsynth, env->global_nspc, ctor, dtor))
+  CHECK_BB(import_class_begin(env, &t_fmsynth, ctor, dtor))
   o_fmsynth_data = import_var(env, "int", "&synth", ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_data)
   o_fmsynth_name = import_var(env, "string", "name", ae_flag_member, NULL);

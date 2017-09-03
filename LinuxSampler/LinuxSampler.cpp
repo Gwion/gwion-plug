@@ -179,7 +179,7 @@ m_bool import(Env env)
   DL_Value* arg;
  	Func f;
 
-  CHECK_BB(import_class_begin(env, &t_ls, env->global_nspc, linuxsampler_ctor, linuxsampler_dtor))
+  CHECK_BB(import_class_begin(env, &t_ls, linuxsampler_ctor, linuxsampler_dtor))
   o_ls_data = import_var(env, (m_str)"int", (m_str)"@sampler", ae_flag_member, NULL);
   dl_func_init(&fun, "void", "load", (m_uint)linuxsampler_load);
     dl_func_add_arg(&fun, "string", "filename");

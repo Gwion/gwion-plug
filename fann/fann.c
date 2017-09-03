@@ -1192,7 +1192,7 @@ MFUN(set_cascade_num_candidate_groups)
 m_bool import(Env env)
 {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_fann_connect, env->global_nspc, NULL, NULL))
+  CHECK_BB(import_class_begin(env, &t_fann_connect, NULL, NULL))
   o_fann_from = import_var(env, "int",  "from", ae_flag_member, NULL);
   CHECK_BB(o_fann_from)
   o_fann_to = import_var(env, "int",  "to", ae_flag_member, NULL);
@@ -1202,7 +1202,7 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
   // this is for error handling
-  CHECK_BB(import_class_begin(env, &t_fann_base, env->global_nspc, NULL, NULL))
+  CHECK_BB(import_class_begin(env, &t_fann_base, NULL, NULL))
   o_fann_error = import_var(env, "int",  "@data", ae_flag_member, NULL);
   CHECK_BB(o_fann_error)
   dl_func_init(&fun, "void", "log",  (m_uint)error_log);
@@ -1221,7 +1221,7 @@ m_bool import(Env env)
   CHECK_BB(import_class_end(env))
 
 //  Training Data Manipulation
-  CHECK_BB(import_class_begin(env, &t_fann_data, env->global_nspc, NULL, data_dtor))
+  CHECK_BB(import_class_begin(env, &t_fann_data, NULL, data_dtor))
   dl_func_init(&fun, "void", "from_data",  (m_uint)train_from_array);
     dl_func_add_arg(&fun, "int", "num");
     dl_func_add_arg(&fun, "float[][]", "in");
@@ -1277,7 +1277,7 @@ m_bool import(Env env)
 
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(import_class_begin(env, &t_fann, env->global_nspc, NULL, fann_dtor))
+  CHECK_BB(import_class_begin(env, &t_fann, NULL, fann_dtor))
   dl_func_init(&fun, "string", "type_str", (m_uint)type_str);
     dl_func_add_arg(&fun, "int", "layer");
   CHECK_BB(import_fun(env, &fun, ae_flag_static))

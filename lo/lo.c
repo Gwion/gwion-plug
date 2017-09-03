@@ -387,12 +387,12 @@ static MFUN(oscin_get_s)
 IMPORT
 {
   DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_lo, env->global_nspc, lo_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_lo, lo_ctor, NULL))
   o_lo_args = import_var(env, "int",  "@args", ae_flag_member, NULL);
   CHECK_BB(o_lo_args)
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(import_class_begin(env, &t_loout, env->global_nspc, NULL, loout_dtor))
+  CHECK_BB(import_class_begin(env, &t_loout, NULL, loout_dtor))
   o_lo_addr = import_var(env, "int",  "@addr", ae_flag_member, NULL);
   CHECK_BB(o_lo_addr)
   dl_func_init(&fun, "int", "addr", (m_uint)osc_addr);
@@ -404,7 +404,7 @@ IMPORT
   CHECK_BB(import_fun(env, &fun, 0))
   CHECK_BB(import_class_end(env))
 
-  CHECK_BB(import_class_begin(env, &t_loin, env->global_nspc, loin_ctor, NULL))
+  CHECK_BB(import_class_begin(env, &t_loin, loin_ctor, NULL))
   o_lo_serv = import_var(env, "int",  "@serv", ae_flag_member, NULL);
   CHECK_BB(o_lo_serv)
   o_lo_meth = import_var(env, "int",  "@meth", ae_flag_member, NULL);
