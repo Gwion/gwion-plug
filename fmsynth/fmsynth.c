@@ -165,9 +165,6 @@ static m_int o_amp, o_pan, o_freq_mod, o_freq_offset,
 
 IMPORT
 {
-  DL_Func  fun;
-  DL_Value* arg;
-
   ALLOC_PTR(amp, m_uint, FMSYNTH_PARAM_AMP);
   ALLOC_PTR(pan, m_uint, FMSYNTH_PARAM_PAN);
   ALLOC_PTR(freq_mod, m_uint, FMSYNTH_PARAM_FREQ_MOD);
@@ -198,118 +195,118 @@ IMPORT
   ALLOC_PTR(format, m_uint, FMSYNTH_STATUS_INVALID_FORMAT);
   ALLOC_PTR(unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
-  CHECK_BB(import_class_begin(env, &t_fmsynth, ctor, dtor))
-  o_fmsynth_data = import_var(env, "int", "&synth", ae_flag_member, NULL);
+  CHECK_BB(importer_class_begin(importer, &t_fmsynth, ctor, dtor))
+  o_fmsynth_data = importer_add_var(importer, "int", "&synth", ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_data)
-  o_fmsynth_name = import_var(env, "string", "name", ae_flag_member, NULL);
+  o_fmsynth_name = importer_add_var(importer, "string", "name", ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_name)
-  o_fmsynth_author = import_var(env, "string", "author", ae_flag_member, NULL);
+  o_fmsynth_author = importer_add_var(importer, "string", "author", ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_author)
 
   // params
-  o_amp = import_var(env, "int", "AMP", ae_flag_static | ae_flag_const, amp);
+  o_amp = importer_add_var(importer, "int", "AMP", ae_flag_static | ae_flag_const, amp);
   CHECK_BB(o_pan)
-  o_pan = import_var(env, "int", "PAN", ae_flag_static | ae_flag_const, pan);
+  o_pan = importer_add_var(importer, "int", "PAN", ae_flag_static | ae_flag_const, pan);
   CHECK_BB(o_pan)
 
-  o_freq_mod = import_var(env, "int", "FREQ_MOD", ae_flag_static | ae_flag_const, freq_mod);
+  o_freq_mod = importer_add_var(importer, "int", "FREQ_MOD", ae_flag_static | ae_flag_const, freq_mod);
   CHECK_BB(o_freq_offset)
-  o_freq_offset = import_var(env, "int", "FREQ_OFFSET", ae_flag_static | ae_flag_const, freq_offset);
+  o_freq_offset = importer_add_var(importer, "int", "FREQ_OFFSET", ae_flag_static | ae_flag_const, freq_offset);
   CHECK_BB(o_freq_mod)
-  o_target0 = import_var(env, "int", "TARGET0", ae_flag_static | ae_flag_const, target0);
+  o_target0 = importer_add_var(importer, "int", "TARGET0", ae_flag_static | ae_flag_const, target0);
   CHECK_BB(o_target0)
-  o_target1 = import_var(env, "int", "TARGET1", ae_flag_static | ae_flag_const, target1);
+  o_target1 = importer_add_var(importer, "int", "TARGET1", ae_flag_static | ae_flag_const, target1);
   CHECK_BB(o_target1)
-  o_target2 = import_var(env, "int", "TARGET2", ae_flag_static | ae_flag_const, target2);
+  o_target2 = importer_add_var(importer, "int", "TARGET2", ae_flag_static | ae_flag_const, target2);
   CHECK_BB(o_target2)
-  o_delay0 = import_var(env, "int", "DELAY0", ae_flag_static | ae_flag_const, delay0);
+  o_delay0 = importer_add_var(importer, "int", "DELAY0", ae_flag_static | ae_flag_const, delay0);
   CHECK_BB(o_delay0)
-  o_delay1 = import_var(env, "int", "DELAY1", ae_flag_static | ae_flag_const, delay1);
+  o_delay1 = importer_add_var(importer, "int", "DELAY1", ae_flag_static | ae_flag_const, delay1);
   CHECK_BB(o_delay0)
-  o_delay2 = import_var(env, "int", "DELAY2", ae_flag_static | ae_flag_const, delay2);
+  o_delay2 = importer_add_var(importer, "int", "DELAY2", ae_flag_static | ae_flag_const, delay2);
   CHECK_BB(o_delay2)
-  o_rel = import_var(env, "int", "RELEASE", ae_flag_static | ae_flag_const, rel);
+  o_rel = importer_add_var(importer, "int", "RELEASE", ae_flag_static | ae_flag_const, rel);
   CHECK_BB(o_rel)
-  o_mid_point = import_var(env, "int", "MID_POINT", ae_flag_static | ae_flag_const, mid_point);
+  o_mid_point = importer_add_var(importer, "int", "MID_POINT", ae_flag_static | ae_flag_const, mid_point);
   CHECK_BB(o_mid_point)
-  o_low_fact = import_var(env, "int", "LOW_FACTOR", ae_flag_static | ae_flag_const, low_fact);
+  o_low_fact = importer_add_var(importer, "int", "LOW_FACTOR", ae_flag_static | ae_flag_const, low_fact);
   CHECK_BB(o_low_fact)
-  o_high_fact = import_var(env, "int", "HIGH_FACTOR", ae_flag_static | ae_flag_const, high_fact);
+  o_high_fact = importer_add_var(importer, "int", "HIGH_FACTOR", ae_flag_static | ae_flag_const, high_fact);
   CHECK_BB(o_high_fact)
-  o_velo_sens = import_var(env, "int", "VELO_SENS", ae_flag_static | ae_flag_const, velo_sens);
+  o_velo_sens = importer_add_var(importer, "int", "VELO_SENS", ae_flag_static | ae_flag_const, velo_sens);
   CHECK_BB(o_velo_sens)
-  o_wheel_sens = import_var(env, "int", "WHEEL_SENS", ae_flag_static | ae_flag_const, wheel_sens);
+  o_wheel_sens = importer_add_var(importer, "int", "WHEEL_SENS", ae_flag_static | ae_flag_const, wheel_sens);
   CHECK_BB(o_wheel_sens)
-  o_lfo_amp_sens = import_var(env, "int", "LFO_AMP_SENS", ae_flag_static | ae_flag_const, lfo_amp_sens);
+  o_lfo_amp_sens = importer_add_var(importer, "int", "LFO_AMP_SENS", ae_flag_static | ae_flag_const, lfo_amp_sens);
   CHECK_BB(o_lfo_amp_sens)
-  o_lfo_freq_mod = import_var(env, "int", "LFO_FREQ_MOD", ae_flag_static | ae_flag_const, lfo_freq_mod);
+  o_lfo_freq_mod = importer_add_var(importer, "int", "LFO_FREQ_MOD", ae_flag_static | ae_flag_const, lfo_freq_mod);
   CHECK_BB(o_lfo_freq_mod)
-  o_enable = import_var(env, "int", "ENABLE", ae_flag_static | ae_flag_const, enable);
+  o_enable = importer_add_var(importer, "int", "ENABLE", ae_flag_static | ae_flag_const, enable);
   CHECK_BB(o_enable)
-  o_carriers = import_var(env, "int", "CARRIERS", ae_flag_static | ae_flag_const, carriers);
+  o_carriers = importer_add_var(importer, "int", "CARRIERS", ae_flag_static | ae_flag_const, carriers);
   CHECK_BB(o_carriers)
-  o_carrier0 = import_var(env, "int", "CARRIER0", ae_flag_static | ae_flag_const, carrier0);
+  o_carrier0 = importer_add_var(importer, "int", "CARRIER0", ae_flag_static | ae_flag_const, carrier0);
   CHECK_BB(o_carrier0)
 
   // global
-  o_g_vol    = import_var(env, "int", "GVOL", ae_flag_static | ae_flag_const, g_vol);
+  o_g_vol    = importer_add_var(importer, "int", "GVOL", ae_flag_static | ae_flag_const, g_vol);
   CHECK_BB(o_g_vol)
 
-  o_g_lfo    = import_var(env, "int", "GLFO", ae_flag_static | ae_flag_const, g_lfo);
+  o_g_lfo    = importer_add_var(importer, "int", "GLFO", ae_flag_static | ae_flag_const, g_lfo);
   CHECK_BB(o_g_lfo)
   // status
-  o_ok    = import_var(env, "int", "OK", ae_flag_static | ae_flag_const, ok);
+  o_ok    = importer_add_var(importer, "int", "OK", ae_flag_static | ae_flag_const, ok);
   CHECK_BB(o_ok)
-  o_busy   = import_var(env, "int", "BUSY", ae_flag_static | ae_flag_const, busy);
+  o_busy   = importer_add_var(importer, "int", "BUSY", ae_flag_static | ae_flag_const, busy);
   CHECK_BB(o_busy)
-  o_small  = import_var(env, "int", "SMALL", ae_flag_static | ae_flag_const, small);
+  o_small  = importer_add_var(importer, "int", "SMALL", ae_flag_static | ae_flag_const, small);
   CHECK_BB(o_small)
-  o_nonul  = import_var(env, "int", "NONUL", ae_flag_static | ae_flag_const, nonul);
+  o_nonul  = importer_add_var(importer, "int", "NONUL", ae_flag_static | ae_flag_const, nonul);
   CHECK_BB(o_nonul)
-  o_format = import_var(env, "int", "FORMAT", ae_flag_static | ae_flag_const, format);
+  o_format = importer_add_var(importer, "int", "FORMAT", ae_flag_static | ae_flag_const, format);
   CHECK_BB(o_format)
-  o_unknown = import_var(env, "int", "UNKNOWN", ae_flag_static | ae_flag_const, unknown);
+  o_unknown = importer_add_var(importer, "int", "UNKNOWN", ae_flag_static | ae_flag_const, unknown);
   CHECK_BB(o_unknown)
-
-  dl_func_init(&fun, "void", "init", (m_uint)init);
-    dl_func_add_arg(&fun, "int", "plyphony");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "parameter", (m_uint)parameter);
-    dl_func_add_arg(&fun, "int", "parameter");
-    dl_func_add_arg(&fun, "int", "operator_index");
-    dl_func_add_arg(&fun, "float", "value");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "parameter", (m_uint)global_parameter);
-    dl_func_add_arg(&fun, "int", "parameter");
-    dl_func_add_arg(&fun, "float", "value");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "noteon", (m_uint)noteon);
-    dl_func_add_arg(&fun, "int", "note");
-    dl_func_add_arg(&fun, "int", "velocity");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "reset", (m_uint)synth_reset);
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "noteoff", (m_uint)noteoff);
-    dl_func_add_arg(&fun, "int", "note");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "sustain", (m_uint)sustain);
-    dl_func_add_arg(&fun, "int", "enable");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "wheel", (m_uint)wheel);
-    dl_func_add_arg(&fun, "int", "value");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "bend", (m_uint)bend);
-    dl_func_add_arg(&fun, "int", "value");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "void", "release", (m_uint)release_all);
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "int", "load", (m_uint)load);
-    dl_func_add_arg(&fun, "string", "filename");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "int", "save", (m_uint)save);
-    dl_func_add_arg(&fun, "string", "filename");
-  CHECK_BB(import_fun(env, &fun, 0))
-  CHECK_BB(import_class_end(env))
+ 
+  importer_func_begin(importer, "void", "init", (m_uint)init);
+    importer_add_arg(importer, "int", "plyphony");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "parameter", (m_uint)parameter);
+    importer_add_arg(importer, "int", "parameter");
+    importer_add_arg(importer, "int", "operator_index");
+    importer_add_arg(importer, "float", "value");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "parameter", (m_uint)global_parameter);
+    importer_add_arg(importer, "int", "parameter");
+    importer_add_arg(importer, "float", "value");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "noteon", (m_uint)noteon);
+    importer_add_arg(importer, "int", "note");
+    importer_add_arg(importer, "int", "velocity");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "reset", (m_uint)synth_reset);
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "noteoff", (m_uint)noteoff);
+    importer_add_arg(importer, "int", "note");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "sustain", (m_uint)sustain);
+    importer_add_arg(importer, "int", "enable");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "wheel", (m_uint)wheel);
+    importer_add_arg(importer, "int", "value");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "bend", (m_uint)bend);
+    importer_add_arg(importer, "int", "value");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "void", "release", (m_uint)release_all);
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "int", "load", (m_uint)load);
+    importer_add_arg(importer, "string", "filename");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "int", "save", (m_uint)save);
+    importer_add_arg(importer, "string", "filename");
+  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 

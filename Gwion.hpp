@@ -7,10 +7,9 @@ extern "C"
 #include "import.h"
 #include "ugen.h"
 
-#define import_var(a, b, c, d, e) import_var(a, (m_str)b, (m_str)c, (ae_flag)d, e)
-#define import_fun(a, b, c)        import_fun(a, b, (ae_flag)c)
-#define dl_func_add_arg(a, b, c)   dl_func_add_arg(a, (m_str)b , (m_str)c)
-#define dl_func_init(a, b, c, d)   dl_func_init(a, (m_str)b, (m_str)c, (m_uint)d)
+#define importer_add_var(a, b, c, d, e) importer_add_var(a, (m_str)b, (m_str)c, (ae_flag)d, e)
+#define importer_add_arg(a, b, c)  importer_add_arg(a, (m_str)b , (m_str)c)
+#define importer_func_begin(a, b, c, d) importer_func_begin(a, (m_str)b, (m_str)c, (m_uint)d)
 
 }
 

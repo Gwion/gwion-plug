@@ -110,32 +110,30 @@ static SFUN(gw_kmeans_refine)
 
 IMPORT
 {
-  DL_Func fun;
+  CHECK_BB(importer_class_begin(importer, &t_k, NULL, NULL))
 
-  CHECK_BB(import_class_begin(env, &t_k, NULL, NULL))
+  importer_func_begin(importer, "int[]", "nn", (m_uint)gw_knn);
+    importer_add_arg(importer, "float", "data[][]");
+    importer_add_arg(importer, "int", "labels[]");
+    importer_add_arg(importer, "float", "instances[][]");
+    importer_add_arg(importer, "int", "k");
+  CHECK_BB(importer_add_fun(importer, ae_flag_static))
 
-  dl_func_init(&fun, "int[]", "nn", (m_uint)gw_knn);
-    dl_func_add_arg(&fun, "float", "data[][]");
-    dl_func_add_arg(&fun, "int", "labels[]");
-    dl_func_add_arg(&fun, "float", "instances[][]");
-    dl_func_add_arg(&fun, "int", "k");
-  CHECK_BB(import_fun(env, &fun, ae_flag_static))
-
-  dl_func_init(&fun, "int[]", "means", (m_uint)gw_kmeans);
-    dl_func_add_arg(&fun, "float", "data[][]");
-    dl_func_add_arg(&fun, "float", "centroid[][]");
-    dl_func_add_arg(&fun, "int", "k");
-    dl_func_add_arg(&fun, "int", "initial_centroid");
-    dl_func_add_arg(&fun, "float", "theta");
-  CHECK_BB(import_fun(env, &fun, ae_flag_static))
+  importer_func_begin(importer, "int[]", "means", (m_uint)gw_kmeans);
+    importer_add_arg(importer, "float", "data[][]");
+    importer_add_arg(importer, "float", "centroid[][]");
+    importer_add_arg(importer, "int", "k");
+    importer_add_arg(importer, "int", "initial_centroid");
+    importer_add_arg(importer, "float", "theta");
+  CHECK_BB(importer_add_fun(importer, ae_flag_static))
   
-  dl_func_init(&fun, "int[]", "fine_means", (m_uint)gw_kmeans_refine);
-    dl_func_add_arg(&fun, "float", "data[][]");
-    dl_func_add_arg(&fun, "int", "iter");
-    dl_func_add_arg(&fun, "int", "n_points");
-    dl_func_add_arg(&fun, "int", "k");
-  CHECK_BB(import_fun(env, &fun, ae_flag_static))
+  importer_func_begin(importer, "int[]", "fine_means", (m_uint)gw_kmeans_refine);
+    importer_add_arg(importer, "float", "data[][]");
+    importer_add_arg(importer, "int", "iter");
+    importer_add_arg(importer, "int", "n_points");
+    importer_add_arg(importer, "int", "k");
+  CHECK_BB(importer_add_fun(importer, ae_flag_static))
   
-  CHECK_BB(import_class_end(env))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }

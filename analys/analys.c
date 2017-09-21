@@ -14,8 +14,6 @@ typedef struct {
   Vector curr;
 } sp_buffer;
 
-
-
 static m_int sp_buffer_create(sp_buffer** p, m_uint size) {
   *p = malloc(sizeof(sp_buffer));
   (*p)->size = size;
@@ -130,31 +128,30 @@ static MFUN(fft_compute) {
   ana->last = ana->sp->pos;
 }
 
-static m_bool import_fft(Env env) {
-  DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_fft, fft_ctor, fft_dtor))
-  dl_func_init(&fun, "int", "init", (m_uint)fft_init);
-  dl_func_add_arg(&fun, "int", "size");
-  CHECK_BB(import_fun(env, &fun, 0))
-  /*  dl_func_init(&fun, "int", "init", (m_uint)fft_init2);*/
-  /*    dl_func_add_arg(&fun, "int", "size");*/
-  /*    dl_func_add_arg(&fun, "float[]", "window");*/
-  /*  CHECK_BB(import_fun(env, &fun, 0))*/
-  /*  dl_func_init(&fun, "int", "init", (m_uint)fft_init3);*/
-  /*    dl_func_add_arg(&fun, "int", "size");*/
-  /*    dl_func_add_arg(&fun, "string", "window");*/
-  /*  CHECK_BB(import_fun(env, &fun, 0))*/
-  /*  dl_func_init(&fun, "int", "window", (m_uint)fft_win);*/
-  /*    dl_func_add_arg(&fun, "float[]", "window");*/
-  /*  CHECK_BB(import_fun(env, &fun, 0))*/
-  /*  dl_func_init(&fun, "int", "window", (m_uint)fft_win_name);*/
-  /*    dl_func_add_arg(&fun, "string", "name");*/
-  /*  CHECK_BB(import_fun(env, &fun, 0))*/
-  /*  dl_func_init(&fun, "complex[]", "compute", (m_uint)fft_compute);*/
-  dl_func_init(&fun, "void", "compute", (m_uint)fft_compute);
-  CHECK_BB(import_fun(env, &fun, 0))
+static m_bool import_fft(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_fft, fft_ctor, fft_dtor))
+  importer_func_begin(importer, "int", "init", (m_uint)fft_init);
+  importer_add_arg(importer, "int", "size");
+  CHECK_BB(importer_add_fun(importer, 0))
+  /*  importer_func_begin(importer, "int", "init", (m_uint)fft_init2);*/
+  /*    importer_add_arg(importer, "int", "size");*/
+  /*    importer_add_arg(importer, "float[]", "window");*/
+  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  importer_func_begin(importer, "int", "init", (m_uint)fft_init3);*/
+  /*    importer_add_arg(importer, "int", "size");*/
+  /*    importer_add_arg(importer, "string", "window");*/
+  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  importer_func_begin(importer, "int", "window", (m_uint)fft_win);*/
+  /*    importer_add_arg(importer, "float[]", "window");*/
+  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  importer_func_begin(importer, "int", "window", (m_uint)fft_win_name);*/
+  /*    importer_add_arg(importer, "string", "name");*/
+  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  importer_func_begin(importer, "complex[]", "compute", (m_uint)fft_compute);*/
+  importer_func_begin(importer, "void", "compute", (m_uint)fft_compute);
+  CHECK_BB(importer_add_fun(importer, 0))
 
-  CHECK_BB(import_class_end(env))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -469,23 +466,22 @@ static DTOR(ana_dtor) {
   free(*(Ana**)(o->data + o_ana_ana));
 }
 
-static m_bool import_ana(Env env) {
-  DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_ana, ana_ctor, ana_dtor))
-  o_ana_ana = import_var(env, "int", "@_fft", ae_flag_member, NULL);
+static m_bool import_ana(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_ana, ana_ctor, ana_dtor))
+  o_ana_ana = importer_add_var(importer, "int", "@_fft", ae_flag_member, NULL);
   CHECK_BB(o_ana_ana)
-  o_ana_fft = import_var(env, "FFT", "@fft",  ae_flag_ref, NULL);
+  o_ana_fft = importer_add_var(importer, "FFT", "@fft",  ae_flag_ref, NULL);
   CHECK_BB(o_ana_fft)
-  o_ana_fn = import_var(env,  "int", "@fn", ae_flag_member, NULL);
+  o_ana_fn = importer_add_var(importer,  "int", "@fn", ae_flag_member, NULL);
   CHECK_BB(o_ana_fn)
-  dl_func_init(&fun, "float", "compute", (m_uint)ana_compute);
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "FFT", "fft", (m_uint)ana_get_fft);
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "FFT", "fft", (m_uint)ana_set_fft);
-  dl_func_add_arg(&fun, "FFT", "arg");
-  CHECK_BB(import_fun(env, &fun, 0))
-  CHECK_BB(import_class_end(env))
+  importer_func_begin(importer, "float", "compute", (m_uint)ana_compute);
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "FFT", "fft", (m_uint)ana_get_fft);
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "FFT", "fft", (m_uint)ana_set_fft);
+  importer_add_arg(importer, "FFT", "arg");
+  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -493,9 +489,9 @@ static struct Type_ t_centroid = { "Centroid", SZ_INT, &t_ana };
 static CTOR(centroid_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_centroid;
 }
-static m_bool import_centroid(Env env) {
-  CHECK_BB(import_class_begin(env, &t_centroid, centroid_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_centroid(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_centroid, centroid_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -503,9 +499,9 @@ static struct Type_ t_spread = { "Spread", SZ_INT, &t_ana };
 static CTOR(spread_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_spread;
 }
-static m_bool import_spread(Env env) {
-  CHECK_BB(import_class_begin(env, &t_spread, spread_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_spread(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_spread, spread_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -513,9 +509,9 @@ static struct Type_ t_skewness = { "Skewness", SZ_INT, &t_ana };
 static CTOR(skewness_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_skewness;
 }
-static m_bool import_skewness(Env env) {
-  CHECK_BB(import_class_begin(env, &t_skewness, skewness_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_skewness(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_skewness, skewness_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -523,9 +519,9 @@ static struct Type_ t_kurtosis = { "Kurtosis", SZ_INT, &t_ana };
 static CTOR(kurtosis_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_kurtosis;
 }
-static m_bool import_kurtosis(Env env) {
-  CHECK_BB(import_class_begin(env, &t_kurtosis, kurtosis_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_kurtosis(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_kurtosis, kurtosis_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -533,9 +529,9 @@ static struct Type_ t_rms = { "RMS", SZ_INT, &t_ana };
 static CTOR(rms_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rms;
 }
-static m_bool import_rms(Env env) {
-  CHECK_BB(import_class_begin(env, &t_rms, rms_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_rms(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_rms, rms_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -551,15 +547,14 @@ static MFUN(rolloff_set_percent) {
   Ana* ana = *(Ana**)(o->data + o_ana_ana);
   *(m_float*)RETURN = (ana->percent = *(m_float*)MEM(SZ_INT));
 }
-static m_bool import_rolloff(Env env) {
-  DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_rolloff, rolloff_ctor, NULL))
-  dl_func_init(&fun, "float", "percent", (m_uint)rolloff_get_percent);
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "float", "percent", (m_uint)rolloff_set_percent);
-  dl_func_add_arg(&fun, "float", "arg");
-  CHECK_BB(import_fun(env, &fun, 0))
-  CHECK_BB(import_class_end(env))
+static m_bool import_rolloff(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_rolloff, rolloff_ctor, NULL))
+  importer_func_begin(importer, "float", "percent", (m_uint)rolloff_get_percent);
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "float", "percent", (m_uint)rolloff_set_percent);
+  importer_add_arg(importer, "float", "arg");
+  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -567,9 +562,9 @@ static struct Type_ t_freq = { "Freq", SZ_INT, &t_ana };
 static CTOR(freq_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_freq;
 }
-static m_bool import_freq(Env env) {
-  CHECK_BB(import_class_begin(env, &t_freq, freq_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_freq(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_freq, freq_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -577,9 +572,9 @@ static struct Type_ t_asc = { "ASC", SZ_INT, &t_ana };
 static CTOR(asc_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_asc;
 }
-static m_bool import_asc(Env env) {
-  CHECK_BB(import_class_begin(env, &t_asc, asc_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_asc(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_asc, asc_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -587,9 +582,9 @@ static struct Type_ t_ass = { "ASS", SZ_INT, &t_ana };
 static CTOR(ass_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_ass;
 }
-static m_bool import_ass(Env env) {
-  CHECK_BB(import_class_begin(env, &t_ass, ass_ctor, NULL))
-  CHECK_BB(import_class_end(env))
+static m_bool import_ass(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_ass, ass_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
@@ -675,37 +670,38 @@ INSTR(fc_disconnect) {
   PUSH_REG(shred, SZ_INT);
 }
 
-static m_bool import_fc(Env env) {
-  DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_fc, fc_ctor, fc_dtor))
-  o_fc_vector = import_var(env, "int", "@vector", ae_flag_member, NULL);
+static m_bool import_fc(Importer importer) {
+  CHECK_BB(importer_class_begin(importer, &t_fc, fc_ctor, fc_dtor))
+  o_fc_vector = importer_add_var(importer, "int", "@vector", ae_flag_member, NULL);
   CHECK_BB(o_fc_vector)
-  dl_func_init(&fun, "float[]", "compute", (m_uint)fc_compute);
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "ANA", "add", (m_uint)fc_add);
-  dl_func_add_arg(&fun, "ANA", "arg");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "ANA", "rem", (m_uint)fc_rem);
-  dl_func_add_arg(&fun, "ANA", "arg");
-  CHECK_BB(import_fun(env, &fun, 0))
-  CHECK_BB(import_class_end(env))
+  importer_func_begin(importer, "float[]", "compute", (m_uint)fc_compute);
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "ANA", "add", (m_uint)fc_add);
+  importer_add_arg(importer, "ANA", "arg");
+  CHECK_BB(importer_add_fun(importer, 0))
+  importer_func_begin(importer, "ANA", "rem", (m_uint)fc_rem);
+  importer_add_arg(importer, "ANA", "arg");
+  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 
-m_bool import(Env env) {
-  CHECK_BB(import_fft(env))
-  CHECK_BB(import_ana(env))
-  CHECK_BB(import_centroid(env))
-  CHECK_BB(import_spread(env))
-  CHECK_BB(import_skewness(env))
-  CHECK_BB(import_kurtosis(env))
-  CHECK_BB(import_rms(env))
-  CHECK_BB(import_rolloff(env))
-  CHECK_BB(import_freq(env))
-  CHECK_BB(import_asc(env))
-  CHECK_BB(import_ass(env))
-  CHECK_BB(import_fc(env))
-  CHECK_BB(import_op(env, op_chuck,   "ANA", "FC", "FC", fc_connect,    1))
-  CHECK_BB(import_op(env, op_unchuck, "ANA", "FC", "FC", fc_disconnect, 1))
+m_bool import(Importer importer) {
+  CHECK_BB(import_fft(importer))
+  CHECK_BB(import_ana(importer))
+  CHECK_BB(import_centroid(importer))
+  CHECK_BB(import_spread(importer))
+  CHECK_BB(import_skewness(importer))
+  CHECK_BB(import_kurtosis(importer))
+  CHECK_BB(import_rms(importer))
+  CHECK_BB(import_rolloff(importer))
+  CHECK_BB(import_freq(importer))
+  CHECK_BB(import_asc(importer))
+  CHECK_BB(import_ass(importer))
+  CHECK_BB(import_fc(importer))
+  CHECK_BB(importer_op_begin(importer, "ANA", "FC", "FC"))
+  CHECK_BB(importer_add_op(importer, op_chuck, fc_connect,    1))
+  CHECK_BB(importer_op_begin(importer, "ANA", "FC", "FC"))
+  CHECK_BB(importer_add_op(importer, op_unchuck, fc_disconnect, 1))
   return 1;
 }

@@ -31,58 +31,55 @@ MFUN(midifile_event);
 MFUN(midifile_add_track);
 MFUN(midifile_add_note);
 MFUN(midifile_write);
-
-m_bool import(Env env)
-{
-  DL_Func fun;
-  CHECK_BB(import_class_begin(env, &t_midifileev, NULL, NULL))
-  o_midiev_type = import_var(env, "int", "type",   ae_flag_const, NULL);
+IMPORT {
+  CHECK_BB(importer_class_begin(importer, &t_midifileev, NULL, NULL))
+  o_midiev_type = importer_add_var(importer, "int", "type",   ae_flag_const, NULL);
   CHECK_BB(o_midiev_type);
-  o_midiev_pitch = import_var(env, "float", "pitch", ae_flag_const, NULL);
+  o_midiev_pitch = importer_add_var(importer, "float", "pitch", ae_flag_const, NULL);
   CHECK_BB(o_midiev_pitch);
-  o_midiev_loud  = import_var(env, "float", "loud",  ae_flag_const, NULL);
+  o_midiev_loud  = importer_add_var(importer, "float", "loud",  ae_flag_const, NULL);
   CHECK_BB(o_midiev_loud);
-  o_midiev_start = import_var(env, "float", "start", ae_flag_const, NULL);
+  o_midiev_start = importer_add_var(importer, "float", "start", ae_flag_const, NULL);
   CHECK_BB(o_midiev_start);
-  o_midiev_end   = import_var(env, "float", "end",   ae_flag_const, NULL);
+  o_midiev_end   = importer_add_var(importer, "float", "end",   ae_flag_const, NULL);
   CHECK_BB(o_midiev_start);
-  o_midiev_dur   = import_var(env, "float", "dur",   ae_flag_const, NULL);
+  o_midiev_dur   = importer_add_var(importer, "float", "dur",   ae_flag_const, NULL);
   CHECK_BB(o_midiev_dur);
-  CHECK_BB(import_class_end(env))
+  CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(import_class_begin(env, &t_midifile, ctor, dtor))
-  o_midifile_seq = import_var(env, "int", "@seq", ae_flag_member, NULL);
+  CHECK_BB(importer_class_begin(importer, &t_midifile, ctor, dtor))
+  o_midifile_seq = importer_add_var(importer, "int", "@seq", ae_flag_member, NULL);
   CHECK_BB(o_midifile_seq);
-  dl_func_init(&fun, "void", "open", (m_uint)midifile_open);
-    dl_func_add_arg(&fun, "string", "filename");
-    dl_func_add_arg(&fun, "int", "smf");
-  CHECK_BB(import_fun(env, &fun, 0))
-  dl_func_init(&fun, "int", "tracks", (m_uint)midifile_tracks);
-  CHECK_BB(import_fun(env, &fun, 0))
+  importer_func_begin(importer, "void", "open", (m_uint)midifile_open);
+    importer_add_arg(importer, "string", "filename");
+    importer_add_arg(importer, "int", "smf");
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  importer_func_begin(importer, "int", "tracks", (m_uint)midifile_tracks);
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
 
-  dl_func_init(&fun, "int", "len", (m_uint)midifile_track_len);
-    dl_func_add_arg(&fun, "int", "track");
-  CHECK_BB(import_fun(env, &fun, 0))
+  importer_func_begin(importer, "int", "len", (m_uint)midifile_track_len);
+    importer_add_arg(importer, "int", "track");
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
 
-  dl_func_init(&fun, "MidiFileEv", "event", (m_uint)midifile_event);
-    dl_func_add_arg(&fun, "int", "track");
-    dl_func_add_arg(&fun, "int", "event_number");
-//    dl_func_add_arg(&fun, "MidiFileEv", "event");
-  CHECK_BB(import_fun(env, &fun, 0))
+  importer_func_begin(importer, "MidiFileEv", "event", (m_uint)midifile_event);
+    importer_add_arg(importer, "int", "track");
+    importer_add_arg(importer, "int", "event_number");
+//    importer_add_arg(importer, "MidiFileEv", "event");
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
 
-  dl_func_init(&fun, "void", "add_track", (m_uint)midifile_add_track);
-    dl_func_add_arg(&fun, "int", "number");
-  CHECK_BB(import_fun(env, &fun, 0))
+  importer_func_begin(importer, "void", "add_track", (m_uint)midifile_add_track);
+    importer_add_arg(importer, "int", "number");
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
 
-  dl_func_init(&fun, "int", "add_note", (m_uint)midifile_add_note);
-    dl_func_add_arg(&fun, "int", "track");
-    dl_func_add_arg(&fun, "MidiFileEv", "note");
-  CHECK_BB(import_fun(env, &fun, 0))
+  importer_func_begin(importer, "int", "add_note", (m_uint)midifile_add_note);
+    importer_add_arg(importer, "int", "track");
+    importer_add_arg(importer, "MidiFileEv", "note");
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
 
-  dl_func_init(&fun, "void", "write", (m_uint)midifile_write);
-    dl_func_add_arg(&fun, "string", "filename");
-  CHECK_BB(import_fun(env, &fun, 0))
-  CHECK_BB(import_class_end(env))
+  importer_func_begin(importer, "void", "write", (m_uint)midifile_write);
+    importer_add_arg(importer, "string", "filename");
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 }
