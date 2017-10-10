@@ -699,9 +699,9 @@ m_bool import(Importer importer) {
   CHECK_BB(import_asc(importer))
   CHECK_BB(import_ass(importer))
   CHECK_BB(import_fc(importer))
-  CHECK_BB(importer_op_begin(importer, "ANA", "FC", "FC"))
+  CHECK_BB(importer_oper_begin(importer, "ANA", "FC", "FC"))
   CHECK_BB(importer_add_op(importer, op_chuck, fc_connect,    1))
-  CHECK_BB(importer_op_begin(importer, "ANA", "FC", "FC"))
+  CHECK_BB(importer_oper_begin(importer, "ANA", "FC", "FC"))
   CHECK_BB(importer_add_op(importer, op_unchuck, fc_disconnect, 1))
   return 1;
 }
