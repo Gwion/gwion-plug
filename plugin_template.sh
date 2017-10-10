@@ -59,24 +59,22 @@ static SFUN(sfun) { /*code here */ }
 
 IMPORT
 {
-  DL_Func fun;
+  CHECK_BB(importer_class_begin(importer, &t_${1,,},${1,,}_ctor, ${1,,}_dtor))
 
-  CHECK_BB(import_class_begin(env, &t_${1,,}, env->global_nspc, ${1,,}_ctor, ${1,,}_dtor))
-
-  o_${1,,}_member_data = import_var(env, "int",  "member", ae_flag_member, NULL);
+  o_${1,,}_member_data = importer_add_var(importer, "int",  "member", ae_flag_member, NULL);
 
   ${1,,}_static_value = malloc(sizeof(m_int));
-  o_${1,,}_static_data = import_var(env, "int", "static", ae_flag_static, ${1,,}_static_value);
+  o_${1,,}_static_data = importer_addvar(importer, "int", "static", ae_flag_static, ${1,,}_static_value);
 
-  dl_func_init(&fun, "int", "mfun",  (m_uint)mfun);
-    dl_func_add_arg(&fun, "int", "arg");
-  CHECK_OB(import_fun(env, &fun, ae_flag_member))
+  importer_func_begin(importer, "int", "mfun",  (m_uint)mfun);
+    importer_add_arg(importer, "int", "arg");
+  CHECK_BB(importer_add_fun(importer, ae_flag_member))
 
-  dl_func_init(&fun, "int", "sfun",  (m_uint)sfun);
-    dl_func_add_arg(&fun, "int", "arg");
-  CHECK_OB(import_fun(env, &fun, ae_flag_static))
+  importer_func_init(importer, "int", "sfun",  (m_uint)sfun);
+    importer_add_arg(importer, "int", "arg");
+  CHECK_BB(importer_add_fun(importer, ae_flag_static))
 
-  CHECK_BB(import_class_end(env))
+  CHECK_BB(importer_class_end(importer))
   return 1;
 }
 EOF
