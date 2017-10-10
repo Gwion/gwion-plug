@@ -1,0 +1,3 @@
+PD pd;
+("test.pd", ".") => pd.open;
+5::second => now;
