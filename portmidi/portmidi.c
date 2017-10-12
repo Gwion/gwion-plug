@@ -214,35 +214,35 @@ IMPORT
   o_pm_msg = importer_add_var(importer, "int",  "@msg", ae_flag_member, NULL);
   CHECK_BB(o_pm_msg)
   importer_func_begin(importer, "string", "name", (m_uint)pm_name);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "string", "error", (m_uint)pm_error);
     importer_add_arg(importer, "int", "id");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
   importer_func_begin(importer, "int", "close", (m_uint)pm_close);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
   CHECK_BB(importer_class_begin(importer, &t_midiout, NULL, NULL))
   importer_func_begin(importer, "int", "open", (m_uint)midiout_open);
     importer_add_arg(importer, "int", "id");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "send", (m_uint)midiout_send_self);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "send", (m_uint)midiout_send);
     importer_add_arg(importer, "int", "status");
     importer_add_arg(importer, "int", "data1");
     importer_add_arg(importer, "int", "data2");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
   CHECK_BB(importer_class_begin(importer, &t_midiin, NULL, NULL))
   importer_func_begin(importer, "int", "open", (m_uint)midiin_open);
     importer_add_arg(importer, "int", "id");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "recv", (m_uint)midiin_recv);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "read", (m_uint)midiin_read);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
   return 1;

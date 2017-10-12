@@ -53,32 +53,32 @@ IMPORT {
   importer_func_begin(importer, "void", "open", (m_uint)midifile_open);
     importer_add_arg(importer, "string", "filename");
     importer_add_arg(importer, "int", "smf");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "int", "tracks", (m_uint)midifile_tracks);
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
 
   importer_func_begin(importer, "int", "len", (m_uint)midifile_track_len);
     importer_add_arg(importer, "int", "track");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
 
   importer_func_begin(importer, "MidiFileEv", "event", (m_uint)midifile_event);
     importer_add_arg(importer, "int", "track");
     importer_add_arg(importer, "int", "event_number");
 //    importer_add_arg(importer, "MidiFileEv", "event");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
 
   importer_func_begin(importer, "void", "add_track", (m_uint)midifile_add_track);
     importer_add_arg(importer, "int", "number");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
 
   importer_func_begin(importer, "int", "add_note", (m_uint)midifile_add_note);
     importer_add_arg(importer, "int", "track");
     importer_add_arg(importer, "MidiFileEv", "note");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
 
   importer_func_begin(importer, "void", "write", (m_uint)midifile_write);
     importer_add_arg(importer, "string", "filename");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }

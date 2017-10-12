@@ -117,7 +117,7 @@ IMPORT
     importer_add_arg(importer, "int", "labels[]");
     importer_add_arg(importer, "float", "instances[][]");
     importer_add_arg(importer, "int", "k");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
 
   importer_func_begin(importer, "int[]", "means", (m_uint)gw_kmeans);
     importer_add_arg(importer, "float", "data[][]");
@@ -125,14 +125,14 @@ IMPORT
     importer_add_arg(importer, "int", "k");
     importer_add_arg(importer, "int", "initial_centroid");
     importer_add_arg(importer, "float", "theta");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
   
   importer_func_begin(importer, "int[]", "fine_means", (m_uint)gw_kmeans_refine);
     importer_add_arg(importer, "float", "data[][]");
     importer_add_arg(importer, "int", "iter");
     importer_add_arg(importer, "int", "n_points");
     importer_add_arg(importer, "int", "k");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
   
   CHECK_BB(importer_class_end(importer))
   return 1;

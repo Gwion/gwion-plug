@@ -808,9 +808,9 @@ IMPORT {
   CHECK_BB(importer_class_begin(importer, &t_group, group_ctor, group_dtor))
   o_nk_list = importer_add_var(importer, "int", "&widget", ae_flag_member, NULL);
   importer_func_begin(importer, "void", "begin", (m_uint)group_begin);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "end", (m_uint)group_end);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(o_nk_list)
   CHECK_BB(importer_class_end(importer))
 
@@ -866,7 +866,7 @@ IMPORT {
   CHECK_BB(o_nk_comboval)
   importer_func_begin(importer, "string", "add", (m_uint)combo_add);
   importer_add_arg(importer, "string", "s");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
   CHECK_BB(importer_class_begin(importer, &t_menu, menu_ctor, NULL))
@@ -874,13 +874,13 @@ IMPORT {
   CHECK_BB(o_nk_menuval)
   importer_func_begin(importer, "string", "add", (m_uint)menu_add);
   importer_add_arg(importer, "string", "s");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
   CHECK_BB(importer_class_begin(importer, &t_menubar, menubar_ctor, NULL))
   importer_func_begin(importer, "void", "add", (m_uint)menubar_add);
   importer_add_arg(importer, "NkMenu", "s");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
   CHECK_BB(importer_class_begin(importer, &t_tree, tree_ctor, NULL))

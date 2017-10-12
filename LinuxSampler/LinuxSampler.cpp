@@ -179,34 +179,34 @@ IMPORT
   o_ls_data = importer_add_var(importer, (m_str)"int", (m_str)"@sampler", ae_flag_member, NULL);
   importer_func_begin(importer, "void", "load", (m_uint)linuxsampler_load);
     importer_add_arg(importer, "string", "filename");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "void", "load", (m_uint)linuxsampler_load_instrument);
     importer_add_arg(importer, "string", "filename");
     importer_add_arg(importer, "int", "index");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "int", "noteOn", (m_uint)linuxsampler_noteOn);
     importer_add_arg(importer, "int", "note");
     importer_add_arg(importer, "int", "velocity");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "int", "noteOff", (m_uint)linuxsampler_noteOff);
     importer_add_arg(importer, "int", "note");
     importer_add_arg(importer, "int", "velocity");
   importer_func_begin(importer, "void", "noteOff", (m_uint)linuxsampler_pitchbend);
     importer_add_arg(importer, "int", "pitch");
     importer_add_arg(importer, "int", "note");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "int", "status", (m_uint)linuxsampler_status);
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "float", "gain", (m_uint)linuxsampler_getgain);
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "float", "gain", (m_uint)linuxsampler_setgain);
     importer_add_arg(importer, "float", "f");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "float", "pan", (m_uint)linuxsampler_getpan);
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   importer_func_begin(importer, "float", "pan", (m_uint)linuxsampler_setpan);
     importer_add_arg(importer, "float", "f");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
   CHECK_BB(importer_class_end(importer));
   return 1;
 }

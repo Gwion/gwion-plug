@@ -59,10 +59,10 @@ IMPORT
   importer_func_begin(importer, "int", "open",  (m_uint)gwpd_open);
   importer_add_arg(importer, "string", "basename");
   importer_add_arg(importer, "string", "dirname");
-  CHECK_OB(importer_add_fun(importer, ae_flag_member))
+  CHECK_OB(importer_func_end(importer, ae_flag_member))
 
   importer_func_begin(importer, "int", "close",  (m_uint)gwpd_close);
-  CHECK_OB(importer_add_fun(importer, ae_flag_member))
+  CHECK_OB(importer_func_end(importer, ae_flag_member))
 
   CHECK_BB(importer_class_end(importer))
   return 1;

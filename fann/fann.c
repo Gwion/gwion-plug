@@ -1204,17 +1204,17 @@ m_bool import(Importer importer) {
   CHECK_BB(o_fann_error)
   importer_func_begin(importer, "void", "log",  (m_uint)error_log);
     importer_add_arg(importer, "FileIO", "f");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "errno",  (m_uint)errno);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "reset_errno",  (m_uint)reset_errno);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "reset_errstr",  (m_uint)reset_errstr);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "errstr",  (m_uint)errstr);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "print_error",  (m_uint)print_error);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
 //  Training Data Manipulation
@@ -1223,154 +1223,154 @@ m_bool import(Importer importer) {
     importer_add_arg(importer, "int", "num");
     importer_add_arg(importer, "float[][]", "in");
     importer_add_arg(importer, "float[][]", "out");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "load",  (m_uint)train_from_file);
     importer_add_arg(importer, "string", "filename");
     importer_add_arg(importer, "int", "epochs");
     importer_add_arg(importer, "int", "report");
     importer_add_arg(importer, "float", "error");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "save",  (m_uint)train_save);
     importer_add_arg(importer, "string", "filename");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "create",  (m_uint)train_create);
     importer_add_arg(importer, "int", "num_data");
     importer_add_arg(importer, "int", "num_in");
     importer_add_arg(importer, "int", "num_out");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "input",  (m_uint)train_input);
     importer_add_arg(importer, "int", "position");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "output",  (m_uint)train_output);
     importer_add_arg(importer, "int", "position");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "shuffle",  (m_uint)train_shuffle);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "min_in",  (m_uint)train_min_in);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "max_in",  (m_uint)train_max_in);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "max_in",  (m_uint)train_max_in);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "max_out",  (m_uint)train_max_out);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "length",  (m_uint)train_length);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "num_input",  (m_uint)train_num_input);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "num_ouput",  (m_uint)train_num_output);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "FANN_data", "subset",  (m_uint)train_do_subset);
     importer_add_arg(importer, "int", "pos");
     importer_add_arg(importer, "int", "len");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "FANN_data", "merge",  (m_uint)train_merge);
     importer_add_arg(importer, "FANN_data", "l");
     importer_add_arg(importer, "FANN_data", "r");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
   importer_func_begin(importer, "FANN_data", "duplicate",  (m_uint)train_duplicate);
     importer_add_arg(importer, "FANN_data", "l");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
 
   CHECK_BB(importer_class_end(importer))
 
   CHECK_BB(importer_class_begin(importer, &t_fann, NULL, fann_dtor))
   importer_func_begin(importer, "string", "type_str", (m_uint)type_str);
     importer_add_arg(importer, "int", "layer");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
   importer_func_begin(importer, "void", "standard", (m_uint)standard);
     importer_add_arg(importer, "int", "layer");
     importer_add_arg(importer, "int[]", "outputs");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "shortcut",  (m_uint)shortcut);
     importer_add_arg(importer, "int", "layer");
     importer_add_arg(importer, "int[]", "outputs");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "sparse",   (m_uint)sparse);
     importer_add_arg(importer, "float", "rate");
     importer_add_arg(importer, "int", "layer");
     importer_add_arg(importer, "int[]", "outputs");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "randomize",  (m_uint)randomize);
     importer_add_arg(importer, "float", "min");
     importer_add_arg(importer, "float", "max");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "init",  (m_uint)init);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "print",  (m_uint)print_connections);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   // paramters
   importer_func_begin(importer, "void", "parameters",  (m_uint)parameters);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "input",  (m_uint)input);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "output",  (m_uint)output);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "neurons",  (m_uint)neurons);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "connections",  (m_uint)connections);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "type",  (m_uint)type);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rate",  (m_uint)rate);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "layer",  (m_uint)layer);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int[]", "layers",  (m_uint)layers);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int[]", "bias",  (m_uint)bias);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "FANN_connect[]", "connection_array",  (m_uint)connection_array);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "weigth_array",  (m_uint)weigth_array);
     importer_add_arg(importer, "FANN_connect[]", "array");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "weigth",  (m_uint)weigth);
     importer_add_arg(importer, "int", "from");
     importer_add_arg(importer, "int", "to");
     importer_add_arg(importer, "float", "weigth");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "weigths",  (m_uint)get_weigths);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "weigths",  (m_uint)set_weigths);
     importer_add_arg(importer, "float[]", "f");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
 // get/set user data
   importer_func_begin(importer, "void", "disable_seed",  (m_uint)disable_seed);
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
   importer_func_begin(importer, "void", "enable_seed",  (m_uint)enable_seed);
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
 
   importer_func_begin(importer, "void", "load",  (m_uint)load);
   importer_add_arg(importer, "string", "file");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "save",  (m_uint)save);
     importer_add_arg(importer, "string", "file");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "run",  (m_uint)run);
     importer_add_arg(importer, "float[]", "in");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   // FIXED POINT only
 /*  importer_func_begin(importer, "void", "decimal_point",  (m_uint)decimal_point);*/
-/*  CHECK_BB(importer_add_fun(importer, 0))*/
+/*  CHECK_BB(importer_func_end(importer, 0))*/
 /*  importer_func_begin(importer, "void", "multiplier",  (m_uint)multiplier);*/
-/*  CHECK_BB(importer_add_fun(importer, 0))*/
+/*  CHECK_BB(importer_func_end(importer, 0))*/
 
 // training
   importer_func_begin(importer, "void", "train",  (m_uint)train);
     importer_add_arg(importer, "float[]", "in");
     importer_add_arg(importer, "float[]", "out");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "test",  (m_uint)test);
     importer_add_arg(importer, "float[]", "in");
     importer_add_arg(importer, "float[]", "out");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "mse",  (m_uint)get_MSE);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "bit_fail",  (m_uint)get_bit_fail);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "reset_mse",  (m_uint)reset_MSE);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
 
 // Training Data Training
   importer_func_begin(importer, "void", "on_data",  (m_uint)train_on_data);
@@ -1378,262 +1378,262 @@ m_bool import(Importer importer) {
     importer_add_arg(importer, "int",   "epoch");
     importer_add_arg(importer, "int",   "report");
     importer_add_arg(importer, "float", "error");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "on_file",  (m_uint)train_on_file);
     importer_add_arg(importer, "string", "filename");
     importer_add_arg(importer, "int",   "epoch");
     importer_add_arg(importer, "int",   "report");
     importer_add_arg(importer, "float", "error");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "epoch",  (m_uint)train_epoch);
     importer_add_arg(importer, "FANN_data", "data");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "epoch",  (m_uint)test_data);
     importer_add_arg(importer, "FANN_data", "data");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
 /*  importer_func_begin(importer, "void", "test",  (m_uint)train_test);*/
 /*    importer_add_arg(importer, "FANN_data", "data");*/
-/*  CHECK_BB(importer_add_fun(importer, 0))*/
+/*  CHECK_BB(importer_func_end(importer, 0))*/
 
 // Training Data Manipulation
   importer_func_begin(importer, "void", "scale",  (m_uint)scale_train);
     importer_add_arg(importer, "FANN_data", "data");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "descale",  (m_uint)descale_train);
     importer_add_arg(importer, "FANN_data", "data");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "in_scaling_params",  (m_uint)input_scaling_params);
     importer_add_arg(importer, "FANN_data", "data");
     importer_add_arg(importer, "float", "min");
     importer_add_arg(importer, "float", "max");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "out_scaling_params",  (m_uint)output_scaling_params);
     importer_add_arg(importer, "FANN_data", "data");
     importer_add_arg(importer, "float", "min");
     importer_add_arg(importer, "float", "max");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "scaling_params",  (m_uint)scaling_params);
     importer_add_arg(importer, "FANN_data", "data");
     importer_add_arg(importer, "float", "imin");
     importer_add_arg(importer, "float", "imax");
     importer_add_arg(importer, "float", "omin");
     importer_add_arg(importer, "float", "omax");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "clear_scaling_params",  (m_uint)scaling_params);
-  CHECK_BB(importer_add_fun(importer, 0))
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "scale_input",  (m_uint)scale_input);
     importer_add_arg(importer, "float[]", "in");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "scale_output",  (m_uint)scale_output);
     importer_add_arg(importer, "float[]", "out");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "descale_input",  (m_uint)descale_input);
     importer_add_arg(importer, "float[]", "in");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "descale_output",  (m_uint)descale_output);
     importer_add_arg(importer, "float[]", "out");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "scale_in",  (m_uint)train_input_scale);
     importer_add_arg(importer, "FANN_data", "data");
     importer_add_arg(importer, "float", "min");
     importer_add_arg(importer, "float", "max");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "scale_out",  (m_uint)train_output_scale);
     importer_add_arg(importer, "FANN_data", "data");
     importer_add_arg(importer, "float", "min");
     importer_add_arg(importer, "float", "max");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "scale",  (m_uint)train_scale);
     importer_add_arg(importer, "FANN_data", "data");
     importer_add_arg(importer, "float", "min");
     importer_add_arg(importer, "float", "max");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
 
   importer_func_begin(importer, "int", "training_algorithm",  (m_uint)get_training_algorithm);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "training_algorithm",  (m_uint)set_training_algorithm);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "learning_rate",  (m_uint)get_learning_rate);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "learning_rate",  (m_uint)set_learning_rate);
     importer_add_arg(importer, "float", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "learning_momentum",  (m_uint)get_learning_momentum);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "learning_momentum",  (m_uint)set_learning_momentum);
     importer_add_arg(importer, "float", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "activation_function",  (m_uint)get_activation_function);
     importer_add_arg(importer, "int", "layer");
     importer_add_arg(importer, "int", "neuron");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "activation_function",  (m_uint)set_activation_function);
     importer_add_arg(importer, "int", "arg");
     importer_add_arg(importer, "int", "layer");
     importer_add_arg(importer, "int", "neuron");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "activation_function_layer",  (m_uint)set_activation_function_layer);
     importer_add_arg(importer, "int", "layer");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "activation_function_output",  (m_uint)set_activation_function_output);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "activation_steepness",  (m_uint)get_activation_steepness);
     importer_add_arg(importer, "int", "layer");
     importer_add_arg(importer, "int", "neuron");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "activation_steepness",  (m_uint)set_activation_steepness);
     importer_add_arg(importer, "int", "arg");
     importer_add_arg(importer, "int", "layer");
     importer_add_arg(importer, "int", "neuron");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "activation_steepness_layer",  (m_uint)set_activation_steepness_layer);
     importer_add_arg(importer, "int", "layer");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "activation_steepness_output",  (m_uint)set_activation_steepness_output);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "train_error_function",  (m_uint)get_train_error_function);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "train_error_function",  (m_uint)set_train_error_function);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "train_stop_function",  (m_uint)get_train_stop_function);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "train_stop_function",  (m_uint)set_train_stop_function);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "bit_fail_limit",  (m_uint)get_bit_fail_limit);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "bit_fail_limit",  (m_uint)set_bit_fail_limit);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "quickprop_decay",  (m_uint)get_quickprop_decay);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "quickprop_decay",  (m_uint)set_quickprop_decay);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "quickprop_mu",  (m_uint)get_quickprop_mu);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "quickprop_mu",  (m_uint)set_quickprop_mu);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_increase_factor",  (m_uint)get_rprop_increase_factor);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_increase_factor",  (m_uint)set_rprop_increase_factor);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_decrease_factor",  (m_uint)get_rprop_decrease_factor);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_decrease_factor",  (m_uint)set_rprop_decrease_factor);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_delta_min",  (m_uint)get_rprop_delta_min);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_delta_min",  (m_uint)set_rprop_delta_min);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_delta_max",  (m_uint)get_rprop_delta_max);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_delta_max",  (m_uint)set_rprop_delta_max);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_delta_zero",  (m_uint)get_rprop_delta_zero);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "rprop_delta_zero",  (m_uint)set_rprop_delta_zero);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "sarprop_weight_decay_shift",  (m_uint)get_sarprop_weight_decay_shift);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "sarprop_weight_decay_shift",  (m_uint)set_sarprop_weight_decay_shift);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "sarprop_step_error_threshold_factor",  (m_uint)get_sarprop_step_error_threshold_factor);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "sarprop_step_error_threshold_factor",  (m_uint)set_sarprop_step_error_threshold_factor);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
    importer_func_begin(importer, "float", "sarprop_step_error_shift",  (m_uint)get_sarprop_step_error_shift);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "sarprop_step_error_shift",  (m_uint)set_sarprop_step_error_shift);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "sarprop_temperature",  (m_uint)get_sarprop_temperature);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "sarprop_temperature",  (m_uint)set_sarprop_temperature);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_output_change_fraction",  (m_uint)get_cascade_output_change_fraction);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_output_change_fraction",  (m_uint)set_cascade_output_change_fraction);
     importer_add_arg(importer, "float", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
    importer_func_begin(importer, "int", "cascade_output_stagnation_epochs",  (m_uint)get_cascade_output_stagnation_epochs);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_output_stagnation_epochs",  (m_uint)set_cascade_output_stagnation_epochs);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_candidate_change_fraction",  (m_uint)get_cascade_candidate_change_fraction);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_candidate_change_fraction",  (m_uint)set_cascade_candidate_change_fraction);
     importer_add_arg(importer, "float", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_candidate_stagnation_epochs",  (m_uint)get_cascade_candidate_stagnation_epochs);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_candidate_stagnation_epochs",  (m_uint)set_cascade_candidate_stagnation_epochs);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_weight_multiplier",  (m_uint)get_cascade_weight_multiplier);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_weight_multiplier",  (m_uint)set_cascade_weight_multiplier);
     importer_add_arg(importer, "float", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_candidate_limit",  (m_uint)get_cascade_candidate_limit);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "cascade_candidate_limit",  (m_uint)set_cascade_candidate_limit);
     importer_add_arg(importer, "float", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_max_out_epochs",  (m_uint)get_cascade_max_out_epochs);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_max_out_epochs",  (m_uint)set_cascade_max_out_epochs);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_min_out_epochs",  (m_uint)get_cascade_min_out_epochs);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_min_out_epochs",  (m_uint)set_cascade_min_out_epochs);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
    importer_func_begin(importer, "int", "cascade_max_cand_epochs",  (m_uint)get_cascade_max_cand_epochs);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_max_cand_epochs",  (m_uint)set_cascade_max_cand_epochs);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_min_cand_epochs",  (m_uint)get_cascade_min_cand_epochs);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_min_cand_epochs",  (m_uint)set_cascade_min_cand_epochs);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_activation_functions_count",  (m_uint)get_cascade_activation_functions_count);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int[]", "cascade_activation_functions",  (m_uint)get_cascade_activation_functions);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int[]", "cascade_activation_functions",  (m_uint)set_cascade_activation_functions);
     importer_add_arg(importer, "int[]", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_activation_steepnesses_count",  (m_uint)get_cascade_activation_steepnesses_count);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "cascade_activation_steepnesses",  (m_uint)get_cascade_activation_steepnesses);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float[]", "cascade_activation_steepnesses",  (m_uint)set_cascade_activation_steepnesses);
     importer_add_arg(importer, "float[]", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_num_candidate_groups",  (m_uint)get_cascade_num_candidate_groups);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "cascade_num_candidate_groups",  (m_uint)set_cascade_num_candidate_groups);
     importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
 
   CHECK_BB(importer_class_end(importer))
   return 1;

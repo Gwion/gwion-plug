@@ -120,13 +120,13 @@ IMPORT
 	importer_func_begin(importer, "void", "parse", (m_uint)gw_lsys_parse);
 		importer_add_arg(importer, "int",    "ord");
 		importer_add_arg(importer, "string", "str");
-	CHECK_BB(importer_add_fun(importer, 0))
+	CHECK_BB(importer_func_end(importer, 0))
 	importer_func_begin(importer, "void", "reset", (m_uint)gw_lsys_reset);
-	CHECK_BB(importer_add_fun(importer, 0))
+	CHECK_BB(importer_func_end(importer, 0))
 	importer_func_begin(importer, "int", "size", (m_uint)gw_lsys_size);
-	CHECK_BB(importer_add_fun(importer, 0))
+	CHECK_BB(importer_func_end(importer, 0))
 	importer_func_begin(importer, "string", "get", (m_uint)gw_lsys_get);
-	CHECK_BB(importer_add_fun(importer, 0))
+	CHECK_BB(importer_func_end(importer, 0))
 	CHECK_BB(importer_class_end(importer))
 	return 1;
 }

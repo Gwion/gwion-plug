@@ -270,42 +270,42 @@ IMPORT
  
   importer_func_begin(importer, "void", "init", (m_uint)init);
     importer_add_arg(importer, "int", "plyphony");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "parameter", (m_uint)parameter);
     importer_add_arg(importer, "int", "parameter");
     importer_add_arg(importer, "int", "operator_index");
     importer_add_arg(importer, "float", "value");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "parameter", (m_uint)global_parameter);
     importer_add_arg(importer, "int", "parameter");
     importer_add_arg(importer, "float", "value");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "noteon", (m_uint)noteon);
     importer_add_arg(importer, "int", "note");
     importer_add_arg(importer, "int", "velocity");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "reset", (m_uint)synth_reset);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "noteoff", (m_uint)noteoff);
     importer_add_arg(importer, "int", "note");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "sustain", (m_uint)sustain);
     importer_add_arg(importer, "int", "enable");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "wheel", (m_uint)wheel);
     importer_add_arg(importer, "int", "value");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "bend", (m_uint)bend);
     importer_add_arg(importer, "int", "value");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "void", "release", (m_uint)release_all);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "load", (m_uint)load);
     importer_add_arg(importer, "string", "filename");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "int", "save", (m_uint)save);
     importer_add_arg(importer, "string", "filename");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }

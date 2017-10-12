@@ -132,24 +132,24 @@ static m_bool import_fft(Importer importer) {
   CHECK_BB(importer_class_begin(importer, &t_fft, fft_ctor, fft_dtor))
   importer_func_begin(importer, "int", "init", (m_uint)fft_init);
   importer_add_arg(importer, "int", "size");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   /*  importer_func_begin(importer, "int", "init", (m_uint)fft_init2);*/
   /*    importer_add_arg(importer, "int", "size");*/
   /*    importer_add_arg(importer, "float[]", "window");*/
-  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  CHECK_BB(importer_func_end(importer, 0))*/
   /*  importer_func_begin(importer, "int", "init", (m_uint)fft_init3);*/
   /*    importer_add_arg(importer, "int", "size");*/
   /*    importer_add_arg(importer, "string", "window");*/
-  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  CHECK_BB(importer_func_end(importer, 0))*/
   /*  importer_func_begin(importer, "int", "window", (m_uint)fft_win);*/
   /*    importer_add_arg(importer, "float[]", "window");*/
-  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  CHECK_BB(importer_func_end(importer, 0))*/
   /*  importer_func_begin(importer, "int", "window", (m_uint)fft_win_name);*/
   /*    importer_add_arg(importer, "string", "name");*/
-  /*  CHECK_BB(importer_add_fun(importer, 0))*/
+  /*  CHECK_BB(importer_func_end(importer, 0))*/
   /*  importer_func_begin(importer, "complex[]", "compute", (m_uint)fft_compute);*/
   importer_func_begin(importer, "void", "compute", (m_uint)fft_compute);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
 
   CHECK_BB(importer_class_end(importer))
   return 1;
@@ -475,12 +475,12 @@ static m_bool import_ana(Importer importer) {
   o_ana_fn = importer_add_var(importer,  "int", "@fn", ae_flag_member, NULL);
   CHECK_BB(o_ana_fn)
   importer_func_begin(importer, "float", "compute", (m_uint)ana_compute);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "FFT", "fft", (m_uint)ana_get_fft);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "FFT", "fft", (m_uint)ana_set_fft);
   importer_add_arg(importer, "FFT", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -550,10 +550,10 @@ static MFUN(rolloff_set_percent) {
 static m_bool import_rolloff(Importer importer) {
   CHECK_BB(importer_class_begin(importer, &t_rolloff, rolloff_ctor, NULL))
   importer_func_begin(importer, "float", "percent", (m_uint)rolloff_get_percent);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "float", "percent", (m_uint)rolloff_set_percent);
   importer_add_arg(importer, "float", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -675,13 +675,13 @@ static m_bool import_fc(Importer importer) {
   o_fc_vector = importer_add_var(importer, "int", "@vector", ae_flag_member, NULL);
   CHECK_BB(o_fc_vector)
   importer_func_begin(importer, "float[]", "compute", (m_uint)fc_compute);
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "ANA", "add", (m_uint)fc_add);
   importer_add_arg(importer, "ANA", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   importer_func_begin(importer, "ANA", "rem", (m_uint)fc_rem);
   importer_add_arg(importer, "ANA", "arg");
-  CHECK_BB(importer_add_fun(importer, 0))
+  CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -700,8 +700,8 @@ m_bool import(Importer importer) {
   CHECK_BB(import_ass(importer))
   CHECK_BB(import_fc(importer))
   CHECK_BB(importer_oper_begin(importer, "ANA", "FC", "FC"))
-  CHECK_BB(importer_add_op(importer, op_chuck, fc_connect,    1))
+  CHECK_BB(importer_oper_end(importer, op_chuck, fc_connect,    1))
   CHECK_BB(importer_oper_begin(importer, "ANA", "FC", "FC"))
-  CHECK_BB(importer_add_op(importer, op_unchuck, fc_disconnect, 1))
+  CHECK_BB(importer_oper_end(importer, op_unchuck, fc_disconnect, 1))
   return 1;
 }
