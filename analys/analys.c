@@ -129,26 +129,26 @@ static MFUN(fft_compute) {
 }
 
 static m_bool import_fft(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_fft, fft_ctor, fft_dtor))
-  importer_func_begin(importer, "int", "init", (m_uint)fft_init);
-  importer_add_arg(importer, "int", "size");
+  CHECK_BB(importer_class_ini(importer, &t_fft, fft_ctor, fft_dtor))
+  importer_func_ini(importer, "int", "init", (m_uint)fft_init);
+  importer_func_arg(importer, "int", "size");
   CHECK_BB(importer_func_end(importer, 0))
-  /*  importer_func_begin(importer, "int", "init", (m_uint)fft_init2);*/
-  /*    importer_add_arg(importer, "int", "size");*/
-  /*    importer_add_arg(importer, "float[]", "window");*/
+  /*  importer_func_ini(importer, "int", "init", (m_uint)fft_init2);*/
+  /*    importer_func_arg(importer, "int", "size");*/
+  /*    importer_func_arg(importer, "float[]", "window");*/
   /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_begin(importer, "int", "init", (m_uint)fft_init3);*/
-  /*    importer_add_arg(importer, "int", "size");*/
-  /*    importer_add_arg(importer, "string", "window");*/
+  /*  importer_func_ini(importer, "int", "init", (m_uint)fft_init3);*/
+  /*    importer_func_arg(importer, "int", "size");*/
+  /*    importer_func_arg(importer, "string", "window");*/
   /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_begin(importer, "int", "window", (m_uint)fft_win);*/
-  /*    importer_add_arg(importer, "float[]", "window");*/
+  /*  importer_func_ini(importer, "int", "window", (m_uint)fft_win);*/
+  /*    importer_func_arg(importer, "float[]", "window");*/
   /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_begin(importer, "int", "window", (m_uint)fft_win_name);*/
-  /*    importer_add_arg(importer, "string", "name");*/
+  /*  importer_func_ini(importer, "int", "window", (m_uint)fft_win_name);*/
+  /*    importer_func_arg(importer, "string", "name");*/
   /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_begin(importer, "complex[]", "compute", (m_uint)fft_compute);*/
-  importer_func_begin(importer, "void", "compute", (m_uint)fft_compute);
+  /*  importer_func_ini(importer, "complex[]", "compute", (m_uint)fft_compute);*/
+  importer_func_ini(importer, "void", "compute", (m_uint)fft_compute);
   CHECK_BB(importer_func_end(importer, 0))
 
   CHECK_BB(importer_class_end(importer))
@@ -467,19 +467,22 @@ static DTOR(ana_dtor) {
 }
 
 static m_bool import_ana(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_ana, ana_ctor, ana_dtor))
-  o_ana_ana = importer_add_var(importer, "int", "@_fft", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_ana, ana_ctor, ana_dtor))
+	importer_item_ini(importer,"int", "@_fft");
+  o_ana_ana = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_ana_ana)
-  o_ana_fft = importer_add_var(importer, "FFT", "@fft",  ae_flag_ref, NULL);
+	importer_item_ini(importer,"FFT", "@fft");
+  o_ana_fft = importer_item_end(importer,  ae_flag_ref, NULL);
   CHECK_BB(o_ana_fft)
-  o_ana_fn = importer_add_var(importer,  "int", "@fn", ae_flag_member, NULL);
+	importer_item_ini(importer, "int", "@fn");
+  o_ana_fn = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_ana_fn)
-  importer_func_begin(importer, "float", "compute", (m_uint)ana_compute);
+  importer_func_ini(importer, "float", "compute", (m_uint)ana_compute);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "FFT", "fft", (m_uint)ana_get_fft);
+  importer_func_ini(importer, "FFT", "fft", (m_uint)ana_get_fft);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "FFT", "fft", (m_uint)ana_set_fft);
-  importer_add_arg(importer, "FFT", "arg");
+  importer_func_ini(importer, "FFT", "fft", (m_uint)ana_set_fft);
+  importer_func_arg(importer, "FFT", "arg");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
   return 1;
@@ -490,7 +493,7 @@ static CTOR(centroid_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_centroid;
 }
 static m_bool import_centroid(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_centroid, centroid_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_centroid, centroid_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -500,7 +503,7 @@ static CTOR(spread_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_spread;
 }
 static m_bool import_spread(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_spread, spread_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_spread, spread_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -510,7 +513,7 @@ static CTOR(skewness_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_skewness;
 }
 static m_bool import_skewness(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_skewness, skewness_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_skewness, skewness_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -520,7 +523,7 @@ static CTOR(kurtosis_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_kurtosis;
 }
 static m_bool import_kurtosis(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_kurtosis, kurtosis_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_kurtosis, kurtosis_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -530,7 +533,7 @@ static CTOR(rms_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rms;
 }
 static m_bool import_rms(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_rms, rms_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_rms, rms_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -548,11 +551,11 @@ static MFUN(rolloff_set_percent) {
   *(m_float*)RETURN = (ana->percent = *(m_float*)MEM(SZ_INT));
 }
 static m_bool import_rolloff(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_rolloff, rolloff_ctor, NULL))
-  importer_func_begin(importer, "float", "percent", (m_uint)rolloff_get_percent);
+  CHECK_BB(importer_class_ini(importer, &t_rolloff, rolloff_ctor, NULL))
+  importer_func_ini(importer, "float", "percent", (m_uint)rolloff_get_percent);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "float", "percent", (m_uint)rolloff_set_percent);
-  importer_add_arg(importer, "float", "arg");
+  importer_func_ini(importer, "float", "percent", (m_uint)rolloff_set_percent);
+  importer_func_arg(importer, "float", "arg");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
   return 1;
@@ -563,7 +566,7 @@ static CTOR(freq_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_freq;
 }
 static m_bool import_freq(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_freq, freq_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_freq, freq_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -573,7 +576,7 @@ static CTOR(asc_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_asc;
 }
 static m_bool import_asc(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_asc, asc_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_asc, asc_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -583,7 +586,7 @@ static CTOR(ass_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_ass;
 }
 static m_bool import_ass(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_ass, ass_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_ass, ass_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 }
@@ -671,16 +674,17 @@ INSTR(fc_disconnect) {
 }
 
 static m_bool import_fc(Importer importer) {
-  CHECK_BB(importer_class_begin(importer, &t_fc, fc_ctor, fc_dtor))
-  o_fc_vector = importer_add_var(importer, "int", "@vector", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_fc, fc_ctor, fc_dtor))
+	importer_item_ini(importer,"int", "@vector");
+  o_fc_vector = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_fc_vector)
-  importer_func_begin(importer, "float[]", "compute", (m_uint)fc_compute);
+  importer_func_ini(importer, "float[]", "compute", (m_uint)fc_compute);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "ANA", "add", (m_uint)fc_add);
-  importer_add_arg(importer, "ANA", "arg");
+  importer_func_ini(importer, "ANA", "add", (m_uint)fc_add);
+  importer_func_arg(importer, "ANA", "arg");
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "ANA", "rem", (m_uint)fc_rem);
-  importer_add_arg(importer, "ANA", "arg");
+  importer_func_ini(importer, "ANA", "rem", (m_uint)fc_rem);
+  importer_func_arg(importer, "ANA", "arg");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
   return 1;
@@ -699,9 +703,9 @@ m_bool import(Importer importer) {
   CHECK_BB(import_asc(importer))
   CHECK_BB(import_ass(importer))
   CHECK_BB(import_fc(importer))
-  CHECK_BB(importer_oper_begin(importer, "ANA", "FC", "FC"))
+  CHECK_BB(importer_oper_ini(importer, "ANA", "FC", "FC"))
   CHECK_BB(importer_oper_end(importer, op_chuck, fc_connect,    1))
-  CHECK_BB(importer_oper_begin(importer, "ANA", "FC", "FC"))
+  CHECK_BB(importer_oper_ini(importer, "ANA", "FC", "FC"))
   CHECK_BB(importer_oper_end(importer, op_unchuck, fc_disconnect, 1))
   return 1;
 }

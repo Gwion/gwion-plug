@@ -386,61 +386,66 @@ static MFUN(oscin_get_s)
 
 IMPORT
 {
-  CHECK_BB(importer_class_begin(importer, &t_lo, lo_ctor, NULL))
-  o_lo_args = importer_add_var(importer, "int",  "@args", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_lo, lo_ctor, NULL))
+	importer_item_ini(importer,"int",  "@args");
+  o_lo_args = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_lo_args)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_loout, NULL, loout_dtor))
-  o_lo_addr = importer_add_var(importer, "int",  "@addr", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_loout, NULL, loout_dtor))
+	importer_item_ini(importer,"int",  "@addr");
+  o_lo_addr = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_lo_addr)
-  importer_func_begin(importer, "int", "addr", (m_uint)osc_addr);
-    importer_add_arg(importer, "string", "host");
-    importer_add_arg(importer, "string", "port");
+  importer_func_ini(importer, "int", "addr", (m_uint)osc_addr);
+    importer_func_arg(importer, "string", "host");
+    importer_func_arg(importer, "string", "port");
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "send", (m_uint)osc_send);
-    importer_add_arg(importer, "string", "path");
+  importer_func_ini(importer, "int", "send", (m_uint)osc_send);
+    importer_func_arg(importer, "string", "path");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_loin, loin_ctor, NULL))
-  o_lo_serv = importer_add_var(importer, "int",  "@serv", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_loin, loin_ctor, NULL))
+	importer_item_ini(importer,"int",  "@serv");
+  o_lo_serv = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_lo_serv)
-  o_lo_meth = importer_add_var(importer, "int",  "@meth", ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "@meth");
+  o_lo_meth = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_lo_meth)
-  o_lo_curr = importer_add_var(importer, "int",  "@curr", ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "@curr");
+  o_lo_curr = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_lo_curr)
-  importer_func_begin(importer, "int", "add", (m_uint)osc_add_method);
-    importer_add_arg(importer, "string", "path");
-    importer_add_arg(importer, "string", "type");
+  importer_func_ini(importer, "int", "add", (m_uint)osc_add_method);
+    importer_func_arg(importer, "string", "path");
+    importer_func_arg(importer, "string", "type");
   CHECK_BB(importer_func_end(importer, 0))
 
-  importer_func_begin(importer, "int", "port", (m_uint)osc_get_port);
+  importer_func_ini(importer, "int", "port", (m_uint)osc_get_port);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "port", (m_uint)osc_port);
-    importer_add_arg(importer, "int", "port");
+  importer_func_ini(importer, "int", "port", (m_uint)osc_port);
+    importer_func_arg(importer, "int", "port");
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "start", (m_uint)oscin_start);
+  importer_func_ini(importer, "int", "start", (m_uint)oscin_start);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "stop", (m_uint)oscin_stop);
+  importer_func_ini(importer, "int", "stop", (m_uint)oscin_stop);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "recv", (m_uint)osc_recv);
+  importer_func_ini(importer, "int", "recv", (m_uint)osc_recv);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "get_i", (m_uint)oscin_get_i);
+  importer_func_ini(importer, "int", "get_i", (m_uint)oscin_get_i);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "float", "get_f", (m_uint)oscin_get_f);
+  importer_func_ini(importer, "float", "get_f", (m_uint)oscin_get_f);
   CHECK_BB(importer_func_end(importer, 0))  
-  importer_func_begin(importer, "string", "get_s", (m_uint)oscin_get_s);
+  importer_func_ini(importer, "string", "get_s", (m_uint)oscin_get_s);
   CHECK_BB(importer_func_end(importer, 0))
 
 
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_oper_begin(importer, "int", "OscOut", "int"))
+  CHECK_BB(importer_oper_ini(importer, "int", "OscOut", "int"))
   CHECK_BB(importer_oper_end(importer, op_chuck, oscsend_add_int,    1))
-  CHECK_BB(importer_oper_begin(importer,"float",  "OscOut", "float"))
+  CHECK_BB(importer_oper_ini(importer,"float",  "OscOut", "float"))
   CHECK_BB(importer_oper_end(importer, op_chuck, oscsend_add_float,  1))
-  CHECK_BB(importer_oper_begin(importer, "string", "OscOut", "string"))
+  CHECK_BB(importer_oper_ini(importer, "string", "OscOut", "string"))
   CHECK_BB(importer_oper_end(importer, op_chuck, oscsend_add_string, 1))
 
   return 1;

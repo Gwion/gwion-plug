@@ -32,52 +32,59 @@ MFUN(midifile_add_track);
 MFUN(midifile_add_note);
 MFUN(midifile_write);
 IMPORT {
-  CHECK_BB(importer_class_begin(importer, &t_midifileev, NULL, NULL))
-  o_midiev_type = importer_add_var(importer, "int", "type",   ae_flag_const, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_midifileev, NULL, NULL))
+	importer_item_ini(importer,"int", "type");
+  o_midiev_type = importer_item_end(importer,   ae_flag_const, NULL);
   CHECK_BB(o_midiev_type);
-  o_midiev_pitch = importer_add_var(importer, "float", "pitch", ae_flag_const, NULL);
+	importer_item_ini(importer,"float", "pitch");
+  o_midiev_pitch = importer_item_end(importer, ae_flag_const, NULL);
   CHECK_BB(o_midiev_pitch);
-  o_midiev_loud  = importer_add_var(importer, "float", "loud",  ae_flag_const, NULL);
+	importer_item_ini(importer,"float", "loud");
+  o_midiev_loud  = importer_item_end(importer,  ae_flag_const, NULL);
   CHECK_BB(o_midiev_loud);
-  o_midiev_start = importer_add_var(importer, "float", "start", ae_flag_const, NULL);
+	importer_item_ini(importer,"float", "start");
+  o_midiev_start = importer_item_end(importer, ae_flag_const, NULL);
   CHECK_BB(o_midiev_start);
-  o_midiev_end   = importer_add_var(importer, "float", "end",   ae_flag_const, NULL);
+	importer_item_ini(importer,"float", "end");
+  o_midiev_end   = importer_item_end(importer,   ae_flag_const, NULL);
   CHECK_BB(o_midiev_start);
-  o_midiev_dur   = importer_add_var(importer, "float", "dur",   ae_flag_const, NULL);
+	importer_item_ini(importer,"float", "dur");
+  o_midiev_dur   = importer_item_end(importer,   ae_flag_const, NULL);
   CHECK_BB(o_midiev_dur);
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_midifile, ctor, dtor))
-  o_midifile_seq = importer_add_var(importer, "int", "@seq", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_midifile, ctor, dtor))
+	importer_item_ini(importer,"int", "@seq");
+  o_midifile_seq = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_midifile_seq);
-  importer_func_begin(importer, "void", "open", (m_uint)midifile_open);
-    importer_add_arg(importer, "string", "filename");
-    importer_add_arg(importer, "int", "smf");
+  importer_func_ini(importer, "void", "open", (m_uint)midifile_open);
+    importer_func_arg(importer, "string", "filename");
+    importer_func_arg(importer, "int", "smf");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_begin(importer, "int", "tracks", (m_uint)midifile_tracks);
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-
-  importer_func_begin(importer, "int", "len", (m_uint)midifile_track_len);
-    importer_add_arg(importer, "int", "track");
+  importer_func_ini(importer, "int", "tracks", (m_uint)midifile_tracks);
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-  importer_func_begin(importer, "MidiFileEv", "event", (m_uint)midifile_event);
-    importer_add_arg(importer, "int", "track");
-    importer_add_arg(importer, "int", "event_number");
-//    importer_add_arg(importer, "MidiFileEv", "event");
+  importer_func_ini(importer, "int", "len", (m_uint)midifile_track_len);
+    importer_func_arg(importer, "int", "track");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-  importer_func_begin(importer, "void", "add_track", (m_uint)midifile_add_track);
-    importer_add_arg(importer, "int", "number");
+  importer_func_ini(importer, "MidiFileEv", "event", (m_uint)midifile_event);
+    importer_func_arg(importer, "int", "track");
+    importer_func_arg(importer, "int", "event_number");
+//    importer_func_arg(importer, "MidiFileEv", "event");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-  importer_func_begin(importer, "int", "add_note", (m_uint)midifile_add_note);
-    importer_add_arg(importer, "int", "track");
-    importer_add_arg(importer, "MidiFileEv", "note");
+  importer_func_ini(importer, "void", "add_track", (m_uint)midifile_add_track);
+    importer_func_arg(importer, "int", "number");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-  importer_func_begin(importer, "void", "write", (m_uint)midifile_write);
-    importer_add_arg(importer, "string", "filename");
+  importer_func_ini(importer, "int", "add_note", (m_uint)midifile_add_note);
+    importer_func_arg(importer, "int", "track");
+    importer_func_arg(importer, "MidiFileEv", "note");
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
+
+  importer_func_ini(importer, "void", "write", (m_uint)midifile_write);
+    importer_func_arg(importer, "string", "filename");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
   CHECK_BB(importer_class_end(importer))
   return 1;

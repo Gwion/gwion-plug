@@ -199,49 +199,56 @@ static MFUN(midiin_read)
 
 IMPORT
 {
-  CHECK_BB(importer_class_begin(importer, &t_portmidi, pm_ctor, pm_dtor))
-   importer_add_var(importer, "int",  "@dummy", ae_flag_member, NULL);
-  o_pm_stream = importer_add_var(importer, "int",  "@stream", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_portmidi, pm_ctor, pm_dtor))
+	importer_item_ini(importer,"int",  "@dummy");
+   importer_item_end(importer, ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "@stream");
+  o_pm_stream = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_pm_stream)
-  o_pm_id = importer_add_var(importer, "int",  "id", ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "id");
+  o_pm_id = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_pm_id)
-  o_pm_status  = importer_add_var(importer, "int",  "status", ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "status");
+  o_pm_status  = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_pm_status)
-  o_pm_data1 = importer_add_var(importer, "int",  "data1", ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "data1");
+  o_pm_data1 = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_pm_data1)
-  o_pm_data2 = importer_add_var(importer, "int",  "data2", ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "data2");
+  o_pm_data2 = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_pm_data2)
-  o_pm_msg = importer_add_var(importer, "int",  "@msg", ae_flag_member, NULL);
+	importer_item_ini(importer,"int",  "@msg");
+  o_pm_msg = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_pm_msg)
-  importer_func_begin(importer, "string", "name", (m_uint)pm_name);
+  importer_func_ini(importer, "string", "name", (m_uint)pm_name);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "string", "error", (m_uint)pm_error);
-    importer_add_arg(importer, "int", "id");
+  importer_func_ini(importer, "string", "error", (m_uint)pm_error);
+    importer_func_arg(importer, "int", "id");
   CHECK_BB(importer_func_end(importer, ae_flag_static))
-  importer_func_begin(importer, "int", "close", (m_uint)pm_close);
+  importer_func_ini(importer, "int", "close", (m_uint)pm_close);
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_midiout, NULL, NULL))
-  importer_func_begin(importer, "int", "open", (m_uint)midiout_open);
-    importer_add_arg(importer, "int", "id");
+  CHECK_BB(importer_class_ini(importer, &t_midiout, NULL, NULL))
+  importer_func_ini(importer, "int", "open", (m_uint)midiout_open);
+    importer_func_arg(importer, "int", "id");
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "send", (m_uint)midiout_send_self);
+  importer_func_ini(importer, "int", "send", (m_uint)midiout_send_self);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "send", (m_uint)midiout_send);
-    importer_add_arg(importer, "int", "status");
-    importer_add_arg(importer, "int", "data1");
-    importer_add_arg(importer, "int", "data2");
+  importer_func_ini(importer, "int", "send", (m_uint)midiout_send);
+    importer_func_arg(importer, "int", "status");
+    importer_func_arg(importer, "int", "data1");
+    importer_func_arg(importer, "int", "data2");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_midiin, NULL, NULL))
-  importer_func_begin(importer, "int", "open", (m_uint)midiin_open);
-    importer_add_arg(importer, "int", "id");
+  CHECK_BB(importer_class_ini(importer, &t_midiin, NULL, NULL))
+  importer_func_ini(importer, "int", "open", (m_uint)midiin_open);
+    importer_func_arg(importer, "int", "id");
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "recv", (m_uint)midiin_recv);
+  importer_func_ini(importer, "int", "recv", (m_uint)midiin_recv);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "int", "read", (m_uint)midiin_read);
+  importer_func_ini(importer, "int", "read", (m_uint)midiin_read);
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 

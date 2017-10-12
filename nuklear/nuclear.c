@@ -742,149 +742,187 @@ static void slider_ctor(M_Object o, VM_Shred shred)
 }
 
 IMPORT { 
-  CHECK_BB(importer_class_begin(importer, &t_color, NULL, NULL))
-  o_nk_r = importer_add_var(importer, "int", "r", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_color, NULL, NULL))
+	importer_item_ini(importer,"int", "r");
+  o_nk_r = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_r)
-  o_nk_g = importer_add_var(importer, "int", "g", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "g");
+  o_nk_g = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_g)
-  o_nk_b = importer_add_var(importer, "int", "b", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "b");
+  o_nk_b = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_b)
-  o_nk_a = importer_add_var(importer, "int", "a", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "a");
+  o_nk_a = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_a)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_panel, nk_ctor, nk_dtor))
-  o_nk_data = importer_add_var(importer, "int", "@win", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_panel, nk_ctor, nk_dtor))
+	importer_item_ini(importer,"int", "@win");
+  o_nk_data = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_data)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_widget, widget_ctor, NULL))
-  o_nk_name = importer_add_var(importer, "string", "name", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_widget, widget_ctor, NULL))
+	importer_item_ini(importer,"string", "name");
+  o_nk_name = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_name);
-  o_nk_parent = importer_add_var(importer, "int", "@parent", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "@parent");
+  o_nk_parent = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_parent);
-  o_nk_exec = importer_add_var(importer, "int", "@exe", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "@exe");
+  o_nk_exec = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_exec)
-  o_nk_gwin = importer_add_var(importer, "int", "@win", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "@win");
+  o_nk_gwin = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_gwin)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_sval, sval_ctor, NULL))
-  o_nk_align = importer_add_var(importer,  "int",  "align", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_sval, sval_ctor, NULL))
+	importer_item_ini(importer, "int",  "align");
+  o_nk_align = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_align)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_label, label_ctor, NULL))
-  o_nk_wrap = importer_add_var(importer,  "int",  "wrap", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_label, label_ctor, NULL))
+	importer_item_ini(importer, "int",  "wrap");
+  o_nk_wrap = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_wrap)
-  o_nk_labelcolor= importer_add_var(importer,  "NkColor",  "color", ae_flag_ref, NULL);
+	importer_item_ini(importer, "NkColor",  "color");
+  o_nk_labelcolor= importer_item_end(importer, ae_flag_ref, NULL);
   CHECK_BB(o_nk_labelcolor)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_text, text_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_text, text_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_slabel, slabel_ctor, NULL))
-  o_nk_select = importer_add_var(importer,  "int",  "selectable", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_slabel, slabel_ctor, NULL))
+	importer_item_ini(importer, "int",  "selectable");
+  o_nk_select = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_select)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_prog, prog_ctor, NULL))
-  o_nk_prog = importer_add_var(importer, "int", "val", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_prog, prog_ctor, NULL))
+	importer_item_ini(importer,"int", "val");
+  o_nk_prog = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_prog)
-  o_nk_progmax = importer_add_var(importer, "int", "max", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "max");
+  o_nk_progmax = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_progmax)
-  o_nk_progmod = importer_add_var(importer, "int", "mod", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "mod");
+  o_nk_progmod = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_progmod)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_button, button_ctor, NULL))
-  o_nk_behavior = importer_add_var(importer,  "int",  "behavior", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_button, button_ctor, NULL))
+	importer_item_ini(importer, "int",  "behavior");
+  o_nk_behavior = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_behavior)
-  o_nk_button_color= importer_add_var(importer,  "NkColor",  "color", ae_flag_ref, NULL);
+	importer_item_ini(importer, "NkColor",  "color");
+  o_nk_button_color= importer_item_end(importer, ae_flag_ref, NULL);
   CHECK_BB(o_nk_button_color)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_group, group_ctor, group_dtor))
-  o_nk_list = importer_add_var(importer, "int", "&widget", ae_flag_member, NULL);
-  importer_func_begin(importer, "void", "begin", (m_uint)group_begin);
+  CHECK_BB(importer_class_ini(importer, &t_group, group_ctor, group_dtor))
+	importer_item_ini(importer,"int", "&widget");
+  o_nk_list = importer_item_end(importer, ae_flag_member, NULL);
+  importer_func_ini(importer, "void", "begin", (m_uint)group_begin);
   CHECK_BB(importer_func_end(importer, 0))
-  importer_func_begin(importer, "void", "end", (m_uint)group_end);
+  importer_func_ini(importer, "void", "end", (m_uint)group_end);
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(o_nk_list)
   CHECK_BB(importer_class_end(importer))
 
 
 
-  CHECK_BB(importer_class_begin(importer, &t_rowd, rowd_ctor, NULL))
-  o_nk_rowh = importer_add_var(importer,  "int",  "height", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_rowd, rowd_ctor, NULL))
+	importer_item_ini(importer, "int",  "height");
+  o_nk_rowh = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_rowh)
-  o_nk_roww = importer_add_var(importer,  "int",  "width", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "width");
+  o_nk_roww = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_roww)
-  o_nk_rowcol = importer_add_var(importer,  "int",  "col", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "col");
+  o_nk_rowcol = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_rowcol)
-  o_nk_static = importer_add_var(importer,  "int",  "static", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "static");
+  o_nk_static = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_static)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_layout, layout_ctor, NULL))
-  o_nk_x = importer_add_var(importer,  "int",  "x", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_layout, layout_ctor, NULL))
+	importer_item_ini(importer, "int",  "x");
+  o_nk_x = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_x)
-  o_nk_y = importer_add_var(importer,  "int",  "y", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "y");
+  o_nk_y = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_y)
-  o_nk_w = importer_add_var(importer,  "int",  "w", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "w");
+  o_nk_w = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_w)
-  o_nk_h = importer_add_var(importer,  "int",  "h", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "h");
+  o_nk_h = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_h)
-  o_nk_flags = importer_add_var(importer,  "int",  "flag", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "flag");
+  o_nk_flags = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_flags)
   m_uint* border  = malloc(sizeof(m_uint));
   *border  = NK_WINDOW_BORDER;
-  importer_add_var(importer, "int", "BORDER", ae_flag_static | ae_flag_const, border);
+	importer_item_ini(importer,"int", "BORDER");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, border);
   m_uint* movable = malloc(sizeof(m_uint));
   *movable = NK_WINDOW_MOVABLE;
-  importer_add_var(importer, "int", "MOVABLE", ae_flag_static | ae_flag_const, movable);
+	importer_item_ini(importer,"int", "MOVABLE");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, movable);
   m_uint *scalable = malloc(sizeof(m_uint));
   *scalable = NK_WINDOW_SCALABLE;
-  importer_add_var(importer, "int", "SCALABLE", ae_flag_static | ae_flag_const, scalable);
+	importer_item_ini(importer,"int", "SCALABLE");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, scalable);
   m_uint* closable = malloc(sizeof(m_uint));
   *closable = NK_WINDOW_CLOSABLE;
-  importer_add_var(importer, "int", "CLOSABLE", ae_flag_static | ae_flag_const, closable);
+	importer_item_ini(importer,"int", "CLOSABLE");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, closable);
   m_uint* minimizable = malloc(sizeof(m_uint));
   *minimizable = NK_WINDOW_MINIMIZABLE;
-  importer_add_var(importer, "int", "MINIMIZABLE", ae_flag_static | ae_flag_const, minimizable);
+	importer_item_ini(importer,"int", "MINIMIZABLE");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, minimizable);
   m_uint* title = malloc(sizeof(m_uint));
   *title = NK_WINDOW_TITLE;
-  importer_add_var(importer, "int", "TITLE", ae_flag_static | ae_flag_const, title);
+	importer_item_ini(importer,"int", "TITLE");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, title);
   m_uint* menu = malloc(sizeof(m_uint));;
   *menu = NK_PANEL_MENU;
-  importer_add_var(importer, "int", "MENU", ae_flag_static | ae_flag_const, menu);
+	importer_item_ini(importer,"int", "MENU");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, menu);
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_combo, combo_ctor, NULL))
-  o_nk_comboval = importer_add_var(importer,  "int",  "val", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_combo, combo_ctor, NULL))
+	importer_item_ini(importer, "int",  "val");
+  o_nk_comboval = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_comboval)
-  importer_func_begin(importer, "string", "add", (m_uint)combo_add);
-  importer_add_arg(importer, "string", "s");
+  importer_func_ini(importer, "string", "add", (m_uint)combo_add);
+  importer_func_arg(importer, "string", "s");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_menu, menu_ctor, NULL))
-  o_nk_menuval = importer_add_var(importer,  "int",  "val", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_menu, menu_ctor, NULL))
+	importer_item_ini(importer, "int",  "val");
+  o_nk_menuval = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_menuval)
-  importer_func_begin(importer, "string", "add", (m_uint)menu_add);
-  importer_add_arg(importer, "string", "s");
+  importer_func_ini(importer, "string", "add", (m_uint)menu_add);
+  importer_func_arg(importer, "string", "s");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_menubar, menubar_ctor, NULL))
-  importer_func_begin(importer, "void", "add", (m_uint)menubar_add);
-  importer_add_arg(importer, "NkMenu", "s");
+  CHECK_BB(importer_class_ini(importer, &t_menubar, menubar_ctor, NULL))
+  importer_func_ini(importer, "void", "add", (m_uint)menubar_add);
+  importer_func_arg(importer, "NkMenu", "s");
   CHECK_BB(importer_func_end(importer, 0))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_tree, tree_ctor, NULL))
-  o_nk_state = importer_add_var(importer,  "int",  "state", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_tree, tree_ctor, NULL))
+	importer_item_ini(importer, "int",  "state");
+  o_nk_state = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_state)
   CHECK_BB(importer_class_end(importer))
 
@@ -897,53 +935,68 @@ IMPORT {
   * field  = NK_EDIT_FIELD;
   * box    = NK_EDIT_BOX;
   * editor = NK_EDIT_EDITOR;
-  CHECK_BB(importer_class_begin(importer, &t_nkstring, nkstring_ctor, NULL))
-  o_nk_edit_type= importer_add_var(importer, "int", "type", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_nkstring, nkstring_ctor, NULL))
+	importer_item_ini(importer,"int", "type");
+  o_nk_edit_type= importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_edit_type)
-  importer_add_var(importer, "int", "SIMPLE", ae_flag_static | ae_flag_const, simple);
-  importer_add_var(importer, "int", "FIELD",  ae_flag_static | ae_flag_const, field);
-  importer_add_var(importer, "int", "BOX",    ae_flag_static | ae_flag_const, box);
-  importer_add_var(importer, "int", "EDITOR", ae_flag_static | ae_flag_const, editor);
+	importer_item_ini(importer,"int", "SIMPLE");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, simple);
+	importer_item_ini(importer,"int", "FIELD");
+  importer_item_end(importer,  ae_flag_static | ae_flag_const, field);
+	importer_item_ini(importer,"int", "BOX");
+  importer_item_end(importer,    ae_flag_static | ae_flag_const, box);
+	importer_item_ini(importer,"int", "EDITOR");
+  importer_item_end(importer, ae_flag_static | ae_flag_const, editor);
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_ival, NULL, NULL))
-  o_nk_ival = importer_add_var(importer,  "int",  "val", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_ival, NULL, NULL))
+	importer_item_ini(importer, "int",  "val");
+  o_nk_ival = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_ival)
-  o_nk_imin = importer_add_var(importer,  "int",  "min", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "min");
+  o_nk_imin = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_imin)
-  o_nk_imax = importer_add_var(importer,  "int",  "max", ae_flag_member, NULL);
+	importer_item_ini(importer, "int",  "max");
+  o_nk_imax = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_imax)
-  o_nk_istp = importer_add_var(importer, "int", "step", ae_flag_member, NULL);
+	importer_item_ini(importer,"int", "step");
+  o_nk_istp = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_istp)
-  o_nk_iinc = importer_add_var(importer, "float", "inc", ae_flag_member, NULL);
+	importer_item_ini(importer,"float", "inc");
+  o_nk_iinc = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_iinc)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_propi, propi_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_propi, propi_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
-  CHECK_BB(importer_class_begin(importer, &t_slideri, slideri_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
-
-  CHECK_BB(importer_class_begin(importer, &t_check, check_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_slideri, slideri_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_fval, NULL, NULL))
-  o_nk_fval = importer_add_var(importer,  "float",  "val", ae_flag_member, NULL);
+  CHECK_BB(importer_class_ini(importer, &t_check, check_ctor, NULL))
+  CHECK_BB(importer_class_end(importer))
+
+  CHECK_BB(importer_class_ini(importer, &t_fval, NULL, NULL))
+	importer_item_ini(importer, "float",  "val");
+  o_nk_fval = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_fval)
-  o_nk_fmin = importer_add_var(importer,  "float",  "min", ae_flag_member, NULL);
+	importer_item_ini(importer, "float",  "min");
+  o_nk_fmin = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_fmin)
-  o_nk_fmax = importer_add_var(importer,  "float",  "max", ae_flag_member, NULL);
+	importer_item_ini(importer, "float",  "max");
+  o_nk_fmax = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_fmax)
 
-  o_nk_fstp = importer_add_var(importer, "float", "step", ae_flag_member, NULL);
+	importer_item_ini(importer,"float", "step");
+  o_nk_fstp = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_fstp)
-  o_nk_finc = importer_add_var(importer, "float", "inc", ae_flag_member, NULL);
+	importer_item_ini(importer,"float", "inc");
+  o_nk_finc = importer_item_end(importer, ae_flag_member, NULL);
   CHECK_BB(o_nk_finc)
   CHECK_BB(importer_class_end(importer))
 
-  CHECK_BB(importer_class_begin(importer, &t_propf, propf_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_propf, propf_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
-  CHECK_BB(importer_class_begin(importer, &t_slider, slider_ctor, NULL))
+  CHECK_BB(importer_class_ini(importer, &t_slider, slider_ctor, NULL))
   CHECK_BB(importer_class_end(importer))
   return 1;
 

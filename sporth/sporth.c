@@ -201,34 +201,34 @@ MFUN(sporth_parse_file)
 
 IMPORT
 {
-  CHECK_BB(importer_class_begin(importer, &t_gworth, sporth_ctor, sporth_dtor))
+  CHECK_BB(importer_class_ini(importer, &t_gworth, sporth_ctor, sporth_dtor))
 
-    importer_func_begin(importer, "float", "p", (m_uint)sporth_setp);
-  importer_add_arg(importer, "int", "index");
-  importer_add_arg(importer, "float", "val");
+    importer_func_ini(importer, "float", "p", (m_uint)sporth_setp);
+  importer_func_arg(importer, "int", "index");
+  importer_func_arg(importer, "float", "val");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-    importer_func_begin(importer, "float", "p", (m_uint)sporth_getp);
-  importer_add_arg(importer, "int", "index");
+    importer_func_ini(importer, "float", "p", (m_uint)sporth_getp);
+  importer_func_arg(importer, "int", "index");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-    importer_func_begin(importer, "float", "t", (m_uint)sporth_set_table);
-  importer_add_arg(importer, "int", "index");
-  importer_add_arg(importer, "float", "val");
-  importer_add_arg(importer, "string", "table");
+    importer_func_ini(importer, "float", "t", (m_uint)sporth_set_table);
+  importer_func_arg(importer, "int", "index");
+  importer_func_arg(importer, "float", "val");
+  importer_func_arg(importer, "string", "table");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-    importer_func_begin(importer, "float", "t", (m_uint)sporth_get_table);
-  importer_add_arg(importer, "int", "index");
-  importer_add_arg(importer, "string", "table");
+    importer_func_ini(importer, "float", "t", (m_uint)sporth_get_table);
+  importer_func_arg(importer, "int", "index");
+  importer_func_arg(importer, "string", "table");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-    importer_func_begin(importer, "string", "parse", (m_uint)sporth_parse_string);
-  importer_add_arg(importer, "string", "arg");
+    importer_func_ini(importer, "string", "parse", (m_uint)sporth_parse_string);
+  importer_func_arg(importer, "string", "arg");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-    importer_func_begin(importer, "string", "parsefile", (m_uint)sporth_parse_file);
-  importer_add_arg(importer, "string", "arg");
+    importer_func_ini(importer, "string", "parsefile", (m_uint)sporth_parse_file);
+  importer_func_arg(importer, "string", "arg");
   CHECK_BB(importer_func_end(importer, ae_flag_member))
 
     CHECK_BB(importer_class_end(importer))

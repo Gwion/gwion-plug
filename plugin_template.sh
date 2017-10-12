@@ -59,20 +59,22 @@ static SFUN(sfun) { /*code here */ }
 
 IMPORT
 {
-  CHECK_BB(importer_class_begin(importer, &t_${1,,},${1,,}_ctor, ${1,,}_dtor))
+  CHECK_BB(importer_class_ini(importer, &t_${1,,},${1,,}_ctor, ${1,,}_dtor))
 
-  o_${1,,}_member_data = importer_add_var(importer, "int",  "member", ae_flag_member, NULL);
+  CHECK_BB(importer_item_ini(importer, "int",  "member"))
+  CHECK_BB(o_${1,,}_member_data = importer_item_end(importer, ae_flag_member, NULL))
 
   ${1,,}_static_value = malloc(sizeof(m_int));
-  o_${1,,}_static_data = importer_addvar(importer, "int", "static", ae_flag_static, ${1,,}_static_value);
+  CHECK_BB(importer_item_ini(importer, "int", "static"))
+  CHECK_BB(o_${1,,}_static_data = importer_item_end(importer, ae_flag_static, ${1,,}_static_value))
 
-  importer_func_begin(importer, "int", "mfun",  (m_uint)mfun);
-    importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, ae_flag_member))
+  CHECK_BB(importer_func_ini(importer, "int", "mfun",  (m_uint)mfun))
+  CHECK_BB(importer_func_arg(importer, "int", "arg"))
+  CHECK_BB(importer_func_end(importer, ae_flag_member))
 
-  importer_func_init(importer, "int", "sfun",  (m_uint)sfun);
-    importer_add_arg(importer, "int", "arg");
-  CHECK_BB(importer_add_fun(importer, ae_flag_static))
+  CHECK_BB(importer_func_ini(importer, "int", "sfun",  (m_uint)sfun))
+  CHECK_BB(importer_func_arg(importer, "int", "arg"))
+  CHECK_BB(importer_func_end(importer, ae_flag_static))
 
   CHECK_BB(importer_class_end(importer))
   return 1;
