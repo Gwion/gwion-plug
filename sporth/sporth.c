@@ -23,17 +23,11 @@ static int sporth_chuck_in(sporth_stack *stack, void *ud)
   sporthData * data = (sporthData *) pd->ud;
   switch(pd->mode) {
     case PLUMBER_CREATE:
-#ifdef DEBUG_MODE
-      fprintf(stderr, "CHUCK IN: creating\n");
-#endif
       plumber_add_ugen(pd, SPORTH_IN, NULL);
       sporth_stack_push_float(stack, 0);
       break;
 
     case PLUMBER_INIT:
-#ifdef DEBUG_MODE
-      fprintf(stderr, "CHUCK IN: initialising.\n");
-#endif
       sporth_stack_push_float(stack, 0);
       break;
 
@@ -42,9 +36,6 @@ static int sporth_chuck_in(sporth_stack *stack, void *ud)
       break;
 
     case PLUMBER_DESTROY:
-#ifdef DEBUG_MODE
-      fprintf(stderr, "CHUCK IN: destroying.\n");
-#endif
       break;
 
     default:
@@ -64,9 +55,6 @@ TICK(sporth_tick)
 }
 CTOR(sporth_ctor)
 {
-#ifdef DEBUG_MODE
-  fprintf(stderr, "Creating Sporth\n");
-#endif
   sporthData * data = malloc(sizeof(sporthData));
   data->parsed = 0;
   data->in = 0;
@@ -86,9 +74,6 @@ DTOR(sporth_dtor)
   /*
      if(data)
      {
-#ifdef DEBUG_MODE
-fprintf(stderr, "Destroying Sporth\n");
-#endif
 plumber_clean(&data->pd);
 sp_destroy(&data->sp);
 free(data);

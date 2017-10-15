@@ -141,9 +141,6 @@ static MFUN(osc_send)
 
 static INSTR(oscsend_add_int)
 {
-#ifdef DEBUG_INSTR
-  debug_msg("instr", "int => oscsend");
-#endif
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('i', REG(0)));
   release(**(M_Object**)REG(0), shred);
@@ -151,9 +148,6 @@ static INSTR(oscsend_add_int)
 
 static INSTR(oscsend_add_float)
 {
-#ifdef DEBUG_INSTR
-  debug_msg("instr", "float => oscsend");
-#endif
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('d', REG(0)));
   release(**(M_Object**)REG(0), shred);
@@ -161,9 +155,6 @@ static INSTR(oscsend_add_float)
 
 static INSTR(oscsend_add_string)
 {
-#ifdef DEBUG_INSTR
-  debug_msg("instr", "string => oscsend");
-#endif
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('s', REG(0)));
   release(**(M_Object**)REG(0), shred);
