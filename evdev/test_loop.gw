@@ -1,0 +1,10 @@
+Evdev ev;
+if(ev.index(15) < 0)
+  me.exit();
+ev.name() @=> string @s;
+<<<s>>>;
+while(true) {
+  ev => now;
+  while(ev.recv())
+    <<<ev.type, ev.code, ev.value>>>;
+}

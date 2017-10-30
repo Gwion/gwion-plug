@@ -1,0 +1,10 @@
+MidiIn min;
+min.open(3);
+
+while(true) {
+  min => now;
+  while(min.recv()) {
+    min.read();
+    <<<min.status, min.data1, min.data2>>>;
+  }
+}

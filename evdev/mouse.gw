@@ -1,0 +1,4 @@
+Mouse mouse;
+mouse.index(-1);
+mouse => now;
+mouse.recv();

@@ -1,0 +1,47 @@
+MidiIn min;
+min.open(3);
+while(true) {
+  min => now;
+  while(min.recv()) {
+    string name;
+    " " => string pad;
+    min.read();
+    min.data1 / 8 => int range;
+    min.data1 % 8 => int index;
+    switch(range) {
+      case 0:
+        "fader"  => name;
+        "    "  +=> pad;
+        break;
+      case 2:
+        "rotor"  => name;
+        "    "  +=> pad;
+        break;
+      case 4:
+        "solo"   => name;
+        "     " +=> pad;
+        break;
+      case 5:
+        "transport" => name;
+        break;
+      case 6:
+        "mute" => name;
+        "     " +=> pad;
+        break;
+      case 7:
+        "util" => name;
+        "     " +=> pad;
+        break;
+      case 8:
+        "rec" => name;
+        "      " +=> pad;
+        break;
+    }
+    name  => cerr;
+    index => cerr;
+    pad   => cerr;
+    " "   => cerr;
+    min.data2 => cerr;
+	cerr.nl();
+  }
+}

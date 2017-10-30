@@ -25,6 +25,7 @@ typedef struct
   VM* vm;
   Vector client;
   pthread_t thread;
+  pthread_mutex_t mutex;
 } MidiInfo;
 
 static MidiInfo* get(VM* vm, m_uint i)
@@ -159,7 +160,9 @@ static void* pm_recv(void* data)
       for(i = 0; i < vector_size(info->client); i++)
       {
         M_Object o = (M_Object)vector_at(info->client, i);
+        pthread_mutex_lock(&info->mutex);
         vector_add(MSG(o), (vtype)(m_uint)event.message);
+        pthread_mutex_unlock(&info->mutex);
         if(info->last != now);
         broadcast(o);
       }
@@ -177,6 +180,7 @@ static MFUN(midiin_open)
   if(!info->thread)
   {
     Pm_OpenInput(&info->stream, ID(o), 0, 0, NULL, NULL);
+    pthread_mutex_init(&info->mutex, NULL);
     pthread_create(&info->thread, NULL, pm_recv, info);
   }
   vector_add(info->client, (vtype)o);
@@ -185,16 +189,22 @@ static MFUN(midiin_open)
 
 static MFUN(midiin_recv)
 {
+  MidiInfo* info = get(shred->vm_ref, ID(o));
+  pthread_mutex_lock(&info->mutex);
   *(m_uint*)RETURN = vector_size(MSG(o)) ? 1 : 0;
+  pthread_mutex_unlock(&info->mutex);
 }
 
 static MFUN(midiin_read)
 {
+  MidiInfo* info = get(shred->vm_ref, ID(o));
+  pthread_mutex_lock(&info->mutex);
   m_uint msg = (m_uint)vector_front(MSG(o));
   STATUS(o) = Pm_MessageStatus(msg);
   DATA1(o)  = Pm_MessageData1(msg);
   DATA2(o)  = Pm_MessageData2(msg);
   vector_rem(MSG(o), (vtype)0);
+  pthread_mutex_unlock(&info->mutex);
 }
 
 IMPORT

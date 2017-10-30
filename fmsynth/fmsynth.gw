@@ -1,4 +1,5 @@
 FMSynth fm => dac;
+FMSynth.AMP;
 "/home/djay/src/libfmsynth-master/presets/clocky.fmp" => fm.load;
 fm.noteon(80, 110);
 2::second => now,
