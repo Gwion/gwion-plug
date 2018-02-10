@@ -175,40 +175,40 @@ extern "C"
 {
 IMPORT
 {
-  CHECK_BB(importer_class_ini(importer, &t_ls, linuxsampler_ctor, linuxsampler_dtor))
-	importer_item_ini(importer,(m_str)"int", (m_str)"@sampler");
-  o_ls_data = importer_item_end(importer, ae_flag_member, NULL);
-  importer_func_ini(importer, "void", "load", (m_uint)linuxsampler_load);
-    importer_func_arg(importer, "string", "filename");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "void", "load", (m_uint)linuxsampler_load_instrument);
-    importer_func_arg(importer, "string", "filename");
-    importer_func_arg(importer, "int", "index");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "int", "noteOn", (m_uint)linuxsampler_noteOn);
-    importer_func_arg(importer, "int", "note");
-    importer_func_arg(importer, "int", "velocity");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "int", "noteOff", (m_uint)linuxsampler_noteOff);
-    importer_func_arg(importer, "int", "note");
-    importer_func_arg(importer, "int", "velocity");
-  importer_func_ini(importer, "void", "noteOff", (m_uint)linuxsampler_pitchbend);
-    importer_func_arg(importer, "int", "pitch");
-    importer_func_arg(importer, "int", "note");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "int", "status", (m_uint)linuxsampler_status);
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "float", "gain", (m_uint)linuxsampler_getgain);
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "float", "gain", (m_uint)linuxsampler_setgain);
-    importer_func_arg(importer, "float", "f");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "float", "pan", (m_uint)linuxsampler_getpan);
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  importer_func_ini(importer, "float", "pan", (m_uint)linuxsampler_setpan);
-    importer_func_arg(importer, "float", "f");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
-  CHECK_BB(importer_class_end(importer));
+  CHECK_BB(gwi_class_ini(gwi, &t_ls, linuxsampler_ctor, linuxsampler_dtor))
+	gwi_item_ini(gwi,(m_str)"int", (m_str)"@sampler");
+  o_ls_data = gwi_item_end(gwi, ae_flag_member, NULL);
+  gwi_func_ini(gwi, "void", "load", linuxsampler_load);
+    gwi_func_arg(gwi, "string", "filename");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "void", "load", linuxsampler_load_instrument);
+    gwi_func_arg(gwi, "string", "filename");
+    gwi_func_arg(gwi, "int", "index");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "int", "noteOn", linuxsampler_noteOn);
+    gwi_func_arg(gwi, "int", "note");
+    gwi_func_arg(gwi, "int", "velocity");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "int", "noteOff", linuxsampler_noteOff);
+    gwi_func_arg(gwi, "int", "note");
+    gwi_func_arg(gwi, "int", "velocity");
+  gwi_func_ini(gwi, "void", "noteOff", linuxsampler_pitchbend);
+    gwi_func_arg(gwi, "int", "pitch");
+    gwi_func_arg(gwi, "int", "note");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "int", "status", linuxsampler_status);
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "float", "gain", linuxsampler_getgain);
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "float", "gain", linuxsampler_setgain);
+    gwi_func_arg(gwi, "float", "f");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "float", "pan", linuxsampler_getpan);
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  gwi_func_ini(gwi, "float", "pan", linuxsampler_setpan);
+    gwi_func_arg(gwi, "float", "f");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  CHECK_BB(gwi_class_end(gwi));
   return 1;
 }
 }

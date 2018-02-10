@@ -45,10 +45,10 @@ static MFUN(gwpd_close) {
 
 IMPORT
 {
-  CHECK_BB(importer_class_ini(importer, &t_gwpd, pd_ctor, pd_dtor))
+  CHECK_BB(gwi_class_ini(gwi, &t_gwpd, pd_ctor, pd_dtor))
 
-	importer_item_ini(importer,"int",  "@file");
-  CHECK_BB((o_pd_file = importer_item_end(importer, ae_flag_member, NULL)))
+	gwi_item_ini(gwi,"int",  "@file");
+  CHECK_BB((o_pd_file = gwi_item_end(gwi, ae_flag_member, NULL)))
 
     /*pd_static_value = malloc(sizeof(m_int));*/
     /*o_pd_static_data = import_var(env, "int", "static", ae_flag_static, pd_static_value);*/
@@ -57,14 +57,14 @@ IMPORT
     /*dl_func_func_arg(&fun, "int", "arg");*/
     /*CHECK_OB(import_fun(env, &fun, ae_flag_member))*/
 
-  importer_func_ini(importer, "int", "open",  (m_uint)gwpd_open);
-  importer_func_arg(importer, "string", "basename");
-  importer_func_arg(importer, "string", "dirname");
-  CHECK_OB(importer_func_end(importer, ae_flag_member))
+  gwi_func_ini(gwi, "int", "open", gwpd_open);
+  gwi_func_arg(gwi, "string", "basename");
+  gwi_func_arg(gwi, "string", "dirname");
+  CHECK_OB(gwi_func_end(gwi, ae_flag_member))
 
-  importer_func_ini(importer, "int", "close",  (m_uint)gwpd_close);
-  CHECK_OB(importer_func_end(importer, ae_flag_member))
+  gwi_func_ini(gwi, "int", "close", gwpd_close);
+  CHECK_OB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }

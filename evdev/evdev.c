@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <pthread.h>
 #include <string.h>
 #include <libevdev/libevdev.h>
@@ -153,34 +154,34 @@ static MFUN(evdev_name) {
 }
 
 IMPORT {
-  CHECK_BB(importer_class_ini(importer, &t_evdev_base, evdev_base_ctor, evdev_dtor))
+  CHECK_BB(gwi_class_ini(gwi, &t_evdev_base, evdev_base_ctor, evdev_dtor))
 
-  CHECK_BB(importer_item_ini(importer, "int", "@info"))
-  CHECK_BB((o_evdev_info = importer_item_end(importer, ae_flag_const, NULL)))
+  CHECK_BB(gwi_item_ini(gwi, "int", "@info"))
+  CHECK_BB((o_evdev_info = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(importer_item_ini(importer, "int", "type"))
-  CHECK_BB((o_evdev_type  = importer_item_end(importer, ae_flag_const, NULL)))
+  CHECK_BB(gwi_item_ini(gwi, "int", "type"))
+  CHECK_BB((o_evdev_type  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(importer_item_ini(importer, "int", "code"))
-  CHECK_BB((o_evdev_code  = importer_item_end(importer, ae_flag_const, NULL)))
+  CHECK_BB(gwi_item_ini(gwi, "int", "code"))
+  CHECK_BB((o_evdev_code  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(importer_item_ini(importer, "int", "value"))
-  CHECK_BB((o_evdev_value  = importer_item_end(importer, ae_flag_const, NULL)))
+  CHECK_BB(gwi_item_ini(gwi, "int", "value"))
+  CHECK_BB((o_evdev_value  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(importer_func_ini(importer, "int", "index", (m_uint)evdev_index))
-  CHECK_BB(importer_func_arg(importer, "int", "i"))
-  CHECK_BB(importer_func_end(importer, 0))
+  CHECK_BB(gwi_func_ini(gwi, "int", "index", evdev_index))
+  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
+  CHECK_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(importer_func_ini(importer, "int", "index", (m_uint)evdev_get_index))
-  CHECK_BB(importer_func_end(importer, 0))
+  CHECK_BB(gwi_func_ini(gwi, "int", "index", evdev_get_index))
+  CHECK_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(importer_func_ini(importer, "string", "name", (m_uint)evdev_name))
-  CHECK_BB(importer_func_end(importer, 0))
+  CHECK_BB(gwi_func_ini(gwi, "string", "name", evdev_name))
+  CHECK_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(importer_func_ini(importer, "int", "recv", (m_uint)evdev_recv))
-  CHECK_BB(importer_func_end(importer, 0))
+  CHECK_BB(gwi_func_ini(gwi, "int", "recv", evdev_recv))
+  CHECK_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
   return 1;
 }

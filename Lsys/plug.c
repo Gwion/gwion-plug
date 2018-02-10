@@ -116,17 +116,17 @@ static MFUN(gw_lsys_get)
 
 IMPORT
 {
-	CHECK_BB(importer_class_ini(importer, &t_lsys, ctor, dtor))
-	importer_func_ini(importer, "void", "parse", (m_uint)gw_lsys_parse);
-		importer_func_arg(importer, "int",    "ord");
-		importer_func_arg(importer, "string", "str");
-	CHECK_BB(importer_func_end(importer, 0))
-	importer_func_ini(importer, "void", "reset", (m_uint)gw_lsys_reset);
-	CHECK_BB(importer_func_end(importer, 0))
-	importer_func_ini(importer, "int", "size", (m_uint)gw_lsys_size);
-	CHECK_BB(importer_func_end(importer, 0))
-	importer_func_ini(importer, "string", "get", (m_uint)gw_lsys_get);
-	CHECK_BB(importer_func_end(importer, 0))
-	CHECK_BB(importer_class_end(importer))
+	CHECK_BB(gwi_class_ini(gwi, &t_lsys, ctor, dtor))
+	gwi_func_ini(gwi, "void", "parse", gw_lsys_parse);
+		gwi_func_arg(gwi, "int",    "ord");
+		gwi_func_arg(gwi, "string", "str");
+	CHECK_BB(gwi_func_end(gwi, 0))
+	gwi_func_ini(gwi, "void", "reset", gw_lsys_reset);
+	CHECK_BB(gwi_func_end(gwi, 0))
+	gwi_func_ini(gwi, "int", "size", gw_lsys_size);
+	CHECK_BB(gwi_func_end(gwi, 0))
+	gwi_func_ini(gwi, "string", "get", gw_lsys_get);
+	CHECK_BB(gwi_func_end(gwi, 0))
+	CHECK_BB(gwi_class_end(gwi))
 	return 1;
 }

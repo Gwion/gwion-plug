@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <lo/lo.h>
 #include "defs.h"
@@ -377,67 +378,67 @@ static MFUN(oscin_get_s)
 
 IMPORT
 {
-  CHECK_BB(importer_class_ini(importer, &t_lo, lo_ctor, NULL))
-	importer_item_ini(importer,"int",  "@args");
-  o_lo_args = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_lo, lo_ctor, NULL))
+	gwi_item_ini(gwi,"int",  "@args");
+  o_lo_args = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_args)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_loout, NULL, loout_dtor))
-	importer_item_ini(importer,"int",  "@addr");
-  o_lo_addr = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_loout, NULL, loout_dtor))
+	gwi_item_ini(gwi,"int",  "@addr");
+  o_lo_addr = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_addr)
-  importer_func_ini(importer, "int", "addr", (m_uint)osc_addr);
-    importer_func_arg(importer, "string", "host");
-    importer_func_arg(importer, "string", "port");
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "int", "send", (m_uint)osc_send);
-    importer_func_arg(importer, "string", "path");
-  CHECK_BB(importer_func_end(importer, 0))
-  CHECK_BB(importer_class_end(importer))
+  gwi_func_ini(gwi, "int", "addr", osc_addr);
+    gwi_func_arg(gwi, "string", "host");
+    gwi_func_arg(gwi, "string", "port");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "send", osc_send);
+    gwi_func_arg(gwi, "string", "path");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_loin, loin_ctor, NULL))
-	importer_item_ini(importer,"int",  "@serv");
-  o_lo_serv = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_loin, loin_ctor, NULL))
+	gwi_item_ini(gwi,"int",  "@serv");
+  o_lo_serv = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_serv)
-	importer_item_ini(importer,"int",  "@meth");
-  o_lo_meth = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int",  "@meth");
+  o_lo_meth = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_meth)
-	importer_item_ini(importer,"int",  "@curr");
-  o_lo_curr = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int",  "@curr");
+  o_lo_curr = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_curr)
-  importer_func_ini(importer, "int", "add", (m_uint)osc_add_method);
-    importer_func_arg(importer, "string", "path");
-    importer_func_arg(importer, "string", "type");
-  CHECK_BB(importer_func_end(importer, 0))
+  gwi_func_ini(gwi, "int", "add", osc_add_method);
+    gwi_func_arg(gwi, "string", "path");
+    gwi_func_arg(gwi, "string", "type");
+  CHECK_BB(gwi_func_end(gwi, 0))
 
-  importer_func_ini(importer, "int", "port", (m_uint)osc_get_port);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "int", "port", (m_uint)osc_port);
-    importer_func_arg(importer, "int", "port");
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "int", "start", (m_uint)oscin_start);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "int", "stop", (m_uint)oscin_stop);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "int", "recv", (m_uint)osc_recv);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "int", "get_i", (m_uint)oscin_get_i);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "float", "get_f", (m_uint)oscin_get_f);
-  CHECK_BB(importer_func_end(importer, 0))  
-  importer_func_ini(importer, "string", "get_s", (m_uint)oscin_get_s);
-  CHECK_BB(importer_func_end(importer, 0))
+  gwi_func_ini(gwi, "int", "port", osc_get_port);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "port", osc_port);
+    gwi_func_arg(gwi, "int", "port");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "start", oscin_start);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "stop", oscin_stop);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "recv", osc_recv);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "get_i", oscin_get_i);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "float", "get_f", oscin_get_f);
+  CHECK_BB(gwi_func_end(gwi, 0))  
+  gwi_func_ini(gwi, "string", "get_s", oscin_get_s);
+  CHECK_BB(gwi_func_end(gwi, 0))
 
 
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_oper_ini(importer, "int", "OscOut", "int"))
-  CHECK_BB(importer_oper_end(importer, op_chuck, oscsend_add_int,    1))
-  CHECK_BB(importer_oper_ini(importer,"float",  "OscOut", "float"))
-  CHECK_BB(importer_oper_end(importer, op_chuck, oscsend_add_float,  1))
-  CHECK_BB(importer_oper_ini(importer, "string", "OscOut", "string"))
-  CHECK_BB(importer_oper_end(importer, op_chuck, oscsend_add_string, 1))
+  CHECK_BB(gwi_oper_ini(gwi, "int", "OscOut", "int"))
+  CHECK_BB(gwi_oper_end(gwi, op_chuck, oscsend_add_int))
+  CHECK_BB(gwi_oper_ini(gwi,"float",  "OscOut", "float"))
+  CHECK_BB(gwi_oper_end(gwi, op_chuck, oscsend_add_float))
+  CHECK_BB(gwi_oper_ini(gwi, "string", "OscOut", "string"))
+  CHECK_BB(gwi_oper_end(gwi, op_chuck, oscsend_add_string))
 
   return 1;
 }

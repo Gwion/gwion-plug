@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include "type.h"
 #include "err_msg.h"
@@ -45,8 +46,8 @@ static SFUN(gw_knn)
   m_uint* labl = (m_uint*)ARRAY(labl_obj)->ptr;
   m_uint* ret = knn_classify_multi(data_x, data_y, data, n_labl, labl, inst_x, inst, k);
 
-
-  M_Object ret_obj = new_M_Array(SZ_INT, inst_x, 1);
+  Type t = array_type(&t_int, 1);
+  M_Object ret_obj = new_M_Array(t, SZ_INT, inst_x, 1);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   matrix_release(data);
@@ -70,8 +71,8 @@ static SFUN(gw_kmeans)
   m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** cent = gw2c(ARRAY(cent_obj), &cent_x, &cent_y);
   m_uint* ret = kmeans(data_x, data_y, data, k, theta, cent, initial);
-
-  M_Object ret_obj = new_M_Array(SZ_INT, data_x, 1);
+  Type t = array_type(&t_int, 1);
+  M_Object ret_obj = new_M_Array(t, SZ_INT, data_x, 1);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   memcpy(ARRAY(ret_obj)->ptr, ret, data_y * sizeof(m_uint));
@@ -93,12 +94,13 @@ static SFUN(gw_kmeans_refine)
   m_uint data_x, data_y;
   m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** ret = kmeans_refine(data_x, data_y, data, iter, n_points, n_label);
-
-  M_Object ret_obj = new_M_Array(SZ_INT, data_x, 2);
+  Type t = array_type(&t_int, 1);
+  M_Object ret_obj = new_M_Array(t, SZ_INT, data_x, 2);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
-    M_Object obj = new_M_Array(SZ_FLOAT, data_y, 1);
+  Type t = array_type(&t_float, 1);
+    M_Object obj = new_M_Array(t, SZ_FLOAT, data_y, 1);
     memcpy(ARRAY(obj)->ptr, ret[i], data_y * sizeof(m_float));
     i_vector_set(ARRAY(ret_obj), i, (m_uint)obj);
     vector_add(&shred->gc, (vtype)obj);
@@ -110,30 +112,30 @@ static SFUN(gw_kmeans_refine)
 
 IMPORT
 {
-  CHECK_BB(importer_class_ini(importer, &t_k, NULL, NULL))
+  CHECK_BB(gwi_class_ini(gwi, &t_k, NULL, NULL))
 
-  importer_func_ini(importer, "int[]", "nn", (m_uint)gw_knn);
-    importer_func_arg(importer, "float", "data[][]");
-    importer_func_arg(importer, "int", "labels[]");
-    importer_func_arg(importer, "float", "instances[][]");
-    importer_func_arg(importer, "int", "k");
-  CHECK_BB(importer_func_end(importer, ae_flag_static))
+  gwi_func_ini(gwi, "int[]", "nn", gw_knn);
+    gwi_func_arg(gwi, "float", "data[][]");
+    gwi_func_arg(gwi, "int", "labels[]");
+    gwi_func_arg(gwi, "float", "instances[][]");
+    gwi_func_arg(gwi, "int", "k");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
 
-  importer_func_ini(importer, "int[]", "means", (m_uint)gw_kmeans);
-    importer_func_arg(importer, "float", "data[][]");
-    importer_func_arg(importer, "float", "centroid[][]");
-    importer_func_arg(importer, "int", "k");
-    importer_func_arg(importer, "int", "initial_centroid");
-    importer_func_arg(importer, "float", "theta");
-  CHECK_BB(importer_func_end(importer, ae_flag_static))
+  gwi_func_ini(gwi, "int[]", "means", gw_kmeans);
+    gwi_func_arg(gwi, "float", "data[][]");
+    gwi_func_arg(gwi, "float", "centroid[][]");
+    gwi_func_arg(gwi, "int", "k");
+    gwi_func_arg(gwi, "int", "initial_centroid");
+    gwi_func_arg(gwi, "float", "theta");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
   
-  importer_func_ini(importer, "int[]", "fine_means", (m_uint)gw_kmeans_refine);
-    importer_func_arg(importer, "float", "data[][]");
-    importer_func_arg(importer, "int", "iter");
-    importer_func_arg(importer, "int", "n_points");
-    importer_func_arg(importer, "int", "k");
-  CHECK_BB(importer_func_end(importer, ae_flag_static))
+  gwi_func_ini(gwi, "int[]", "fine_means", gw_kmeans_refine);
+    gwi_func_arg(gwi, "float", "data[][]");
+    gwi_func_arg(gwi, "int", "iter");
+    gwi_func_arg(gwi, "int", "n_points");
+    gwi_func_arg(gwi, "int", "k");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
   
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }

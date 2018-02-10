@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include "defs.h"
 #include "type.h"
@@ -186,36 +187,36 @@ MFUN(sporth_parse_file)
 
 IMPORT
 {
-  CHECK_BB(importer_class_ini(importer, &t_gworth, sporth_ctor, sporth_dtor))
+  CHECK_BB(gwi_class_ini(gwi, &t_gworth, sporth_ctor, sporth_dtor))
 
-    importer_func_ini(importer, "float", "p", (m_uint)sporth_setp);
-  importer_func_arg(importer, "int", "index");
-  importer_func_arg(importer, "float", "val");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
+    gwi_func_ini(gwi, "float", "p", sporth_setp);
+  gwi_func_arg(gwi, "int", "index");
+  gwi_func_arg(gwi, "float", "val");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    importer_func_ini(importer, "float", "p", (m_uint)sporth_getp);
-  importer_func_arg(importer, "int", "index");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
+    gwi_func_ini(gwi, "float", "p", sporth_getp);
+  gwi_func_arg(gwi, "int", "index");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    importer_func_ini(importer, "float", "t", (m_uint)sporth_set_table);
-  importer_func_arg(importer, "int", "index");
-  importer_func_arg(importer, "float", "val");
-  importer_func_arg(importer, "string", "table");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
+    gwi_func_ini(gwi, "float", "t", sporth_set_table);
+  gwi_func_arg(gwi, "int", "index");
+  gwi_func_arg(gwi, "float", "val");
+  gwi_func_arg(gwi, "string", "table");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    importer_func_ini(importer, "float", "t", (m_uint)sporth_get_table);
-  importer_func_arg(importer, "int", "index");
-  importer_func_arg(importer, "string", "table");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
+    gwi_func_ini(gwi, "float", "t", sporth_get_table);
+  gwi_func_arg(gwi, "int", "index");
+  gwi_func_arg(gwi, "string", "table");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    importer_func_ini(importer, "string", "parse", (m_uint)sporth_parse_string);
-  importer_func_arg(importer, "string", "arg");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
+    gwi_func_ini(gwi, "string", "parse", sporth_parse_string);
+  gwi_func_arg(gwi, "string", "arg");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    importer_func_ini(importer, "string", "parsefile", (m_uint)sporth_parse_file);
-  importer_func_arg(importer, "string", "arg");
-  CHECK_BB(importer_func_end(importer, ae_flag_member))
+    gwi_func_ini(gwi, "string", "parsefile", sporth_parse_file);
+  gwi_func_arg(gwi, "string", "arg");
+  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    CHECK_BB(importer_class_end(importer))
+    CHECK_BB(gwi_class_end(gwi))
     return 1;
 }

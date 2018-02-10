@@ -128,30 +128,30 @@ static MFUN(fft_compute) {
   ana->last = ana->sp->pos;
 }
 
-static m_bool import_fft(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_fft, fft_ctor, fft_dtor))
-  importer_func_ini(importer, "int", "init", (m_uint)fft_init);
-  importer_func_arg(importer, "int", "size");
-  CHECK_BB(importer_func_end(importer, 0))
-  /*  importer_func_ini(importer, "int", "init", (m_uint)fft_init2);*/
-  /*    importer_func_arg(importer, "int", "size");*/
-  /*    importer_func_arg(importer, "float[]", "window");*/
-  /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_ini(importer, "int", "init", (m_uint)fft_init3);*/
-  /*    importer_func_arg(importer, "int", "size");*/
-  /*    importer_func_arg(importer, "string", "window");*/
-  /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_ini(importer, "int", "window", (m_uint)fft_win);*/
-  /*    importer_func_arg(importer, "float[]", "window");*/
-  /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_ini(importer, "int", "window", (m_uint)fft_win_name);*/
-  /*    importer_func_arg(importer, "string", "name");*/
-  /*  CHECK_BB(importer_func_end(importer, 0))*/
-  /*  importer_func_ini(importer, "complex[]", "compute", (m_uint)fft_compute);*/
-  importer_func_ini(importer, "void", "compute", (m_uint)fft_compute);
-  CHECK_BB(importer_func_end(importer, 0))
+static m_bool import_fft(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_fft, fft_ctor, fft_dtor))
+  gwi_func_ini(gwi, "int", "init", fft_init);
+  gwi_func_arg(gwi, "int", "size");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  /*  gwi_func_ini(gwi, "int", "init", fft_init2);*/
+  /*    gwi_func_arg(gwi, "int", "size");*/
+  /*    gwi_func_arg(gwi, "float[]", "window");*/
+  /*  CHECK_BB(gwi_func_end(gwi, 0))*/
+  /*  gwi_func_ini(gwi, "int", "init", fft_init3);*/
+  /*    gwi_func_arg(gwi, "int", "size");*/
+  /*    gwi_func_arg(gwi, "string", "window");*/
+  /*  CHECK_BB(gwi_func_end(gwi, 0))*/
+  /*  gwi_func_ini(gwi, "int", "window", fft_win);*/
+  /*    gwi_func_arg(gwi, "float[]", "window");*/
+  /*  CHECK_BB(gwi_func_end(gwi, 0))*/
+  /*  gwi_func_ini(gwi, "int", "window", fft_win_name);*/
+  /*    gwi_func_arg(gwi, "string", "name");*/
+  /*  CHECK_BB(gwi_func_end(gwi, 0))*/
+  /*  gwi_func_ini(gwi, "complex[]", "compute", fft_compute);*/
+  gwi_func_ini(gwi, "void", "compute", fft_compute);
+  CHECK_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -466,25 +466,25 @@ static DTOR(ana_dtor) {
   free(*(Ana**)(o->data + o_ana_ana));
 }
 
-static m_bool import_ana(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_ana, ana_ctor, ana_dtor))
-	importer_item_ini(importer,"int", "@_fft");
-  o_ana_ana = importer_item_end(importer, ae_flag_member, NULL);
+static m_bool import_ana(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_ana, ana_ctor, ana_dtor))
+	gwi_item_ini(gwi,"int", "@_fft");
+  o_ana_ana = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_ana_ana)
-	importer_item_ini(importer,"FFT", "@fft");
-  o_ana_fft = importer_item_end(importer,  ae_flag_ref, NULL);
+	gwi_item_ini(gwi,"FFT", "@fft");
+  o_ana_fft = gwi_item_end(gwi,  ae_flag_ref, NULL);
   CHECK_BB(o_ana_fft)
-	importer_item_ini(importer, "int", "@fn");
-  o_ana_fn = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int", "@fn");
+  o_ana_fn = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_ana_fn)
-  importer_func_ini(importer, "float", "compute", (m_uint)ana_compute);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "FFT", "fft", (m_uint)ana_get_fft);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "FFT", "fft", (m_uint)ana_set_fft);
-  importer_func_arg(importer, "FFT", "arg");
-  CHECK_BB(importer_func_end(importer, 0))
-  CHECK_BB(importer_class_end(importer))
+  gwi_func_ini(gwi, "float", "compute", ana_compute);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "FFT", "fft", ana_get_fft);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "FFT", "fft", ana_set_fft);
+  gwi_func_arg(gwi, "FFT", "arg");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -492,9 +492,9 @@ static struct Type_ t_centroid = { "Centroid", SZ_INT, &t_ana };
 static CTOR(centroid_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_centroid;
 }
-static m_bool import_centroid(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_centroid, centroid_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_centroid(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_centroid, centroid_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -502,9 +502,9 @@ static struct Type_ t_spread = { "Spread", SZ_INT, &t_ana };
 static CTOR(spread_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_spread;
 }
-static m_bool import_spread(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_spread, spread_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_spread(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_spread, spread_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -512,9 +512,9 @@ static struct Type_ t_skewness = { "Skewness", SZ_INT, &t_ana };
 static CTOR(skewness_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_skewness;
 }
-static m_bool import_skewness(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_skewness, skewness_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_skewness(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_skewness, skewness_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -522,9 +522,9 @@ static struct Type_ t_kurtosis = { "Kurtosis", SZ_INT, &t_ana };
 static CTOR(kurtosis_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_kurtosis;
 }
-static m_bool import_kurtosis(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_kurtosis, kurtosis_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_kurtosis(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_kurtosis, kurtosis_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -532,9 +532,9 @@ static struct Type_ t_rms = { "RMS", SZ_INT, &t_ana };
 static CTOR(rms_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rms;
 }
-static m_bool import_rms(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_rms, rms_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_rms(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_rms, rms_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -550,14 +550,14 @@ static MFUN(rolloff_set_percent) {
   Ana* ana = *(Ana**)(o->data + o_ana_ana);
   *(m_float*)RETURN = (ana->percent = *(m_float*)MEM(SZ_INT));
 }
-static m_bool import_rolloff(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_rolloff, rolloff_ctor, NULL))
-  importer_func_ini(importer, "float", "percent", (m_uint)rolloff_get_percent);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "float", "percent", (m_uint)rolloff_set_percent);
-  importer_func_arg(importer, "float", "arg");
-  CHECK_BB(importer_func_end(importer, 0))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_rolloff(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_rolloff, rolloff_ctor, NULL))
+  gwi_func_ini(gwi, "float", "percent", rolloff_get_percent);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "float", "percent", rolloff_set_percent);
+  gwi_func_arg(gwi, "float", "arg");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -565,9 +565,9 @@ static struct Type_ t_freq = { "Freq", SZ_INT, &t_ana };
 static CTOR(freq_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_freq;
 }
-static m_bool import_freq(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_freq, freq_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_freq(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_freq, freq_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -575,9 +575,9 @@ static struct Type_ t_asc = { "ASC", SZ_INT, &t_ana };
 static CTOR(asc_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_asc;
 }
-static m_bool import_asc(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_asc, asc_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_asc(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_asc, asc_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -585,9 +585,9 @@ static struct Type_ t_ass = { "ASS", SZ_INT, &t_ana };
 static CTOR(ass_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_ass;
 }
-static m_bool import_ass(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_ass, ass_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+static m_bool import_ass(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_ass, ass_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
@@ -604,7 +604,8 @@ static MFUN(fc_compute) {
   m_uint i;
   M_Object ret;
   Vector v = *(Vector*)(o->data + o_fc_vector);
-  ret = new_M_Array(SZ_FLOAT, vector_size(v), 1);
+  Type t = array_type(&t_float, 1);
+  ret = new_M_Array(t, SZ_FLOAT, vector_size(v), 1);
   vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
     M_Object obj = (M_Object)vector_at(v, i);
@@ -673,39 +674,39 @@ INSTR(fc_disconnect) {
   PUSH_REG(shred, SZ_INT);
 }
 
-static m_bool import_fc(Importer importer) {
-  CHECK_BB(importer_class_ini(importer, &t_fc, fc_ctor, fc_dtor))
-	importer_item_ini(importer,"int", "@vector");
-  o_fc_vector = importer_item_end(importer, ae_flag_member, NULL);
+static m_bool import_fc(Gwi gwi) {
+  CHECK_BB(gwi_class_ini(gwi, &t_fc, fc_ctor, fc_dtor))
+	gwi_item_ini(gwi,"int", "@vector");
+  o_fc_vector = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fc_vector)
-  importer_func_ini(importer, "float[]", "compute", (m_uint)fc_compute);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "ANA", "add", (m_uint)fc_add);
-  importer_func_arg(importer, "ANA", "arg");
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "ANA", "rem", (m_uint)fc_rem);
-  importer_func_arg(importer, "ANA", "arg");
-  CHECK_BB(importer_func_end(importer, 0))
-  CHECK_BB(importer_class_end(importer))
+  gwi_func_ini(gwi, "float[]", "compute", fc_compute);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "ANA", "add", fc_add);
+  gwi_func_arg(gwi, "ANA", "arg");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "ANA", "rem", fc_rem);
+  gwi_func_arg(gwi, "ANA", "arg");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-m_bool import(Importer importer) {
-  CHECK_BB(import_fft(importer))
-  CHECK_BB(import_ana(importer))
-  CHECK_BB(import_centroid(importer))
-  CHECK_BB(import_spread(importer))
-  CHECK_BB(import_skewness(importer))
-  CHECK_BB(import_kurtosis(importer))
-  CHECK_BB(import_rms(importer))
-  CHECK_BB(import_rolloff(importer))
-  CHECK_BB(import_freq(importer))
-  CHECK_BB(import_asc(importer))
-  CHECK_BB(import_ass(importer))
-  CHECK_BB(import_fc(importer))
-  CHECK_BB(importer_oper_ini(importer, "ANA", "FC", "FC"))
-  CHECK_BB(importer_oper_end(importer, op_chuck, fc_connect,    1))
-  CHECK_BB(importer_oper_ini(importer, "ANA", "FC", "FC"))
-  CHECK_BB(importer_oper_end(importer, op_unchuck, fc_disconnect, 1))
+m_bool import(Gwi gwi) {
+  CHECK_BB(import_fft(gwi))
+  CHECK_BB(import_ana(gwi))
+  CHECK_BB(import_centroid(gwi))
+  CHECK_BB(import_spread(gwi))
+  CHECK_BB(import_skewness(gwi))
+  CHECK_BB(import_kurtosis(gwi))
+  CHECK_BB(import_rms(gwi))
+  CHECK_BB(import_rolloff(gwi))
+  CHECK_BB(import_freq(gwi))
+  CHECK_BB(import_asc(gwi))
+  CHECK_BB(import_ass(gwi))
+  CHECK_BB(import_fc(gwi))
+  CHECK_BB(gwi_oper_ini(gwi, "ANA", "FC", "FC"))
+  CHECK_BB(gwi_oper_end(gwi, op_chuck, fc_connect))
+  CHECK_BB(gwi_oper_ini(gwi, "ANA", "FC", "FC"))
+  CHECK_BB(gwi_oper_end(gwi, op_unchuck, fc_disconnect))
   return 1;
 }

@@ -742,262 +742,262 @@ static void slider_ctor(M_Object o, VM_Shred shred)
 }
 
 IMPORT { 
-  CHECK_BB(importer_class_ini(importer, &t_color, NULL, NULL))
-	importer_item_ini(importer,"int", "r");
-  o_nk_r = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_color, NULL, NULL))
+	gwi_item_ini(gwi,"int", "r");
+  o_nk_r = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_r)
-	importer_item_ini(importer,"int", "g");
-  o_nk_g = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "g");
+  o_nk_g = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_g)
-	importer_item_ini(importer,"int", "b");
-  o_nk_b = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "b");
+  o_nk_b = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_b)
-	importer_item_ini(importer,"int", "a");
-  o_nk_a = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "a");
+  o_nk_a = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_a)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_panel, nk_ctor, nk_dtor))
-	importer_item_ini(importer,"int", "@win");
-  o_nk_data = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_panel, nk_ctor, nk_dtor))
+	gwi_item_ini(gwi,"int", "@win");
+  o_nk_data = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_data)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_widget, widget_ctor, NULL))
-	importer_item_ini(importer,"string", "name");
-  o_nk_name = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_widget, widget_ctor, NULL))
+	gwi_item_ini(gwi,"string", "name");
+  o_nk_name = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_name);
-	importer_item_ini(importer,"int", "@parent");
-  o_nk_parent = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "@parent");
+  o_nk_parent = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_parent);
-	importer_item_ini(importer,"int", "@exe");
-  o_nk_exec = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "@exe");
+  o_nk_exec = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_exec)
-	importer_item_ini(importer,"int", "@win");
-  o_nk_gwin = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "@win");
+  o_nk_gwin = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_gwin)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_sval, sval_ctor, NULL))
-	importer_item_ini(importer, "int",  "align");
-  o_nk_align = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_sval, sval_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "align");
+  o_nk_align = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_align)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_label, label_ctor, NULL))
-	importer_item_ini(importer, "int",  "wrap");
-  o_nk_wrap = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_label, label_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "wrap");
+  o_nk_wrap = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_wrap)
-	importer_item_ini(importer, "NkColor",  "color");
-  o_nk_labelcolor= importer_item_end(importer, ae_flag_ref, NULL);
+	gwi_item_ini(gwi, "NkColor",  "color");
+  o_nk_labelcolor= gwi_item_end(gwi, ae_flag_ref, NULL);
   CHECK_BB(o_nk_labelcolor)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_text, text_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_ini(gwi, &t_text, text_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_slabel, slabel_ctor, NULL))
-	importer_item_ini(importer, "int",  "selectable");
-  o_nk_select = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_slabel, slabel_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "selectable");
+  o_nk_select = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_select)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_prog, prog_ctor, NULL))
-	importer_item_ini(importer,"int", "val");
-  o_nk_prog = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_prog, prog_ctor, NULL))
+	gwi_item_ini(gwi,"int", "val");
+  o_nk_prog = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_prog)
-	importer_item_ini(importer,"int", "max");
-  o_nk_progmax = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "max");
+  o_nk_progmax = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_progmax)
-	importer_item_ini(importer,"int", "mod");
-  o_nk_progmod = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "mod");
+  o_nk_progmod = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_progmod)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_button, button_ctor, NULL))
-	importer_item_ini(importer, "int",  "behavior");
-  o_nk_behavior = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_button, button_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "behavior");
+  o_nk_behavior = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_behavior)
-	importer_item_ini(importer, "NkColor",  "color");
-  o_nk_button_color= importer_item_end(importer, ae_flag_ref, NULL);
+	gwi_item_ini(gwi, "NkColor",  "color");
+  o_nk_button_color= gwi_item_end(gwi, ae_flag_ref, NULL);
   CHECK_BB(o_nk_button_color)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_group, group_ctor, group_dtor))
-	importer_item_ini(importer,"int", "&widget");
-  o_nk_list = importer_item_end(importer, ae_flag_member, NULL);
-  importer_func_ini(importer, "void", "begin", (m_uint)group_begin);
-  CHECK_BB(importer_func_end(importer, 0))
-  importer_func_ini(importer, "void", "end", (m_uint)group_end);
-  CHECK_BB(importer_func_end(importer, 0))
+  CHECK_BB(gwi_class_ini(gwi, &t_group, group_ctor, group_dtor))
+	gwi_item_ini(gwi,"int", "&widget");
+  o_nk_list = gwi_item_end(gwi, ae_flag_member, NULL);
+  gwi_func_ini(gwi, "void", "begin", group_begin);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "void", "end", group_end);
+  CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(o_nk_list)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
 
 
-  CHECK_BB(importer_class_ini(importer, &t_rowd, rowd_ctor, NULL))
-	importer_item_ini(importer, "int",  "height");
-  o_nk_rowh = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_rowd, rowd_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "height");
+  o_nk_rowh = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_rowh)
-	importer_item_ini(importer, "int",  "width");
-  o_nk_roww = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "width");
+  o_nk_roww = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_roww)
-	importer_item_ini(importer, "int",  "col");
-  o_nk_rowcol = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "col");
+  o_nk_rowcol = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_rowcol)
-	importer_item_ini(importer, "int",  "static");
-  o_nk_static = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "static");
+  o_nk_static = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_static)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_layout, layout_ctor, NULL))
-	importer_item_ini(importer, "int",  "x");
-  o_nk_x = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_layout, layout_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "x");
+  o_nk_x = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_x)
-	importer_item_ini(importer, "int",  "y");
-  o_nk_y = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "y");
+  o_nk_y = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_y)
-	importer_item_ini(importer, "int",  "w");
-  o_nk_w = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "w");
+  o_nk_w = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_w)
-	importer_item_ini(importer, "int",  "h");
-  o_nk_h = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "h");
+  o_nk_h = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_h)
-	importer_item_ini(importer, "int",  "flag");
-  o_nk_flags = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "flag");
+  o_nk_flags = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_flags)
-  m_uint* border  = malloc(sizeof(m_uint));
+  m_uint* border  = malloc(sizeof);
   *border  = NK_WINDOW_BORDER;
-	importer_item_ini(importer,"int", "BORDER");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, border);
-  m_uint* movable = malloc(sizeof(m_uint));
+	gwi_item_ini(gwi,"int", "BORDER");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, border);
+  m_uint* movable = malloc(sizeof);
   *movable = NK_WINDOW_MOVABLE;
-	importer_item_ini(importer,"int", "MOVABLE");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, movable);
-  m_uint *scalable = malloc(sizeof(m_uint));
+	gwi_item_ini(gwi,"int", "MOVABLE");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, movable);
+  m_uint *scalable = malloc(sizeof);
   *scalable = NK_WINDOW_SCALABLE;
-	importer_item_ini(importer,"int", "SCALABLE");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, scalable);
-  m_uint* closable = malloc(sizeof(m_uint));
+	gwi_item_ini(gwi,"int", "SCALABLE");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, scalable);
+  m_uint* closable = malloc(sizeof);
   *closable = NK_WINDOW_CLOSABLE;
-	importer_item_ini(importer,"int", "CLOSABLE");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, closable);
-  m_uint* minimizable = malloc(sizeof(m_uint));
+	gwi_item_ini(gwi,"int", "CLOSABLE");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, closable);
+  m_uint* minimizable = malloc(sizeof);
   *minimizable = NK_WINDOW_MINIMIZABLE;
-	importer_item_ini(importer,"int", "MINIMIZABLE");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, minimizable);
-  m_uint* title = malloc(sizeof(m_uint));
+	gwi_item_ini(gwi,"int", "MINIMIZABLE");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, minimizable);
+  m_uint* title = malloc(sizeof);
   *title = NK_WINDOW_TITLE;
-	importer_item_ini(importer,"int", "TITLE");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, title);
-  m_uint* menu = malloc(sizeof(m_uint));;
+	gwi_item_ini(gwi,"int", "TITLE");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, title);
+  m_uint* menu = malloc(sizeof);;
   *menu = NK_PANEL_MENU;
-	importer_item_ini(importer,"int", "MENU");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, menu);
-  CHECK_BB(importer_class_end(importer))
+	gwi_item_ini(gwi,"int", "MENU");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, menu);
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_combo, combo_ctor, NULL))
-	importer_item_ini(importer, "int",  "val");
-  o_nk_comboval = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_combo, combo_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "val");
+  o_nk_comboval = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_comboval)
-  importer_func_ini(importer, "string", "add", (m_uint)combo_add);
-  importer_func_arg(importer, "string", "s");
-  CHECK_BB(importer_func_end(importer, 0))
-  CHECK_BB(importer_class_end(importer))
+  gwi_func_ini(gwi, "string", "add", combo_add);
+  gwi_func_arg(gwi, "string", "s");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_menu, menu_ctor, NULL))
-	importer_item_ini(importer, "int",  "val");
-  o_nk_menuval = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_menu, menu_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "val");
+  o_nk_menuval = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_menuval)
-  importer_func_ini(importer, "string", "add", (m_uint)menu_add);
-  importer_func_arg(importer, "string", "s");
-  CHECK_BB(importer_func_end(importer, 0))
-  CHECK_BB(importer_class_end(importer))
+  gwi_func_ini(gwi, "string", "add", menu_add);
+  gwi_func_arg(gwi, "string", "s");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_menubar, menubar_ctor, NULL))
-  importer_func_ini(importer, "void", "add", (m_uint)menubar_add);
-  importer_func_arg(importer, "NkMenu", "s");
-  CHECK_BB(importer_func_end(importer, 0))
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_ini(gwi, &t_menubar, menubar_ctor, NULL))
+  gwi_func_ini(gwi, "void", "add", menubar_add);
+  gwi_func_arg(gwi, "NkMenu", "s");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_tree, tree_ctor, NULL))
-	importer_item_ini(importer, "int",  "state");
-  o_nk_state = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_tree, tree_ctor, NULL))
+	gwi_item_ini(gwi, "int",  "state");
+  o_nk_state = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_state)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
 
-  m_uint* simple = malloc(sizeof(m_uint));
-  m_uint* field  = malloc(sizeof(m_uint));
-  m_uint* box    = malloc(sizeof(m_uint));
-  m_uint* editor = malloc(sizeof(m_uint));
+  m_uint* simple = malloc(sizeof);
+  m_uint* field  = malloc(sizeof);
+  m_uint* box    = malloc(sizeof);
+  m_uint* editor = malloc(sizeof);
   * simple = NK_EDIT_SIMPLE;
   * field  = NK_EDIT_FIELD;
   * box    = NK_EDIT_BOX;
   * editor = NK_EDIT_EDITOR;
-  CHECK_BB(importer_class_ini(importer, &t_nkstring, nkstring_ctor, NULL))
-	importer_item_ini(importer,"int", "type");
-  o_nk_edit_type= importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_nkstring, nkstring_ctor, NULL))
+	gwi_item_ini(gwi,"int", "type");
+  o_nk_edit_type= gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_edit_type)
-	importer_item_ini(importer,"int", "SIMPLE");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, simple);
-	importer_item_ini(importer,"int", "FIELD");
-  importer_item_end(importer,  ae_flag_static | ae_flag_const, field);
-	importer_item_ini(importer,"int", "BOX");
-  importer_item_end(importer,    ae_flag_static | ae_flag_const, box);
-	importer_item_ini(importer,"int", "EDITOR");
-  importer_item_end(importer, ae_flag_static | ae_flag_const, editor);
-  CHECK_BB(importer_class_end(importer))
+	gwi_item_ini(gwi,"int", "SIMPLE");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, simple);
+	gwi_item_ini(gwi,"int", "FIELD");
+  gwi_item_end(gwi,  ae_flag_static | ae_flag_const, field);
+	gwi_item_ini(gwi,"int", "BOX");
+  gwi_item_end(gwi,    ae_flag_static | ae_flag_const, box);
+	gwi_item_ini(gwi,"int", "EDITOR");
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, editor);
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_ival, NULL, NULL))
-	importer_item_ini(importer, "int",  "val");
-  o_nk_ival = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_ival, NULL, NULL))
+	gwi_item_ini(gwi, "int",  "val");
+  o_nk_ival = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_ival)
-	importer_item_ini(importer, "int",  "min");
-  o_nk_imin = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "min");
+  o_nk_imin = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_imin)
-	importer_item_ini(importer, "int",  "max");
-  o_nk_imax = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "int",  "max");
+  o_nk_imax = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_imax)
-	importer_item_ini(importer,"int", "step");
-  o_nk_istp = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"int", "step");
+  o_nk_istp = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_istp)
-	importer_item_ini(importer,"float", "inc");
-  o_nk_iinc = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"float", "inc");
+  o_nk_iinc = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_iinc)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_propi, propi_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
-  CHECK_BB(importer_class_ini(importer, &t_slideri, slideri_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_ini(gwi, &t_propi, propi_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
+  CHECK_BB(gwi_class_ini(gwi, &t_slideri, slideri_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_check, check_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_ini(gwi, &t_check, check_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_fval, NULL, NULL))
-	importer_item_ini(importer, "float",  "val");
-  o_nk_fval = importer_item_end(importer, ae_flag_member, NULL);
+  CHECK_BB(gwi_class_ini(gwi, &t_fval, NULL, NULL))
+	gwi_item_ini(gwi, "float",  "val");
+  o_nk_fval = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_fval)
-	importer_item_ini(importer, "float",  "min");
-  o_nk_fmin = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "float",  "min");
+  o_nk_fmin = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_fmin)
-	importer_item_ini(importer, "float",  "max");
-  o_nk_fmax = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi, "float",  "max");
+  o_nk_fmax = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_fmax)
 
-	importer_item_ini(importer,"float", "step");
-  o_nk_fstp = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"float", "step");
+  o_nk_fstp = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_fstp)
-	importer_item_ini(importer,"float", "inc");
-  o_nk_finc = importer_item_end(importer, ae_flag_member, NULL);
+	gwi_item_ini(gwi,"float", "inc");
+  o_nk_finc = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_finc)
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(importer_class_ini(importer, &t_propf, propf_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
-  CHECK_BB(importer_class_ini(importer, &t_slider, slider_ctor, NULL))
-  CHECK_BB(importer_class_end(importer))
+  CHECK_BB(gwi_class_ini(gwi, &t_propf, propf_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
+  CHECK_BB(gwi_class_ini(gwi, &t_slider, slider_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
   return 1;
 
 }
