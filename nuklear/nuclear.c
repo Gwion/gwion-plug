@@ -153,7 +153,7 @@ static m_int o_nk_fval;
 typedef void (*f_nk)(M_Object o, struct nk_context* ctx);
 
 
-static struct Type_ t_color= { "NkColor",  SZ_INT, &t_object};
+static struct Type_ t_color= { "NkColor",  SZ_INT, t_object};
 static m_int o_nk_r, o_nk_g, o_nk_b, o_nk_a;
 #define R(o) *(o->data + o_nk_r)
 #define G(o) *(o->data + o_nk_g)
@@ -302,8 +302,8 @@ static void nk_dtor(M_Object o, VM_Shred shred)
 }
 
 
-static struct Type_ t_panel  = { "NkPanel",  SZ_INT, &t_object};
-static struct Type_ t_widget = { "NkWidget", SZ_INT, &t_event};
+static struct Type_ t_panel  = { "NkPanel",  SZ_INT, t_object};
+static struct Type_ t_widget = { "NkWidget", SZ_INT, t_event};
 static void widget_ctor(M_Object o, VM_Shred shred)
 {
   char name[256];

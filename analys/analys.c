@@ -54,11 +54,11 @@ typedef struct {
 } Fft;
 
 
-static m_bool fft_tick(UGen u) {
+static TICK(fft_tick) {
   Fft* ana = (Fft*)u->ug;
   base_tick(u);                         // compute inputs
   if(!ana->buf)
-    return 1;
+    return;
   sp_buffer_add(ana->buf, u->in);      // add them to buffer
   if(u->trig) {
     base_tick(UGEN(u->trig));
@@ -71,7 +71,6 @@ static m_bool fft_tick(UGen u) {
       ana->last = ana->sp->pos;
     }
   }
-  return 1;
 }
 
 static CTOR(fft_ctor) {

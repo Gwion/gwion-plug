@@ -22,8 +22,7 @@ static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
 #define AUTHOR(o) *(M_Object*)(o->data + o_fmsynth_author)
 #define POLYPHONY 64
 
-static m_bool fmsynth_tick(UGen u)
-{
+static TICK(fmsynth_tick) {
   float left;
   float right;
   fmsynth_render(u->ug, &left, &right, 1);

@@ -111,7 +111,7 @@ static MFUN(osc_send)
   if(!ADDR(o))
   {
     err_msg(INSTR_, 0, "oscsend address not set. shred[%i] exiting.", shred->xid);
-    shred->me = NULL;
+    vm_shred_exit(shred);
     return;
   }
   msg = lo_message_new();
@@ -131,7 +131,7 @@ static MFUN(osc_send)
         break;
       default:
           err_msg(INSTR_, 0, "oscsend invalid type: '%c'  in arg '%i'\n", arg->t, i);
-          shred->me = NULL;
+          vm_shred_exit(shred);
           return;
     }
     release_Arg(arg);
@@ -243,7 +243,7 @@ static MFUN(osc_port)
     if(!s->thread)
     {
       free(s);
-      shred->me = NULL;
+      vm_shred_exit(shred);
       return;
     }
     lo_server_enable_coercion(lo_server_thread_get_server(s->thread), 0);

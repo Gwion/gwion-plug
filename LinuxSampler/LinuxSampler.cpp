@@ -78,8 +78,7 @@ private:
 	}
 };
 
-m_bool tick(UGen u)
-{
+TICK(tick) {
   myLinuxSampler* ls = (myLinuxSampler*)u->ug;
   UGEN(u->channel[0])->out = 0;
   UGEN(u->channel[1])->out = 0;

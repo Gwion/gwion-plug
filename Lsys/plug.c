@@ -36,19 +36,18 @@ static int tochar(int c) {
     }
 }
 
-TICK(tick)
+static TICK(tick)
 {
 	Lsys* ptr = (Lsys*)u->ug;
 	u->out = 0;
 	if(!ptr->is_init || !u->trig)
-		return 1;
+		return;
 	base_tick(UGEN(u->trig));
 	if(UGEN(u->trig)->out)
 	{
 		ptr->pos = lsys_list_iter(&ptr->lst, &ptr->ent, ptr->pos);
 		u->out = ptr->ent->val + 1;
 	}
-	return 1;
 }
 
 static CTOR(ctor)

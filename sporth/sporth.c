@@ -52,8 +52,8 @@ TICK(sporth_tick)
   data->in= u->in;
   plumber_compute(&data->pd, PLUMBER_COMPUTE);
   u->out = sporth_stack_pop_float(&data->pd.sporth.stack);
-  return 1;
 }
+
 CTOR(sporth_ctor)
 {
   sporthData * data = malloc(sizeof(sporthData));
