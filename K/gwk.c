@@ -19,14 +19,15 @@ struct M_Vector_ {
 static m_float** gw2c(M_Vector vec, m_uint* x, m_uint* y) {
 	m_uint i, j;
 	*x = m_vector_size(vec);
-  M_Object a = (M_Object)i_vector_at(vec, 0);
+    M_Object a;
+    m_vector_get(vec, 0, (char*)&a);
 	*y = m_vector_size(ARRAY(a));
 	m_float** ret = matrix_alloc(*x, *y);
-  for(i = 0; i < *x; i++) {
-    a = (M_Object)i_vector_at(vec, i);
-    for(j = 0; j < *y; j++)
-      ret[i][j] = f_vector_at(ARRAY(a), j);
-  } 
+    for(i = 0; i < *x; i++) {
+      m_vector_get(vec, i, (char*)&a);
+      for(j = 0; j < *y; j++)
+        m_vector_get(ARRAY(a), j, (char*)&ret[i][j]);
+    }
 	return ret;
 }
 
@@ -102,7 +103,7 @@ static SFUN(gw_kmeans_refine)
   Type t = array_type(&t_float, 1);
     M_Object obj = new_M_Array(t, SZ_FLOAT, data_y, 1);
     memcpy(ARRAY(obj)->ptr, ret[i], data_y * sizeof(m_float));
-    i_vector_set(ARRAY(ret_obj), i, (m_uint)obj);
+    m_vector_set(ARRAY(ret_obj), i, (char*)&obj);
     vector_add(&shred->gc, (vtype)obj);
   }
   release(data_obj, shred);

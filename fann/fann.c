@@ -83,7 +83,7 @@ static MFUN(standard)
 /*  unsigned int ptr[size];*/
   unsigned int ptr[size];
   for(i = 0; i < size; i++)
-    ptr[i] = i_vector_at(ARRAY(array), i);
+    m_vector_get(ARRAY(array), i, &ptr[i]);
   FANN(o) = fann_create_standard_array(num_layers, ptr);
 }
 
@@ -97,7 +97,7 @@ static MFUN(shortcut)
   size = m_vector_size(ARRAY(array));
   unsigned int ptr[size];
   for(i = 0; i < size; i++)
-    ptr[i] = i_vector_at(ARRAY(array), i);
+    m_vector_get(ARRAY(array), i, &ptr[i]);
   FANN(o) = fann_create_shortcut_array(num_layers, ptr);
 }
 
@@ -112,7 +112,7 @@ static MFUN(sparse)
   size = m_vector_size(ARRAY(array));
   unsigned int ptr[size];
   for(i = 0; i < size; i++)
-    ptr[i] = i_vector_at(ARRAY(array), i);
+    m_vector_get(ARRAY(array), i, &ptr[i]);
   FANN(o) = fann_create_sparse_array(rate, num_layers, ptr);
 }
 
@@ -193,7 +193,7 @@ static MFUN(layers)
   unsigned int j[size];
   fann_get_layer_array(FANN(o), j);
   for(i = 0; i < size; i++)
-    i_vector_set(ARRAY(ret), i, j[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&j[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 static MFUN(bias)
@@ -209,7 +209,7 @@ static MFUN(bias)
   unsigned int j[size];
   fann_get_bias_array(FANN(o), j);
   for(i = 0; i < size; i++)
-    i_vector_set(ARRAY(ret), i, j[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&j[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -242,8 +242,10 @@ static MFUN(connection_array)
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   struct fann_connection c[size];
   fann_get_connection_array(FANN(o), c);
-  for(i= 0; i < size; i++)
-    i_vector_set(ARRAY(ret), i, (m_uint)from_fann(c[i]));
+  for(i= 0; i < size; i++) {
+   M_Object obj = from_fann(c[i]);
+   m_vector_set(ARRAY(ret), i, (char*)&obj);
+  }
   *(m_uint*)RETURN = (m_uint)ret;
 }
 static MFUN(weigth_array)
@@ -253,8 +255,11 @@ static MFUN(weigth_array)
   M_Object obj = *(M_Object*)MEM(SZ_INT);
   m_uint i, size = m_vector_size(ARRAY(obj));
   struct fann_connection c[size];
-  for(i = 0; i < size; i++)
-    c[i] = to_fann((M_Object)i_vector_at(ARRAY(obj), i));
+  for(i = 0; i < size; i++) {
+    M_Object tmp;
+    m_vector_get(ARRAY(obj), i, &tmp);
+    c[i] = to_fann(tmp);
+  }
   fann_set_weight_array(FANN(o), c, size);
 }
 
@@ -279,7 +284,7 @@ static MFUN(get_weigths)
   m_float f[size];
   fann_get_weights(FANN(o), f);
   for(i = 0; i < size; i++)
-    f_vector_set(ARRAY(ret), i, f[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -301,7 +306,7 @@ static MFUN(set_weigths)
   }
   m_float f[size];
   for(i = 0; i < size; i++)
-    f[i] = f_vector_at(ARRAY(ret), i);
+    m_vector_get(ARRAY(ret), i, (char*)&f[i]);
   fann_set_weights(FANN(o), f);
   *(m_uint*)RETURN = (m_uint)ret;
 }
@@ -359,9 +364,9 @@ static MFUN(train)
   m_uint   s_out  = m_vector_size(ARRAY(o_out));
   m_float in[s_in], out[s_out];
   for(i = 0; i < s_in; i++)
-    in[i] = f_vector_at(ARRAY(o_in), i);
+    m_vector_get(ARRAY(o_in), i, (char*)&in[i]);
   for(i = 0; i < s_out; i++)
-    in[i] = f_vector_at(ARRAY(o_out), i);
+    m_vector_get(ARRAY(o_out), i, (char*)&out[i]);
   fann_train(FANN(o), in, out);
 }
 
@@ -375,14 +380,14 @@ static MFUN(test)
   m_uint s_ret   = fann_get_num_output(FANN(o));
   m_float in[s_in], out[s_out];
   for(i = 0; i < s_in; i++)
-    in[i] = f_vector_at(ARRAY(o_in), i);
+    m_vector_get(ARRAY(o_in), i, (char*)&in[i]);
   for(i = 0; i < s_out; i++)
-    in[i] = f_vector_at(ARRAY(o_out), i);
+    m_vector_get(ARRAY(o_out), i, (char*)&out[i]);
   m_float* f = fann_test(FANN(o), in, out);
   Type t = array_type(&t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, s_ret, 1);
   for(i = 0; i < s_ret; i++)
-    f_vector_set(ARRAY(o_out), i, f[i]);
+    m_vector_set(ARRAY(o_out), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -413,12 +418,12 @@ static MFUN(run)
   size = m_vector_size(ARRAY(array));
   m_float  ptr[size];
   for(i = 0; i < size; i++)
-    ptr[i] = i_vector_at(ARRAY(array), i);
+    m_vector_get(ARRAY(array), i, &ptr[i]);
   Type t = array_type(&t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, fann_get_num_output(FANN(o)), 1);
   m_float *f = fann_run(FANN(o), ptr);
   for(i = 0; i < fann_get_num_output(FANN(o)); i++)
-    f_vector_set(ARRAY(ret), i, f[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -473,7 +478,7 @@ static MFUN(scale_input)
   m_uint i, size = m_vector_size(ARRAY(obj));
   m_float f[size];
   for(i = 0; i < size; i++)
-    f[i] = f_vector_at(ARRAY(obj), i);
+    m_vector_get(ARRAY(obj), i, (char*)&f[i]);
   fann_scale_input(FANN(o), f);
 }
 
@@ -485,7 +490,7 @@ static MFUN(scale_output)
   m_uint i, size = m_vector_size(ARRAY(obj));
   m_float f[size];
   for(i = 0; i < size; i++)
-    f[i] = f_vector_at(ARRAY(obj), i);
+    m_vector_get(ARRAY(obj), i, (char*)&f[i]);
   fann_scale_output(FANN(o), f);
 }
 
@@ -497,10 +502,10 @@ static MFUN(descale_input)
   m_uint i, size = m_vector_size(ARRAY(obj));
   m_float f[size];
   for(i = 0; i < size; i++)
-    f[i] = f_vector_at(ARRAY(obj), i);
+    m_vector_get(ARRAY(obj), i, (char*)&f[i]);
   fann_descale_input(FANN(o), f);
   for(i = 0; i < size; i++)
-    f_vector_set(ARRAY(obj), i, f[i]);
+    m_vector_set(ARRAY(obj), i, (char*)&f[i]);
 }
 
 static MFUN(descale_output)
@@ -511,10 +516,10 @@ static MFUN(descale_output)
   m_uint i, size = m_vector_size(ARRAY(obj));
   m_float f[size];
   for(i = 0; i < size; i++)
-    f[i] = f_vector_at(ARRAY(obj), i);
+    m_vector_get(ARRAY(obj), i, (char*)&f[i]);
   fann_descale_output(FANN(o), f);
   for(i = 0; i < size; i++)
-    f_vector_set(ARRAY(obj), i, f[i]);
+    m_vector_set(ARRAY(obj), i, (char*)&f[i]);
 }
 
 // Training Data Training
@@ -568,23 +573,23 @@ static MFUN(train_from_array)
   m_float* in[in_size];
   for(i = 0; i < in_size; i++)
   {
-    obj = (M_Object)i_vector_at(ARRAY(in_obj), i);
+    m_vector_get(ARRAY(in_obj), i, &obj);
     y = m_vector_size(ARRAY(obj));
     m_float f[y];
     in[i] = f;
     for(j = 0; j < y; j++)
-      f[j] = f_vector_at(ARRAY(obj), j);
+      m_vector_get(ARRAY(obj), j, (char*)&f[j]);
   }
   out_size = m_vector_size(ARRAY(out_obj));
   m_float* out[out_size];
   for(i = 0; i < out_size; i++)
   {
-    obj = (M_Object)i_vector_at(ARRAY(out_obj), i);
+    m_vector_get(ARRAY(out_obj), i, &obj);
     y = m_vector_size(ARRAY(obj));
     m_float f[y];
     out[i] = f;
     for(j = 0; j < y; j++)
-      f[j] = f_vector_at(ARRAY(obj), j);
+      m_vector_get(ARRAY(obj), j, (char*)&f[j]);
   }
   DATA(o) = fann_create_train_pointer_array(num_data, in_size, in, out_size, out);
 }
@@ -608,7 +613,7 @@ static MFUN(train_input)
   Type t = array_type(&t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, size, 1);
   for(i = 0; i < size; i++)
-    f_vector_set(ARRAY(ret), i, f[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -624,7 +629,7 @@ static MFUN(train_output)
   Type t = array_type(&t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, size, 1);
   for(i = 0; i < size; i++)
-    f_vector_set(ARRAY(ret), i, f[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -1128,7 +1133,7 @@ MFUN(get_cascade_activation_functions)
   Type t = array_type(&t_int, 1);
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   for(i=0; i < size; i++)
-    i_vector_set(ARRAY(ret), i, tmp[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -1144,7 +1149,7 @@ MFUN(set_cascade_activation_functions)
   m_uint i, size = m_vector_size(ARRAY(ret));
   enum fann_activationfunc_enum tmp[size];
   for(i=0; i < size; i++)
-    tmp[i] = i_vector_at(ARRAY(ret), i);
+    m_vector_get(ARRAY(ret), i, &tmp[i]);
   fann_set_cascade_activation_functions(FANN(o), tmp, size);
   *(m_uint*)RETURN = (m_uint)ret;
 }
@@ -1166,7 +1171,7 @@ MFUN(get_cascade_activation_steepnesses)
   Type t = array_type(&t_float, 1);
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   for(i=0; i < size; i++)
-    f_vector_set(ARRAY(ret), i, tmp[i]);
+    m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
@@ -1182,7 +1187,7 @@ MFUN(set_cascade_activation_steepnesses)
   m_uint i, size = m_vector_size(ARRAY(ret));
   m_float tmp[size];
   for(i=0; i < size; i++)
-    tmp[i] = f_vector_at(ARRAY(ret), i);
+    m_vector_get(ARRAY(ret), i, (char*)&tmp[i]);
   fann_set_cascade_activation_steepnesses(FANN(o), tmp, size);
   *(m_uint*)RETURN = (m_uint)ret;
 }

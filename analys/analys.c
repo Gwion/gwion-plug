@@ -616,7 +616,7 @@ static MFUN(fc_compute) {
       continue;
     f_analys fn  = *(f_analys*)(obj->data + o_ana_fn);
     m_float f = fn(ana);
-    f_vector_set(ARRAY(ret), i, f);
+    m_vector_set(ARRAY(ret), i, (char*)&f);
   }
   *(m_uint*)RETURN = (m_uint)ret;
 }
