@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "defs.h"
+#include "err_msg.h"
 #include "type.h"
 #include "lang.h"
 #include "instr.h"
@@ -9,19 +10,18 @@
 #include "sporth.h"
 
 typedef struct sporthData {
-  m_float var;
-  int parsed;
   sp_data *sp;
   plumber_data pd;
   SPFLOAT in;
+  m_float var;
+  m_bool parsed;
 } sporthData;
 
 struct Type_ t_gworth = { "Sporth", SZ_INT, &t_ugen };
 
-static int sporth_chuck_in(sporth_stack *stack, void *ud)
-{
+static int sporth_chuck_in(sporth_stack *stack, void *ud) {
   plumber_data *pd = (plumber_data *) ud;
-  sporthData * data = (sporthData *) pd->ud;
+  const sporthData * data = (sporthData *) pd->ud;
   switch(pd->mode) {
     case PLUMBER_CREATE:
       plumber_add_ugen(pd, SPORTH_IN, NULL);
@@ -40,22 +40,20 @@ static int sporth_chuck_in(sporth_stack *stack, void *ud)
       break;
 
     default:
-      fprintf(stderr, "Unknown mode!\n");
+      gw_err("Unknown mode!\n");
       break;
   }
   return PLUMBER_OK;
 }
 
-TICK(sporth_tick)
-{
+static TICK(gwsporth_tick) {
   sporthData * data = u->ug;
   data->in= u->in;
   plumber_compute(&data->pd, PLUMBER_COMPUTE);
   u->out = sporth_stack_pop_float(&data->pd.sporth.stack);
 }
 
-CTOR(sporth_ctor)
-{
+static CTOR(sporth_ctor) {
   sporthData * data = malloc(sizeof(sporthData));
   data->parsed = 0;
   data->in = 0;
@@ -66,36 +64,29 @@ CTOR(sporth_ctor)
   data->pd.sp = data->sp;
   data->pd.ud = data;
   assign_ugen(UGEN(o), 1, 1, 0, data);
-  UGEN(o)->tick = sporth_tick;
+  UGEN(o)->tick = gwsporth_tick;
 }
 
-DTOR(sporth_dtor)
-{
+static DTOR(sporth_dtor) {
   sporthData * data = (sporthData*)UGEN(o)->ug;
-  /*
-     if(data)
-     {
-plumber_clean(&data->pd);
-sp_destroy(&data->sp);
-free(data);
-}
-*/
+  if(data) {
+    plumber_clean(&data->pd);
+    free(data);
   }
+}
 
-MFUN(sporth_setp)
-{
+static MFUN(sporth_setp) {
   sporthData * data = (sporthData*)UGEN(o)->ug;
-  int i = *(m_uint*)MEM(SZ_INT);
+  const m_uint i = *(m_uint*)MEM(SZ_INT);
   m_float val = *(m_float*)MEM(SZ_INT*2);
   data->pd.p[i] = val;
   *(m_float*)RETURN = val;
 }
 
-MFUN(sporth_set_table)
-{
+static MFUN(sporth_set_table) {
   sporthData * data = (sporthData*)UGEN(o)->ug;
-  int i = *(m_uint*)MEM(SZ_INT);
-  m_float val = *(m_float*)MEM(SZ_INT*2);
+  const m_uint i = *(m_uint*)MEM(SZ_INT);
+  const m_float val = *(m_float*)MEM(SZ_INT*2);
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT*2 + SZ_FLOAT));
   char* ftname = strndup(cstr, (strlen(cstr) + 1));
 
@@ -103,11 +94,11 @@ MFUN(sporth_set_table)
   sp_ftbl *ft;
 
   if(plumber_ftmap_search(&data->pd, ftname, &ft) == PLUMBER_NOTOK) {
-    fprintf(stderr, "Could not find ftable %s", ftname);
+    gw_err("Could not find ftable %s", ftname);
     err++;
   }
   if(i > ft->size) {
-    fprintf(stderr, "Stack overflow! %d exceeds table size %d\n", i, ft->size);
+    gw_err("Stack overflow! %d exceeds table size %d\n", i, ft->size);
     err++;
   }
   if(!err) {
@@ -117,39 +108,36 @@ MFUN(sporth_set_table)
   *(m_float*)RETURN = val;
 }
 
-MFUN(sporth_get_table)
-{
+MFUN(sporth_get_table) {
   sporthData * data = (sporthData*)UGEN(o)->ug;
-  int i = *(m_uint*)MEM(SZ_INT);
+  const m_uint i = *(m_uint*)MEM(SZ_INT);
   sp_ftbl *ft;
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
   char* ftname = strndup(cstr, (strlen(cstr) + 1));
   int err = 0;
 
   if(plumber_ftmap_search(&data->pd, ftname, &ft) == PLUMBER_NOTOK) {
-    fprintf(stderr, "Could not find ftable %s", ftname);
-    err++;
+    gw_err("Could not find ftable %s", ftname);
+    ++err;
   }
   if(i > ft->size) {
-    fprintf(stderr, "Stack overflow! %d exceeds table size %d\n", i, ft->size);
-    err++;
+    gw_err("Stack overflow! %d exceeds table size %d\n", i, ft->size);
+    ++err;
   }
   free(ftname);
-  if(!err) {
+  if(!err)
     *(m_float*)RETURN = ft->tbl[i];
-  } else {
+  else
     *(m_float*)RETURN = 0;
-  }
 }
 
-MFUN(sporth_getp)
-{
-  sporthData * data = (sporthData*)UGEN(o)->ug;
-  int i = *(m_uint*)MEM(SZ_INT);
+static MFUN(sporth_getp) {
+  const sporthData * data = (sporthData*)UGEN(o)->ug;
+  const int i = *(m_uint*)MEM(SZ_INT);
   *(m_float*)RETURN = data->pd.p[i];
 }
 
-MFUN(sporth_parse_string)
+static MFUN(sporth_parse_string)
 {
   sporthData * data = (sporthData*)UGEN(o)->ug;
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
@@ -162,11 +150,11 @@ MFUN(sporth_parse_string)
     plumber_recompile_string(&data->pd, str);
   }
   free(str);
-  *(m_float*)RETURN = data->var;
+  *(M_Object*)RETURN = *(M_Object*)MEM(SZ_INT);
+  release(*(M_Object*)RETURN, shred);
 }
 
-MFUN(sporth_parse_file)
-{
+static MFUN(sporth_parse_file) {
   sporthData * data = (sporthData*)UGEN(o)->ug;
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
   char* str = strndup(cstr, (strlen(cstr) + 1));
@@ -181,42 +169,42 @@ MFUN(sporth_parse_file)
     }
     plumber_close_file(&data->pd);
     free(str);
-    *(m_float*)RETURN = data->var;
+    *(M_Object*)RETURN = *(M_Object*)MEM(SZ_INT);
+    release(*(M_Object*)RETURN, shred);
   }
 }
 
-IMPORT
-{
+IMPORT {
   CHECK_BB(gwi_class_ini(gwi, &t_gworth, sporth_ctor, sporth_dtor))
 
-    gwi_func_ini(gwi, "float", "p", sporth_setp);
-  gwi_func_arg(gwi, "int", "index");
-  gwi_func_arg(gwi, "float", "val");
+  CHECK_BB(gwi_func_ini(gwi, "float", "p", sporth_setp))
+  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
+  CHECK_BB(gwi_func_arg(gwi, "float", "val"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    gwi_func_ini(gwi, "float", "p", sporth_getp);
-  gwi_func_arg(gwi, "int", "index");
+  CHECK_BB(gwi_func_ini(gwi, "float", "p", sporth_getp))
+  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    gwi_func_ini(gwi, "float", "t", sporth_set_table);
-  gwi_func_arg(gwi, "int", "index");
-  gwi_func_arg(gwi, "float", "val");
-  gwi_func_arg(gwi, "string", "table");
+  CHECK_BB(gwi_func_ini(gwi, "float", "t", sporth_set_table))
+  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
+  CHECK_BB(gwi_func_arg(gwi, "float", "val"))
+  CHECK_BB(gwi_func_arg(gwi, "string", "table"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    gwi_func_ini(gwi, "float", "t", sporth_get_table);
-  gwi_func_arg(gwi, "int", "index");
-  gwi_func_arg(gwi, "string", "table");
+  CHECK_BB(gwi_func_ini(gwi, "float", "t", sporth_get_table))
+  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
+  CHECK_BB(gwi_func_arg(gwi, "string", "table"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    gwi_func_ini(gwi, "string", "parse", sporth_parse_string);
-  gwi_func_arg(gwi, "string", "arg");
+  CHECK_BB(gwi_func_ini(gwi, "string", "parse", sporth_parse_string))
+  CHECK_BB(gwi_func_arg(gwi, "string", "arg"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    gwi_func_ini(gwi, "string", "parsefile", sporth_parse_file);
-  gwi_func_arg(gwi, "string", "arg");
+  CHECK_BB(gwi_func_ini(gwi, "string", "parsefile", sporth_parse_file))
+  CHECK_BB(gwi_func_arg(gwi, "string", "arg"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-    CHECK_BB(gwi_class_end(gwi))
-    return 1;
+  CHECK_BB(gwi_class_end(gwi))
+  return 1;
 }

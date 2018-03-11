@@ -12,6 +12,7 @@ static m_bool pd_init;
 
 CTOR(pd_ctor) {
   if(!pd_init++) {
+    VM* vm = shred->vm_ref;
     libpd_init();
     libpd_init_audio(vm->n_in , vm->sp->nchan, vm->sp->sr);
     libpd_start_message(256);

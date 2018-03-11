@@ -31,7 +31,7 @@ function void loop_me(Sporth s, int base)
     s.p(0, base + scale[stp] + 12 * Math.rand2(-1, 1));
     s.p(2, Math.rand2f(0.1, 3));
 //	base + scale[stp] + 12 * Math.rand2(-1, 1) => Std.mtof => s.freq;
-    t * 0.25 => now;
+    0.25::t => now;
     (stp + 1) % scale.size() => stp;
 //		if(maybe && maybe && maybe)
 //			Math.rand2(-4, 4) +=> base;

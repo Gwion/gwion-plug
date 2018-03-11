@@ -69,6 +69,10 @@
 #include <stdlib.h>
 #include "lsys.h"
 
+
+#include "defs.h"
+#include "err_msg.h"
+
 /* static funcs */
 static int toint(unsigned char a) {
     if(a >= 97)
@@ -132,7 +136,7 @@ unsigned int lsys_parse(lsys_d *ls, char *ref, char *str, unsigned int len)
             }
             break;
         default:
-            fprintf(stderr, "Unknown mode!\n");
+            gw_err("Unknown mode!\n");
             break;
     }
     if(len > 0) {
