@@ -10,7 +10,6 @@
 #include <unistd.h>
 #include <time.h>
 #include "defs.h"
-#include "env.h"
 #include "type.h"
 
 #define NK_INCLUDE_FIXED_TYPES
@@ -72,12 +71,12 @@ typedef struct GWindow
 static GWindow* last_window = NULL;
 static M_Object last_widget = NULL;
 
-static void
+static void // TODO use gw_err instead
 die(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    vgw_err(fmt, ap);
+    vfprintf(stderr, fmt, ap);
     va_end(ap);
     fputs("\n", stderr);
     exit(EXIT_FAILURE);
@@ -153,7 +152,6 @@ static m_int o_nk_fval;
 typedef void (*f_nk)(M_Object o, struct nk_context* ctx);
 
 
-static struct Type_ t_color= { "NkColor",  SZ_INT, t_object};
 static m_int o_nk_r, o_nk_g, o_nk_b, o_nk_a;
 #define R(o) *(o->data + o_nk_r)
 #define G(o) *(o->data + o_nk_g)
@@ -171,7 +169,7 @@ static void* _loop(void* data)
   ctx = nk_xlib_init(xw->font, xw->dpy, xw->screen, xw->win, xw->width, xw->height);
   while(1)
   {
-    XLockDisplay(xw->dpy);
+//    XLockDisplay(xw->dpy);
     XEvent evt;
     nk_input_begin(ctx);
     while (XCheckWindowEvent(xw->dpy, xw->win, xw->swa.event_mask, &evt)){
@@ -197,63 +195,51 @@ static void* _loop(void* data)
 /*        if (gw->dt < DTIME)*/
 /*            sleep_for(DTIME - gw->dt);*/
 /*        XUnlockDisplay(xw->dpy);*/
+//    XUnlockDisplay(xw->dpy);
             usleep(10000);
 
-    XUnlockDisplay(xw->dpy);
+//    XUnlockDisplay(xw->dpy);
     } 
 }
 
  static void gw_nk_init(GWindow* gw, VM_Shred shred)
 {
   XWindow* xw = gw->win;
-  struct nk_context* ctx = gw->ctx;
   if(!active)
-  {
     XInitThreads();
-  }
   gw->ctx = malloc(sizeof(struct nk_context));
-  if(!active)
-  {
+  if(!active) {
     xw->dpy = XOpenDisplay(NULL);
-  xw->root = DefaultRootWindow(xw->dpy);
-  xw->screen = XDefaultScreen(xw->dpy);
+    xw->root = DefaultRootWindow(xw->dpy);
+    xw->screen = XDefaultScreen(xw->dpy);
     xw->vis = XDefaultVisual(xw->dpy, xw->screen);
-  xw->cmap = XCreateColormap(xw->dpy,xw->root,xw->vis,AllocNone);
-  xw->swa.colormap = xw->cmap;
-  xw->swa.event_mask =
+    xw->cmap = XCreateColormap(xw->dpy,xw->root,xw->vis,AllocNone);
+    xw->swa.colormap = xw->cmap;
+    xw->swa.event_mask =
     ExposureMask | KeyPressMask | KeyReleaseMask |
     ButtonPress | ButtonReleaseMask| ButtonMotionMask |
     Button1MotionMask | Button3MotionMask | Button4MotionMask | Button5MotionMask|
     PointerMotionMask | KeymapStateMask;
-/*    xw->win = xw->root;*/
-  xw->win = XCreateWindow(xw->dpy, xw->root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
-    XDefaultDepth(xw->dpy, xw->screen), InputOutput,
-    xw->vis, CWEventMask | CWColormap, &xw->swa);
+    xw->win = XCreateWindow(xw->dpy, xw->root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
+      XDefaultDepth(xw->dpy, xw->screen), InputOutput,
+      xw->vis, CWEventMask | CWColormap, &xw->swa);
   }
-  else 
-  {
+  else {
     xw->dpy    = last_window->win->dpy;
     xw->root   = last_window->win->root;
     xw->screen = last_window->win->screen;
-/*    xw->vis    = last_window->win->vis;*/
     xw->vis = XDefaultVisual(xw->dpy, xw->screen);
     xw->cmap     = last_window->win->cmap;
-/*  xw->cmap = XCreateColormap(xw->dpy,xw->root,xw->vis,AllocAll);*/
-  xw->cmap = XCreateColormap(xw->dpy,xw->root,xw->vis,AllocNone);
+    xw->cmap = XCreateColormap(xw->dpy,xw->root,xw->vis,AllocNone);
     xw->swa.colormap = xw->cmap;
     xw->swa.event_mask =
       ExposureMask | KeyPressMask | KeyReleaseMask |
       ButtonPress | ButtonReleaseMask| ButtonMotionMask |
       Button1MotionMask | Button3MotionMask | Button4MotionMask | Button5MotionMask|
       PointerMotionMask | KeymapStateMask;
-  xw->win = XCreateWindow(xw->dpy, xw->root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
-    XDefaultDepth(xw->dpy, xw->screen), InputOutput,
-    xw->vis, CWEventMask | CWColormap, &xw->swa);
-/*  xw->win = XCreateSimpleWindow(xw->dpy, xw->root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, 0);*/
-    
-  
-/*  exit(3);*/
-  
+    xw->win = XCreateWindow(xw->dpy, xw->root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
+      XDefaultDepth(xw->dpy, xw->screen), InputOutput,
+      xw->vis, CWEventMask | CWColormap, &xw->swa);
   }
   if(!xw->dpy) die("Could not open a display; perhaps $DISPLAY is not set?");
   char name[256];
@@ -263,11 +249,10 @@ static void* _loop(void* data)
   XGetWindowAttributes(xw->dpy, xw->win, &xw->attr);
   xw->width = (unsigned int)xw->attr.width;
   xw->height = (unsigned int)xw->attr.height;
-  active++;
+  ++active;
 }
 
-static void nk_ctor(M_Object o, VM_Shred shred)
-{
+static void nk_ctor(M_Object o, VM_Shred shred) {
   GWindow* gw = malloc(sizeof(GWindow));
   gw->win = malloc(sizeof(XWindow));
   gw->widget = new_vector();
@@ -277,33 +262,36 @@ static void nk_ctor(M_Object o, VM_Shred shred)
   *(GWindow**)(o->data + o_nk_data) = gw;
 }
 
-static void gw_nk_shutdown(struct XWindow* xw)
-{
-  active--;
-  /*if(!active)*/
-    /*{*/
-    /*nk_xfont_del(xw->dpy, xw->font);*/
-    /*nk_xlib_shutdown();*/
-    /*}*/
-  /*XUnmapWindow(xw->dpy, xw->win);*/
-  /*if(!active)*/
-  /*XFreeColormap(xw->dpy, xw->cmap);*/
-  /*XDestroyWindow(xw->dpy, xw->win);*/
-  /*if(!active)*/
-  /*XCloseDisplay(xw->dpy);*/
+static void gw_nk_shutdown(struct XWindow* xw) {
+//  XUnmapWindow(xw->dpy, xw->win);
+//  if(!active)
+//    XFreeColormap(xw->dpy, xw->cmap);
+//  XDestroyWindow(xw->dpy, xw->win);
+//  if(!active)
+  if(!--active) {
+//    nk_xfont_del(xw->dpy, xw->font);
+//    XCloseDisplay(xw->dpy);
+//    nk_xlib_shutdown();
+  }
 }
 static void nk_dtor(M_Object o, VM_Shred shred)
 {
   GWindow* gw = *(GWindow**)(o->data + o_nk_data);
   pthread_cancel(gw->thread);
   pthread_join(gw->thread, NULL);
+//  XUnmapWindow(gw->win->dpy, gw->win->win);
+//  XDestroyWindow(gw->win->dpy, gw->win->win);
   gw_nk_shutdown(gw->win);
+  free(gw->ctx);
+  for(m_uint i = vector_size(gw->widget) + 1; --i;)
+    release((M_Object)vector_at(gw->widget, i), shred);
+  vector_release(gw->widget);
+  free(gw->win);
+  free(gw);
   *(GWindow**)(o->data + o_nk_data) = NULL;
 }
 
 
-static struct Type_ t_panel  = { "NkPanel",  SZ_INT, t_object};
-static struct Type_ t_widget = { "NkWidget", SZ_INT, t_event};
 static void widget_ctor(M_Object o, VM_Shred shred)
 {
   char name[256];
@@ -317,14 +305,12 @@ static void widget_ctor(M_Object o, VM_Shred shred)
 }
 
 static m_uint o_nk_align;
-static struct Type_ t_sval = { "NkSval",  SZ_INT, &t_widget};
 static void sval_ctor(M_Object o, VM_Shred shred)
 {
 /*  *(f_nk*)(o->data + o_nk_exec) = label_execute;*/
   *(m_uint*)(o->data + o_nk_align) = NK_TEXT_LEFT;
 }
 static m_uint o_nk_wrap, o_nk_labelcolor;
-static struct Type_ t_label = { "NkLabel",  SZ_INT, &t_sval};
 static void label_execute(M_Object o, struct nk_context* ctx)
 {
   if(*(M_Object*)(o->data + o_nk_labelcolor))
@@ -348,7 +334,6 @@ static void label_ctor(M_Object o, VM_Shred shred)
   *(f_nk*)(o->data + o_nk_exec) = label_execute;
 }
 
-static struct Type_ t_text = { "NkText",  SZ_INT, &t_label};
 static void text_execute(M_Object o, struct nk_context* ctx)
 {
   if(*(m_uint*)(o->data + o_nk_wrap))
@@ -362,7 +347,6 @@ static void text_ctor(M_Object o, VM_Shred shred)
 }
 
 static m_uint o_nk_select;
-static struct Type_ t_slabel = { "NkSLabel",  SZ_INT, &t_sval};
 static void slabel_execute(M_Object o, struct nk_context* ctx)
 {
   if(nk_selectable_label(ctx, NAME(o), *(m_uint*)(o->data + o_nk_align), (int*)&*(m_uint*)(o->data + o_nk_select)))
@@ -373,7 +357,6 @@ static void slabel_ctor(M_Object o, VM_Shred shred)
   *(f_nk*)(o->data + o_nk_exec) = label_execute;
 }
 
-static struct Type_ t_stext = { "NkStext",  SZ_INT, &t_slabel};
 static void stext_execute(M_Object o, struct nk_context* ctx)
 {
   if(nk_selectable_text(ctx, NAME(o), strlen(NAME(o)), *(m_uint*)(o->data + o_nk_align), (int*)&*(m_uint*)(o->data + o_nk_select)))
@@ -385,7 +368,6 @@ static void stext_ctor(M_Object o, VM_Shred shred)
 }
 
 static m_int o_nk_prog, o_nk_progmax, o_nk_progmod;
-static struct Type_ t_prog= { "NkProg",  SZ_INT, &t_widget};
 static void prog_execute(M_Object o, struct nk_context* ctx)
 {
   if(nk_progress(ctx, (m_uint*)(o->data + o_nk_prog), *(m_uint*)(o->data + o_nk_progmax), *(m_uint*)(o->data + o_nk_progmod)))
@@ -400,7 +382,6 @@ static void prog_ctor(M_Object o, VM_Shred shred)
 }
 
 
-static struct Type_ t_button = { "NkButton",  SZ_INT, &t_widget};
 static m_int o_nk_behavior, o_nk_button_color;
 static void button_execute(M_Object o, struct nk_context* ctx)
 {
@@ -425,7 +406,6 @@ static void button_ctor(M_Object o, VM_Shred shred)
 {
   *(f_nk*)(o->data + o_nk_exec) = button_execute;
 }
-static struct Type_ t_group  = { "NkGroup",  SZ_INT, &t_widget};
 static void group_exec(M_Object o, struct nk_context* ctx)
 {
   m_uint i;
@@ -461,7 +441,6 @@ static m_int o_nk_rowcol;
 static m_int o_nk_rowh;
 static m_int o_nk_roww;
 static m_int o_nk_static;
-static struct Type_ t_rowd= { "NkRow",  SZ_INT, &t_group};
 static void row(M_Object o, struct nk_context* ctx)
 {
   if(*(m_uint*)(o->data + o_nk_static))
@@ -486,7 +465,6 @@ static void rowd_ctor(M_Object o, VM_Shred shred)
   *(m_uint*)(o->data + o_nk_roww) = 100;
 }
 
-static struct Type_ t_layout = { "NkLayout",  SZ_INT, &t_rowd};
 static m_int o_nk_x;
 static m_int o_nk_y;
 static m_int o_nk_w;
@@ -534,7 +512,6 @@ static void layout_ctor(M_Object o, VM_Shred shred)
   }
 }
 
-static struct Type_ t_tree = { "NkTree",  SZ_INT, &t_rowd};
 static m_int o_nk_state;
 static void tree_execute(M_Object o, struct nk_context* ctx)
 {
@@ -555,7 +532,6 @@ static void tree_ctor(M_Object o, VM_Shred shred)
 }
 
 static m_int o_nk_comboval;
-static struct Type_ t_combo = { "NkCombo",  SZ_INT, &t_rowd};
 static void combo_execute(M_Object o, struct nk_context* ctx)
 {
   m_uint i;
@@ -585,7 +561,6 @@ static MFUN(combo_add)
   *(m_uint*)RETURN = (m_uint)*(M_Object*)(shred->mem + SZ_INT);
 }
 
-static struct Type_ t_menubar = { "NkMenuBar",  SZ_INT, &t_group};
 static void menubar_execute(M_Object o, struct nk_context* ctx)
 {
   m_uint i;
@@ -605,7 +580,6 @@ static MFUN(menubar_add)
 }
 
 static m_int  o_nk_menuval;
-static struct Type_ t_menu= { "NkMenu",  SZ_INT, &t_rowd};
 static void menu_execute(M_Object o, struct nk_context* ctx)
 {
   m_uint i;
@@ -637,7 +611,6 @@ static MFUN(menu_add)
 }
 
 static m_int o_nk_edit_type;
-static struct Type_ t_nkstring = { "NkString",  SZ_INT, &t_rowd};
 static void nkstring_execute(M_Object o, struct nk_context* ctx)
 {
   char c[512];
@@ -655,10 +628,6 @@ static void nkstring_ctor(M_Object o, VM_Shred shred)
 /*  *(m_uint*)(o->data + o_nk_edit_type) = NK_EDIT_BOX;*/
 }
 
-static struct Type_ t_ival = { "NkIval",  SZ_INT, &t_widget};
-static struct Type_ t_fval = { "NkFval",  SZ_INT, &t_widget};
-
-static struct Type_ t_check = { "NkCheck",  SZ_INT, &t_ival};
 static void check_execute(M_Object o, struct nk_context* ctx)
 {
   if(nk_checkbox_label(ctx, NAME(o), (int*)&*(m_int*)(o->data + o_nk_ival)))
@@ -669,7 +638,6 @@ static void check_ctor(M_Object o, VM_Shred shred)
   (*(f_nk*)(o->data + o_nk_exec)) = check_execute;
 }
 
-static struct Type_ t_propi = { "NkPropI",  SZ_INT, &t_ival};
 static void propi_execute(M_Object o, struct nk_context* ctx)
 {
   m_int property = *(m_int*)(o->data + o_nk_ival);
@@ -686,7 +654,6 @@ static void propi_ctor(M_Object o, VM_Shred shred)
   *(m_float*)(o->data + o_nk_iinc) = 1.0;
 }
 
-static struct Type_ t_slideri = { "NkSliderI",  SZ_INT, &t_ival};
 static void slideri_execute(M_Object o, struct nk_context* ctx)
 {
   if(nk_slider_int(ctx, *(m_int*)(o->data + o_nk_imin), (int*)&*(m_int*)(o->data + o_nk_ival),
@@ -701,7 +668,6 @@ static void slideri_ctor(M_Object o, VM_Shred shred)
   *((m_int*)((M_Object)o)->data + o_nk_istp) = 0.1; // ? BUG
 }
 
-static struct Type_ t_propf = { "NkPropF",  SZ_INT, &t_fval};
 static void propf_execute(M_Object o, struct nk_context* ctx)
 {
   m_float property = *(m_float*)(o->data + o_nk_fval);
@@ -723,7 +689,6 @@ static void propf_ctor(M_Object o, VM_Shred shred)
   *(m_float*)(o->data + o_nk_finc) = .5;
 }
 
-static struct Type_ t_slider= { "NkSlider",  SZ_INT, &t_fval};
 static void slider_execute(M_Object o, struct nk_context* ctx)
 {
   if(nk_slider_float(ctx, *(m_float*)(o->data + o_nk_fmin), (float*)&*(m_float*)(o->data + o_nk_fval),
@@ -741,8 +706,39 @@ static void slider_ctor(M_Object o, VM_Shred shred)
   *(m_float*)(o->data + o_nk_finc)  = .11;
 }
 
-IMPORT { 
-  CHECK_BB(gwi_class_ini(gwi, &t_color, NULL, NULL))
+IMPORT {
+  Type t_color, t_panel, t_widget, t_sval, t_label, t_text,
+    t_slabel, t_stext, t_prog, t_button, t_group, t_rowd,
+    t_layout, t_tree, t_combo, t_menubar, t_menu,
+    t_nkstring, t_ival, t_fval, t_check, t_propi,
+    t_slideri, t_propf, t_slider;
+  CHECK_OB((t_color  = gwi_mk_type(gwi, "NkColor", SZ_INT, t_object)))
+  CHECK_OB((t_widget  = gwi_mk_type(gwi, "NkWidget", SZ_INT, t_event)))
+  CHECK_OB((t_sval  = gwi_mk_type(gwi, "NkSval", SZ_INT, t_widget)))
+  CHECK_OB((t_panel  = gwi_mk_type(gwi, "NkPanel", SZ_INT, t_object)))
+  CHECK_OB((t_label  = gwi_mk_type(gwi, "NkLabel", SZ_INT, t_sval)))
+  CHECK_OB((t_text  = gwi_mk_type(gwi, "NkText", SZ_INT, t_label)))
+  CHECK_OB((t_slabel  = gwi_mk_type(gwi, "NkSLabel", SZ_INT, t_sval)))
+  CHECK_OB((t_stext  = gwi_mk_type(gwi, "NkStext", SZ_INT, t_slabel)))
+  CHECK_OB((t_prog = gwi_mk_type(gwi, "NkProg", SZ_INT, t_widget)))
+  CHECK_OB((t_button  = gwi_mk_type(gwi, "NkButton", SZ_INT, t_widget)))
+  CHECK_OB((t_group   = gwi_mk_type(gwi, "NkGroup", SZ_INT, t_widget)))
+  CHECK_OB((t_rowd = gwi_mk_type(gwi, "NkRow", SZ_INT, t_group)))
+  CHECK_OB((t_layout  = gwi_mk_type(gwi, "NkLayout", SZ_INT, t_rowd)))
+  CHECK_OB((t_tree  = gwi_mk_type(gwi, "NkTree", SZ_INT, t_rowd)))
+  CHECK_OB((t_combo  = gwi_mk_type(gwi, "NkCombo", SZ_INT, t_rowd)))
+  CHECK_OB((t_menubar  = gwi_mk_type(gwi, "NkMenuBar", SZ_INT, t_group)))
+  CHECK_OB((t_menu = gwi_mk_type(gwi, "NkMenu", SZ_INT, t_rowd)))
+  CHECK_OB((t_nkstring  = gwi_mk_type(gwi, "NkString", SZ_INT, t_rowd)))
+  CHECK_OB((t_ival  = gwi_mk_type(gwi, "NkIval", SZ_INT, t_widget)))
+  CHECK_OB((t_fval  = gwi_mk_type(gwi, "NkFval", SZ_INT, t_widget)))
+  CHECK_OB((t_check  = gwi_mk_type(gwi, "NkCheck", SZ_INT, t_ival)))
+  CHECK_OB((t_propi  = gwi_mk_type(gwi, "NkPropI", SZ_INT, t_ival)))
+  CHECK_OB((t_slideri  = gwi_mk_type(gwi, "NkSliderI", SZ_INT, t_ival)))
+  CHECK_OB((t_propf  = gwi_mk_type(gwi, "NkPropF", SZ_INT, t_fval)))
+  CHECK_OB((t_slider = gwi_mk_type(gwi, "NkSlider", SZ_INT, t_fval)))
+
+  CHECK_BB(gwi_class_ini(gwi, t_color, NULL, NULL))
 	gwi_item_ini(gwi,"int", "r");
   o_nk_r = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_r)
@@ -757,13 +753,13 @@ IMPORT {
   CHECK_BB(o_nk_a)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_panel, nk_ctor, nk_dtor))
+  CHECK_BB(gwi_class_ini(gwi, t_panel, nk_ctor, nk_dtor))
 	gwi_item_ini(gwi,"int", "@win");
   o_nk_data = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_data)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_widget, widget_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_widget, widget_ctor, NULL))
 	gwi_item_ini(gwi,"string", "name");
   o_nk_name = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_name);
@@ -778,13 +774,13 @@ IMPORT {
   CHECK_BB(o_nk_gwin)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_sval, sval_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_sval, sval_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "align");
   o_nk_align = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_align)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_label, label_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_label, label_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "wrap");
   o_nk_wrap = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_wrap)
@@ -793,16 +789,16 @@ IMPORT {
   CHECK_BB(o_nk_labelcolor)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_text, text_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_text, text_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_slabel, slabel_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_slabel, slabel_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "selectable");
   o_nk_select = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_select)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_prog, prog_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_prog, prog_ctor, NULL))
 	gwi_item_ini(gwi,"int", "val");
   o_nk_prog = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_prog)
@@ -814,7 +810,7 @@ IMPORT {
   CHECK_BB(o_nk_progmod)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_button, button_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_button, button_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "behavior");
   o_nk_behavior = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_behavior)
@@ -823,8 +819,8 @@ IMPORT {
   CHECK_BB(o_nk_button_color)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_group, group_ctor, group_dtor))
-	gwi_item_ini(gwi,"int", "&widget");
+  CHECK_BB(gwi_class_ini(gwi, t_group, group_ctor, group_dtor))
+	gwi_item_ini(gwi,"int", "@widget");
   o_nk_list = gwi_item_end(gwi, ae_flag_member, NULL);
   gwi_func_ini(gwi, "void", "begin", group_begin);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -835,7 +831,7 @@ IMPORT {
 
 
 
-  CHECK_BB(gwi_class_ini(gwi, &t_rowd, rowd_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_rowd, rowd_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "height");
   o_nk_rowh = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_rowh)
@@ -850,7 +846,7 @@ IMPORT {
   CHECK_BB(o_nk_static)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_layout, layout_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_layout, layout_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "x");
   o_nk_x = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_x)
@@ -866,37 +862,37 @@ IMPORT {
 	gwi_item_ini(gwi, "int",  "flag");
   o_nk_flags = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_flags)
-  m_uint* border  = malloc(sizeof);
+  m_uint * border  = malloc(SZ_INT);
   *border  = NK_WINDOW_BORDER;
 	gwi_item_ini(gwi,"int", "BORDER");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, border);
-  m_uint* movable = malloc(sizeof);
+  m_uint * movable = malloc(SZ_INT);
   *movable = NK_WINDOW_MOVABLE;
 	gwi_item_ini(gwi,"int", "MOVABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, movable);
-  m_uint *scalable = malloc(sizeof);
+  m_uint *scalable = malloc(SZ_INT);
   *scalable = NK_WINDOW_SCALABLE;
 	gwi_item_ini(gwi,"int", "SCALABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, scalable);
-  m_uint* closable = malloc(sizeof);
+  m_uint * closable = malloc(SZ_INT);
   *closable = NK_WINDOW_CLOSABLE;
 	gwi_item_ini(gwi,"int", "CLOSABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, closable);
-  m_uint* minimizable = malloc(sizeof);
+  m_uint * minimizable = malloc(SZ_INT);
   *minimizable = NK_WINDOW_MINIMIZABLE;
 	gwi_item_ini(gwi,"int", "MINIMIZABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, minimizable);
-  m_uint* title = malloc(sizeof);
+  m_uint * title = malloc(SZ_INT);
   *title = NK_WINDOW_TITLE;
 	gwi_item_ini(gwi,"int", "TITLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, title);
-  m_uint* menu = malloc(sizeof);;
+  m_uint * menu = malloc(SZ_INT);;
   *menu = NK_PANEL_MENU;
 	gwi_item_ini(gwi,"int", "MENU");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, menu);
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_combo, combo_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_combo, combo_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "val");
   o_nk_comboval = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_comboval)
@@ -905,7 +901,7 @@ IMPORT {
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_menu, menu_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_menu, menu_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "val");
   o_nk_menuval = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_menuval)
@@ -914,28 +910,28 @@ IMPORT {
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_menubar, menubar_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_menubar, menubar_ctor, NULL))
   gwi_func_ini(gwi, "void", "add", menubar_add);
   gwi_func_arg(gwi, "NkMenu", "s");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_tree, tree_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_tree, tree_ctor, NULL))
 	gwi_item_ini(gwi, "int",  "state");
   o_nk_state = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_state)
   CHECK_BB(gwi_class_end(gwi))
 
 
-  m_uint* simple = malloc(sizeof);
-  m_uint* field  = malloc(sizeof);
-  m_uint* box    = malloc(sizeof);
-  m_uint* editor = malloc(sizeof);
+  m_uint * simple = malloc(SZ_INT);
+  m_uint * field  = malloc(SZ_INT);
+  m_uint * box    = malloc(SZ_INT);
+  m_uint * editor = malloc(SZ_INT);
   * simple = NK_EDIT_SIMPLE;
   * field  = NK_EDIT_FIELD;
   * box    = NK_EDIT_BOX;
   * editor = NK_EDIT_EDITOR;
-  CHECK_BB(gwi_class_ini(gwi, &t_nkstring, nkstring_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_nkstring, nkstring_ctor, NULL))
 	gwi_item_ini(gwi,"int", "type");
   o_nk_edit_type= gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_edit_type)
@@ -949,7 +945,7 @@ IMPORT {
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, editor);
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_ival, NULL, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_ival, NULL, NULL))
 	gwi_item_ini(gwi, "int",  "val");
   o_nk_ival = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_ival)
@@ -967,15 +963,15 @@ IMPORT {
   CHECK_BB(o_nk_iinc)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_propi, propi_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_propi, propi_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  CHECK_BB(gwi_class_ini(gwi, &t_slideri, slideri_ctor, NULL))
-  CHECK_BB(gwi_class_end(gwi))
-
-  CHECK_BB(gwi_class_ini(gwi, &t_check, check_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_slideri, slideri_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_fval, NULL, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_check, check_ctor, NULL))
+  CHECK_BB(gwi_class_end(gwi))
+
+  CHECK_BB(gwi_class_ini(gwi, t_fval, NULL, NULL))
 	gwi_item_ini(gwi, "float",  "val");
   o_nk_fval = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_fval)
@@ -994,9 +990,9 @@ IMPORT {
   CHECK_BB(o_nk_finc)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_propf, propf_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_propf, propf_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  CHECK_BB(gwi_class_ini(gwi, &t_slider, slider_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_slider, slider_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 

@@ -19,8 +19,6 @@
 #define CODE(o) *(m_uint*)(o->data + o_evdev_code)
 #define TYPE(o) *(m_uint*)(o->data + o_evdev_type)
 
-struct Type_ t_evdev_base     = { "Evdev", sizeof(m_uint), &t_event };
-
 m_int o_evdev_info;
 m_int o_evdev_time;
 m_int o_evdev_type;
@@ -154,7 +152,9 @@ static MFUN(evdev_name) {
 }
 
 IMPORT {
-  CHECK_BB(gwi_class_ini(gwi, &t_evdev_base, evdev_base_ctor, evdev_dtor))
+  Type t_evdev_base;
+  CHECK_OB((t_evdev_base = gwi_mk_type(gwi, "Evdev", sizeof(m_uint), t_event)))
+  CHECK_BB(gwi_class_ini(gwi, t_evdev_base, evdev_base_ctor, evdev_dtor))
 
   CHECK_BB(gwi_item_ini(gwi, "int", "@info"))
   CHECK_BB((o_evdev_info = gwi_item_end(gwi, ae_flag_const, NULL)))

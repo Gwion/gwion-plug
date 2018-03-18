@@ -7,6 +7,7 @@
 #include "import.h"
 #include "ugen.h"
 
+static Type t_ana;
 typedef struct {
   unsigned int size;
   unsigned int pos;
@@ -43,7 +44,6 @@ static m_float* sp_buffer_get(sp_buffer* buffer) {
   return ret;
 }
 
-static struct Type_ t_fft = { "FFT", SZ_INT, &t_ugen};
 typedef struct {
   sp_data* sp;
   sp_buffer*  buf;
@@ -128,7 +128,10 @@ static MFUN(fft_compute) {
 }
 
 static m_bool import_fft(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_fft, fft_ctor, fft_dtor))
+  Type t_fft;
+
+  CHECK_OB((t_fft = gwi_mk_type(gwi, "FFT", SZ_INT, t_ugen)))
+  CHECK_BB(gwi_class_ini(gwi, t_fft, fft_ctor, fft_dtor))
   gwi_func_ini(gwi, "int", "init", fft_init);
   gwi_func_arg(gwi, "int", "size");
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -407,7 +410,6 @@ m_float compute_zerox(Ana* fft, m_float* buffer)
   return xings/fft->size;
 }
 */
-static struct Type_ t_ana = { "ANA", SZ_INT, &t_object};
 m_int o_ana_ana;
 m_int o_ana_fft;
 m_int o_ana_fn;
@@ -466,7 +468,8 @@ static DTOR(ana_dtor) {
 }
 
 static m_bool import_ana(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_ana, ana_ctor, ana_dtor))
+  CHECK_OB((t_ana = gwi_mk_type(gwi, "ANA", SZ_INT , NULL)))
+  CHECK_BB(gwi_class_ini(gwi, t_ana, ana_ctor, ana_dtor))
 	gwi_item_ini(gwi,"int", "@_fft");
   o_ana_ana = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_ana_ana)
@@ -487,57 +490,61 @@ static m_bool import_ana(Gwi gwi) {
   return 1;
 }
 
-static struct Type_ t_centroid = { "Centroid", SZ_INT, &t_ana };
 static CTOR(centroid_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_centroid;
 }
 static m_bool import_centroid(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_centroid, centroid_ctor, NULL))
+  Type t_centroid;
+  CHECK_OB((t_centroid = gwi_mk_type(gwi, "Centroid", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_centroid, centroid_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_spread = { "Spread", SZ_INT, &t_ana };
 static CTOR(spread_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_spread;
 }
 static m_bool import_spread(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_spread, spread_ctor, NULL))
+  Type t_spread;
+  CHECK_OB((t_spread = gwi_mk_type(gwi, "Spread", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_spread, spread_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_skewness = { "Skewness", SZ_INT, &t_ana };
 static CTOR(skewness_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_skewness;
 }
 static m_bool import_skewness(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_skewness, skewness_ctor, NULL))
+  Type t_skewness;
+  CHECK_OB((t_skewness = gwi_mk_type(gwi, "Skewness", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_skewness, skewness_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_kurtosis = { "Kurtosis", SZ_INT, &t_ana };
 static CTOR(kurtosis_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_kurtosis;
 }
 static m_bool import_kurtosis(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_kurtosis, kurtosis_ctor, NULL))
+  Type t_kurtosis;
+  CHECK_OB((t_kurtosis = gwi_mk_type(gwi, "Kurtosis", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_kurtosis, kurtosis_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_rms = { "RMS", SZ_INT, &t_ana };
 static CTOR(rms_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rms;
 }
 static m_bool import_rms(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_rms, rms_ctor, NULL))
+  Type t_rms;
+  CHECK_OB((t_rms = gwi_mk_type(gwi, "RMS", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_rms, rms_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_rolloff = { "Rolloff", SZ_INT, &t_ana };
 static CTOR(rolloff_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rolloff;
 }
@@ -550,7 +557,9 @@ static MFUN(rolloff_set_percent) {
   *(m_float*)RETURN = (ana->percent = *(m_float*)MEM(SZ_INT));
 }
 static m_bool import_rolloff(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_rolloff, rolloff_ctor, NULL))
+  Type t_rolloff;
+  CHECK_OB((t_rolloff = gwi_mk_type(gwi, "Rolloff", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_rolloff, rolloff_ctor, NULL))
   gwi_func_ini(gwi, "float", "percent", rolloff_get_percent);
   CHECK_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "percent", rolloff_set_percent);
@@ -560,37 +569,39 @@ static m_bool import_rolloff(Gwi gwi) {
   return 1;
 }
 
-static struct Type_ t_freq = { "Freq", SZ_INT, &t_ana };
 static CTOR(freq_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_freq;
 }
 static m_bool import_freq(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_freq, freq_ctor, NULL))
+  Type t_freq;
+  CHECK_OB((t_freq = gwi_mk_type(gwi, "Freq", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_freq, freq_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_asc = { "ASC", SZ_INT, &t_ana };
 static CTOR(asc_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_asc;
 }
 static m_bool import_asc(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_asc, asc_ctor, NULL))
+  Type t_asc;
+  CHECK_OB((t_asc = gwi_mk_type(gwi, "ASC", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_asc, asc_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_ass = { "ASS", SZ_INT, &t_ana };
 static CTOR(ass_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_ass;
 }
 static m_bool import_ass(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_ass, ass_ctor, NULL))
+  Type t_ass;
+  CHECK_OB((t_ass = gwi_mk_type(gwi, "ASS", SZ_INT, t_ana )))
+  CHECK_BB(gwi_class_ini(gwi, t_ass, ass_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
   return 1;
 }
 
-static struct Type_ t_fc = { "FC", SZ_INT, &t_object };
 static m_int o_fc_vector;
 static CTOR(fc_ctor) {
   *(Vector*)(o->data + o_fc_vector) = new_vector();
@@ -603,7 +614,7 @@ static MFUN(fc_compute) {
   m_uint i;
   M_Object ret;
   Vector v = *(Vector*)(o->data + o_fc_vector);
-  Type t = array_type(&t_float, 1);
+  Type t = array_type(t_float, 1);
   ret = new_M_Array(t, SZ_FLOAT, vector_size(v), 1);
   vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
@@ -674,7 +685,9 @@ INSTR(fc_disconnect) { GWDEBUG_EXE
 }
 
 static m_bool import_fc(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_fc, fc_ctor, fc_dtor))
+  Type t_fc;
+  CHECK_OB((t_fc = gwi_mk_type(gwi, "FC", SZ_INT , NULL)))
+  CHECK_BB(gwi_class_ini(gwi, t_fc, fc_ctor, fc_dtor))
 	gwi_item_ini(gwi,"int", "@vector");
   o_fc_vector = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fc_vector)

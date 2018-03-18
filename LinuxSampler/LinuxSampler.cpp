@@ -78,7 +78,7 @@ private:
 	}
 };
 
-TICK(tick) {
+static TICK(tick) {
   myLinuxSampler* ls = (myLinuxSampler*)u->ug;
   UGEN(u->channel[0])->out = 0;
   UGEN(u->channel[1])->out = 0;
@@ -86,9 +86,7 @@ TICK(tick) {
   u->out = u->last = (UGEN(u->channel[0])->out + UGEN(u->channel[1])->out)/2;
 }
 
-static struct Type_ t_ls= { (m_str)"LinuxSampler", SZ_INT, &t_ugen };
-CTOR(linuxsampler_ctor)
-{
+static CTOR(linuxsampler_ctor) {
   if(!sampler)
     sampler = new LinuxSampler::Sampler();
   std::map<String,LinuxSampler::DeviceCreationParameter*> param;
@@ -97,73 +95,62 @@ CTOR(linuxsampler_ctor)
   assign_ugen(UGEN(o), 0, 2, 0, (void*)ls);
 }
 
-DTOR(linuxsampler_dtor)
-{
+static DTOR(linuxsampler_dtor) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   delete ls_obj;
 }
 
-MFUN(linuxsampler_load)
-{
+static MFUN(linuxsampler_load) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data + o_ls_data);
   ls_obj->load(STRING(*(M_Object*)MEM(SZ_INT)), 0);
 }
 
 
-MFUN(linuxsampler_load_instrument)
-{
+static MFUN(linuxsampler_load_instrument) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data + o_ls_data);
   ls_obj->load(STRING(*(M_Object*)MEM(SZ_INT)), *(m_uint*)MEM(SZ_INT*2));
 }
 
-MFUN(linuxsampler_noteOn)
-{
+static MFUN(linuxsampler_noteOn) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOn(
     (*(m_uint*)RETURN = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2), 0 );
 }
 
-MFUN(linuxsampler_noteOff)
-{
+static MFUN(linuxsampler_noteOff) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendNoteOff(
     (*(m_uint*)RETURN = *(m_int*)MEM(SZ_INT)), *(m_int*)MEM(SZ_INT*2),0 );
 }
 
-MFUN(linuxsampler_pitchbend)
-{
+static MFUN(linuxsampler_pitchbend) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   if( ls_obj->Engine() ) ls_obj->Engine()->SendPitchbend(
     *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2), 0 );
 }
 
-MFUN(linuxsampler_status)
-{
+static MFUN(linuxsampler_status) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   *(m_uint*)RETURN = ls_obj->Engine() ? ls_obj->Engine()->InstrumentStatus() : 0;
 }
 
-MFUN(linuxsampler_getgain)
-{
+static MFUN(linuxsampler_getgain) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   *(m_float*)RETURN = ls_obj->Engine() ? ls_obj->Engine()->Volume() : 0;
 }
 
-MFUN(linuxsampler_setgain)
-{
+static MFUN(linuxsampler_setgain) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   if( ls_obj->Engine() ) ls_obj->Engine()->Volume(*(m_float*)RETURN);
 }
 
-MFUN(linuxsampler_getpan)
-{
+static MFUN(linuxsampler_getpan) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   *(m_float*)RETURN = ls_obj->Engine() ? ls_obj->Engine()->Pan() : 0;
 }
 
-MFUN(linuxsampler_setpan)
-{
+static MFUN(linuxsampler_setpan) {
   myLinuxSampler * ls_obj = *(myLinuxSampler**) (o->data +o_ls_data);
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   if(ls_obj->Engine())
@@ -174,7 +161,9 @@ extern "C"
 {
 IMPORT
 {
-  CHECK_BB(gwi_class_ini(gwi, &t_ls, linuxsampler_ctor, linuxsampler_dtor))
+  Type t_ls;
+  CHECK_OB((t_ls = gwi_mk_type(gwi, (m_str)"LinuxSampler", SZ_INT, t_ugen)))
+  CHECK_BB(gwi_class_ini(gwi, t_ls, linuxsampler_ctor, linuxsampler_dtor))
 	gwi_item_ini(gwi,(m_str)"int", (m_str)"@sampler");
   o_ls_data = gwi_item_end(gwi, ae_flag_member, NULL);
   gwi_func_ini(gwi, "void", "load", linuxsampler_load);

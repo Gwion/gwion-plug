@@ -15,7 +15,6 @@
 
 #include <pthread.h>
 #include "fmsynth.h"
-static struct Type_ t_fmsynth = {"FMSynth", SZ_INT, &t_ugen };
 static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
 #define SYNTH(o) *(fmsynth_t**)(o->data + o_fmsynth_data)
 #define NAME(o) *(M_Object*)(o->data + o_fmsynth_name)
@@ -194,7 +193,9 @@ IMPORT
   ALLOC_PTR(format, m_uint, FMSYNTH_STATUS_INVALID_FORMAT);
   ALLOC_PTR(unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
-  CHECK_BB(gwi_class_ini(gwi, &t_fmsynth, ctor, dtor))
+  Type t_fmsynth;
+  CHECK_BB((t_fmsynth = gwi_mk_type(gwi, "FMSynth", SZ_INT, t_ugen)))
+  CHECK_BB(gwi_class_ini(gwi, t_fmsynth, ctor, dtor))
 	gwi_item_ini(gwi,"int", "&synth");
   o_fmsynth_data = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_data)

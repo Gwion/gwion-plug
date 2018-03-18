@@ -83,10 +83,6 @@ struct Arg* new_Arg(char t, char* stack)
   return arg;
 }
 
-static struct Type_ t_lo       = { "Lo",     SZ_INT, &t_event };
-static struct Type_ t_loin     = { "OscIn",  SZ_INT, &t_lo };
-static struct Type_ t_loout    = { "OscOut", SZ_INT, &t_lo };
-
 static m_int o_lo_addr, o_lo_args, o_lo_serv, o_lo_meth, o_lo_curr;
 #define ADDR(o) *(lo_address*)    (o->data + o_lo_addr)
 #define ARGS(o) *(Vector*)        (o->data + o_lo_args)
@@ -140,22 +136,19 @@ static MFUN(osc_send)
   *(m_uint*)RETURN = lo_send_message(ADDR(o), STRING(*(M_Object*)MEM(SZ_INT)), msg) ? 1 : 0;
 }
 
-static INSTR(oscsend_add_int)
-{
+static INSTR(oscsend_add_int) { GWDEBUG_EXE
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('i', REG(0)));
   release(**(M_Object**)REG(0), shred);
 }
 
-static INSTR(oscsend_add_float)
-{
+static INSTR(oscsend_add_float) { GWDEBUG_EXE
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('d', REG(0)));
   release(**(M_Object**)REG(0), shred);
 }
 
-static INSTR(oscsend_add_string)
-{
+static INSTR(oscsend_add_string) { GWDEBUG_EXE
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('s', REG(0)));
   release(**(M_Object**)REG(0), shred);
@@ -291,11 +284,11 @@ found:
   *(m_uint*)RETURN = 1;
 }
 
-CTOR(lo_ctor){ ARGS(o) = new_vector(); }
-CTOR(loin_ctor){ METH(o) = new_vector(); CURR(o) = new_vector();}
-CTOR(lo_dtor) { free_vector(ARGS(o)); }
-CTOR(loout_dtor){ if(ADDR(o))lo_address_free(ADDR(o));}
-CTOR(loin_dtor){ free_vector(METH(o)); free_vector(CURR(o));}
+static CTOR(lo_ctor){ ARGS(o) = new_vector(); }
+static CTOR(loin_ctor){ METH(o) = new_vector(); CURR(o) = new_vector();}
+static CTOR(lo_dtor) { free_vector(ARGS(o)); }
+static CTOR(loout_dtor){ if(ADDR(o))lo_address_free(ADDR(o));}
+static CTOR(loin_dtor){ free_vector(METH(o)); free_vector(CURR(o));}
 
 static MFUN(oscin_stop)
 {
@@ -376,15 +369,20 @@ static MFUN(oscin_get_s)
   release_Arg(arg);
 }
 
-IMPORT
-{
-  CHECK_BB(gwi_class_ini(gwi, &t_lo, lo_ctor, NULL))
+IMPORT {
+  Type t_lo, t_loin, t_loout;
+  CHECK_OB((t_lo    = gwi_mk_type(gwi, "Lo",     SZ_INT, t_event)))
+  CHECK_OB((t_loin  = gwi_mk_type(gwi, "OscIn",  SZ_INT, t_lo)))
+  CHECK_OB((t_loout = gwi_mk_type(gwi, "OscOut", SZ_INT, t_lo)))
+  SET_FLAG(t_lo, ae_flag_abstract);
+
+  CHECK_BB(gwi_class_ini(gwi, t_lo, lo_ctor, NULL))
 	gwi_item_ini(gwi,"int",  "@args");
   o_lo_args = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_args)
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_loout, NULL, loout_dtor))
+  CHECK_BB(gwi_class_ini(gwi, t_loout, NULL, loout_dtor))
 	gwi_item_ini(gwi,"int",  "@addr");
   o_lo_addr = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_addr)
@@ -397,7 +395,7 @@ IMPORT
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_loin, loin_ctor, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_loin, loin_ctor, NULL))
 	gwi_item_ini(gwi,"int",  "@serv");
   o_lo_serv = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_lo_serv)

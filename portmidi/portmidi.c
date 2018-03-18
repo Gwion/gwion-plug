@@ -14,10 +14,6 @@
 #include <pthread.h>
 #include <unistd.h>
 
-struct Type_ t_portmidi = { "PortMidi", SZ_INT, &t_event };
-struct Type_ t_midiout  = { "MidiOut",  SZ_INT, &t_portmidi };
-struct Type_ t_midiin   = { "MidiIn",   SZ_INT, &t_portmidi };
-
 static Map map = NULL;
 typedef struct
 {
@@ -210,7 +206,13 @@ static MFUN(midiin_read)
 
 IMPORT
 {
-  CHECK_BB(gwi_class_ini(gwi, &t_portmidi, pm_ctor, pm_dtor))
+  Type t_portmidi, t_midiout, t_midiin;
+  CHECK_OB((t_portmidi = gwi_mk_type(gwi, "PortMidi", SZ_INT, t_event)))
+  CHECK_OB((t_midiout  = gwi_mk_type(gwi, "MidiOut", SZ_INT,  t_portmidi)))
+  CHECK_OB((t_midiin   = gwi_mk_type(gwi, "MidiIn", SZ_INT,   t_portmidi)))
+  SET_FLAG(t_portmidi, ae_flag_abstract);
+
+  CHECK_BB(gwi_class_ini(gwi, t_portmidi, pm_ctor, pm_dtor))
 	gwi_item_ini(gwi,"int",  "@dummy");
    gwi_item_end(gwi, ae_flag_member, NULL);
 	gwi_item_ini(gwi,"int",  "@stream");
@@ -240,7 +242,7 @@ IMPORT
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_midiout, NULL, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_midiout, NULL, NULL))
   gwi_func_ini(gwi, "int", "open", midiout_open);
     gwi_func_arg(gwi, "int", "id");
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -253,7 +255,7 @@ IMPORT
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_midiin, NULL, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_midiin, NULL, NULL))
   gwi_func_ini(gwi, "int", "open", midiin_open);
     gwi_func_arg(gwi, "int", "id");
   CHECK_BB(gwi_func_end(gwi, 0))

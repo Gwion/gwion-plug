@@ -7,7 +7,6 @@
 #include "import.h"
 #include "k.h"
 // TODO: thread
-static struct Type_ t_k = { "K", 0, NULL };
 
 struct M_Vector_ {
   char*  ptr;   // data
@@ -47,7 +46,7 @@ static SFUN(gw_knn)
   m_uint* labl = (m_uint*)ARRAY(labl_obj)->ptr;
   m_uint* ret = knn_classify_multi(data_x, data_y, data, n_labl, labl, inst_x, inst, k);
 
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret_obj = new_M_Array(t, SZ_INT, inst_x, 1);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
@@ -72,7 +71,7 @@ static SFUN(gw_kmeans)
   m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** cent = gw2c(ARRAY(cent_obj), &cent_x, &cent_y);
   m_uint* ret = kmeans(data_x, data_y, data, k, theta, cent, initial);
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret_obj = new_M_Array(t, SZ_INT, data_x, 1);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
@@ -95,12 +94,12 @@ static SFUN(gw_kmeans_refine)
   m_uint data_x, data_y;
   m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** ret = kmeans_refine(data_x, data_y, data, iter, n_points, n_label);
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret_obj = new_M_Array(t, SZ_INT, data_x, 2);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
-  Type t = array_type(&t_float, 1);
+  Type t = array_type(t_float, 1);
     M_Object obj = new_M_Array(t, SZ_FLOAT, data_y, 1);
     memcpy(ARRAY(obj)->ptr, ret[i], data_y * sizeof(m_float));
     m_vector_set(ARRAY(ret_obj), i, (char*)&obj);
@@ -113,7 +112,9 @@ static SFUN(gw_kmeans_refine)
 
 IMPORT
 {
-  CHECK_BB(gwi_class_ini(gwi, &t_k, NULL, NULL))
+  Type t_k ;
+  CHECK_OB((t_k = gwi_mk_type(gwi, "K", 0, NULL )))
+  CHECK_BB(gwi_class_ini(gwi, t_k, NULL, NULL))
 
   gwi_func_ini(gwi, "int[]", "nn", gw_knn);
     gwi_func_arg(gwi, "float", "data[][]");

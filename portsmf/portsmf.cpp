@@ -10,8 +10,8 @@
 #define END(o)   *(m_float*)(o->data + o_midiev_end)
 #define DUR(o)   *(m_float*)(o->data + o_midiev_dur)
 #define SEQ(o)   *(Alg_seq**)(o->data + o_midifile_seq)
-struct Type_ t_midifileev = { (m_str)"MidiFileEv", SZ_INT, &t_object };
-struct Type_ t_midifile = { (m_str)"MidiFile",  SZ_INT, &t_object };
+struct Type_ t_midifileev = { (m_str)"MidiFileEv", SZ_INT };
+struct Type_ t_midifile = { (m_str)"MidiFile",  SZ_INT };
 m_int o_midifile_seq;
 m_int o_midiev_type;
 m_int o_midiev_start;

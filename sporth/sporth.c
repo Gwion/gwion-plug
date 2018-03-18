@@ -17,8 +17,6 @@ typedef struct sporthData {
   m_bool parsed;
 } sporthData;
 
-struct Type_ t_gworth = { "Sporth", SZ_INT, &t_ugen };
-
 static int sporth_chuck_in(sporth_stack *stack, void *ud) {
   plumber_data *pd = (plumber_data *) ud;
   const sporthData * data = (sporthData *) pd->ud;
@@ -175,7 +173,10 @@ static MFUN(sporth_parse_file) {
 }
 
 IMPORT {
-  CHECK_BB(gwi_class_ini(gwi, &t_gworth, sporth_ctor, sporth_dtor))
+  Type t_gworth;
+  CHECK_BB((t_gworth = gwi_mk_type(gwi, "Sporth", SZ_INT, t_ugen)))
+
+  CHECK_BB(gwi_class_ini(gwi, t_gworth, sporth_ctor, sporth_dtor))
 
   CHECK_BB(gwi_func_ini(gwi, "float", "p", sporth_setp))
   CHECK_BB(gwi_func_arg(gwi, "int", "index"))

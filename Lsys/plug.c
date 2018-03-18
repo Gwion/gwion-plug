@@ -15,8 +15,6 @@
 
 #include "lsys.h"
 
-static struct Type_ t_lsys = {"Lsys", SZ_INT, &t_ugen };
-
 typedef struct
 {
 	lsys_d       lsys;
@@ -96,8 +94,7 @@ static MFUN(gw_lsys_size)
 	*(m_uint*)RETURN = ptr->is_init ? ptr->lst.size : -1;
 }
 
-static MFUN(gw_lsys_get)
-{
+static MFUN(gw_lsys_get) {
 	int i;
 	Lsys*  ptr   = LSYS(o);
 	if(!ptr->is_init)
@@ -113,19 +110,24 @@ static MFUN(gw_lsys_get)
 	*(m_uint*)RETURN = (m_uint)new_String(shred, str);
 }
 
-IMPORT
-{
-	CHECK_BB(gwi_class_ini(gwi, &t_lsys, ctor, dtor))
-	gwi_func_ini(gwi, "void", "parse", gw_lsys_parse);
-		gwi_func_arg(gwi, "int",    "ord");
-		gwi_func_arg(gwi, "string", "str");
-	CHECK_BB(gwi_func_end(gwi, 0))
-	gwi_func_ini(gwi, "void", "reset", gw_lsys_reset);
-	CHECK_BB(gwi_func_end(gwi, 0))
-	gwi_func_ini(gwi, "int", "size", gw_lsys_size);
-	CHECK_BB(gwi_func_end(gwi, 0))
-	gwi_func_ini(gwi, "string", "get", gw_lsys_get);
-	CHECK_BB(gwi_func_end(gwi, 0))
-	CHECK_BB(gwi_class_end(gwi))
-	return 1;
+IMPORT {
+  Type t_lsys;
+  CHECK_OB((t_lsys = gwi_mk_type(gwi, "Lsys", SZ_INT, t_ugen)))
+  CHECK_BB(gwi_class_ini(gwi, t_lsys, ctor, dtor))
+
+  CHECK_BB(gwi_func_ini(gwi, "void", "parse", gw_lsys_parse))
+    CHECK_BB(gwi_func_arg(gwi, "int",    "ord"))
+    CHECK_BB(gwi_func_arg(gwi, "string", "str"))
+  CHECK_BB(gwi_func_end(gwi, 0))
+
+  CHECK_BB(gwi_func_ini(gwi, "void", "reset", gw_lsys_reset))
+  CHECK_BB(gwi_func_end(gwi, 0))
+
+  CHECK_BB(gwi_func_ini(gwi, "int", "size", gw_lsys_size))
+  CHECK_BB(gwi_func_end(gwi, 0))
+
+  CHECK_BB(gwi_func_ini(gwi, "string", "get", gw_lsys_get))
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
+  return 1;
 }

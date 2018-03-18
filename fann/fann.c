@@ -15,12 +15,8 @@
 #include "err_msg.h"
 #include "lang.h"
 
+static Type t_fann_connect, t_fann_data;
 extern m_int o_fileio_file;
-
-static struct Type_ t_fann_connect = { "FANN_connect", sizeof(m_uint), &t_object };
-static struct Type_ t_fann_base =    { "FANN_base",    sizeof(m_uint), &t_object };
-static struct Type_ t_fann =         { "FANN",         sizeof(m_uint), &t_fann_base };
-static struct Type_ t_fann_data =    { "FANN_data",    sizeof(m_uint), &t_fann_base };
 
 static m_int o_fann_error, o_fann_from, o_fann_to, o_fann_weight;
 
@@ -188,7 +184,7 @@ static MFUN(layers)
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   unsigned int j[size];
   fann_get_layer_array(FANN(o), j);
@@ -204,7 +200,7 @@ static MFUN(bias)
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   unsigned int j[size];
   fann_get_bias_array(FANN(o), j);
@@ -224,7 +220,7 @@ static struct fann_connection to_fann(M_Object o)
 static M_Object from_fann(struct fann_connection c)
 {
   M_Object o= new_M_Object(NULL);
-  initialize_object(o, &t_fann_connect);
+  initialize_object(o, t_fann_connect);
   *(m_uint*)(o->data + o_fann_from)    = c.from_neuron;
   *(m_uint*)(o->data + o_fann_to)      = c.to_neuron;
   *(m_float*)(o->data + o_fann_weight) = c.weight;
@@ -238,7 +234,7 @@ static MFUN(connection_array)
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   struct fann_connection c[size];
   fann_get_connection_array(FANN(o), c);
@@ -279,7 +275,7 @@ static MFUN(get_weigths)
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, size, 1);
   m_float f[size];
   fann_get_weights(FANN(o), f);
@@ -384,7 +380,7 @@ static MFUN(test)
   for(i = 0; i < s_out; i++)
     m_vector_get(ARRAY(o_out), i, (char*)&out[i]);
   m_float* f = fann_test(FANN(o), in, out);
-  Type t = array_type(&t_float, 1);
+  Type t = array_type(t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, s_ret, 1);
   for(i = 0; i < s_ret; i++)
     m_vector_set(ARRAY(o_out), i, (char*)&f[i]);
@@ -419,7 +415,7 @@ static MFUN(run)
   m_float  ptr[size];
   for(i = 0; i < size; i++)
     m_vector_get(ARRAY(array), i, &ptr[i]);
-  Type t = array_type(&t_float, 1);
+  Type t = array_type(t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, fann_get_num_output(FANN(o)), 1);
   m_float *f = fann_run(FANN(o), ptr);
   for(i = 0; i < fann_get_num_output(FANN(o)); i++)
@@ -610,7 +606,7 @@ static MFUN(train_input)
   }
   m_float* f = fann_get_train_input(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(&t_float, 1);
+  Type t = array_type(t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, size, 1);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
@@ -626,7 +622,7 @@ static MFUN(train_output)
   }
   m_float* f = fann_get_train_output(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(&t_float, 1);
+  Type t = array_type(t_float, 1);
   M_Object ret = new_M_Array(t, SZ_FLOAT, size, 1);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
@@ -727,7 +723,7 @@ static SFUN(train_merge)
   M_Object ret = new_M_Object(shred);
   M_Object l = *(M_Object*)MEM(SZ_INT);
   M_Object r = *(M_Object*)MEM(SZ_INT*2);
-  initialize_object(ret, &t_fann_data);
+  initialize_object(ret, t_fann_data);
   DATA(ret) = fann_merge_train_data(DATA(l), DATA(r));
   *(m_uint*)RETURN = (m_uint)ret;
 }
@@ -737,7 +733,7 @@ static SFUN(train_duplicate)
   M_Object ret = new_M_Object(shred);
   M_Object l = *(M_Object*)MEM(SZ_INT);
   M_Object r = *(M_Object*)MEM(SZ_INT*2);
-  initialize_object(ret, &t_fann_data);
+  initialize_object(ret, t_fann_data);
   DATA(ret) = fann_duplicate_train_data(DATA(l));
   *(m_uint*)RETURN = (m_uint)ret;
 }
@@ -747,7 +743,7 @@ static MFUN(train_do_subset)
   M_Object ret = new_M_Object(shred);
   m_uint pos = *(m_uint*)MEM(SZ_INT);
   m_uint len = *(m_uint*)MEM(SZ_INT*2);
-  initialize_object(ret, &t_fann_data);
+  initialize_object(ret, t_fann_data);
   DATA(ret) = fann_subset_train_data(DATA(o), pos, len);
   *(m_uint*)RETURN = (m_uint)ret;
 }
@@ -1130,7 +1126,7 @@ MFUN(get_cascade_activation_functions)
   }
   m_uint i, size = fann_get_cascade_activation_functions_count(FANN(o));
   enum fann_activationfunc_enum * tmp = fann_get_cascade_activation_functions(FANN(o));
-  Type t = array_type(&t_int, 1);
+  Type t = array_type(t_int, 1);
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
@@ -1168,7 +1164,7 @@ MFUN(get_cascade_activation_steepnesses)
   }
   m_uint i, size = fann_get_cascade_activation_steepnesses_count(FANN(o));
   m_float* tmp = fann_get_cascade_activation_steepnesses(FANN(o));
-  Type t = array_type(&t_float, 1);
+  Type t = array_type(t_float, 1);
   M_Object ret = new_M_Array(t, SZ_INT, size, 1);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
@@ -1204,7 +1200,12 @@ MFUN(set_cascade_num_candidate_groups)
 }
 
 m_bool import(Gwi gwi) {
-  CHECK_BB(gwi_class_ini(gwi, &t_fann_connect, NULL, NULL))
+  Type t_fann_connect,  t_fann_base, t_fann, t_fann_data;
+  CHECK_OB((t_fann_connect = gwi_mk_type(gwi, "FANN_connect", SZ_INT , NULL)))
+  CHECK_OB((t_fann_base = gwi_mk_type(gwi, "FANN_base", SZ_INT , NULL)))
+  CHECK_OB((t_fann = gwi_mk_type(gwi, "FANN", SZ_INT, t_fann_base )))
+  CHECK_OB((t_fann_data = gwi_mk_type(gwi, "FANN_data", SZ_INT, t_fann_base )))
+  CHECK_BB(gwi_class_ini(gwi, t_fann_connect, NULL, NULL))
 	gwi_item_ini(gwi,"int",  "from");
   o_fann_from = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fann_from)
@@ -1217,7 +1218,7 @@ m_bool import(Gwi gwi) {
   CHECK_BB(gwi_class_end(gwi))
 
   // this is for error handling
-  CHECK_BB(gwi_class_ini(gwi, &t_fann_base, NULL, NULL))
+  CHECK_BB(gwi_class_ini(gwi, t_fann_base, NULL, NULL))
 	gwi_item_ini(gwi,"int",  "@data");
   o_fann_error = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fann_error)
@@ -1237,7 +1238,7 @@ m_bool import(Gwi gwi) {
   CHECK_BB(gwi_class_end(gwi))
 
 //  Training Data Manipulation
-  CHECK_BB(gwi_class_ini(gwi, &t_fann_data, NULL, data_dtor))
+  CHECK_BB(gwi_class_ini(gwi, t_fann_data, NULL, data_dtor))
   gwi_func_ini(gwi, "void", "from_data", train_from_array);
     gwi_func_arg(gwi, "int", "num");
     gwi_func_arg(gwi, "float[][]", "in");
@@ -1293,7 +1294,7 @@ m_bool import(Gwi gwi) {
 
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_fann, NULL, fann_dtor))
+  CHECK_BB(gwi_class_ini(gwi, t_fann, NULL, fann_dtor))
   gwi_func_ini(gwi, "string", "type_str", type_str);
     gwi_func_arg(gwi, "int", "layer");
   CHECK_BB(gwi_func_end(gwi, ae_flag_static))

@@ -27,12 +27,12 @@ Type new_type(const m_uint xid, const m_str name, const Type);
 Type type_copy(const Type type);
 Env type_engine_init(VM*, const Vector);
 void start_type_xid(void);
-Value find_value(const Type, const S_Symbol);
-Func find_func(const Type, const S_Symbol);
+Value find_value(const Type, const Symbol);
+Func find_func(const Type, const Symbol);
 Type find_type(const Env, ID_List);
 const m_bool isprim(const Type);
 const m_bool isa(const Type, const Type);
-const m_bool isres(const S_Symbol, const m_uint);
+const m_bool isres(const Symbol, const m_uint);
 const Type array_type(const Type, const m_uint);
 const Type get_array(const Type, const Array_Sub, const m_str);
 const Type find_common_anc(const Type, const Type);
@@ -51,6 +51,7 @@ extern struct Type_ t_function, t_func_ptr;
 extern struct Type_ t_void, t_class, t_null, t_union;
 extern struct Type_ t_vararg, t_string, t_ptr, t_gack;
 */
-extern struct Type_ t_ugen;
+//extern struct 
+Type t_ugen;
 #endif
 
