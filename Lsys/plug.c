@@ -50,7 +50,7 @@ static TICK(tick)
 
 static CTOR(ctor)
 {
-	Lsys* l = (Lsys*) malloc(sizeof(Lsys));
+	Lsys* l = (Lsys*) xmalloc(sizeof(Lsys));
 	lsys_init(&l->lsys);
 	l->is_init = 0;
 	l->pos = 0;

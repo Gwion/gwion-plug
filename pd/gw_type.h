@@ -34,7 +34,7 @@ const m_bool isprim(const Type);
 const m_bool isa(const Type, const Type);
 const m_bool isres(const Symbol, const m_uint);
 const Type array_type(const Type, const m_uint);
-const Type get_array(const Type, const Array_Sub, const m_str);
+const Type check_array_empty(const Type, const Array_Sub, const m_str);
 const Type find_common_anc(const Type, const Type);
 const m_uint id_list_len(ID_List);
 void type_path(m_str, const ID_List);

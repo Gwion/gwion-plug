@@ -65,7 +65,7 @@ void release_server(struct Server* s)
 
 struct Arg* new_Arg(char t, char* stack)
 {
-  struct Arg* arg = calloc(1, sizeof(struct Arg));
+  struct Arg* arg = xcalloc(1, sizeof(struct Arg));
   arg->t = t;
   arg->ref = 1;
   switch(t)
@@ -168,7 +168,7 @@ static int osc_method_handler(const char* path, const char* type,
   v = new_vector();
   for(i = 0; i < argc; i++)
   {
-    struct Arg* arg = malloc(sizeof(struct Arg));
+    struct Arg* arg = xmalloc(sizeof(struct Arg));
     arg->ref = 1;
     switch(type[i])
     {
@@ -231,7 +231,7 @@ static MFUN(osc_port)
   if(!s)
   {
     sprintf(c, "%i", port);
-    s = calloc(1, sizeof(struct Server));
+    s = xcalloc(1, sizeof(struct Server));
     s->thread = lo_server_thread_new(c, osc_error_handler);
     if(!s->thread)
     {
@@ -268,7 +268,7 @@ static MFUN(osc_add_method)
     if(!strcmp(m->type, type))
       goto found;
   }
-  m = (struct Method*)calloc(1, sizeof(struct Method));
+  m = (struct Method*)xcalloc(1, sizeof(struct Method));
   m->path = path;
   m->type = type;
   m->client = new_vector();

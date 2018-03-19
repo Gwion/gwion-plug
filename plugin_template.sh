@@ -44,7 +44,6 @@ cat << EOF > $1/${1,,}.c
 //#include "lang.h"
 //#include "ugen.h"
 
-static struct Type_ t_${1,,} = { "$1", SZ_INT, &t_object };
 
 CTOR(${1,,}_ctor) { /*code here */ }
 
@@ -59,7 +58,8 @@ static SFUN(sfun) { /*code here */ }
 
 IMPORT
 {
-  CHECK_BB(importer_class_ini(importer, &t_${1,,},${1,,}_ctor, ${1,,}_dtor))
+  Type_ t_${1,,} = gwi_mk_type(gwi,  "$1", SZ_INT, t_object);
+  CHECK_BB(importer_class_ini(importer, t_${1,,},${1,,}_ctor, ${1,,}_dtor))
 
   CHECK_BB(importer_item_ini(importer, "int",  "member"))
   CHECK_BB(o_${1,,}_member_data = importer_item_end(importer, ae_flag_member, NULL))

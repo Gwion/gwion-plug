@@ -16,10 +16,10 @@ typedef struct {
 } sp_buffer;
 
 static m_int sp_buffer_create(sp_buffer** p, m_uint size) {
-  *p = malloc(sizeof(sp_buffer));
+  *p = xmalloc(sizeof(sp_buffer));
   (*p)->size = size;
   (*p)->pos = 0;
-  (*p)->data = calloc(size, sizeof(m_float));
+  (*p)->data = xcalloc(size, sizeof(m_float));
   return SP_OK;
 }
 
@@ -38,7 +38,7 @@ static m_int sp_buffer_add(sp_buffer* buffer, m_float f) {
 
 static m_float* sp_buffer_get(sp_buffer* buffer) {
   m_uint i;
-  m_float* ret = calloc(buffer->size, sizeof(m_float));
+  m_float* ret = xcalloc(buffer->size, sizeof(m_float));
   for(i = 0; i < buffer->size; i++)
     ret[i] = buffer->data[(buffer->pos + i) % buffer->size];
   return ret;
@@ -74,7 +74,7 @@ static TICK(fft_tick) {
 }
 
 static CTOR(fft_ctor) {
-  Fft* fft = UGEN(o)->ug = calloc(1, sizeof(Fft));
+  Fft* fft = UGEN(o)->ug = xcalloc(1, sizeof(Fft));
   assign_ugen(UGEN(o), 1, 1, 1, fft);
   UGEN(o)->tick = fft_tick;
   fft->sp = shred->vm_ref->sp;
@@ -106,7 +106,7 @@ static MFUN(fft_init) {
   if(ana->fft)
     FFTwrapper_destroy(&ana->fft);
   sp_buffer_create(&ana->buf, size);
-  ana->frq = calloc(size, sizeof(FFTFREQS));
+  ana->frq = xcalloc(size, sizeof(FFTFREQS));
   newFFTFREQS(ana->frq, size);
   FFTwrapper_create(&ana->fft, size);
   ana->frq->size = size;
@@ -349,8 +349,8 @@ m_float compute_flux(Ana* fft)
   }
   else
   {
-    fft->prev = malloc(fft->size * sizeof(m_float));
-    fft->norm = malloc(fft->size * sizeof(m_float));
+    fft->prev = xmalloc(fft->size * sizeof(m_float));
+    fft->norm = xmalloc(fft->size * sizeof(m_float));
   }
   // copy curr to prev
   for(i = 0; i < fft->size; i++)
@@ -366,11 +366,11 @@ m_float compute_corr(Ana* a,Ana* b)
   if(a->size != b->size)
     return NAN;
   if(!a->corr)
-    a->corr = fftw_malloc(a->size * sizeof(m_float));
+    a->corr = fftw_xmalloc(a->size * sizeof(m_float));
   // forward fft both input spectrum
-  spec    = malloc(a->size * sizeof(m_float));
-  a_spec  = malloc(a->size * sizeof(m_float));
-  b_spec  = malloc(b->size * sizeof(m_float));
+  spec    = xmalloc(a->size * sizeof(m_float));
+  a_spec  = xmalloc(a->size * sizeof(m_float));
+  b_spec  = xmalloc(b->size * sizeof(m_float));
   fftw_execute_dft_r2c(a->plan, a->fval, a_spec);
   fftw_execute_dft_r2c(b->plan, b->fval, b_spec);
 
@@ -455,7 +455,7 @@ static MFUN(ana_set_fft) {
 }
 
 static CTOR(ana_ctor) {
-  Ana* ana = *(Ana**)(o->data + o_ana_ana) = malloc(sizeof(Ana));
+  Ana* ana = *(Ana**)(o->data + o_ana_ana) = xmalloc(sizeof(Ana));
   ana->sr = shred->vm_ref->sp->sr;
   ana->percent = 50; // rolloff;
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)ana_dummy;

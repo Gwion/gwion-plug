@@ -52,7 +52,7 @@ static TICK(gwsporth_tick) {
 }
 
 static CTOR(sporth_ctor) {
-  sporthData * data = malloc(sizeof(sporthData));
+  sporthData * data = xmalloc(sizeof(sporthData));
   data->parsed = 0;
   data->in = 0;
   data->sp = shred->vm_ref->sp;

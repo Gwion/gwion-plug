@@ -43,7 +43,7 @@ typedef struct {
 } EvdevInfo;
 
 static CTOR(evdev_base_ctor) {
-  EvdevInfo* info = INFO(o) = calloc(1, sizeof(EvdevInfo));
+  EvdevInfo* info = INFO(o) = xcalloc(1, sizeof(EvdevInfo));
   info->index    = -1;
   info->args     = new_vector();
 }
@@ -76,7 +76,7 @@ static void* evdev_process(void* arg) {
     rc = libevdev_next_event(info->evdev, LIBEVDEV_READ_FLAG_NORMAL, &event);
     if(rc == 0 && event.type) {
       pthread_mutex_lock(&info->mutex);
-      EvdevArg* ev = malloc(sizeof(EvdevArg));
+      EvdevArg* ev = xmalloc(sizeof(EvdevArg));
       ev->type  = event.type;
       ev->code  = event.code;
       ev->value = event.value;

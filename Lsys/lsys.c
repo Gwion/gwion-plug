@@ -83,7 +83,7 @@ static int toint(unsigned char a) {
 
 static int lsys_list_append(lsys_d *lsys, lsys_list *lst, char c)
 {
-    lsys_item *new = malloc(sizeof(lsys_item));
+    lsys_item *new = xmalloc(sizeof(lsys_item));
     new->ent = &lsys->ent[toint(c)];
     lst->last->nxt = new;
     lst->last = new;

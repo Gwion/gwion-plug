@@ -35,7 +35,7 @@ static MidiInfo* get(VM* vm, m_uint i)
   MidiInfo* info = (MidiInfo*)map_get(map, (vtype)i+1);
   if(!info)
   {
-    info = malloc(sizeof(MidiInfo));
+    info = xmalloc(sizeof(MidiInfo));
     info->stream = NULL;
     info->client = new_vector();
     info->thread = 0;
