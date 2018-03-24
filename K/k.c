@@ -7,8 +7,8 @@
 #include "../../include/defs.h"
 m_float** matrix_alloc(m_uint x, m_uint y) {
   m_uint i;
-  m_float** a = xmalloc(x* sizeof(m_float*));
-  a[0] = xmalloc(x * y * sizeof(m_float));
+  m_float** a = (m_float**)xmalloc(x* sizeof(m_float*));
+  a[0] = (m_float*)xmalloc(x * y * sizeof(m_float));
   for(i = 0; i < x; i++)
     a[i] = *a + y * i;
   return a;
@@ -201,7 +201,7 @@ m_uint knn_classify(m_uint x, m_uint y, m_float** d, m_uint n_labels, m_uint* la
 m_uint* knn_classify_multi(m_uint x, m_uint y, m_float** d, m_uint n_labels, m_uint* labels, m_uint n_instance, m_float** instance, m_uint k)
 {
   m_uint l;
-  m_uint* ret = xmalloc(n_instance * sizeof(m_uint));
+  m_uint* ret = (m_uint*)xmalloc(n_instance * sizeof(m_uint));
   for(l = 0; l < n_instance; l++) {
     m_uint i, j = 0;
     m_float  max = 0.0;

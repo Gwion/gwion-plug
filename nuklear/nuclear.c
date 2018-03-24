@@ -85,7 +85,7 @@ die(const char *fmt, ...)
 static void*
 xxcalloc(size_t siz, size_t n)
 {
-    void *ptr = xcalloc(siz, n);
+    void *ptr = (void*)xcalloc(siz, n);
     if (!ptr) die("Out of memory\n");
     return ptr;
 }
@@ -207,7 +207,7 @@ static void* _loop(void* data)
   XWindow* xw = gw->win;
   if(!active)
     XInitThreads();
-  gw->ctx = xmalloc(sizeof(struct nk_context));
+  gw->ctx = (struct nk_context*)xmalloc(sizeof(struct nk_context));
   if(!active) {
     xw->dpy = XOpenDisplay(NULL);
     xw->root = DefaultRootWindow(xw->dpy);
@@ -253,8 +253,8 @@ static void* _loop(void* data)
 }
 
 static void nk_ctor(M_Object o, VM_Shred shred) {
-  GWindow* gw = xmalloc(sizeof(GWindow));
-  gw->win = xmalloc(sizeof(XWindow));
+  GWindow* gw = (GWindow*)xmalloc(sizeof(GWindow));
+  gw->win = (XWindow*)xmalloc(sizeof(XWindow));
   gw->widget = new_vector();
   gw_nk_init(gw, shred);
   last_window = gw;
@@ -862,31 +862,31 @@ IMPORT {
 	gwi_item_ini(gwi, "int",  "flag");
   o_nk_flags = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_nk_flags)
-  m_uint * border  = xmalloc(SZ_INT);
+  m_uint * border  = (m_uint*)xmalloc(SZ_INT);
   *border  = NK_WINDOW_BORDER;
 	gwi_item_ini(gwi,"int", "BORDER");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, border);
-  m_uint * movable = xmalloc(SZ_INT);
+  m_uint * movable = (m_uint*)xmalloc(SZ_INT);
   *movable = NK_WINDOW_MOVABLE;
 	gwi_item_ini(gwi,"int", "MOVABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, movable);
-  m_uint *scalable = xmalloc(SZ_INT);
+  m_uint *scalable = (m_uint*)xmalloc(SZ_INT);
   *scalable = NK_WINDOW_SCALABLE;
 	gwi_item_ini(gwi,"int", "SCALABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, scalable);
-  m_uint * closable = xmalloc(SZ_INT);
+  m_uint * closable = (m_uint*)xmalloc(SZ_INT);
   *closable = NK_WINDOW_CLOSABLE;
 	gwi_item_ini(gwi,"int", "CLOSABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, closable);
-  m_uint * minimizable = xmalloc(SZ_INT);
+  m_uint * minimizable = (m_uint*)xmalloc(SZ_INT);
   *minimizable = NK_WINDOW_MINIMIZABLE;
 	gwi_item_ini(gwi,"int", "MINIMIZABLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, minimizable);
-  m_uint * title = xmalloc(SZ_INT);
+  m_uint * title = (m_uint*)xmalloc(SZ_INT);
   *title = NK_WINDOW_TITLE;
 	gwi_item_ini(gwi,"int", "TITLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, title);
-  m_uint * menu = xmalloc(SZ_INT);;
+  m_uint * menu = (m_uint*)xmalloc(SZ_INT);;
   *menu = NK_PANEL_MENU;
 	gwi_item_ini(gwi,"int", "MENU");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, menu);
@@ -923,10 +923,10 @@ IMPORT {
   CHECK_BB(gwi_class_end(gwi))
 
 
-  m_uint * simple = xmalloc(SZ_INT);
-  m_uint * field  = xmalloc(SZ_INT);
-  m_uint * box    = xmalloc(SZ_INT);
-  m_uint * editor = xmalloc(SZ_INT);
+  m_uint * simple = (m_uint*)xmalloc(SZ_INT);
+  m_uint * field  = (m_uint*)xmalloc(SZ_INT);
+  m_uint * box    = (m_uint*)xmalloc(SZ_INT);
+  m_uint * editor = (m_uint*)xmalloc(SZ_INT);
   * simple = NK_EDIT_SIMPLE;
   * field  = NK_EDIT_FIELD;
   * box    = NK_EDIT_BOX;
