@@ -55,14 +55,12 @@ typedef struct {
 
 
 static TICK(fft_tick) {
-  Fft* ana = (Fft*)u->ug;
-  base_tick(u);                         // compute inputs
+  Fft* ana = (Fft*)u->module.gen.data;
   if(!ana->buf)
     return;
   sp_buffer_add(ana->buf, u->in);      // add them to buffer
-  if(u->trig) {
-    base_tick(UGEN(u->trig));
-    if(ana->last == ana->sp->pos || UGEN(u->trig)->out) {  // if trigged, compute fft
+  if(u->module.gen.trig) {
+    if(ana->last == ana->sp->pos || u->module.gen.trig->out) {  // if trigged, compute fft
       m_float* smp = sp_buffer_get(ana->buf);
       /*    if(ana->win)*/                  // do windowing
       /*      ana->win(smp, ana->buf->size);*/
@@ -74,14 +72,14 @@ static TICK(fft_tick) {
 }
 
 static CTOR(fft_ctor) {
-  Fft* fft = UGEN(o)->ug = (Fft*)xcalloc(1, sizeof(Fft));
-  assign_ugen(UGEN(o), 1, 1, 1, fft);
-  UGEN(o)->tick = fft_tick;
+  Fft* fft = UGEN(o)->module.gen.data = (Fft*)xcalloc(1, sizeof(Fft));
+  ugen_ini(UGEN(o), 1, 1);
+  ugen_gen(UGEN(o), fft_tick, fft, 1);
   fft->sp = shred->vm_ref->sp;
 }
 
 static DTOR(fft_dtor) {
-  Fft* ana = (Fft*)UGEN(o)->ug;
+  Fft* ana = (Fft*)UGEN(o)->module.gen.data;
   if(ana->buf)
     sp_buffer_destroy(ana->buf);
   if(ana->frq) {
@@ -94,7 +92,7 @@ static DTOR(fft_dtor) {
 }
 
 static MFUN(fft_init) {
-  Fft* ana = (Fft*)UGEN(o)->ug;
+  Fft* ana = (Fft*)UGEN(o)->module.gen.data;
   m_int size = *(m_int*)MEM(SZ_INT);
   if(size <= 0 || size % 2)Except(shred, "FftInvalidSizeException.")
     if(ana->buf)
@@ -115,7 +113,7 @@ static MFUN(fft_init) {
 
 static MFUN(fft_compute) {
   m_float* smp;
-  Fft* ana = (Fft*)UGEN(o)->ug;
+  Fft* ana = (Fft*)UGEN(o)->module.gen.data;
   if(!ana || ana->sp->pos == ana->last || !ana->buf) {
     *(m_uint*)RETURN = 0;
     return;
@@ -443,7 +441,7 @@ static MFUN(ana_set_fft) {
     *(m_uint*)RETURN = 0;
     return;
   }
-  fft = (Fft*)UGEN(obj)->ug;
+  fft = (Fft*)UGEN(obj)->module.gen.data;
   if(!fft || !fft->buf) {
     err_msg(INSTR_, 0, "FFT probably not initialised.");
     release(obj, shred);

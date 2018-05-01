@@ -143,7 +143,7 @@ static MFUN(parameters)
 
 static MFUN(input)
 {
-  *(m_uint*)RETURN = FANN(o) ? fann_get_num_input(FANN(o)) : - 1;
+  *(m_uint*)RETURN = FANN(o) ? fann_get_num_input(FANN(o)) : -1;
 }
 
 static MFUN(output)

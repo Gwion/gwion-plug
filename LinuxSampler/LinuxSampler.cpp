@@ -79,11 +79,11 @@ private:
 };
 
 static TICK(tick) {
-  myLinuxSampler* ls = (myLinuxSampler*)u->ug;
-  UGEN(u->channel[0])->out = 0;
-  UGEN(u->channel[1])->out = 0;
-  ls->tick(&UGEN(u->channel[0])->out, &UGEN(u->channel[1])->out);
-  u->out = u->last = (UGEN(u->channel[0])->out + UGEN(u->channel[1])->out)/2;
+  myLinuxSampler* ls = (myLinuxSampler*)u->module.gen.data;
+  UGEN(u->connect.multi->channel[0])->out = 0;
+  UGEN(u->connect.multi->channel[1])->out = 0;
+  ls->tick(&UGEN(u->connect.multi->channel[0])->out, &UGEN(u->connect.multi->channel[1])->out);
+  u->out = (UGEN(u->connect.multi->channel[0])->out + UGEN(u->connect.multi->channel[1])->out)/2;
 }
 
 static CTOR(linuxsampler_ctor) {
@@ -91,8 +91,8 @@ static CTOR(linuxsampler_ctor) {
     sampler = new LinuxSampler::Sampler();
   std::map<String,LinuxSampler::DeviceCreationParameter*> param;
   myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->sp->sr);
-  UGEN(o)->tick = tick;
-  assign_ugen(UGEN(o), 0, 2, 0, (void*)ls);
+  ugen_ini(UGEN(o), 0, 2);
+  ugen_gen(UGEN(o), tick, (void*)ls, 0);
 }
 
 static DTOR(linuxsampler_dtor) {

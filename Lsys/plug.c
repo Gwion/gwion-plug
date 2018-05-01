@@ -24,7 +24,7 @@ typedef struct
 	m_bool is_init;
 } Lsys;
 
-#define LSYS(o) ((Lsys*)UGEN(o)->ug)
+#define LSYS(o) ((Lsys*)UGEN(o)->module.gen.data)
 
 static int tochar(int c) {
     if(c >= 10) {
@@ -34,28 +34,24 @@ static int tochar(int c) {
     }
 }
 
-static TICK(tick)
-{
-	Lsys* ptr = (Lsys*)u->ug;
+static TICK(tick) {
+	Lsys* ptr = (Lsys*)u->module.gen.data;
 	u->out = 0;
-	if(!ptr->is_init || !u->trig)
+	if(!ptr->is_init)
 		return;
-	base_tick(UGEN(u->trig));
-	if(UGEN(u->trig)->out)
-	{
+	if(u->module.gen.trig->out) {
 		ptr->pos = lsys_list_iter(&ptr->lst, &ptr->ent, ptr->pos);
 		u->out = ptr->ent->val + 1;
 	}
 }
 
-static CTOR(ctor)
-{
+static CTOR(ctor) {
 	Lsys* l = (Lsys*) xmalloc(sizeof(Lsys));
 	lsys_init(&l->lsys);
 	l->is_init = 0;
 	l->pos = 0;
-	assign_ugen(UGEN(o), 0, 1, 1, l);
-	UGEN(o)->tick = tick;
+	ugen_ini(UGEN(o), 0, 1);
+	ugen_gen(UGEN(o), tick, l, 1);
 }
 
 static DTOR(dtor)

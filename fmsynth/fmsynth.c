@@ -24,9 +24,9 @@ static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
 static TICK(fmsynth_tick) {
   float left;
   float right;
-  fmsynth_render(u->ug, &left, &right, 1);
-  UGEN(u->channel[0])->out = left;
-  UGEN(u->channel[1])->out = right;
+  fmsynth_render(u->module.gen.data, &left, &right, 1);
+  UGEN(u->connect.multi->channel[0])->out = left;
+  UGEN(u->connect.multi->channel[1])->out = right;
   u->out = left + right;
 }
 
@@ -35,8 +35,8 @@ CTOR(ctor)
   NAME(o) = new_String(NULL, "name");
   AUTHOR(o) = new_String(NULL, "author");
   SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
-  UGEN(o)->tick = fmsynth_tick;
-  assign_ugen(UGEN(o), 0, 2, 0, SYNTH(o));
+  ugen_ini(UGEN(o), 0, 2);
+  ugen_gen(UGEN(o), fmsynth_tick, SYNTH(o), 0);
 }
 
 DTOR(dtor)
@@ -48,7 +48,7 @@ MFUN(init)
 {
   fmsynth_free(SYNTH(o));
   SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, *(m_uint*)MEM(SZ_INT));
-  UGEN(o)->ug = SYNTH(o);
+  UGEN(o)->module.gen.data = SYNTH(o);
 }
 MFUN(parameter)
 {

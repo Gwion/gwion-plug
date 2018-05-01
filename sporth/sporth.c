@@ -45,7 +45,7 @@ static int sporth_chuck_in(sporth_stack *stack, void *ud) {
 }
 
 static TICK(gwsporth_tick) {
-  sporthData * data = u->ug;
+  sporthData * data = u->module.gen.data;
   data->in= u->in;
   plumber_compute(&data->pd, PLUMBER_COMPUTE);
   u->out = sporth_stack_pop_float(&data->pd.sporth.stack);
@@ -61,12 +61,12 @@ static CTOR(sporth_ctor) {
   plumber_init(&data->pd);
   data->pd.sp = data->sp;
   data->pd.ud = data;
-  assign_ugen(UGEN(o), 1, 1, 0, data);
-  UGEN(o)->tick = gwsporth_tick;
+  ugen_ini(UGEN(o), 1, 1);
+  ugen_gen(UGEN(o), gwsporth_tick, data, 0);
 }
 
 static DTOR(sporth_dtor) {
-  sporthData * data = (sporthData*)UGEN(o)->ug;
+  sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   if(data) {
     plumber_clean(&data->pd);
     free(data);
@@ -74,7 +74,7 @@ static DTOR(sporth_dtor) {
 }
 
 static MFUN(sporth_setp) {
-  sporthData * data = (sporthData*)UGEN(o)->ug;
+  sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   const m_uint i = *(m_uint*)MEM(SZ_INT);
   m_float val = *(m_float*)MEM(SZ_INT*2);
   data->pd.p[i] = val;
@@ -82,7 +82,7 @@ static MFUN(sporth_setp) {
 }
 
 static MFUN(sporth_set_table) {
-  sporthData * data = (sporthData*)UGEN(o)->ug;
+  sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   const m_uint i = *(m_uint*)MEM(SZ_INT);
   const m_float val = *(m_float*)MEM(SZ_INT*2);
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT*2 + SZ_FLOAT));
@@ -107,7 +107,7 @@ static MFUN(sporth_set_table) {
 }
 
 MFUN(sporth_get_table) {
-  sporthData * data = (sporthData*)UGEN(o)->ug;
+  sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   const m_uint i = *(m_uint*)MEM(SZ_INT);
   sp_ftbl *ft;
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
@@ -130,14 +130,14 @@ MFUN(sporth_get_table) {
 }
 
 static MFUN(sporth_getp) {
-  const sporthData * data = (sporthData*)UGEN(o)->ug;
+  const sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   const int i = *(m_uint*)MEM(SZ_INT);
   *(m_float*)RETURN = data->pd.p[i];
 }
 
 static MFUN(sporth_parse_string)
 {
-  sporthData * data = (sporthData*)UGEN(o)->ug;
+  sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
   char* str = strndup(cstr, (strlen(cstr) + 1));
   if(!data->parsed) {
@@ -153,7 +153,7 @@ static MFUN(sporth_parse_string)
 }
 
 static MFUN(sporth_parse_file) {
-  sporthData * data = (sporthData*)UGEN(o)->ug;
+  sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   const char * cstr = STRING(*(M_Object*)MEM(SZ_INT));
   char* str = strndup(cstr, (strlen(cstr) + 1));
 
