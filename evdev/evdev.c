@@ -9,7 +9,7 @@
 #include "defs.h"
 #include "type.h"
 #include "err_msg.h"
-#include "lang.h"
+#include "object.h"
 #include "import.h"
 
 #define EVDEV_PREFIX "/dev/input/event"

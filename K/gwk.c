@@ -2,7 +2,6 @@
 #include <string.h>
 #include "type.h"
 #include "err_msg.h"
-#include "lang.h"
 #include "instr.h"
 #include "import.h"
 #include "k.h"

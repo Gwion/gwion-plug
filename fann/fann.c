@@ -13,7 +13,6 @@
 #include "instr.h"
 #include "import.h"
 #include "err_msg.h"
-#include "lang.h"
 
 static Type t_fann_connect, t_fann_data;
 extern m_int o_fileio_file;

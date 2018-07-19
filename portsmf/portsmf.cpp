@@ -3,6 +3,7 @@
 #include <portsmf/allegro.h>
 #include "Gwion.hpp"
 
+static Type t_midifileev;
 #define TYPE(o)  *(m_uint*)(o->data + o_midiev_type)
 #define START(o) *(m_float*)(o->data + o_midiev_start)
 #define PITCH(o) *(m_float*)(o->data + o_midiev_pitch)
@@ -10,8 +11,6 @@
 #define END(o)   *(m_float*)(o->data + o_midiev_end)
 #define DUR(o)   *(m_float*)(o->data + o_midiev_dur)
 #define SEQ(o)   *(Alg_seq**)(o->data + o_midifile_seq)
-struct Type_ t_midifileev = { (m_str)"MidiFileEv", SZ_INT };
-struct Type_ t_midifile = { (m_str)"MidiFile",  SZ_INT };
 m_int o_midifile_seq;
 m_int o_midiev_type;
 m_int o_midiev_start;
@@ -32,7 +31,8 @@ MFUN(midifile_add_track);
 MFUN(midifile_add_note);
 MFUN(midifile_write);
 IMPORT {
-  CHECK_BB(gwi_class_ini(gwi, &t_midifileev, NULL, NULL))
+  t_midifileev = gwi_mk_type(gwi, "MidiFileEv", SZ_INT, t_event);
+  CHECK_BB(gwi_class_ini(gwi, t_midifileev, NULL, NULL))
 	gwi_item_ini(gwi,"int", "type");
   o_midiev_type = gwi_item_end(gwi,   ae_flag_const, NULL);
   CHECK_BB(o_midiev_type);
@@ -53,7 +53,8 @@ IMPORT {
   CHECK_BB(o_midiev_dur);
   CHECK_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, &t_midifile, ctor, dtor))
+  const Type t_midifile = gwi_mk_type(gwi, "MidiFile",  SZ_INT, t_object);
+  CHECK_BB(gwi_class_ini(gwi, t_midifile, ctor, dtor))
 	gwi_item_ini(gwi,"int", "@seq");
   o_midifile_seq = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_midifile_seq);
@@ -137,7 +138,7 @@ MFUN(midifile_event)
   Alg_track* tr = seq->track(track);
 //  M_Object obj = *(M_Object*)MEM(SZ_INT*3);
   M_Object obj = new_M_Object(shred);
-  initialize_object(obj, &t_midifileev);
+  initialize_object(obj, t_midifileev);
   if(n < 0 || n >= tr->length())
       TYPE(obj) = 'e'; // error
   else

@@ -3,7 +3,6 @@
 #include "defs.h"
 #include "err_msg.h"
 #include "type.h"
-#include "lang.h"
 #include "instr.h"
 #include "import.h"
 #include "ugen.h"

@@ -4,7 +4,6 @@
 #include "err_msg.h"
 #include "import.h"
 #include "instr.h"
-#include "lang.h"
 #include "vm.h"
 #include "ugen.h"
 #include <stdlib.h>
@@ -138,8 +137,8 @@ MFUN(save)
   void* buf;
   struct fmsynth_preset_metadata* metadata = (struct fmsynth_preset_metadata*)xmalloc(sizeof(struct fmsynth_preset_metadata));
   memset(metadata, 0, sizeof(metadata));
-  strcat(metadata->name, STRING(NAME(o)));
-  strcat(metadata->author, STRING(AUTHOR(o)));
+  strcpy(metadata->name, STRING(NAME(o)));
+  strcpy(metadata->author, STRING(AUTHOR(o)));
   *(m_uint*)RETURN = fmsynth_preset_save(SYNTH(o), metadata,
       buf, fmsynth_preset_size());
   fwrite(buf, fmsynth_preset_size(), 1, file);

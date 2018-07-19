@@ -37,7 +37,6 @@
 #include "err_msg.h"
 #include "instr.h"
 #include "import.h"
-#include "lang.h"
 #include "vm.h"
 
 static m_uint active = 0;
@@ -615,7 +614,7 @@ static void nkstring_execute(M_Object o, struct nk_context* ctx)
 {
   char c[512];
   memset(c, 0, 512);
-  strcat(c, NAME(o));
+  strcpy(c, NAME(o));
   nk_layout_row_static(ctx, 180, 278, 1);
   nk_edit_string_zero_terminated(ctx, *(m_uint*)(o->data + o_nk_edit_type), c, 512, nk_filter_default);           
   NAME(o) = strdup(c);

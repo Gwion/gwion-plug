@@ -75,6 +75,7 @@ private:
 		myLinuxSampler * ls = (myLinuxSampler *) arg;
 		ls->Engine()->PrepareLoadInstrument(ls->s.data(), 0);
 		ls->Engine()->LoadInstrument();
+      return NULL;
 	}
 };
 

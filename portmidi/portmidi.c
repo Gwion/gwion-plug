@@ -4,9 +4,7 @@
 
 #include "stdlib.h"
 #include "defs.h"
-//#include "vm.h"
 #include "type.h"
-//#include "lang.h"
 #include "instr.h"
 #include "import.h"
 

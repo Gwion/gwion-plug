@@ -1,0 +1,79 @@
+Loup loup;
+"ciel" => loup.add => int ciel;
+"trounoir" => loup.add => int trounoir;
+"vaisseau3" => loup.add => int vaisseau;
+int tn, ci, vs;
+
+"Mega World USB Game Controllers" => string joy_name;
+Evdev joy;
+
+fun void find_joystick(string name) {
+  int i;
+  while(true) {
+    if(joy.index(i) == -1)
+      break;
+    if(joy.name() == name)
+      return;
+    i++;
+  }
+  <<<"No Matching Joystick found.", "">>>;
+  me.exit();
+}
+
+fun void play(Evdev joy, Loup loup) {
+  while(true) {
+    joy => now;
+    while(joy.recv()) {
+      switch(joy.code) {
+        case 0:
+          joy.value/255. => loup.x;
+          break;
+        case 1:
+          joy.value/255. => loup.y;
+          break;
+        case 2:
+          1 - (joy.value/255.) => loup.scale;
+          break;
+        case 4: // ????
+          break;
+        case 16: // hat x
+          break;
+        case 17: // hat y
+          if(joy.value == -1)
+            loup.set(vaisseau, 1);
+          else if(joy.value == 1)
+            loup.set(vaisseau, 0);
+          break;
+        case 289: // boutton central
+          if(joy.value) {
+            loup.set(vaisseau, vs);
+            !vs => vs;
+          }
+          break;
+          break;
+        case 290: // button 1
+          if(joy.value) {
+            loup.set(trounoir, tn);
+            !tn => tn;
+          }
+          break;
+        case 291: // button 3
+          if(joy.value) {
+            loup.set(ciel, ci);
+            !ci => ci;
+          }
+          break;
+        case 288: // gachette
+          break;
+        default:
+          <<<joy.code, joy.value>>>;
+      }
+    }
+  }
+}
+
+loup.set(vaisseau, 0);
+loup.set(trounoir, 0);
+loup.set(ciel, 0);
+joy_name => find_joystick;
+play(joy, loup);
