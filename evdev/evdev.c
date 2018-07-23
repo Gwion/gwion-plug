@@ -104,7 +104,7 @@ static MFUN(evdev_index) {
     info->index = -1;
   }
   sprintf(c, "%s%i", EVDEV_PREFIX, index);
-  printf("%s%i\n", EVDEV_PREFIX, index);
+//  printf("%s%i\n", EVDEV_PREFIX, index);
   if((info->fd = open((const char*)c, O_RDONLY|O_NONBLOCK)) == -1) {
     err_msg(INSTR_, 0, "EVDEV: no such event");
     return;
