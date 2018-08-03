@@ -1,0 +1,10 @@
+"djay_model"
+//"ltc_speech_model"
+    => const string model;
+-20 => const float seuil;
+
+adc => Dcblock dc => Speech sr => blackhole;
+//model => sr.load;
+(model, me.path()) => sr.load;
+//me.path() => sr.check;
+seuil => sr.loop;

@@ -295,7 +295,7 @@ static void widget_ctor(M_Object o, VM_Shred shred)
 {
   char name[256];
   sprintf(name, "Widget:%p", o);
-  (*(M_Object*)(o->data + o_nk_name)) = new_String(NULL, name);
+  (*(M_Object*)(o->data + o_nk_name)) = new_string(NULL, name);
   (*(GWindow**)(o->data + o_nk_gwin)) = last_window;
   (*(M_Object*)(o->data + o_nk_parent)) = last_widget;
   if(last_widget && strcmp(o->type_ref->name, "NkLayout")

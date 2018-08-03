@@ -47,7 +47,7 @@ const m_bool type_ref(Type);
 /*
 extern struct Type_ t_dur, t_time, t_now;
 extern struct Type_ t_complex, t_polar, t_vec3, t_vec4;
-extern struct Type_ t_function, t_func_ptr;
+extern struct Type_ t_function, t_fptr;
 extern struct Type_ t_void, t_class, t_null, t_union;
 extern struct Type_ t_vararg, t_string, t_ptr, t_gack;
 */

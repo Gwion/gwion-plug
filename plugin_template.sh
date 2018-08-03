@@ -42,6 +42,7 @@ check .gw files in the directory.
 EOF
 
 cat << EOF > $1/${1,,}.c
+#include <stdlib.h>
 #include "type.h"
 #include "instr.h"
 #include "import.h"
@@ -50,34 +51,33 @@ cat << EOF > $1/${1,,}.c
 //#include "ugen.h"
 
 
-CTOR(${1,,}_ctor) { /*code here */ }
+static CTOR(${1,,}_ctor) { /*code here */ }
 
-DTOR(${1,,}_dtor) { /*code here */ }
+static DTOR(${1,,}_dtor) { /*code here */ }
 
-m_int o_${1,,}_member_data;
-m_int o_${1,,}_static_data;
-m_int* ${1,,}_static_value;
+static m_int o_${1,,}_member_data;
+static m_int o_${1,,}_static_data;
+static m_int* ${1,,}_static_value;
 
 static MFUN(mfun) { /*code here */ }
 static SFUN(sfun) { /*code here */ }
 
-IMPORT
-{
-  const Type_ t_${1,,} = gwi_mk_type(gwi,  "$1", SZ_INT, $PARENT_CLASS);
+IMPORT {
+  const Type t_${1,,} = gwi_mk_type(gwi, "$1", SZ_INT, $PARENT_CLASS);
   CHECK_BB(gwi_class_ini(gwi, t_${1,,},${1,,}_ctor, ${1,,}_dtor))
 
-  CHECK_BB(gwi_item_ini(gwi, "int",  "member"))
-  CHECK_BB(o_${1,,}_member_data = gwi_item_end(gwi, ae_flag_member, NULL))
+  CHECK_BB(gwi_item_ini(gwi, "int", "member"))
+  CHECK_BB((o_${1,,}_member_data = gwi_item_end(gwi, ae_flag_member, NULL)))
 
   ${1,,}_static_value = malloc(sizeof(m_int));
   CHECK_BB(gwi_item_ini(gwi, "int", "static"))
-  CHECK_BB(o_${1,,}_static_data = gwi_item_end(gwi, ae_flag_static, ${1,,}_static_value))
+  CHECK_BB((o_${1,,}_static_data = gwi_item_end(gwi, ae_flag_static, ${1,,}_static_value)))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "mfun",  (m_uint)mfun))
+  CHECK_BB(gwi_func_ini(gwi, "int", "mfun",  mfun))
   CHECK_BB(gwi_func_arg(gwi, "int", "arg"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "sfun",  (m_uint)sfun))
+  CHECK_BB(gwi_func_ini(gwi, "int", "sfun",  sfun))
   CHECK_BB(gwi_func_arg(gwi, "int", "arg"))
   CHECK_BB(gwi_func_end(gwi, ae_flag_static))
 

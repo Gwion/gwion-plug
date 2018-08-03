@@ -1,9 +1,28 @@
-Evdev ev;
-if(ev.index(15) < 0)
+AbsInfo abs;
+<<<abs.value(), 12 => abs.value, abs.value()>>>;
+<<<abs.minimum(), 12 => abs.minimum, abs.minimum()>>>;
+<<<abs.maximum(), 12 => abs.maximum, abs.maximum()>>>;
+<<<abs.fuzz(), 12 => abs.fuzz, abs.fuzz()>>>;
+<<<abs.flat(), 12 => abs.flat, abs.flat()>>>;
+<<<abs.resolution(), 12 => abs.resolution, abs.resolution()>>>;
+
+
+Evdev dev;
+if(dev.index(12) < 0)
   me.exit();
-ev.name() @=> string @s;
+dev.get_absinfo(0) @=> AbsInfo ev_abs;
+<<<ev_abs>>>;
+if(ev_abs) {
+  <<<ev_abs>>>;
+  <<<ev_abs.value()>>>;
+  <<<12 => ev_abs.value>>>;
+}
+<<<"here">>>;
+
+
+dev.name() @=> string @s;
 <<<s>>>;
-while(ev.recv())<<<"rest">>>;
-ev => now;
-<<<ev.recv()>>>;
-<<<ev.type, ev.code, ev.value>>>;
+dev => now;
+EvdevEv ev;
+<<<dev.recv(ev)>>>;
+<<<ev.type, " ", ev.code, " ", ev.value>>>;

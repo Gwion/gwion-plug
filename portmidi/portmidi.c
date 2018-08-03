@@ -85,14 +85,14 @@ static MFUN(pm_name)
 {
   const PmDeviceInfo* info = Pm_GetDeviceInfo(ID(o));
   if(!info)
-    *(m_uint*)RETURN = (m_uint)new_String(shred, "no device");
+    *(m_uint*)RETURN = (m_uint)new_string(shred, "no device");
   else
-    *(m_uint*)RETURN = (m_uint)new_String(shred, (m_str)info->name);
+    *(m_uint*)RETURN = (m_uint)new_string(shred, (m_str)info->name);
 }
 
 static SFUN(pm_error)
 {
-  *(m_uint*)RETURN = (m_uint)new_String(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(SZ_INT)));
+  *(m_uint*)RETURN = (m_uint)new_string(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(SZ_INT)));
 }
 
 static MFUN(pm_close)

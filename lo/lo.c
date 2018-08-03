@@ -364,7 +364,7 @@ static MFUN(oscin_get_s)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_rem(c_arg, 0);
-  *(m_uint*)RETURN = (m_uint)new_String(shred, arg->data.s);
+  *(m_uint*)RETURN = (m_uint)new_string(shred, arg->data.s);
   release_Arg(arg);
 }
 

@@ -613,7 +613,7 @@ static MFUN(fc_compute) {
   M_Object ret;
   Vector v = *(Vector*)(o->data + o_fc_vector);
   Type t = array_type(t_float, 1);
-  ret = new_M_Array(t, SZ_FLOAT, vector_size(v), 1);
+  ret = new_array(t, SZ_FLOAT, vector_size(v), 1);
   vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
     M_Object obj = (M_Object)vector_at(v, i);

@@ -1,0 +1,37 @@
+public class Speech extends TinySR {
+  private int try;
+  if(me.args())
+    Std.atoi(me.arg(0)) => try;
+
+  fun int load(const string model, const string path) {
+    model => (this $ TinySR).load => const int loaded;
+    if(loaded == -1) {
+      <<<"failed to load ", model, ".">>>;
+      me.exit();
+    } 
+    path => check;
+    if(!try)
+      <<<"loaded ", loaded, " words from ", model, ".">>>;
+    else
+       <<<"(after ", try, " tries)">>>;
+    for(int i; i < loaded; ++i)
+      <<<"  * ", word(i)>>>;
+    return loaded;
+  }
+
+  fun void check(const string path) {
+    .5::second => now;
+    if(state()) {
+      ++try => string n;
+      Machine.add(path + ":" + n);
+      me.exit();
+    }
+  } 
+
+  fun void loop(const float seuil) {
+    while(ev => now) {
+      if(score > seuil)
+        <<<word(), " (", score, ")">>>;
+    }
+  }
+}

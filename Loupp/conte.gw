@@ -66,7 +66,7 @@ fun void play(Evdev joy, Loup loup) {
         case 288: // gachette
           break;
         default:
-          <<<joy.code, joy.value>>>;
+          <<<joy.code, ", ", joy.value>>>;
       }
     }
   }

@@ -4,6 +4,6 @@ while(true) {
   evdev.index(i) => int ret;
   if(ret == -1)
     break;
-  <<<i, evdev.name()>>>;
+  <<<i, " ", evdev.name()>>>;
   i++;
 }

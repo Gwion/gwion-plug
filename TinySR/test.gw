@@ -1,0 +1,38 @@
+"djay_model"
+//"ltc_speech_model"
+    => const string model;
+int try;
+if(me.args())
+  Std.atoi(me.arg(0)) => try;
+
+
+adc => Dcblock dc => TinySR sr => blackhole;
+
+fun void load(string model) {
+  model => sr.load => const int loaded;
+  if(loaded == -1) {
+    <<<"failed to load ", model, ".">>>;
+    me.exit();
+  }
+  check();
+  <<<"loaded ", loaded, " words from ", model, ".">>>;
+  if(try)
+     <<<"(after ", try, " tries)">>>;
+  for(int i; i < loaded; ++i)
+    <<<"  * ", sr.word(i)>>>;
+}
+
+fun void check() {
+  .5::second => now;
+  if(sr.state()) {
+    ++try => string n;
+    Machine.add(me.path() + ":" + n);
+    me.exit();
+  }
+}
+
+model => load;
+while(sr.ev => now) {
+  if(sr.score > thresh)
+    <<<sr.word(), " (", sr.score, ")">>>;
+}

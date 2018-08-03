@@ -98,7 +98,7 @@ fun void mix_control() {
     min => now;
     while(min.recv()) {
       min.read();
-      <<<"test", min.status, min.data1, min.data2>>>;
+      <<<"test ", min.status, " ", min.data1, " ", min.data2>>>;
     }
   }
 }

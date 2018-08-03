@@ -31,8 +31,8 @@ static TICK(fmsynth_tick) {
 
 CTOR(ctor)
 {
-  NAME(o) = new_String(NULL, "name");
-  AUTHOR(o) = new_String(NULL, "author");
+  NAME(o) = new_string(NULL, "name");
+  AUTHOR(o) = new_string(NULL, "author");
   SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
   ugen_ini(UGEN(o), 0, 2);
   ugen_gen(UGEN(o), fmsynth_tick, SYNTH(o), 0);
