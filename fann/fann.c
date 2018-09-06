@@ -218,8 +218,7 @@ static struct fann_connection to_fann(M_Object o)
 }
 static M_Object from_fann(struct fann_connection c)
 {
-  M_Object o= new_object(NULL);
-  initialize_object(o, t_fann_connect);
+  M_Object o= new_object(NULL, t_fann_connect);
   *(m_uint*)(o->data + o_fann_from)    = c.from_neuron;
   *(m_uint*)(o->data + o_fann_to)      = c.to_neuron;
   *(m_float*)(o->data + o_fann_weight) = c.weight;
@@ -719,30 +718,27 @@ static MFUN(train_save)
 
 static SFUN(train_merge)
 {
-  M_Object ret = new_object(shred);
+  M_Object ret = new_object(shred, t_fann_data);
   M_Object l = *(M_Object*)MEM(SZ_INT);
   M_Object r = *(M_Object*)MEM(SZ_INT*2);
-  initialize_object(ret, t_fann_data);
   DATA(ret) = fann_merge_train_data(DATA(l), DATA(r));
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
 static SFUN(train_duplicate)
 {
-  M_Object ret = new_object(shred);
+  M_Object ret = new_object(shred, t_fann_data);
   M_Object l = *(M_Object*)MEM(SZ_INT);
   M_Object r = *(M_Object*)MEM(SZ_INT*2);
-  initialize_object(ret, t_fann_data);
   DATA(ret) = fann_duplicate_train_data(DATA(l));
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
 static MFUN(train_do_subset)
 {
-  M_Object ret = new_object(shred);
+  M_Object ret = new_object(shred, t_fann_data);
   m_uint pos = *(m_uint*)MEM(SZ_INT);
   m_uint len = *(m_uint*)MEM(SZ_INT*2);
-  initialize_object(ret, t_fann_data);
   DATA(ret) = fann_subset_train_data(DATA(o), pos, len);
   *(m_uint*)RETURN = (m_uint)ret;
 }

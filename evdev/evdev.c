@@ -412,8 +412,7 @@ static MFUN(evdev_get_abs_info) {
   }
   const struct input_absinfo* abs = libevdev_get_abs_info(info->evdev, code);
   if(abs) {
-    M_Object obj = new_object(NULL);
-    initialize_object(obj, t_absinfo);
+    M_Object obj = new_object(NULL, t_absinfo);
     ABSINFO(obj) = (struct input_absinfo*)abs;
     ABSINFO_CONST(obj) = 1;
     *(M_Object*)RETURN = obj;
