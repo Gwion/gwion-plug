@@ -105,9 +105,8 @@ static MFUN(gw_lsys_get) {
 	*(m_uint*)RETURN = (m_uint)new_string(shred, str);
 }
 
-IMPORT {
-  Type t_lsys;
-  CHECK_OB((t_lsys = gwi_mk_type(gwi, "Lsys", SZ_INT, t_ugen)))
+GWION_IMPORT(lsys) {
+  const Type t_lsys = gwi_mk_type(gwi, "Lsys", SZ_INT, t_ugen);
   CHECK_BB(gwi_class_ini(gwi, t_lsys, ctor, dtor))
 
   CHECK_BB(gwi_func_ini(gwi, "void", "parse", gw_lsys_parse))

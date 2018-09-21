@@ -160,8 +160,7 @@ static MFUN(linuxsampler_setpan) {
 
 extern "C"
 {
-IMPORT
-{
+GWION_IMPORT(linuxsampler) {
   Type t_ls;
   CHECK_OB((t_ls = gwi_mk_type(gwi, (m_str)"LinuxSampler", SZ_INT, t_ugen)))
   CHECK_BB(gwi_class_ini(gwi, t_ls, linuxsampler_ctor, linuxsampler_dtor))

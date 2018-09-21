@@ -30,7 +30,7 @@ MFUN(midifile_event);
 MFUN(midifile_add_track);
 MFUN(midifile_add_note);
 MFUN(midifile_write);
-IMPORT {
+GWION_IMPORT(portsmf) {
   t_midifileev = gwi_mk_type(gwi, "MidiFileEv", SZ_INT, t_event);
   CHECK_BB(gwi_class_ini(gwi, t_midifileev, NULL, NULL))
 	gwi_item_ini(gwi,"int", "type");

@@ -1194,7 +1194,7 @@ MFUN(set_cascade_num_candidate_groups)
   fann_set_cascade_num_candidate_groups(FANN(o), *(m_uint*)RETURN);
 }
 
-m_bool import(Gwi gwi) {
+GWION_IMPORT(fann) {
   Type t_fann_connect,  t_fann_base, t_fann, t_fann_data;
   CHECK_OB((t_fann_connect = gwi_mk_type(gwi, "FANN_connect", SZ_INT , NULL)))
   CHECK_OB((t_fann_base = gwi_mk_type(gwi, "FANN_base", SZ_INT , NULL)))

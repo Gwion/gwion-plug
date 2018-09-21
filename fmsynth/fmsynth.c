@@ -160,8 +160,7 @@ static m_int o_amp, o_pan, o_freq_mod, o_freq_offset,
   o_g_vol, o_g_lfo,
   o_ok, o_busy, o_small, o_nonul, o_format, o_unknown;
 
-IMPORT
-{
+GWION_IMPORT(fmsynth) {
   ALLOC_PTR(amp, m_uint, FMSYNTH_PARAM_AMP);
   ALLOC_PTR(pan, m_uint, FMSYNTH_PARAM_PAN);
   ALLOC_PTR(freq_mod, m_uint, FMSYNTH_PARAM_FREQ_MOD);

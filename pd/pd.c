@@ -38,9 +38,8 @@ static MFUN(gwpd_close) {
     libpd_closefile(PDFILE(o));
 }
 
-IMPORT {
-  Type t_gwpd;
-  CHECK_BB((t_gwpd = gwi_mk_type(gwi, "PD", SZ_INT, t_ugen)))
+GWION_IMPORT(pd) {
+  const Type t_gwpd = gwi_mk_type(gwi, "PD", SZ_INT, t_ugen);
   CHECK_BB(gwi_class_ini(gwi, t_gwpd, pd_ctor, pd_dtor))
   CHECK_BB(gwi_item_ini(gwi,"int",  "@file"))
   CHECK_BB((o_pd_file = gwi_item_end(gwi, ae_flag_member, NULL)))

@@ -109,10 +109,8 @@ static SFUN(gw_kmeans_refine)
   matrix_release(data);
 }
 
-IMPORT
-{
-  Type t_k ;
-  CHECK_OB((t_k = gwi_mk_type(gwi, "K", 0, NULL )))
+GWION_IMPORT(gwk) {
+  const Type t_k = gwi_mk_type(gwi, "K", 0, NULL );
   CHECK_BB(gwi_class_ini(gwi, t_k, NULL, NULL))
 
   gwi_func_ini(gwi, "int[]", "nn", gw_knn);

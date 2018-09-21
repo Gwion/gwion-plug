@@ -75,8 +75,7 @@ static CTOR(tinysr_ctor) {
   struct sr_data* sr = new_sr_data(o, shred->vm_ref->sp->sr);
   ugen_ini(UGEN(o), 1, 1);
   ugen_gen(UGEN(o), tinysr_tick, sr, 0);
-  const M_Object ev = TINY_EV(o) = new_M_Object(NULL);
-  initialize_object(ev, t_event);
+  const M_Object ev = TINY_EV(o) = new_object(NULL, t_event);
   EV_SHREDS(ev) = new_vector();
 }
 
@@ -102,7 +101,7 @@ static MFUN(word) {
   const UGen u = UGEN(o);
   struct sr_data* sr = (struct sr_data*)u->module.gen.data;
   *(M_Object*)RETURN = sr->ini ?
-    new_String(shred, sr->ctx->word_names[TINY_IDX(o)]) : NULL;
+    new_string(shred, sr->ctx->word_names[TINY_IDX(o)]) : NULL;
 }
 
 static MFUN(word_index) {
@@ -110,7 +109,7 @@ static MFUN(word_index) {
   const UGen u = UGEN(o);
   struct sr_data* sr = (struct sr_data*)u->module.gen.data;
   *(M_Object*)RETURN = idx >= 0 ?
-    new_String(shred, sr->ctx->word_names[idx]) : NULL;
+    new_string(shred, sr->ctx->word_names[idx]) : NULL;
 }
 
 static MFUN(state) {
@@ -120,7 +119,7 @@ static MFUN(state) {
   *(m_int*)RETURN = sr->state;
 }
 
-IMPORT {
+GWION_IMPORT(tinysr) {
   const Type t_tinysr = gwi_mk_type(gwi, "TinySR", SZ_INT, t_ugen);
 
   CHECK_BB(gwi_class_ini(gwi, t_tinysr,tinysr_ctor, tinysr_dtor))

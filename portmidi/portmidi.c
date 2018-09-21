@@ -202,8 +202,7 @@ static MFUN(midiin_read)
   pthread_mutex_unlock(&info->mutex);
 }
 
-IMPORT
-{
+GWION_IMPORT(portmidi) {
   Type t_portmidi, t_midiout, t_midiin;
   CHECK_OB((t_portmidi = gwi_mk_type(gwi, "PortMidi", SZ_INT, t_event)))
   CHECK_OB((t_midiout  = gwi_mk_type(gwi, "MidiOut", SZ_INT,  t_portmidi)))

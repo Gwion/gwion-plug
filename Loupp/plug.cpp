@@ -81,7 +81,7 @@ MFUN(loup_fx_set) {
 }
 
 extern "C" {
-IMPORT {
+GWION_IMPORT(loup) {
   const Type t_loup = gwi_mk_type(gwi, "Loup", SZ_INT, t_object);
   CHECK_BB(gwi_class_ini(gwi, t_loup, loup_ctor, loup_dtor))
 

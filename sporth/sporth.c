@@ -171,9 +171,8 @@ static MFUN(sporth_parse_file) {
   }
 }
 
-IMPORT {
-  Type t_gworth;
-  CHECK_BB((t_gworth = gwi_mk_type(gwi, "Sporth", SZ_INT, t_ugen)))
+GWION_IMPORT(sporth) {
+  Type t_gworth = gwi_mk_type(gwi, "Sporth", SZ_INT, t_ugen);
 
   CHECK_BB(gwi_class_ini(gwi, t_gworth, sporth_ctor, sporth_dtor))
 

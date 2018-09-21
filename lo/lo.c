@@ -368,7 +368,7 @@ static MFUN(oscin_get_s)
   release_Arg(arg);
 }
 
-IMPORT {
+GWION_IMPORT(lo) {
   Type t_lo, t_loin, t_loout;
   CHECK_OB((t_lo    = gwi_mk_type(gwi, "Lo",     SZ_INT, t_event)))
   CHECK_OB((t_loin  = gwi_mk_type(gwi, "OscIn",  SZ_INT, t_lo)))

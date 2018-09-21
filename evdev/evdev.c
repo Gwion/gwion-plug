@@ -557,7 +557,7 @@ static MFUN(uinput_write) {
     libevdev_uinput_write_event(uidev, type, code, value): -1;
 }
 
-IMPORT {
+GWION_IMPORT(evdev) {
   t_evdevev = gwi_mk_type(gwi, "EvdevEv", SZ_INT, t_object);
   CHECK_BB(gwi_class_ini(gwi, t_evdevev, NULL, NULL))
   CHECK_BB(gwi_item_ini(gwi, "int", "type"))

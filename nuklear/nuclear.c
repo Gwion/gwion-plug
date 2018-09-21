@@ -705,7 +705,7 @@ static void slider_ctor(M_Object o, VM_Shred shred)
   *(m_float*)(o->data + o_nk_finc)  = .11;
 }
 
-IMPORT {
+GWION_IMPORT(nuklear) {
   Type t_color, t_panel, t_widget, t_sval, t_label, t_text,
     t_slabel, t_stext, t_prog, t_button, t_group, t_rowd,
     t_layout, t_tree, t_combo, t_menubar, t_menu,
