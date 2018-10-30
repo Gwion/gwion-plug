@@ -1,3 +1,6 @@
 [submodule "nuklear/nuklear"]
 	path = nuklear/nuklear
 	url = https://github.com/vurtun/nuklear
+[submodule "TinySR/tinysr"]
+	path = TinySR/tinysr
+	url = https://github.com/petersn/tinysr
