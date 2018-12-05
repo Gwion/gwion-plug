@@ -2,5 +2,5 @@ NkColor color;
 NkPanel panel;
 NkLayout layout;
 NkSlider slider;
-spork ~{ while(true) { slider => now; <<<"lol">>>; }};
+spork { while(true) { slider => now; <<<"lol">>>; }};
 NkButton b => now;

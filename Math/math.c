@@ -1,56 +1,62 @@
 #include <stdlib.h>
 #include <math.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 
 static SFUN(math_abs) {
-  *(m_uint*)RETURN = labs(*(m_int*)MEM(SZ_INT));
+  *(m_uint*)RETURN = labs(*(m_int*)MEM(0));
 }
 
 static SFUN(math_rand) {
-  *(m_uint*)RETURN = sp_rand(shred->vm_ref->sp);
+  *(m_uint*)RETURN = gw_rand(shred->vm->rand);
 }
 
 static SFUN(math_rand2) {
-  const m_int min = *(m_int*)MEM(SZ_INT);
-  const m_int max = *(m_int*)MEM(SZ_INT * 2);
+  const m_int min = *(m_int*)MEM(0);
+  const m_int max = *(m_int*)MEM(SZ_INT);
   const m_int range = max - min;
   if(range == 0)
     *(m_uint*)RETURN = min;
   else {
     if(range > 0)
-      *(m_uint*)RETURN = min + (m_int)((1.0 + range) * (sp_rand(shred->vm_ref->sp) / (RAND_MAX + 1.0)));
+      *(m_uint*)RETURN = min + (m_int)((1.0 + range) * (gw_rand(shred->vm->rand) / (UINT32_MAX + 1.0)));
     else
-      *(m_uint*)RETURN = min - (m_int)((-range + 1.0) * (sp_rand(shred->vm_ref->sp) / (RAND_MAX + 1.0)));
+      *(m_uint*)RETURN = min - (m_int)((-range + 1.0) * (gw_rand(shred->vm->rand) / (UINT32_MAX + 1.0)));
   }
 }
 
 static SFUN(math_randf) {
-  *(m_float*)RETURN = 2.0 * sp_rand(shred->vm_ref->sp) / RAND_MAX - 1.0;
+  *(m_float*)RETURN = 2.0 * gw_rand(shred->vm->rand) / UINT32_MAX - 1.0;
 }
 
 static SFUN(math_rand2f) {
-  const m_float min = *(m_float*)MEM(SZ_INT);
-  const m_float max = *(m_float*)MEM(SZ_INT + SZ_FLOAT);
-  *(m_float*)RETURN = min + (max - min) * (sp_rand(shred->vm_ref->sp) / (m_float)RAND_MAX);
+  const m_float min = *(m_float*)MEM(0);
+  const m_float max = *(m_float*)MEM(SZ_FLOAT);
+  *(m_float*)RETURN = min + (max - min) * (gw_rand(shred->vm->rand) / (m_float)UINT32_MAX);
 }
 
 static SFUN(math_srand) {
-  const m_float ret = *(m_float*)MEM(SZ_INT);
-  srand(ret);
+  const m_float ret = *(m_float*)MEM(0);
+  gw_seed(shred->vm->rand, ret);
   *(m_float*)RETURN = ret;
 }
 
 static SFUN(math_sgn) {
-  const m_float ret = *(m_float*)MEM(SZ_INT);
+  const m_float ret = *(m_float*)MEM(0);
   *(m_uint*)RETURN = ret < 0. ? -1 : ret > 0. ? 1 : 0;
 }
 
-#define math1(func)                           \
-static SFUN(math_##func) {                    \
-  const m_float ret = *(m_float*)MEM(SZ_INT); \
-  *(m_float*)RETURN = func(ret);              \
+#define math1(func)                      \
+static SFUN(math_##func) {               \
+  const m_float ret = *(m_float*)MEM(0); \
+  *(m_float*)RETURN = func(ret);         \
 }
 
 math1(fabs)
@@ -81,11 +87,11 @@ math1(isnan)
 static m_float min(m_float f1, m_float f2) { return f1 < f2 ? f1 : f2; }
 static m_float max(m_float f1, m_float f2) { return f1 > f2 ? f1 : f2; }
 
-#define math2(func)                                       \
-static SFUN(math_##func) {                                \
-  const m_float ret1 = *(m_float*)MEM(SZ_INT);            \
-  const m_float ret2 = *(m_float*)MEM(SZ_INT + SZ_FLOAT); \
-  *(m_float*)RETURN = func(ret1, ret2);                   \
+#define math2(func)                              \
+static SFUN(math_##func) {                       \
+  const m_float ret1 = *(m_float*)MEM(0);        \
+  const m_float ret2 = *(m_float*)MEM(SZ_FLOAT); \
+  *(m_float*)RETURN = func(ret1, ret2);          \
 }
 math2(atan2)
 math2(hypot)

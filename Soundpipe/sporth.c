@@ -1,9 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
-#include "defs.h"
-#include "err_msg.h"
+#include <soundpipe.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 #include "ugen.h"
 #include "sporth.h"
@@ -54,7 +59,7 @@ static CTOR(sporth_ctor) {
   sporthData * data = (sporthData*)xmalloc(sizeof(sporthData));
   data->parsed = 0;
   data->in = 0;
-  data->sp = shred->vm_ref->sp;
+  data->sp = shred->vm->sp;
   plumber_register(&data->pd);
   data->pd.sporth.flist[SPORTH_IN - SPORTH_FOFFSET].func = sporth_chuck_in;
   plumber_init(&data->pd);

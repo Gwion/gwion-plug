@@ -7,14 +7,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
-#include "defs.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "vm.h"
+#include "env.h"
 #include "type.h"
-#include "err_msg.h"
-#include "import.h"
+#include "object.h"
 #include "instr.h"
-#include "mpool.h"
+#include "import.h"
 
-POOL_HANDLE(Evdev_, 256);
 #define EVDEV_PREFIX "/dev/input/event"
 
 #define ABSINFO(o) *(struct input_absinfo**)(o->data + o_absinfo)

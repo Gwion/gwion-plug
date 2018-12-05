@@ -20,7 +20,7 @@ ANA ana;
 FFT dummy;
 ana.compute();
 ana.fft();
-ana.fft(NULL);
+ana.fft(null);
 ana.fft(dummy);
 ana.fft(fft);
 ana.fft(fft);

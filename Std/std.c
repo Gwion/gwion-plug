@@ -1,8 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 #include <dirent.h>
 #ifdef USE_DOUBLE
@@ -65,14 +71,14 @@ static double dbtorms(double f) {
   release(a##_obj, shred);
 
 static SFUN(std_system) {
-  GETSTRING(str, SZ_INT);
+  GETSTRING(str, 0);
   *(m_uint*)RETURN = system(str);
 }
 
 #define STDGET                                \
-  const m_int ret = *(m_int*)MEM(SZ_INT);     \
-  const m_int min = *(m_int*)MEM(SZ_INT * 2); \
-  const m_int max = *(m_int*)MEM(SZ_INT * 3); \
+  const m_int ret = *(m_int*)MEM(0);          \
+  const m_int min = *(m_int*)MEM(SZ_INT);     \
+  const m_int max = *(m_int*)MEM(SZ_INT * 2); \
 
 static SFUN(std_clamp) {
   STDGET
@@ -86,36 +92,36 @@ static SFUN(std_clampf) {
 
 static SFUN(std_scale) {
   STDGET
-  const m_float min2 = *(m_float*)MEM(SZ_INT + SZ_FLOAT * 3);
-  const m_float max2 = *(m_float*)MEM(SZ_INT + SZ_FLOAT * 4);
+  const m_float min2 = *(m_float*)MEM(SZ_FLOAT * 3);
+  const m_float max2 = *(m_float*)MEM(SZ_FLOAT * 4);
   *(m_float*)RETURN = min2 + (max2 - min2) * ((ret - min) / (max - min));
 }
 
 static SFUN(std_getenv) {
-  GETSTRING(env, SZ_INT)
+  GETSTRING(env, 0)
   const m_str str = getenv(env);
   *(M_Object*)RETURN = str ? new_string(shred, str) : 0;
 }
 
 static SFUN(std_setenv) {
-  GETSTRING(key, SZ_INT)
-  GETSTRING(val, SZ_INT * 2)
+  GETSTRING(key, 0)
+  GETSTRING(val, SZ_INT)
   *(m_uint*)RETURN = setenv(key, val, 1);
 }
 
 static SFUN(std_atoi) {
-  GETSTRING(val, SZ_INT)
+  GETSTRING(val, 0)
   *(m_uint*)RETURN = strtol(val, NULL, 10);
 }
 
 static SFUN(std_atof) {
-  GETSTRING(val, SZ_INT)
+  GETSTRING(val, 0)
   *(m_float*)RETURN = atof(val);
 }
 #define describe_xtoa(name, type, format)    \
 static SFUN(std_##name##toa) {               \
   char c[1024];                              \
-  const type value = *(type*)MEM(SZ_INT);    \
+  const type value = *(type*)MEM(0);         \
   sprintf(c, format, value);                 \
   *(M_Object*)RETURN = new_string(shred, c); \
 }
@@ -126,7 +132,7 @@ describe_xtoa(f, m_float, "%f")
 #define pow10(a) pow(10.0, (a) / 20.0)
 #define std(name, func)\
 static SFUN(std_##name) {\
-  *(m_float*)RETURN = func(*(m_float*)MEM(SZ_INT));\
+  *(m_float*)RETURN = func(*(m_float*)MEM(0));\
 }
 std(mtof, mtof)
 std(ftom, ftom)

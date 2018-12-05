@@ -3,10 +3,14 @@
 #include <math.h>
 #include <complex.h>
 #include <math.h>
-#include "defs.h"
-#include "err_msg.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "vm.h"
+#include "env.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 
 ANN static void push_string(const VM_Shred shred, const M_Object obj, const m_str c) {
@@ -68,10 +72,10 @@ describe_string_assign(Complex_, m_complex, SZ_COMPLEX,,
 describe_string_assign(Polar_, m_complex, SZ_COMPLEX,,
   num_digit(creal(lhs)) + num_digit(cimag(lhs)) + 16,
   "#(%.4f, %.4f)", creal(lhs), cimag(lhs)/M_PI)
-describe_string_assign(Vec3_, vm_vec3, SZ_VEC3,,
+describe_string_assign(Vec3_, m_vec3, SZ_VEC3,,
   num_digit(lhs.x) + num_digit(lhs.y) + num_digit(lhs.z) + 23,
   "#(%.4f, %.4f, %.4f)", lhs.x, lhs.y, lhs.z)
-describe_string_assign(Vec4_, vm_vec4, SZ_VEC4,,
+describe_string_assign(Vec4_, m_vec4, SZ_VEC4,,
   num_digit(lhs.x) + num_digit(lhs.y) + num_digit(lhs.z) + num_digit(lhs.w) + 30,
   "#(%.4f, %.4f, %.4f, %.4f)", lhs.x, lhs.y, lhs.z, lhs.w)
 describe_string_assign(Object_, M_Object, SZ_INT, release(lhs, shred),
@@ -112,11 +116,11 @@ describe_string(Complex, m_complex, SZ_COMPLEX,
 describe_string(Polar, m_complex, SZ_COMPLEX,
   num_digit(creal(lhs)) + num_digit(cimag(lhs)) + (rhs ? strlen(STRING(rhs)) : 0) +  12,,
   "%%(%f, %f*pi)%s", creal(lhs), cimag(lhs) / M_PI, rhs ? STRING(rhs) : "")
-describe_string(Vec3, vm_vec3, SZ_VEC3,
+describe_string(Vec3, m_vec3, SZ_VEC3,
   (rhs ? strlen(STRING(rhs)) : 0) + 23 + num_digit((m_uint)lhs.x) +
                                       num_digit((m_uint)lhs.y) + num_digit((m_uint)lhs.z),,
   "@(%.4f, %.4f, %.4f)%s", lhs.x, lhs.y, lhs.z, rhs ? STRING(rhs) : "")
-describe_string(Vec4, vm_vec4, SZ_VEC4,
+describe_string(Vec4, m_vec4, SZ_VEC4,
   (rhs ? strlen(STRING(rhs)) : 0) + 28 + num_digit((m_uint)lhs.x) +
   num_digit((m_uint)lhs.y) + num_digit((m_uint)lhs.z) + num_digit((m_uint)lhs.w),,
   "@(%f, %f, %f, %f)%s", lhs.x, lhs.y, lhs.z, lhs.w, rhs ? STRING(rhs) : "")
@@ -149,10 +153,10 @@ describe_string_plus(Complex_, SZ_COMPLEX, m_complex,,
 describe_string_plus(Polar_, SZ_COMPLEX, m_complex,,
   num_digit(creal(lhs)) + num_digit(cimag(lhs)) + 18, "%%(%.4f, %.4f)",
   creal(lhs), cimag(lhs) / M_PI)
-describe_string_plus(Vec3_, SZ_VEC3, vm_vec3,,
+describe_string_plus(Vec3_, SZ_VEC3, m_vec3,,
   num_digit(lhs.x) + num_digit(lhs.y) + num_digit(lhs.z) + 20, "@(%.4f, %.4f, %.4f)",
   lhs.x, lhs.y, lhs.z)
-describe_string_plus(Vec4_, SZ_VEC4, vm_vec4,,
+describe_string_plus(Vec4_, SZ_VEC4, m_vec4,,
   num_digit(lhs.x) + num_digit(lhs.y) + num_digit(lhs.z) + num_digit(lhs.z) + 28, "@(%.4f, %.4f, %.4f, %.4f)",
   lhs.x, lhs.y, lhs.z, lhs.w)
 describe_string_plus(Object_, SZ_INT, M_Object, release(lhs, shred),
@@ -583,7 +587,7 @@ static MFUN(string_toFloat) {
 
 static SFUN(char_toString) {
   char c[2];
-  sprintf(c, "%c", *(char*)MEM(SZ_INT));
+  sprintf(c, "%c", *(char*)MEM(0));
   *(M_Object*)RETURN = new_string(shred, c);
 }
 

@@ -1,9 +1,15 @@
 extern "C"
 {
 
-#include "defs.h"
-#include "err_msg.h"
+#define restrict __restrict__
+
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
+#include "object.h"
 #include "instr.h"
 #include "import.h"
 #include "ugen.h"

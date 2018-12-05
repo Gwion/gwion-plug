@@ -1,11 +1,17 @@
 #include <stdlib.h>
 #include <math.h>
-#include "absyn.h"
-#include "err_msg.h"
+#include <soundpipe.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 #include "ugen.h"
+#include "array.h"
 
 static Type t_ana;
 typedef struct {
@@ -45,7 +51,7 @@ static m_float* sp_buffer_get(sp_buffer* buffer) {
 }
 
 typedef struct {
-  sp_data* sp;
+  struct BBQ_* sp;
   sp_buffer*  buf;
   /*  m_float*  (*win)(m_float* buf, m_uint size);*/
   FFTFREQS*    frq;
@@ -75,7 +81,7 @@ static CTOR(fft_ctor) {
   Fft* fft = UGEN(o)->module.gen.data = (Fft*)xcalloc(1, sizeof(Fft));
   ugen_ini(UGEN(o), 1, 1);
   ugen_gen(UGEN(o), fft_tick, fft, 1);
-  fft->sp = shred->vm_ref->sp;
+  fft->sp = shred->vm->bbq;
 }
 
 static DTOR(fft_dtor) {
@@ -161,7 +167,7 @@ typedef struct Ana {
   m_float  percent;     // rollof
   /*  m_float* norm, *prev; // flux*/
   /*  m_float* cval[2];*/ // corr
-  sp_data* sp;
+  struct BBQ_* sp;
   m_uint last;
 } Ana;
 
@@ -443,7 +449,7 @@ static MFUN(ana_set_fft) {
   }
   fft = (Fft*)UGEN(obj)->module.gen.data;
   if(!fft || !fft->buf) {
-    err_msg(INSTR_, 0, "FFT probably not initialised.");
+    err_msg(0, "FFT probably not initialised.");
     release(obj, shred);
     return;
   }
@@ -454,10 +460,10 @@ static MFUN(ana_set_fft) {
 
 static CTOR(ana_ctor) {
   Ana* ana = *(Ana**)(o->data + o_ana_ana) = (Ana*)xmalloc(sizeof(Ana));
-  ana->sr = shred->vm_ref->sp->sr;
+  ana->sr = shred->vm->bbq->sr;
   ana->percent = 50; // rolloff;
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)ana_dummy;
-  ana->sp = shred->vm_ref->sp;
+  ana->sp = shred->vm->bbq;
   ana->last = 0;
 }
 
@@ -613,7 +619,7 @@ static MFUN(fc_compute) {
   M_Object ret;
   Vector v = *(Vector*)(o->data + o_fc_vector);
   Type t = array_type(t_float, 1);
-  ret = new_array(t, SZ_FLOAT, vector_size(v), 1);
+  ret = new_array(t, vector_size(v));
   vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
     M_Object obj = (M_Object)vector_at(v, i);

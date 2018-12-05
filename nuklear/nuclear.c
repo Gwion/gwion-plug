@@ -9,8 +9,15 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <time.h>
-#include "defs.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
+#include "instr.h"
+#include "object.h"
+#include "import.h"
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO

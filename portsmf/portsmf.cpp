@@ -148,9 +148,9 @@ MFUN(midifile_event)
     {
       PITCH(obj) = ev->get_pitch();
       LOUD(obj)  = ev->get_loud();
-      START(obj) = ev->get_start_time() * shred->vm_ref->sp->sr;
-      END(obj)   = ev->get_end_time()   * shred->vm_ref->sp->sr;
-      DUR(obj)   = ev->get_duration()   * shred->vm_ref->sp->sr;
+      START(obj) = ev->get_start_time() * shred->vm->bbq->sr;
+      END(obj)   = ev->get_end_time()   * shred->vm->bbq->sr;
+      DUR(obj)   = ev->get_duration()   * shred->vm->bbq->sr;
     }
   }
   *(m_uint*)RETURN = (m_uint)obj;
@@ -162,7 +162,7 @@ MFUN(midifile_add_note)
   M_Object obj = *(M_Object*)MEM(SZ_INT);
   if(TYPE(obj) != 'n')
   {
-    err_msg(INSTR_, 0, "not a note.");
+    err_msg(0, "not a note.");
     shred->me = NULL;
     return;
   }

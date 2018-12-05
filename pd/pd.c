@@ -1,6 +1,12 @@
 #include <libpd/z_libpd.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "gw_type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 
 static m_int o_pd_file;
@@ -10,9 +16,9 @@ static m_bool pd_init;
 
 static CTOR(pd_ctor) {
   if(!pd_init++) {
-    VM* vm = shred->vm_ref;
+    VM* vm = shred->vm;
     libpd_init();
-    libpd_init_audio(vm->n_in , vm->sp->nchan, vm->sp->sr);
+    libpd_init_audio(vm->bbq->n_in , vm->bbq->nchan, vm->bbq->sr);
     libpd_start_message(256);
     libpd_add_float(1.0);
     libpd_finish_message ("pd" , "dsp");

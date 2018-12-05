@@ -1,9 +1,14 @@
 #include <stdlib.h>
 #include <math.h>
+#include <soundpipe.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
 #include "vm.h"
 #include "type.h"
-#include "err_msg.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 #include "ugen.h"
 #include "func.h"
@@ -15,6 +20,7 @@ typedef struct SP_osc_ {
   m_float  phz;
 } SP_osc; // copied from generated osc.c
 
+extern sp_data* sp;
 static TICK(sinosc_tick) {
   const SP_osc* ug = (SP_osc*)u->module.gen.data;
   sp_osc_compute(ug->sp, ug->osc, NULL, &u->out);
@@ -22,24 +28,24 @@ static TICK(sinosc_tick) {
 
 ANN static void refresh_sine(const VM* vm, SP_osc* ug, const m_int sz, const m_float phz) {
   if(sz <= 0) {
-    err_msg(INSTR_, 0, "%s size requested for sinosc. doing nothing",
+    err_msg(0, "%s size requested for sinosc. doing nothing",
             sz < 0 ? "negative" : "zero");
     return;
   }
   sp_ftbl_destroy(&ug->tbl);
   sp_osc_destroy(&ug->osc);
   sp_osc_create(&ug->osc);
-  sp_ftbl_create(vm->sp, &ug->tbl, sz);
-  sp_gen_sine(vm->sp, ug->tbl);
-  sp_osc_init(vm->sp, (sp_osc*)ug->osc, ug->tbl, phz);
+  sp_ftbl_create(sp, &ug->tbl, sz);
+  sp_gen_sine(sp, ug->tbl);
+  sp_osc_init(sp, (sp_osc*)ug->osc, ug->tbl, phz);
 }
 
 static CTOR(sinosc_ctor) {
   SP_osc* ug = (SP_osc*)xmalloc(sizeof(SP_osc));
   sp_osc_create(&ug->osc);
-  sp_ftbl_create(shred->vm_ref->sp, &ug->tbl, 2048);
-  sp_gen_sine(shred->vm_ref->sp, ug->tbl);
-  sp_osc_init(shred->vm_ref->sp, ug->osc, ug->tbl, 0.);
+  sp_ftbl_create(sp, &ug->tbl, 2048);
+  sp_gen_sine(sp, ug->tbl);
+  sp_osc_init(sp, ug->osc, ug->tbl, 0.);
   ugen_ini(UGEN(o), 0, 1);
   ugen_gen(UGEN(o), sinosc_tick, ug, 0);
 }
@@ -54,14 +60,14 @@ static DTOR(sinosc_dtor) {
 static MFUN(sinosc_size) {
   const m_int size = *(m_int*)(shred->mem + SZ_INT);
   SP_osc* ug = (SP_osc*)UGEN(o)->module.gen.data;
-  refresh_sine(shred->vm_ref, ug, size, 0);
+  refresh_sine(shred->vm, ug, size, 0);
 }
 
 static MFUN(sinosc_size_phase) {
   const m_int size    = *(m_int*)(shred->mem + SZ_INT);
   const float phase = *(m_int*)(shred->mem + SZ_INT * 2);
   SP_osc* ug = (SP_osc*)UGEN(o)->module.gen.data;
-  refresh_sine(shred->vm_ref, ug, size, phase);
+  refresh_sine(shred->vm, ug, size, phase);
 }
 
 static MFUN(sinosc_get_freq) {
@@ -264,7 +270,8 @@ ANN static m_bool import_zerox(const Gwi gwi) {
   return 1;
 }
 
-GWION_IMPORT(modules) {
+//GWION_IMPORT(modules) {
+m_bool import_modules(const Gwi gwi) {
   CHECK_BB(import_sinosc(gwi))
   CHECK_BB(import_gain(gwi))
   CHECK_BB(import_impulse(gwi))

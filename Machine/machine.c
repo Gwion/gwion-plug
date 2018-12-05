@@ -1,85 +1,72 @@
 #include <stdlib.h>
 #include <string.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
+#include "shreduler_private.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
-#include "hash.h"
-#include "scanner.h"
 #include "compile.h"
 #include "traverse.h"
+#include "emit.h"
+#include "array.h"
 
 #ifdef JIT
 #include "jitter.h"
 #endif
 static SFUN(machine_add) {
-  const M_Object obj = *(M_Object*)MEM(SZ_INT);
+  const M_Object obj = *(M_Object*)MEM(0);
   if(!obj)
     return;
   const m_str str = STRING(obj);
   _release(obj, shred);
   if(!str)
     return;
-  *(m_uint*)RETURN = compile(shred->vm_ref, str);
+  *(m_uint*)RETURN = compile_filename(shred->vm->gwion, str);
 }
 
 static SFUN(machine_check) {
   *(m_uint*)RETURN = -1;
-  const M_Object code_obj = *(M_Object*)MEM(SZ_INT);
+  const M_Object code_obj = *(M_Object*)MEM(0);
   const m_str line = code_obj ? STRING(code_obj) : NULL;
   release(code_obj, shred);
   if(!line)return;
+  *(m_uint*)RETURN = check_string(shred->vm->gwion, "Machine.check", line);
+/*
   FILE* f = fmemopen(line, strlen(line), "r");
-  const Ast ast = parse(shred->vm_ref->scan, "Machine.check", f);
+  const Ast ast = parse(shred->vm->gwion->scan, "Machine.check", f);
   if(!ast)
     goto close;
-  *(m_uint*)RETURN = traverse_ast(shred->vm_ref->emit->env, ast);
+  *(m_uint*)RETURN = traverse_ast(shred->vm->gwion->emit->env, ast);
 close:
   if(ast)
     free_ast(ast);
   fclose(f);
+*/
 }
 
 static SFUN(machine_compile) {
   *(m_uint*)RETURN = -1;
-  const M_Object code_obj = *(M_Object*)MEM(SZ_INT);
+  const M_Object code_obj = *(M_Object*)MEM(0);
   const m_str line = code_obj ? STRING(code_obj) : NULL;
   release(code_obj, shred);
   if(!line)return;
-  FILE* f = fmemopen(line, strlen(line), "r");
-  const Ast ast = parse(shred->vm_ref->scan, "Machine.compile", f);
-  if(!ast)
-    goto close;
-  const m_str str = strdup("Machine.compile");
-  if(traverse_ast(shred->vm_ref->emit->env, ast) < 0) {
-    free(str);
-    goto close;
-  }
-  *(m_uint*)RETURN = emit_ast(shred->vm_ref->emit, ast, str);
-#ifdef JIT
-  /*shred->vm_ref->emit->jit->wait = 1;*/
-  /*pthread_barrier_wait(&shred->vm_ref->emit->jit->barrier);*/
-#endif
-  emitter_add_instr(shred->vm_ref->emit, EOC);
-  shred->vm_ref->emit->code->name = strdup(str);
-  const VM_Code code = emit_code(shred->vm_ref->emit);
-  const VM_Shred sh = new_vm_shred(code);
-  vm_add_shred(shred->vm_ref, sh);
-  free(str);
-close:
-  if(ast)
-    free_ast(ast);
-  fclose(f);
+  *(m_uint*)RETURN = compile_string(shred->vm->gwion, "Machine.compile", line);
 }
 
 static SFUN(machine_shreds) {
-  VM* vm = shred->vm_ref;
+  VM* vm = shred->vm;
   const Type t = array_type(t_int, 1);
-  const M_Object obj = new_array(t, SZ_INT, vec_size(&vm->shred), 1);
-  for(m_uint i = 0; i < vec_size(&vm->shred); i++) {
-    const VM_Shred sh = (VM_Shred)vec_at(&vm->shred, i);
-    vm_vec_set(ARRAY(obj), i, &sh->xid);
+  const M_Object obj = new_array(t, vector_size(&vm->shreduler->shreds));
+  for(m_uint i = 0; i < vector_size(&vm->shreduler->shreds); i++) {
+    const VM_Shred sh = (VM_Shred)vector_at(&vm->shreduler->shreds, i);
+    m_vector_set(ARRAY(obj), i, &sh->xid);
   }
-  vec_add(&shred->gc, (vtype)obj);
+  vector_add(&shred->gc, (vtype)obj);
   *(M_Object*)RETURN = obj;
 }
 

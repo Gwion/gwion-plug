@@ -84,6 +84,6 @@ fun void mix_control() {
 // disable sobel
 min_name => find_nano;
 joy_name => find_joystick;
-spork ~mix_control();
-spork ~play(joy, loup);
+spork mix_control();
+spork play(joy, loup);
 5::minute=> now;

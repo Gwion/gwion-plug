@@ -3,12 +3,16 @@
 #include <dirent.h>
 #include <math.h>
 #include <complex.h>
-#include "defs.h"
-#include "err_msg.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
-#include "lang.h"
+#include "array.h"
 
 m_int o_fileio_file;
 
@@ -135,16 +139,16 @@ static MFUN(file_fileno) {
 }
 
 static SFUN(file_remove) {
-  const M_Object obj = *(M_Object*)MEM(SZ_INT);
+  const M_Object obj = *(M_Object*)MEM(0);
   if(!obj)
     return;
   _release(obj, shred);
-  *(m_uint*)RETURN = remove(STRING(*(M_Object*)MEM(SZ_INT)));
+  *(m_uint*)RETURN = remove(STRING(*(M_Object*)MEM(0)));
 }
 
 static SFUN(file_list) {
   struct dirent **namelist;
-  const M_Object obj = *(M_Object*)MEM(SZ_INT);
+  const M_Object obj = *(M_Object*)MEM(0);
   if(!obj)
     return;
   const m_str str = STRING(obj);
@@ -157,7 +161,7 @@ static SFUN(file_list) {
     return;
   }
   const Type t = array_type(t_string, 1);
-  const M_Object ret = new_array(t, SZ_INT, n, 1);
+  const M_Object ret = new_array(t, n);
   vector_add(&shred->gc, (vtype)ret);
   for(m_uint i = 0; i < (m_uint)n; i++) {
     const M_Object string = new_string(NULL, namelist[i]->d_name);

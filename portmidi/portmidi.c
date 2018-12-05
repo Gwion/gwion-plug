@@ -2,15 +2,20 @@
   put MSG only in midiin
 */
 
-#include "stdlib.h"
-#include "defs.h"
-#include "type.h"
-#include "instr.h"
-#include "import.h"
-
-#include <portmidi.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <portmidi.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
+#include "type.h"
+#include "instr.h"
+#include "object.h"
+#include "import.h"
+
 
 static Map map = NULL;
 typedef struct
@@ -92,7 +97,7 @@ static MFUN(pm_name)
 
 static SFUN(pm_error)
 {
-  *(m_uint*)RETURN = (m_uint)new_string(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(SZ_INT)));
+  *(m_uint*)RETURN = (m_uint)new_string(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(0)));
 }
 
 static MFUN(pm_close)
@@ -112,7 +117,7 @@ static CTOR(pm_ctor)
 static DTOR(pm_dtor)
 {
   free_vector(MSG(o));
-  if(get(shred->vm_ref, ID(o)))
+  if(get(shred->vm, ID(o)))
     release_info(ID(o), o);
 }
 
@@ -121,7 +126,7 @@ static MFUN(midiout_open)
   if(ID(o) > -1)
     release_info(ID(o), o);
   ID(o) = *(m_uint*)MEM(SZ_INT);
-  MidiInfo* info = get(shred->vm_ref, ID(o));
+  MidiInfo* info = get(shred->vm, ID(o));
   vector_add(info->client, (vtype)o);
   if(!info->stream)
     Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
@@ -146,7 +151,7 @@ static void* pm_recv(void* data)
   m_uint i;
   PmEvent event;
   MidiInfo* info = (MidiInfo*)data;
-  m_float now = info->vm->sp->pos;
+  m_float now = info->vm->bbq->pos;
   while(1)
   {
     while(Pm_Poll(info->stream) == 1)
@@ -171,7 +176,7 @@ static void* pm_recv(void* data)
 static MFUN(midiin_open)
 {
   ID(o) = *(m_uint*)MEM(SZ_INT);
-  MidiInfo* info = get(shred->vm_ref, ID(o));
+  MidiInfo* info = get(shred->vm, ID(o));
   if(!info->thread)
   {
     Pm_OpenInput(&info->stream, ID(o), 0, 0, NULL, NULL);
@@ -184,7 +189,7 @@ static MFUN(midiin_open)
 
 static MFUN(midiin_recv)
 {
-  MidiInfo* info = get(shred->vm_ref, ID(o));
+  MidiInfo* info = get(shred->vm, ID(o));
   pthread_mutex_lock(&info->mutex);
   *(m_uint*)RETURN = vector_size(MSG(o)) ? 1 : 0;
   pthread_mutex_unlock(&info->mutex);
@@ -192,7 +197,7 @@ static MFUN(midiin_recv)
 
 static MFUN(midiin_read)
 {
-  MidiInfo* info = get(shred->vm_ref, ID(o));
+  MidiInfo* info = get(shred->vm, ID(o));
   pthread_mutex_lock(&info->mutex);
   m_uint msg = (m_uint)vector_front(MSG(o));
   STATUS(o) = Pm_MessageStatus(msg);
@@ -207,7 +212,7 @@ GWION_IMPORT(portmidi) {
   CHECK_OB((t_portmidi = gwi_mk_type(gwi, "PortMidi", SZ_INT, t_event)))
   CHECK_OB((t_midiout  = gwi_mk_type(gwi, "MidiOut", SZ_INT,  t_portmidi)))
   CHECK_OB((t_midiin   = gwi_mk_type(gwi, "MidiIn", SZ_INT,   t_portmidi)))
-  SET_FLAG(t_portmidi, ae_flag_abstract);
+  SET_FLAG(t_portmidi, abstract);
 
   CHECK_BB(gwi_class_ini(gwi, t_portmidi, pm_ctor, pm_dtor))
 	gwi_item_ini(gwi,"int",  "@dummy");

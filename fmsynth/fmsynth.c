@@ -1,11 +1,3 @@
-#include "map.h"
-#include "vm.h"
-#include "type.h"
-#include "err_msg.h"
-#include "import.h"
-#include "instr.h"
-#include "vm.h"
-#include "ugen.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,6 +5,16 @@
 #include <time.h>
 
 #include <pthread.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
+#include "type.h"
+#include "instr.h"
+#include "object.h"
+#include "import.h"
+#include "ugen.h"
 #include "fmsynth.h"
 static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
 #define SYNTH(o) *(fmsynth_t**)(o->data + o_fmsynth_data)
@@ -33,7 +35,7 @@ CTOR(ctor)
 {
   NAME(o) = new_string(NULL, "name");
   AUTHOR(o) = new_string(NULL, "author");
-  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
+  SYNTH(o) = fmsynth_new(shred->vm->bbq->sr, POLYPHONY);
   ugen_ini(UGEN(o), 0, 2);
   ugen_gen(UGEN(o), fmsynth_tick, SYNTH(o), 0);
 }
@@ -46,7 +48,7 @@ DTOR(dtor)
 MFUN(init)
 {
   fmsynth_free(SYNTH(o));
-  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, *(m_uint*)MEM(SZ_INT));
+  SYNTH(o) = fmsynth_new(shred->vm->bbq->sr, *(m_uint*)MEM(SZ_INT));
   UGEN(o)->module.gen.data = SYNTH(o);
 }
 MFUN(parameter)
@@ -106,7 +108,7 @@ MFUN(load)
   m_str filename = STRING( *(M_Object*)MEM(SZ_INT) );
   FILE* file = fopen(filename, "r");
 
-  SYNTH(o) = fmsynth_new(shred->vm_ref->sp->sr, POLYPHONY);
+  SYNTH(o) = fmsynth_new(shred->vm->bbq->sr, POLYPHONY);
   if(!file) {
     *(m_uint*)RETURN = -1;
     return;

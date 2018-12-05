@@ -1,6 +1,6 @@
 BASEDIR  ?= ../..
 GWION    ?= ${BASEDIR}/gwion
-INC      ?= ${BASEDIR}/include
+INC      ?= ${BASEDIR}/include -I${BASEDIR}/util/include -I${BASEDIR}/ast/include
 CC       ?= gcc
 PLUG_DIR ?= $(shell ${GWION} -C 2>&1 | head -n 1 | cut -d '"' -f 2)
 SRC       = $(wildcard *.c)

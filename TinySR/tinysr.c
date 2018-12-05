@@ -1,7 +1,13 @@
 #include <stdlib.h>
 #include <tinysr.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 #include "ugen.h"
 

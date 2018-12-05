@@ -1,15 +1,17 @@
-#include "map.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
 #include "vm.h"
 #include "type.h"
-#include "err_msg.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 #include "vm.h"
 #include "ugen.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 #include <time.h>
 
 #include "lsys.h"

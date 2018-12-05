@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cv.hpp>
+#include <opencv.hpp>
 
 #include "Gwion.hpp"
 

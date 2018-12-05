@@ -91,7 +91,8 @@ static CTOR(linuxsampler_ctor) {
   if(!sampler)
     sampler = new LinuxSampler::Sampler();
   std::map<String,LinuxSampler::DeviceCreationParameter*> param;
-  myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new myLinuxSampler(param, shred->vm_ref->sp->sr);
+  myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new 
+myLinuxSampler(param, shred->vm->bbq->sr);
   ugen_ini(UGEN(o), 0, 2);
   ugen_gen(UGEN(o), tick, (void*)ls, 0);
 }

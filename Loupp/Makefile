@@ -2,6 +2,6 @@
 CPP_SRC := $(wildcard Fx/*.cpp)
 include ../config.mk
 NAME=Loup
-CFLAGS+=-I/usr/include/opencv -Iinclude
-LDFLAGS+=`pkg-config --cflags --libs opencv`
+CFLAGS+=-I/usr/include/opencv4/ -Iinclude -I/usr/include/opencv4/opencv2
+LDFLAGS+=-lopencv
 include ../config_post.mk

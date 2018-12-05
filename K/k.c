@@ -4,7 +4,7 @@
 #include <string.h>
 #include "time.h"
 
-#include "../../include/defs.h"
+#include "gwion_util.h"
 m_float** matrix_alloc(m_uint x, m_uint y) {
   m_uint i;
   m_float** a = (m_float**)xmalloc(x* sizeof(m_float*));

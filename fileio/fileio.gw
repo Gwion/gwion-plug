@@ -7,7 +7,7 @@ f.close();
 2.0 => cerr;
 "test" => cerr;
 o => cerr;
-NULL => cerr;
+null => cerr;
 cerr.nl();
 
 f.open("/tmp/trash", "w");

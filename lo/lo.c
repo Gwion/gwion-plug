@@ -1,10 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <lo/lo.h>
-#include "defs.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "type.h"
-#include "err_msg.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
 
 static Map map = NULL;
@@ -105,7 +109,7 @@ static MFUN(osc_send)
   lo_message msg;
   if(!ADDR(o))
   {
-    err_msg(INSTR_, 0, "oscsend address not set. shred[%i] exiting.", shred->xid);
+    err_msg(0, "oscsend address not set. shred[%i] exiting.", shred->xid);
     vm_shred_exit(shred);
     return;
   }
@@ -125,7 +129,7 @@ static MFUN(osc_send)
         lo_message_add_string(msg, arg->data.s);
         break;
       default:
-          err_msg(INSTR_, 0, "oscsend invalid type: '%c'  in arg '%i'\n", arg->t, i);
+          err_msg(0, "oscsend invalid type: '%c'  in arg '%i'\n", arg->t, i);
           vm_shred_exit(shred);
           return;
     }
@@ -154,7 +158,7 @@ static INSTR(oscsend_add_string) { GWDEBUG_EXE
 }
 
 static void osc_error_handler(int num, const char *msg, const char *where)
-{ err_msg(INSTR_, 0, "problem %i with osc: %s %s", num, msg, where); }
+{ err_msg(0, "problem %i with osc: %s %s", num, msg, where); }
 
 static int osc_method_handler(const char* path, const char* type,
   lo_arg **argv, int argc, lo_message msg, void *data)
@@ -187,7 +191,7 @@ static int osc_method_handler(const char* path, const char* type,
         arg->data.s = strdup((m_str)argv[i]);
         break;
       default:
-        err_msg(INSTR_, 0, "unhandled osc arg type '%c'", type[i]);
+        err_msg(0, "unhandled osc arg type '%c'", type[i]);
         return 1;
     }
     arg->t = type[i];
@@ -373,7 +377,7 @@ GWION_IMPORT(lo) {
   CHECK_OB((t_lo    = gwi_mk_type(gwi, "Lo",     SZ_INT, t_event)))
   CHECK_OB((t_loin  = gwi_mk_type(gwi, "OscIn",  SZ_INT, t_lo)))
   CHECK_OB((t_loout = gwi_mk_type(gwi, "OscOut", SZ_INT, t_lo)))
-  SET_FLAG(t_lo, ae_flag_abstract);
+  SET_FLAG(t_lo, abstract);
 
   CHECK_BB(gwi_class_ini(gwi, t_lo, lo_ctor, NULL))
 	gwi_item_ini(gwi,"int",  "@args");

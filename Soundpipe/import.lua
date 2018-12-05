@@ -77,8 +77,8 @@ function print_gen_func(name, func)
     end
   end
   print("\tCHECK_SIZE(size);")
-  print("\tsp_ftbl_create(shred->vm_ref->sp, &ftbl, size);")
-  print("\tsp_"..name.."(shred->vm_ref->sp, ftbl"..args..");")
+  print("\tsp_ftbl_create(sp, &ftbl, size);")
+  print("\tsp_"..name.."(sp, ftbl"..args..");")
   print("\tFTBL(o) = ftbl;")
   --	print("error:\n\tsp_ftbl_destroy(&ftbl);")
   print("}\n")
@@ -145,7 +145,7 @@ function print_mod_func(name, mod)
   print("\tsp_"..name.."_compute(ug->sp, ug->osc"..args..");")
   print("\n}\n")
   print("static CTOR("..name.."_ctor) {\n\tGW_"..name.."* ug = (GW_"..name.."*)xcalloc(1, sizeof(GW_"..name.."));")
-  print("\tug->sp = shred->vm_ref->sp;")
+  print("\tug->sp = sp;")
   if(nmandatory > 0) then
     print("\tug->is_init = 0;")
     print("\tug->osc = NULL;")
@@ -293,6 +293,7 @@ for n in pairs(sptbl) do table.insert(a, n) end
 table.sort(a)
 
 print('#include <stdlib.h>\
+#include <soundpipe.h>\
 #include "vm.h"\
 #include "type.h"\
 #include "err_msg.h"\
@@ -306,6 +307,10 @@ print('#include <stdlib.h>\
 --print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data + o_ftbl_data)")
 print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)")
 print("#define CHECK_SIZE(size)\tif(size <= 0){fprintf(stderr, \"'gen_ftbl' size argument must be more than 0\");return;}")
+print("\n/*static*/ sp_data* sp;")
+print("__attribute__((destructor)) static void sp_end(void) {sp_destroy(&sp);}")
+print("static DTOR(sp_dtor) {\n\tsp_destroy(&sp);\n}")
+
 print("\nstatic DTOR(ftbl_dtor) {")
 print("\tif(FTBL(o))\n\t\tsp_ftbl_destroy(&FTBL(o));")
 print("}\n")
@@ -319,12 +324,24 @@ for n in ipairs(a) do
   end
 end
 
+print("static TICK(sp_tick) {\n\t++((sp_data*)u->module.gen.data)->pos; }")
 print("")
 print("GWION_IMPORT(soundpipe) {\n")
+print("\tVM* vm = gwi_vm(gwi);")
+print("\tconst uint8_t nchan = vm->bbq->nchan;")
+print("printf(\"vm %p\", vm->bbq->sr);")
+print("\tsp_createn(&sp, nchan);")
+print("\tsp->sr = vm->bbq->sr;")
+print("\tM_Object o = new_M_UGen();")
+print("\tugen_ini(UGEN(o), 1, 1);")
+print("\tugen_gen(UGEN(o), sp_tick, sp, 0);")
+print("\tvector_add(&vm->ugen, (vtype)UGEN(o));")
+print("\tgwi_item_ini(gwi, \"UGen\", \"@soundpipe main ugen\");")
+print("\tgwi_item_end(gwi, ae_flag_const, o);")
+print("\tgw_connect(UGEN(o), UGEN(vm->dac));")
 print("\tType t_ftbl = gwi_mk_type(gwi, \"ftbl\", SZ_INT, t_object);")
 print("\tCHECK_BB(gwi_class_ini(gwi, t_ftbl, NULL, ftbl_dtor))")
 print("\tCHECK_BB(gwi_item_ini(gwi, \"int\", \"@ftbl\"))")
---print("\to_ftbl_data = gwi_item_end(gwi, 0, NULL);")
 print("\tgwi_item_end(gwi, 0, NULL);")
 for n in ipairs(a) do
   local gen_name = a[n]
@@ -401,4 +418,5 @@ for n in ipairs(a) do
     print("\tCHECK_BB(gwi_class_end(gwi))\n")
   end
 end
+print("\tCHECK_BB(import_modules(gwi))")
 print("\treturn 1;\n}")
