@@ -1,54 +1,46 @@
 #ifndef __TYPE
 #define __TYPE
 
-#include "nspc.h"
-#include "env.h"
-
 struct Type_ {
   m_str     name;
-  m_uint    size;
+  Nspc      nspc;
   Type      parent;
-  m_uint    xid;
-  Nspc info;
-  Nspc owner;
-  m_uint    array_depth;
+  Nspc      owner;
+  Class_Def def;
   union type_data {
     Func      func;
-    Type      actual_type;
-    Type      array_type;
+    Type      base_type;
   } d;
-  Class_Def def;
-  m_uint flag;
-  struct VM_Object_ obj;
+  struct pool* p;
+  size_t xid;
+  size_t size;
+  size_t array_depth;
+  ae_flag flag;
+  HAS_OBJ
 };
 
-Type new_type(const m_uint xid, const m_str name, const Type);
-Type type_copy(const Type type);
-Env type_engine_init(VM*, const Vector);
-void start_type_xid(void);
-Value find_value(const Type, const Symbol);
-Func find_func(const Type, const Symbol);
-Type find_type(const Env, ID_List);
-const m_bool isprim(const Type);
-const m_bool isa(const Type, const Type);
-const m_bool isres(const Symbol, const m_uint);
-const Type array_type(const Type, const m_uint);
-const Type check_array_empty(const Type, const Array_Sub, const m_str);
-const Type find_common_anc(const Type, const Type);
-const m_uint id_list_len(ID_List);
-void type_path(m_str, const ID_List);
-const m_int str2char(const m_str, const m_int);
-const m_uint num_digit(const m_uint);
-const Type array_base(Type);
-const m_bool type_ref(Type);
-/*
-extern struct Type_ t_dur, t_time, t_now;
-extern struct Type_ t_complex, t_polar, t_vec3, t_vec4;
-extern struct Type_ t_function, t_fptr;
-extern struct Type_ t_void, t_class, t_null, t_union;
-extern struct Type_ t_vararg, t_string, t_ptr, t_gack;
-*/
-//extern struct 
-Type t_ugen;
+//struct Type_* t_class, t_ugen;
+Type t_void, t_dur, t_time, t_now, t_complex, t_polar, t_vec3, t_vec4,
+  t_null, t_shred, t_event, t_ugen, t_string, t_ptr, t_gack,
+  t_function, t_fptr, t_vararg, t_union;
+ANN2(2) ANEW Type new_type(const m_uint xid, const m_str name, const Type);
+ANEW ANN Type type_copy(const Type type);
+ANN m_str get_type_name(const m_str, const m_uint);
+ANN Value find_value(const Type, const Symbol);
+ANN Func find_func(const Type, const Symbol);
+ANN m_bool isa(const Type, const Type) __attribute__((pure));
+ANN m_bool isres(const Symbol);
+ANN Type array_type(const Type, const m_uint);
+ANN Type find_common_anc(const Type, const Type) __attribute__((pure));
+ANN m_uint id_list_len(ID_List);
+ANN void type_path(const m_str, const ID_List);
+ANN Type typedef_base(Type) __attribute__((pure));
+ANN Type array_base(Type) __attribute__((pure));
+ANN m_bool type_ref(Type) __attribute__((pure));
+__attribute__((returns_nonnull))
+ANN Type template_parent(const Type type);
+//static inline Type actual_type(const Type t) {
+//  return isa(t, t_class) > 0 ? t->d.base_type : t;
+//}
 #endif
 
