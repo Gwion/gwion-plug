@@ -1,8 +1,8 @@
 USE_LD=1
 include ../config.mk
-NAME=sporth
+NAME=soundpipe
 #LDFLAGS+=-lsporth_dyn
-LDFLAGS+=-lsporth
+LDFLAGS+=-lsoundpipe
 #LDFLAGS+=/usr/lib/libsporth.a
 include ../config_post.mk
 

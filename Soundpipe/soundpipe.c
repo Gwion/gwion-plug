@@ -7174,10 +7174,8 @@ static TICK(sp_tick) {
 	++((sp_data*)u->module.gen.data)->pos; }
 
 GWION_IMPORT(soundpipe) {
-
 	VM* vm = gwi_vm(gwi);
 	const uint8_t nchan = vm->bbq->nchan;
-printf("vm %p", vm->bbq->sr);
 	sp_createn(&sp, nchan);
 	sp->sr = vm->bbq->sr;
 	M_Object o = new_M_UGen();
@@ -7185,8 +7183,7 @@ printf("vm %p", vm->bbq->sr);
 	ugen_gen(UGEN(o), sp_tick, sp, 0);
 	vector_add(&vm->ugen, (vtype)UGEN(o));
 	gwi_item_ini(gwi, "UGen", "@soundpipe main ugen");
-	gwi_item_end(gwi, ae_flag_const, o);
-//	ugen_connect(UGEN(o), UGEN(vm->dac));
+	gwi_item_end(gwi, ae_flag_const | ae_flag_ref, o);
 	ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));
 	Type t_ftbl = gwi_mk_type(gwi, "ftbl", SZ_INT, t_object);
 	CHECK_BB(gwi_class_ini(gwi, t_ftbl, NULL, ftbl_dtor))
@@ -7603,7 +7600,7 @@ printf("vm %p", vm->bbq->sr);
 	const Type t_delay = gwi_mk_type(gwi, "Delay", SZ_INT, t_ugen);
 	CHECK_BB(gwi_class_ini(gwi, t_delay, delay_ctor, delay_dtor))
 	gwi_func_ini(gwi, "void", "init", delay_init);
-		 gwi_func_arg(gwi, "float", "time");
+		 gwi_func_arg(gwi, "float", "time_");
 	CHECK_BB(gwi_func_end(gwi, 0))
 	gwi_func_ini(gwi, "float", "feedback", delay_get_feedback);
 	CHECK_BB(gwi_func_end(gwi, 0))
@@ -7659,10 +7656,10 @@ printf("vm %p", vm->bbq->sr);
 
 	const Type t_dmetro = gwi_mk_type(gwi, "Dmetro", SZ_INT, t_ugen);
 	CHECK_BB(gwi_class_ini(gwi, t_dmetro, dmetro_ctor, dmetro_dtor))
-	gwi_func_ini(gwi, "float", "time", dmetro_get_time);
+	gwi_func_ini(gwi, "float", "time_", dmetro_get_time);
 	CHECK_BB(gwi_func_end(gwi, 0))
-	gwi_func_ini(gwi, "float", "time", dmetro_set_time);
-		 gwi_func_arg(gwi, "float", "time");
+	gwi_func_ini(gwi, "float", "time_", dmetro_set_time);
+		 gwi_func_arg(gwi, "float", "time_");
 	CHECK_BB(gwi_func_end(gwi, 0))
 	CHECK_BB(gwi_class_end(gwi))
 
@@ -8112,10 +8109,10 @@ printf("vm %p", vm->bbq->sr);
 		 gwi_func_arg(gwi, "ftbl", "ft");
 		 gwi_func_arg(gwi, "int", "winsize");
 	CHECK_BB(gwi_func_end(gwi, 0))
-	gwi_func_ini(gwi, "float", "time", mincer_get_time);
+	gwi_func_ini(gwi, "float", "time_", mincer_get_time);
 	CHECK_BB(gwi_func_end(gwi, 0))
-	gwi_func_ini(gwi, "float", "time", mincer_set_time);
-		 gwi_func_arg(gwi, "float", "time");
+	gwi_func_ini(gwi, "float", "time_", mincer_set_time);
+		 gwi_func_arg(gwi, "float", "time_");
 	CHECK_BB(gwi_func_end(gwi, 0))
 	gwi_func_ini(gwi, "float", "amp", mincer_get_amp);
 	CHECK_BB(gwi_func_end(gwi, 0))
@@ -8877,10 +8874,10 @@ printf("vm %p", vm->bbq->sr);
 
 	const Type t_tgate = gwi_mk_type(gwi, "Tgate", SZ_INT, t_ugen);
 	CHECK_BB(gwi_class_ini(gwi, t_tgate, tgate_ctor, tgate_dtor))
-	gwi_func_ini(gwi, "float", "time", tgate_get_time);
+	gwi_func_ini(gwi, "float", "time_", tgate_get_time);
 	CHECK_BB(gwi_func_end(gwi, 0))
-	gwi_func_ini(gwi, "float", "time", tgate_set_time);
-		 gwi_func_arg(gwi, "float", "time");
+	gwi_func_ini(gwi, "float", "time_", tgate_set_time);
+		 gwi_func_arg(gwi, "float", "time_");
 	CHECK_BB(gwi_func_end(gwi, 0))
 	CHECK_BB(gwi_class_end(gwi))
 
@@ -9088,6 +9085,6 @@ printf("vm %p", vm->bbq->sr);
 	CHECK_BB(gwi_func_end(gwi, 0))
 	CHECK_BB(gwi_class_end(gwi))
 
-	CHECK_BB(import_modules(gwi))
+//	CHECK_BB(import_modules(gwi))
 	return 1;
 }

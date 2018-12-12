@@ -12,8 +12,8 @@ PARENT_CLASS=t_object
 [ "$2" ] && PARENT_CLASS="$2"
 
 
-mkdir $1
-cat << EOF >> $1/Makefile
+mkdir "$1"
+cat << EOF >> "$1/Makefile"
 #USE_LD=1 # needed for e.g. sporth static lib
 include ../config.mk
 NAME=$1
@@ -22,7 +22,7 @@ NAME=$1
 include ../config_post.mk
 EOF
 
-cat << EOF > $1/README.md
+cat << EOF > "$1/README.md"
 # $1
   a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
 ## Description
@@ -41,7 +41,7 @@ make install
 check .gw files in the directory.
 EOF
 
-cat << EOF > $1/${1,,}.c
+cat << EOF > "$1/${1,,}.c"
 #include <stdlib.h>
 #include "type.h"
 #include "instr.h"
