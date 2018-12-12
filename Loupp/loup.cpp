@@ -1,5 +1,5 @@
 #include "iostream"
-#include <opencv.hpp>
+#include <opencv2/opencv.hpp>
 
 #include "loup.hpp"
 #include "fx.hpp"
