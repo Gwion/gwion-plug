@@ -769,7 +769,7 @@ GWION_IMPORT(string) {
   CHECK_BB(gwi_oper_end(gwi, op_add,       Object_String))
   CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
   CHECK_BB(gwi_oper_end(gwi, op_radd, Object_String_Plus))
-  return 1;
+  return GW_OK;
 }
 
 #ifdef JIT

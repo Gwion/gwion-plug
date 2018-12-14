@@ -170,5 +170,5 @@ GWION_IMPORT(math) {
   decl_math2("min",       min)
   decl_math2("max",       max)
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }

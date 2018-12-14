@@ -267,5 +267,5 @@ GWION_IMPORT(portmidi) {
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  return 1;
+  return GW_OK;
 }

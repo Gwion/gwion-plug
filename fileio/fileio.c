@@ -257,7 +257,7 @@ GWION_IMPORT(fileio) {
   gwi_item_end(gwi, ae_flag_const, gw_cout);
   gwi_item_ini(gwi, "FileIO", "cerr");
   gwi_item_end(gwi, ae_flag_const, gw_cerr);
-  return 1;
+  return GW_OK;
 }
 
 #ifdef JIT

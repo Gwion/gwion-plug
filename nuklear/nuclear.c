@@ -1000,7 +1000,7 @@ GWION_IMPORT(nuklear) {
   CHECK_BB(gwi_class_end(gwi))
   CHECK_BB(gwi_class_ini(gwi, t_slider, slider_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 
 }
 

@@ -192,7 +192,7 @@ static int osc_method_handler(const char* path, const char* type,
         break;
       default:
         err_msg(0, "unhandled osc arg type '%c'", type[i]);
-        return 1;
+        return GW_OK;
     }
     arg->t = type[i];
     vector_add(v, (vtype)arg);
@@ -441,5 +441,5 @@ GWION_IMPORT(lo) {
   CHECK_BB(gwi_oper_ini(gwi, "string", "OscOut", "string"))
   CHECK_BB(gwi_oper_end(gwi, op_chuck, oscsend_add_string))
 
-  return 1;
+  return GW_OK;
 }

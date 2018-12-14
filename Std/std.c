@@ -194,5 +194,5 @@ GWION_IMPORT(std) {
   import_stdx(dbtolin, float,  float)
   import_stdx(lintodb, float,  float)
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }

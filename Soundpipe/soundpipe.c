@@ -9086,5 +9086,5 @@ GWION_IMPORT(soundpipe) {
 	CHECK_BB(gwi_class_end(gwi))
 
 //	CHECK_BB(import_modules(gwi))
-	return 1;
+	return GW_OK;
 }

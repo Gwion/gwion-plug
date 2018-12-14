@@ -125,5 +125,5 @@ GWION_IMPORT(lsys) {
   CHECK_BB(gwi_func_ini(gwi, "string", "get", gw_lsys_get))
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }

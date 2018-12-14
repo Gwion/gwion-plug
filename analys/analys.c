@@ -158,7 +158,7 @@ static m_bool import_fft(Gwi gwi) {
   CHECK_BB(gwi_func_end(gwi, 0))
 
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 typedef struct Ana {
@@ -491,7 +491,7 @@ static m_bool import_ana(Gwi gwi) {
   gwi_func_arg(gwi, "FFT", "arg");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(centroid_ctor) {
@@ -502,7 +502,7 @@ static m_bool import_centroid(Gwi gwi) {
   CHECK_OB((t_centroid = gwi_mk_type(gwi, "Centroid", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_centroid, centroid_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(spread_ctor) {
@@ -513,7 +513,7 @@ static m_bool import_spread(Gwi gwi) {
   CHECK_OB((t_spread = gwi_mk_type(gwi, "Spread", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_spread, spread_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(skewness_ctor) {
@@ -524,7 +524,7 @@ static m_bool import_skewness(Gwi gwi) {
   CHECK_OB((t_skewness = gwi_mk_type(gwi, "Skewness", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_skewness, skewness_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(kurtosis_ctor) {
@@ -535,7 +535,7 @@ static m_bool import_kurtosis(Gwi gwi) {
   CHECK_OB((t_kurtosis = gwi_mk_type(gwi, "Kurtosis", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_kurtosis, kurtosis_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(rms_ctor) {
@@ -546,7 +546,7 @@ static m_bool import_rms(Gwi gwi) {
   CHECK_OB((t_rms = gwi_mk_type(gwi, "RMS", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_rms, rms_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(rolloff_ctor) {
@@ -570,7 +570,7 @@ static m_bool import_rolloff(Gwi gwi) {
   gwi_func_arg(gwi, "float", "arg");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(freq_ctor) {
@@ -581,7 +581,7 @@ static m_bool import_freq(Gwi gwi) {
   CHECK_OB((t_freq = gwi_mk_type(gwi, "Freq", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_freq, freq_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(asc_ctor) {
@@ -592,7 +592,7 @@ static m_bool import_asc(Gwi gwi) {
   CHECK_OB((t_asc = gwi_mk_type(gwi, "ASC", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_asc, asc_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static CTOR(ass_ctor) {
@@ -603,7 +603,7 @@ static m_bool import_ass(Gwi gwi) {
   CHECK_OB((t_ass = gwi_mk_type(gwi, "ASS", SZ_INT, t_ana )))
   CHECK_BB(gwi_class_ini(gwi, t_ass, ass_ctor, NULL))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 static m_int o_fc_vector;
@@ -704,7 +704,7 @@ static m_bool import_fc(Gwi gwi) {
   gwi_func_arg(gwi, "ANA", "arg");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 
 GWION_IMPORT(analys) {
@@ -724,5 +724,5 @@ GWION_IMPORT(analys) {
   CHECK_BB(gwi_oper_end(gwi, op_chuck, fc_connect))
   CHECK_BB(gwi_oper_ini(gwi, "ANA", "FC", "FC"))
   CHECK_BB(gwi_oper_end(gwi, op_unchuck, fc_disconnect))
-  return 1;
+  return GW_OK;
 }

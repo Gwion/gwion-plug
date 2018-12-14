@@ -25,7 +25,7 @@ struct Map_Info_ {
 static m_bool string_cmp(const m_bit* restrict a, const unsigned char* restrict b, const m_uint size __attribute__((unused))) {
   const M_Object o = (M_Object)b;
   if(!o && !a)
-    return 1;
+    return GW_OK;
   return o ? !strcmp((char*)a, STRING(o)) : 1;
 }
 
@@ -120,5 +120,5 @@ GWION_IMPORT(map) {
   CHECK_BB(gwi_func_arg(gwi, "A", "key"))
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
