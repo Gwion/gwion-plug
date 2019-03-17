@@ -19,6 +19,8 @@
 #include "object.h"
 #include "array.h"
 #include "instr.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 
 static Type t_fann_connect, t_fann_data;

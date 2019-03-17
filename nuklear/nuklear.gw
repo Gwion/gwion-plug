@@ -1,6 +1,11 @@
-NkColor color;
-NkPanel panel;
-NkLayout layout;
-NkSlider slider;
-spork { while(true) { slider => now; <<<"lol">>>; }};
-NkButton b => now;
+//<<<NkColor color>>>;
+<<<NkPanel panel>>>;
+<<<NkLayout layout>>>;
+"test" => layout.name;
+<<<NkSlider slider>>>;
+"test" => slider.name;
+//spork { while(true) { slider => now; <<<"value: ", slider.val>>>; }};
+spork { while(true) { slider => now; }};
+NkButton b;
+"Hit me to Quit!" => b.name;
+b => now;

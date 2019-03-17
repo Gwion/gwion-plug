@@ -11,6 +11,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 
 ANN static void push_string(const VM_Shred shred, const M_Object obj, const m_str c) {
@@ -161,11 +163,6 @@ describe_string_plus(Vec4_, SZ_VEC4, m_vec4,,
   lhs.x, lhs.y, lhs.z, lhs.w)
 describe_string_plus(Object_, SZ_INT, M_Object, release(lhs, shred),
   11, "%p", (void*)lhs)
-
-INSTR(RegPushStr) { GWDEBUG_EXE
-  *(M_Object*)REG(0) = new_string2(shred, (m_str)instr->m_val);
-  PUSH_REG(shred, SZ_INT);
-}
 
 static CTOR(string_ctor) {
   STRING(o) = "";

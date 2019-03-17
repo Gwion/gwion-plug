@@ -1,6 +1,7 @@
 #include <string.h>
 #include "type.h"
 #include "instr.h"
+#include "plug.h"
 #include "import.h"
 
 static MFUN(gwf_pair_set) {

@@ -42,14 +42,14 @@ check .gw files in the directory.
 EOF
 
 cat << EOF > "$1/${1,,}.c"
-#include <stdlib.h>
-#include "type.h"
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "oo.h"
+#include "env.h"
+#include "vm.h"
 #include "instr.h"
+#include "object.h"
 #include "import.h"
-//#include "err_msg.h"
-//#include "lang.h"
-//#include "ugen.h"
-
 
 static CTOR(${1,,}_ctor) { /*code here */ }
 

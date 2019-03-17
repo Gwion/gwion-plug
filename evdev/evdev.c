@@ -15,6 +15,8 @@
 #include "type.h"
 #include "object.h"
 #include "instr.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 
 #define EVDEV_PREFIX "/dev/input/event"

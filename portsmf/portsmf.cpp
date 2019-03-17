@@ -18,8 +18,10 @@ m_int o_midiev_end;
 m_int o_midiev_dur;
 m_int o_midiev_pitch;
 m_int o_midiev_loud;
-static void ctor(M_Object o, VM_Shred shred);
-static void dtor(M_Object o, VM_Shred shred);
+//static void ctor(M_Object o, VM_Shred shred);
+//static void dtor(M_Object o, VM_Shred shred);
+static CTOR(ctor);
+static DTOR(dtor);
 
 extern "C"
 {
@@ -93,15 +95,9 @@ GWION_IMPORT(portsmf) {
 }
 
 
-static void ctor(M_Object o, VM_Shred shred)
-{
-  SEQ(o) = new Alg_seq();
-}
+static CTOR(ctor) { SEQ(o) = new Alg_seq(); }
 
-static void dtor(M_Object o, VM_Shred shred)
-{
-  delete SEQ(o);
-}
+static DTOR(dtor) { delete SEQ(o); }
 
 MFUN(midifile_open)
 {
@@ -148,9 +144,9 @@ MFUN(midifile_event)
     {
       PITCH(obj) = ev->get_pitch();
       LOUD(obj)  = ev->get_loud();
-      START(obj) = ev->get_start_time() * shred->vm->bbq->sr;
-      END(obj)   = ev->get_end_time()   * shred->vm->bbq->sr;
-      DUR(obj)   = ev->get_duration()   * shred->vm->bbq->sr;
+      START(obj) = ev->get_start_time() * shred->info->vm->bbq->si->sr;
+      END(obj)   = ev->get_end_time()   * shred->info->vm->bbq->si->sr;
+      DUR(obj)   = ev->get_duration()   * shred->info->vm->bbq->si->sr;
     }
   }
   *(m_uint*)RETURN = (m_uint)obj;
@@ -163,7 +159,7 @@ MFUN(midifile_add_note)
   if(TYPE(obj) != 'n')
   {
     err_msg(0, "not a note.");
-    shred->me = NULL;
+    shred->info->me = NULL;
     return;
   }
   Alg_note* ev = new Alg_note();

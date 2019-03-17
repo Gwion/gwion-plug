@@ -2,6 +2,7 @@
 #include <string.h>
 #include "type.h"
 #include "instr.h"
+#include "plug.h"
 #include "import.h"
 #include "emit.h"
 

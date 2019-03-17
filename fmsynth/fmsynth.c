@@ -13,84 +13,79 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 #include "ugen.h"
 #include "fmsynth.h"
+
 static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
 #define SYNTH(o) *(fmsynth_t**)(o->data + o_fmsynth_data)
 #define NAME(o) *(M_Object*)(o->data + o_fmsynth_name)
 #define AUTHOR(o) *(M_Object*)(o->data + o_fmsynth_author)
 #define POLYPHONY 64
 
+static inline void set_synth(M_Object o, fmsynth_t* t) {
+  UGEN(o)->module.gen.data = SYNTH(o) = t;
+}
+
 static TICK(fmsynth_tick) {
-  float left;
-  float right;
+  float left = 0.;
+  float right = 0.;
   fmsynth_render(u->module.gen.data, &left, &right, 1);
   UGEN(u->connect.multi->channel[0])->out = left;
   UGEN(u->connect.multi->channel[1])->out = right;
-  u->out = left + right;
+  u->out = (m_float)((left + right) / 2);
 }
 
-CTOR(ctor)
-{
+CTOR(ctor) {
   NAME(o) = new_string(NULL, "name");
   AUTHOR(o) = new_string(NULL, "author");
-  SYNTH(o) = fmsynth_new(shred->vm->bbq->sr, POLYPHONY);
+  SYNTH(o) = fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY);
   ugen_ini(UGEN(o), 0, 2);
   ugen_gen(UGEN(o), fmsynth_tick, SYNTH(o), 0);
 }
 
-DTOR(dtor)
-{
+DTOR(dtor) {
   fmsynth_free(SYNTH(o));
 }
 
-MFUN(init)
-{
+MFUN(init) {
   fmsynth_free(SYNTH(o));
-  SYNTH(o) = fmsynth_new(shred->vm->bbq->sr, *(m_uint*)MEM(SZ_INT));
-  UGEN(o)->module.gen.data = SYNTH(o);
+  set_synth(o, fmsynth_new(shred->info->vm->bbq->si->sr, *(m_uint*)MEM(SZ_INT)));
+//  UGEN(o)->module.gen.data = SYNTH(o);
 }
-MFUN(parameter)
-{
+MFUN(parameter) {
   fmsynth_set_parameter(SYNTH(o),
       *(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2), *(m_float*)MEM(SZ_INT*3));
 }
 
-MFUN(global_parameter)
-{
+MFUN(global_parameter) {
   fmsynth_set_global_parameter(SYNTH(o),
       *(m_uint*)MEM(SZ_INT), *(m_float*)MEM(SZ_INT*2));
 }
 
-MFUN(synth_reset)
-{
+MFUN(synth_reset) {
  fmsynth_reset(SYNTH(o));
 }
 
-MFUN(noteon)
-{
+MFUN(noteon) {
  fmsynth_note_on(SYNTH(o), *(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2));
-
 }
 
-MFUN(noteoff)
-{
+MFUN(noteoff) {
  fmsynth_note_off(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
-MFUN(sustain)
-{
+MFUN(sustain) {
  fmsynth_set_sustain(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
-MFUN(wheel)
-{
+MFUN(wheel) {
  fmsynth_set_mod_wheel(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
-MFUN(bend)
-{
+MFUN(bend) {
  fmsynth_set_pitch_bend(SYNTH(o), *(m_uint*)MEM(SZ_INT));
 }
 
@@ -99,8 +94,7 @@ MFUN(release_all)
  fmsynth_release_all(SYNTH(o));
 }
 
-MFUN(load)
-{
+MFUN(load) {
   m_uint size = fmsynth_preset_size();
   char* buf[size];
   struct fmsynth_preset_metadata metadata;
@@ -108,7 +102,7 @@ MFUN(load)
   m_str filename = STRING( *(M_Object*)MEM(SZ_INT) );
   FILE* file = fopen(filename, "r");
 
-  SYNTH(o) = fmsynth_new(shred->vm->bbq->sr, POLYPHONY);
+  set_synth(o, fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY));
   if(!file) {
     *(m_uint*)RETURN = -1;
     return;
@@ -121,10 +115,12 @@ MFUN(load)
   fclose(file);
   *(m_uint*)RETURN = fmsynth_preset_load(SYNTH(o), &metadata,
       buf, fmsynth_preset_size());
-  free(STRING(NAME(o)));
-  free(STRING(AUTHOR(o)));
-  STRING(NAME(o)) = strdup(metadata.name);
-  STRING(AUTHOR(o)) = strdup(metadata.author);
+//  free(STRING(NAME(o)));
+//  free(STRING(AUTHOR(o)));
+//  STRING(NAME(o)) = s_name(insert_symbol(strdup(metadata.name)));
+//  STRING(AUTHOR(o)) = strdup(metadata.author);
+  STRING(NAME(o)) = metadata.name;
+  STRING(AUTHOR(o)) = metadata.author;
 }
 
 MFUN(save)

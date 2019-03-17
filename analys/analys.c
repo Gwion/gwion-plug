@@ -9,6 +9,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 #include "ugen.h"
 #include "array.h"
@@ -81,7 +83,7 @@ static CTOR(fft_ctor) {
   Fft* fft = UGEN(o)->module.gen.data = (Fft*)xcalloc(1, sizeof(Fft));
   ugen_ini(UGEN(o), 1, 1);
   ugen_gen(UGEN(o), fft_tick, fft, 1);
-  fft->sp = shred->vm->bbq;
+  fft->sp = shred->info->vm->bbq;
 }
 
 static DTOR(fft_dtor) {
@@ -460,10 +462,10 @@ static MFUN(ana_set_fft) {
 
 static CTOR(ana_ctor) {
   Ana* ana = *(Ana**)(o->data + o_ana_ana) = (Ana*)xmalloc(sizeof(Ana));
-  ana->sr = shred->vm->bbq->sr;
+  ana->sr = shred->info->vm->bbq->si->sr;
   ana->percent = 50; // rolloff;
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)ana_dummy;
-  ana->sp = shred->vm->bbq;
+  ana->sp = shred->info->vm->bbq;
   ana->last = 0;
 }
 

@@ -8,6 +8,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 #include "ugen.h"
 
@@ -78,7 +80,7 @@ static TICK(tinysr_tick) {
 }
 
 static CTOR(tinysr_ctor) {
-  struct sr_data* sr = new_sr_data(o, shred->vm->bbq->sr);
+  struct sr_data* sr = new_sr_data(o, shred->info->vm->bbq->si->sr);
   ugen_ini(UGEN(o), 1, 1);
   ugen_gen(UGEN(o), tinysr_tick, sr, 0);
   const M_Object ev = TINY_EV(o) = new_object(NULL, t_event);

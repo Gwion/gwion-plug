@@ -14,6 +14,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 
 
@@ -117,7 +119,7 @@ static CTOR(pm_ctor)
 static DTOR(pm_dtor)
 {
   free_vector(MSG(o));
-  if(get(shred->vm, ID(o)))
+  if(get(shred->info->vm, ID(o)))
     release_info(ID(o), o);
 }
 
@@ -126,7 +128,7 @@ static MFUN(midiout_open)
   if(ID(o) > -1)
     release_info(ID(o), o);
   ID(o) = *(m_uint*)MEM(SZ_INT);
-  MidiInfo* info = get(shred->vm, ID(o));
+  MidiInfo* info = get(shred->info->vm, ID(o));
   vector_add(info->client, (vtype)o);
   if(!info->stream)
     Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
@@ -176,7 +178,7 @@ static void* pm_recv(void* data)
 static MFUN(midiin_open)
 {
   ID(o) = *(m_uint*)MEM(SZ_INT);
-  MidiInfo* info = get(shred->vm, ID(o));
+  MidiInfo* info = get(shred->info->vm, ID(o));
   if(!info->thread)
   {
     Pm_OpenInput(&info->stream, ID(o), 0, 0, NULL, NULL);
@@ -189,7 +191,7 @@ static MFUN(midiin_open)
 
 static MFUN(midiin_recv)
 {
-  MidiInfo* info = get(shred->vm, ID(o));
+  MidiInfo* info = get(shred->info->vm, ID(o));
   pthread_mutex_lock(&info->mutex);
   *(m_uint*)RETURN = vector_size(MSG(o)) ? 1 : 0;
   pthread_mutex_unlock(&info->mutex);
@@ -197,7 +199,7 @@ static MFUN(midiin_recv)
 
 static MFUN(midiin_read)
 {
-  MidiInfo* info = get(shred->vm, ID(o));
+  MidiInfo* info = get(shred->info->vm, ID(o));
   pthread_mutex_lock(&info->mutex);
   m_uint msg = (m_uint)vector_front(MSG(o));
   STATUS(o) = Pm_MessageStatus(msg);

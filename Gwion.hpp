@@ -11,6 +11,8 @@ extern "C"
 #include "type.h"
 #include "object.h"
 #include "instr.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 #include "ugen.h"
 

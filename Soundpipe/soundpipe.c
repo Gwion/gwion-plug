@@ -8,6 +8,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 #include "ugen.h"
 #include "func.h"
@@ -7175,9 +7177,9 @@ static TICK(sp_tick) {
 
 GWION_IMPORT(soundpipe) {
 	VM* vm = gwi_vm(gwi);
-	const uint8_t nchan = vm->bbq->nchan;
+	const uint8_t nchan = vm->bbq->si->out;
 	sp_createn(&sp, nchan);
-	sp->sr = vm->bbq->sr;
+	sp->sr = vm->bbq->si->sr;
 	M_Object o = new_M_UGen();
 	ugen_ini(UGEN(o), 1, 1);
 	ugen_gen(UGEN(o), sp_tick, sp, 0);

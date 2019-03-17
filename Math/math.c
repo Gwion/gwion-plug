@@ -8,6 +8,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 
 static SFUN(math_abs) {
@@ -15,7 +17,7 @@ static SFUN(math_abs) {
 }
 
 static SFUN(math_rand) {
-  *(m_uint*)RETURN = gw_rand(shred->vm->rand);
+  *(m_uint*)RETURN = gw_rand(shred->info->vm->rand);
 }
 
 static SFUN(math_rand2) {
@@ -26,25 +28,25 @@ static SFUN(math_rand2) {
     *(m_uint*)RETURN = min;
   else {
     if(range > 0)
-      *(m_uint*)RETURN = min + (m_int)((1.0 + range) * (gw_rand(shred->vm->rand) / (UINT32_MAX + 1.0)));
+      *(m_uint*)RETURN = min + (m_int)((1.0 + range) * (gw_rand(shred->info->vm->rand) / (UINT32_MAX + 1.0)));
     else
-      *(m_uint*)RETURN = min - (m_int)((-range + 1.0) * (gw_rand(shred->vm->rand) / (UINT32_MAX + 1.0)));
+      *(m_uint*)RETURN = min - (m_int)((-range + 1.0) * (gw_rand(shred->info->vm->rand) / (UINT32_MAX + 1.0)));
   }
 }
 
 static SFUN(math_randf) {
-  *(m_float*)RETURN = 2.0 * gw_rand(shred->vm->rand) / UINT32_MAX - 1.0;
+  *(m_float*)RETURN = 2.0 * gw_rand(shred->info->vm->rand) / UINT32_MAX - 1.0;
 }
 
 static SFUN(math_rand2f) {
   const m_float min = *(m_float*)MEM(0);
   const m_float max = *(m_float*)MEM(SZ_FLOAT);
-  *(m_float*)RETURN = min + (max - min) * (gw_rand(shred->vm->rand) / (m_float)UINT32_MAX);
+  *(m_float*)RETURN = min + (max - min) * (gw_rand(shred->info->vm->rand) / (m_float)UINT32_MAX);
 }
 
 static SFUN(math_srand) {
   const m_float ret = *(m_float*)MEM(0);
-  gw_seed(shred->vm->rand, ret);
+  gw_seed(shred->info->vm->rand, ret);
   *(m_float*)RETURN = ret;
 }
 

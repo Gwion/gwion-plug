@@ -9,6 +9,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 #include "compile.h"
 #include "traverse.h"
@@ -26,7 +28,7 @@ static SFUN(machine_add) {
   _release(obj, shred);
   if(!str)
     return;
-  *(m_uint*)RETURN = compile_filename(shred->vm->gwion, str);
+  *(m_uint*)RETURN = compile_filename(shred->info->vm->gwion, str);
 }
 
 static SFUN(machine_check) {
@@ -35,7 +37,7 @@ static SFUN(machine_check) {
   const m_str line = code_obj ? STRING(code_obj) : NULL;
   release(code_obj, shred);
   if(!line)return;
-  *(m_uint*)RETURN = check_string(shred->vm->gwion, "Machine.check", line);
+  *(m_uint*)RETURN = check_string(shred->info->vm->gwion, "Machine.check", line);
 /*
   FILE* f = fmemopen(line, strlen(line), "r");
   const Ast ast = parse(shred->vm->gwion->scan, "Machine.check", f);
@@ -55,16 +57,16 @@ static SFUN(machine_compile) {
   const m_str line = code_obj ? STRING(code_obj) : NULL;
   release(code_obj, shred);
   if(!line)return;
-  *(m_uint*)RETURN = compile_string(shred->vm->gwion, "Machine.compile", line);
+  *(m_uint*)RETURN = compile_string(shred->info->vm->gwion, "Machine.compile", line);
 }
 
 static SFUN(machine_shreds) {
-  VM* vm = shred->vm;
+  VM* vm = shred->info->vm;
   const Type t = array_type(t_int, 1);
   const M_Object obj = new_array(t, vector_size(&vm->shreduler->shreds));
   for(m_uint i = 0; i < vector_size(&vm->shreduler->shreds); i++) {
     const VM_Shred sh = (VM_Shred)vector_at(&vm->shreduler->shreds, i);
-    m_vector_set(ARRAY(obj), i, &sh->xid);
+    m_vector_set(ARRAY(obj), i, &sh->tick->xid);
   }
   vector_add(&shred->gc, (vtype)obj);
   *(M_Object*)RETURN = obj;

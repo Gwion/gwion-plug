@@ -258,7 +258,7 @@ static void* _loop(void* data)
   ++active;
 }
 
-static void nk_ctor(M_Object o, VM_Shred shred) {
+static CTOR(nk_ctor) {
   GWindow* gw = (GWindow*)xmalloc(sizeof(GWindow));
   gw->win = (XWindow*)xmalloc(sizeof(XWindow));
   gw->widget = new_vector();
@@ -280,8 +280,7 @@ static void gw_nk_shutdown(struct XWindow* xw) {
 //    nk_xlib_shutdown();
   }
 }
-static void nk_dtor(M_Object o, VM_Shred shred)
-{
+static DTOR(nk_dtor) {
   GWindow* gw = *(GWindow**)(o->data + o_nk_data);
   pthread_cancel(gw->thread);
   pthread_join(gw->thread, NULL);
@@ -298,7 +297,7 @@ static void nk_dtor(M_Object o, VM_Shred shred)
 }
 
 
-static void widget_ctor(M_Object o, VM_Shred shred)
+static CTOR(widget_ctor)
 {
   char name[256];
   sprintf(name, "Widget:%p", o);
@@ -311,7 +310,7 @@ static void widget_ctor(M_Object o, VM_Shred shred)
 }
 
 static m_uint o_nk_align;
-static void sval_ctor(M_Object o, VM_Shred shred)
+static CTOR(sval_ctor)
 {
 /*  *(f_nk*)(o->data + o_nk_exec) = label_execute;*/
   *(m_uint*)(o->data + o_nk_align) = NK_TEXT_LEFT;
@@ -335,7 +334,7 @@ static void label_execute(M_Object o, struct nk_context* ctx)
       nk_label(ctx, NAME(o), *(m_uint*)(o->data + o_nk_align));
   }
 }
-static void label_ctor(M_Object o, VM_Shred shred)
+static CTOR(label_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = label_execute;
 }
@@ -347,7 +346,7 @@ static void text_execute(M_Object o, struct nk_context* ctx)
   else
     nk_text(ctx, NAME(o), strlen(NAME(o)), *(m_uint*)(o->data + o_nk_align));           
 }
-static void text_ctor(M_Object o, VM_Shred shred)
+static CTOR(text_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = text_execute;
 }
@@ -358,7 +357,7 @@ static void slabel_execute(M_Object o, struct nk_context* ctx)
   if(nk_selectable_label(ctx, NAME(o), *(m_uint*)(o->data + o_nk_align), (int*)&*(m_uint*)(o->data + o_nk_select)))
     broadcast(o);
 }
-static void slabel_ctor(M_Object o, VM_Shred shred)
+static CTOR(slabel_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = label_execute;
 }
@@ -368,7 +367,7 @@ static void stext_execute(M_Object o, struct nk_context* ctx)
   if(nk_selectable_text(ctx, NAME(o), strlen(NAME(o)), *(m_uint*)(o->data + o_nk_align), (int*)&*(m_uint*)(o->data + o_nk_select)))
     broadcast(o);
 }
-static void stext_ctor(M_Object o, VM_Shred shred)
+static CTOR(stext_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = text_execute;
 }
@@ -379,7 +378,7 @@ static void prog_execute(M_Object o, struct nk_context* ctx)
   if(nk_progress(ctx, (m_uint*)(o->data + o_nk_prog), *(m_uint*)(o->data + o_nk_progmax), *(m_uint*)(o->data + o_nk_progmod)))
    broadcast(o);
 }
-static void prog_ctor(M_Object o, VM_Shred shred)
+static CTOR(prog_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = prog_execute;
   *(m_uint*)(o->data + o_nk_prog) = 0;
@@ -408,7 +407,7 @@ if(nk_button_color(ctx, COLOR(color)))
         broadcast(o);
   }
 }
-static void button_ctor(M_Object o, VM_Shred shred)
+static CTOR(button_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = button_execute;
 }
@@ -423,13 +422,12 @@ static void group_exec(M_Object o, struct nk_context* ctx)
     exec(obj, ctx);
   }
 }
-static void group_ctor(M_Object o, VM_Shred shred)
+static CTOR(group_ctor)
 {
   LIST(o)= new_vector();
   last_widget = o;
 }
-static void group_dtor(M_Object o, VM_Shred shred)
-{
+static DTOR(group_dtor) {
   free_vector(LIST(o));
   last_widget = o;
 }
@@ -463,7 +461,7 @@ static void rowd_execute(M_Object o, struct nk_context* ctx)
   group_exec(o, ctx);
 }
 
-static void rowd_ctor(M_Object o, VM_Shred shred)
+static CTOR(rowd_ctor)
 {
   (*(f_nk*)(o->data + o_nk_exec)) = rowd_execute;
   *(m_uint*)(o->data + o_nk_rowcol) = 1;
@@ -495,26 +493,20 @@ static void layout_execute(M_Object o, struct nk_context* ctx)
   nk_end(ctx);
 }
 
-static void layout_ctor(M_Object o, VM_Shred shred)
+static CTOR(layout_ctor)
 {
   (*(f_nk*)(o->data + o_nk_exec))    = layout_execute;
   (*(m_uint*)(o->data + o_nk_x))     = 50;
   (*(m_uint*)(o->data + o_nk_y))     = 50;
   (*(m_uint*)(o->data + o_nk_w))     = 400;
   (*(m_uint*)(o->data + o_nk_h))     = 400;
-  (*(m_uint*)(o->data + o_nk_flags)) = 
+  (*(m_uint*)(o->data + o_nk_flags)) =
     NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
     NK_WINDOW_CLOSABLE|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE;
-  
-  if(last_window)
-  {
+  if(last_window) {
     M_Object obj = (M_Object)vector_at(last_window->widget, vector_size(last_window->widget) - 1);
     if(obj)
-    {
-      if(vector_find(LIST(obj), (vtype)o) > -1)
-      vector_rem(LIST(obj), vector_find(LIST(obj), (vtype)o));
-    }
-    vector_add(last_window->widget, (vtype)o);
+      vector_add(last_window->widget, (vtype)o);
   }
 }
 
@@ -531,7 +523,7 @@ static void tree_execute(M_Object o, struct nk_context* ctx)
     nk_tree_pop(ctx);
   }
 }
-static void tree_ctor(M_Object o, VM_Shred shred)
+static CTOR(tree_ctor)
 {
   (*(f_nk*)(o->data + o_nk_exec)) = tree_execute;
   (*(m_uint*)(o->data + o_nk_state)) = NK_TREE_TAB;
@@ -557,7 +549,7 @@ static void combo_execute(M_Object o, struct nk_context* ctx)
     nk_combo_end(ctx);
   }
 }
-static void combo_ctor(M_Object o, VM_Shred shred)
+static CTOR(combo_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = combo_execute;
 }
@@ -575,7 +567,7 @@ static void menubar_execute(M_Object o, struct nk_context* ctx)
   group_exec(o, ctx);
   nk_menubar_end(ctx);
 }
-static void menubar_ctor(M_Object o, VM_Shred shred)
+static CTOR(menubar_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = menubar_execute;
 }
@@ -606,7 +598,7 @@ static void menu_execute(M_Object o, struct nk_context* ctx)
   }
 }
 
-static void menu_ctor(M_Object o, VM_Shred shred)
+static CTOR(menu_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = menu_execute;
 }
@@ -627,7 +619,7 @@ static void nkstring_execute(M_Object o, struct nk_context* ctx)
   NAME(o) = strdup(c);
 }
 
-static void nkstring_ctor(M_Object o, VM_Shred shred)
+static CTOR(nkstring_ctor)
 {
   *(f_nk*)(o->data + o_nk_exec) = nkstring_execute;
   *(m_uint*)(o->data + o_nk_edit_type) = NK_EDIT_SIMPLE;
@@ -639,7 +631,7 @@ static void check_execute(M_Object o, struct nk_context* ctx)
   if(nk_checkbox_label(ctx, NAME(o), (int*)&*(m_int*)(o->data + o_nk_ival)))
     broadcast(o);
 }
-static void check_ctor(M_Object o, VM_Shred shred)
+static CTOR(check_ctor)
 {
   (*(f_nk*)(o->data + o_nk_exec)) = check_execute;
 }
@@ -652,7 +644,7 @@ static void propi_execute(M_Object o, struct nk_context* ctx)
   if(property != *(m_int*)(o->data + o_nk_ival))
     broadcast(o);
 }
-static void propi_ctor(M_Object o, VM_Shred shred)
+static CTOR(propi_ctor)
 {
   (*(f_nk*)(o->data + o_nk_exec)) = propi_execute;
   *(m_int*)(o->data + o_nk_imax) = 100;
@@ -666,7 +658,7 @@ static void slideri_execute(M_Object o, struct nk_context* ctx)
     *(m_int*)(o->data + o_nk_imax), *(m_int*)(o->data + o_nk_istp)))
     broadcast(o);
 }
-static void slideri_ctor(M_Object o, VM_Shred shred)
+static CTOR(slideri_ctor)
 {
   (*(f_nk*)(o->data + o_nk_exec)) = slideri_execute;
   *(m_int*)(o->data + o_nk_imax) = 1.0;
@@ -686,7 +678,7 @@ static void propf_execute(M_Object o, struct nk_context* ctx)
   if(property != *(m_float*)(o->data + o_nk_fval))
     broadcast(o);
 }
-static void propf_ctor(M_Object o, VM_Shred shred)
+static CTOR(propf_ctor)
 {
   (*(f_nk*)(o->data + o_nk_exec)) = propf_execute;
   *(m_float*)(o->data + o_nk_fmax) = 1.0;
@@ -703,7 +695,7 @@ static void slider_execute(M_Object o, struct nk_context* ctx)
     /**(m_float*)(o->data + o_nk_fmax), *((m_float*)((M_Object)o)->d.data + o_nk_fstp)))*/
     broadcast(o);
 }
-static void slider_ctor(M_Object o, VM_Shred shred)
+static CTOR(slider_ctor)
 {
   (*(f_nk*)   (o->data + o_nk_exec)) = slider_execute;
   *(m_float*)(o->data + o_nk_fmax)  = 1.0;

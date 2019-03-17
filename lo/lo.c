@@ -9,6 +9,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "plug.h"
 #include "import.h"
 
 static Map map = NULL;
@@ -109,7 +111,7 @@ static MFUN(osc_send)
   lo_message msg;
   if(!ADDR(o))
   {
-    err_msg(0, "oscsend address not set. shred[%i] exiting.", shred->xid);
+    err_msg(0, "oscsend address not set. shred[%i] exiting.", shred->tick->xid);
     vm_shred_exit(shred);
     return;
   }
