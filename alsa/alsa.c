@@ -89,7 +89,7 @@ di->si->arg = "default:CARD=CODEC";
 info->chan = di->si->out;
   di->driver->data = info;
   if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_PLAYBACK, 0) < 0) {
-    err_msg(0, "problem with playback");
+    gw_err("problem with playback");
     return GW_ERROR;
   }
   info->pcm_out = info->handle;
@@ -97,7 +97,7 @@ info->chan = di->si->out;
 info->chan = di->si->in;
   if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_CAPTURE, SND_PCM_ASYNC |
       SND_PCM_NONBLOCK) < 0) {
-    err_msg(0, "problem with capture");
+    gw_err("problem with capture");
     return GW_ERROR;
   }
   info->pcm_in = info->handle;

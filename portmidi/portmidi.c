@@ -34,7 +34,7 @@ static MidiInfo* get(VM* vm, m_uint i)
 {
   if(!map)
   {
-    map = new_map();
+    map = new_map(vm->gwion->mp);
     Pm_Initialize();
   }
   MidiInfo* info = (MidiInfo*)map_get(map, (vtype)i+1);
@@ -42,7 +42,7 @@ static MidiInfo* get(VM* vm, m_uint i)
   {
     info = (MidiInfo*)xmalloc(sizeof(MidiInfo));
     info->stream = NULL;
-    info->client = new_vector();
+    info->client = new_vector(vm->gwion->mp);
     info->thread = 0;
     info->vm = vm;
     map_set(map, i+1, (vtype)info);
@@ -50,7 +50,7 @@ static MidiInfo* get(VM* vm, m_uint i)
   return info;
 }
 
-static void release_info(m_uint i, M_Object o)
+static void release_info(MemPool p, m_uint i, M_Object o)
 {
   MidiInfo* info = (MidiInfo*)map_get(map, (vtype)i+i);
   if(info)
@@ -61,13 +61,13 @@ static void release_info(m_uint i, M_Object o)
       if(info->thread)
         pthread_cancel(info->thread);
       Pm_Close(info->stream);
-      free_vector(info->client);
-      free(info);
+      free_vector(p, info->client);
+      xfree(info);
     }
   }
   if(!map_size(map))
   {
-    free_map(map);
+    free_map(p, map);
     map = NULL;
     Pm_Terminate();
   }
@@ -92,19 +92,19 @@ static MFUN(pm_name)
 {
   const PmDeviceInfo* info = Pm_GetDeviceInfo(ID(o));
   if(!info)
-    *(m_uint*)RETURN = (m_uint)new_string(shred, "no device");
+    *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, "no device");
   else
-    *(m_uint*)RETURN = (m_uint)new_string(shred, (m_str)info->name);
+    *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, (m_str)info->name);
 }
 
 static SFUN(pm_error)
 {
-  *(m_uint*)RETURN = (m_uint)new_string(shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(0)));
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(0)));
 }
 
 static MFUN(pm_close)
 {
-  release_info(ID(o), o);
+  release_info(shred->info->vm->gwion->mp, ID(o), o);
   STREAM(o) = NULL;
   ID(o) = -1;
   *(m_uint*)RETURN = 1;
@@ -113,20 +113,20 @@ static MFUN(pm_close)
 static CTOR(pm_ctor)
 {
   ID(o) = -1;
-  MSG(o) = new_vector();
+  MSG(o) = new_vector(shred->info->vm->gwion->mp);
 }
 
 static DTOR(pm_dtor)
 {
-  free_vector(MSG(o));
+  free_vector(shred->info->vm->gwion->mp, MSG(o));
   if(get(shred->info->vm, ID(o)))
-    release_info(ID(o), o);
+    release_info(shred->info->vm->gwion->mp, ID(o), o);
 }
 
 static MFUN(midiout_open)
 {
   if(ID(o) > -1)
-    release_info(ID(o), o);
+    release_info(shred->info->vm->gwion->mp, ID(o), o);
   ID(o) = *(m_uint*)MEM(SZ_INT);
   MidiInfo* info = get(shred->info->vm, ID(o));
   vector_add(info->client, (vtype)o);
@@ -217,24 +217,24 @@ GWION_IMPORT(portmidi) {
   SET_FLAG(t_portmidi, abstract);
 
   CHECK_BB(gwi_class_ini(gwi, t_portmidi, pm_ctor, pm_dtor))
-	gwi_item_ini(gwi,"int",  "@dummy");
+  gwi_item_ini(gwi,"int",  "@dummy");
    gwi_item_end(gwi, ae_flag_member, NULL);
-	gwi_item_ini(gwi,"int",  "@stream");
+  gwi_item_ini(gwi,"int",  "@stream");
   o_pm_stream = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_pm_stream)
-	gwi_item_ini(gwi,"int",  "id");
+  gwi_item_ini(gwi,"int",  "id");
   o_pm_id = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_pm_id)
-	gwi_item_ini(gwi,"int",  "status");
+  gwi_item_ini(gwi,"int",  "status");
   o_pm_status  = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_pm_status)
-	gwi_item_ini(gwi,"int",  "data1");
+  gwi_item_ini(gwi,"int",  "data1");
   o_pm_data1 = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_pm_data1)
-	gwi_item_ini(gwi,"int",  "data2");
+  gwi_item_ini(gwi,"int",  "data2");
   o_pm_data2 = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_pm_data2)
-	gwi_item_ini(gwi,"int",  "@msg");
+  gwi_item_ini(gwi,"int",  "@msg");
   o_pm_msg = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_pm_msg)
   gwi_func_ini(gwi, "string", "name", pm_name);

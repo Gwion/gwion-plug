@@ -15,6 +15,7 @@
 #include "plug.h"
 #include "import.h"
 #include "array.h"
+#include "gwi.h"
 
 m_int o_fileio_file;
 
@@ -28,7 +29,7 @@ static DTOR(static_fileio_dtor) {
 }
 
 #define describe_2file(name, type, offset, pop, format, ...)  \
-static INSTR(name##_to_file) { GWDEBUG_EXE                    \
+static INSTR(name##_to_file) {\
   POP_REG(shred, SZ_INT)                                      \
   const type lhs = *(type*)REG(-offset);                      \
   const M_Object o = *(M_Object*)REG(0);                      \
@@ -55,7 +56,7 @@ describe_2file(vec3, m_vec3, SZ_VEC3,
 describe_2file(vec4, m_vec4, SZ_VEC4,
   POP_REG(shred, SZ_INT - SZ_VEC4), "@(%f, %f, %f, %f)", lhs.x, lhs.y, lhs.z, lhs.w)
 
-static INSTR(file_to_int) { GWDEBUG_EXE
+static INSTR(file_to_int) {
   POP_REG(shred, SZ_INT)
   m_int* ret = *(m_int**)REG(0);
   const M_Object o = *(M_Object*)REG(-SZ_INT);
@@ -70,7 +71,7 @@ static INSTR(file_to_int) { GWDEBUG_EXE
     Except(shred, "EmptyFileException");
 }
 
-static INSTR(file_to_float) { GWDEBUG_EXE
+static INSTR(file_to_float) {
   POP_REG(shred, SZ_INT)
   float ret;
   const M_Object o = *(M_Object*)REG(-SZ_INT);
@@ -86,7 +87,7 @@ static INSTR(file_to_float) { GWDEBUG_EXE
   POP_REG(shred, SZ_FLOAT)
 }
 
-static INSTR(file_to_string) { GWDEBUG_EXE
+static INSTR(file_to_string) {
   POP_REG(shred, SZ_INT)
   const M_Object o    = *(M_Object*)REG(- SZ_INT);
   const M_Object s    = *(M_Object*)REG(0);
@@ -98,7 +99,7 @@ static INSTR(file_to_string) { GWDEBUG_EXE
     char c[1025];
     if(fscanf(IO_FILE(o), "%1024s", c) < 0)
       Except(shred, "FileReadException");                                     // LCOV_EXCL_LINE
-    STRING(s) = s_name(insert_symbol(c));
+    STRING(s) = s_name(insert_symbol(shred->info->vm->gwion->st, c));
     *(M_Object*)REG(- SZ_INT) = s;
   }
   _release(o, shred);
@@ -162,11 +163,11 @@ static SFUN(file_list) {
     *(m_uint*)RETURN = 0;
     return;
   }
-  const Type t = array_type(t_string, 1);
-  const M_Object ret = new_array(t, n);
+  const Type t = array_type(shred->info->vm->gwion->env, t_string, 1);
+  const M_Object ret = new_array(shred->info->vm->gwion->mp, t, n);
   vector_add(&shred->gc, (vtype)ret);
   for(m_uint i = 0; i < (m_uint)n; i++) {
-    const M_Object string = new_string(NULL, namelist[i]->d_name);
+    const M_Object string = new_string(shred->info->vm->gwion->mp, NULL, namelist[i]->d_name);
     m_vector_set(ARRAY(ret), i, &string);
     free(namelist[i]);
   }
@@ -244,15 +245,15 @@ GWION_IMPORT(fileio) {
   CHECK_BB(gwi_class_ini(gwi,  t_cin, NULL, static_fileio_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const M_Object gw_cin = new_object(NULL, t_cin);
+  const M_Object gw_cin = new_object(gwi->gwion->mp, NULL, t_cin);
   IO_FILE(gw_cin) = stdin;
-  EV_SHREDS(gw_cin) = new_vector();
-  const M_Object gw_cout = new_object(NULL, t_cout);
+  EV_SHREDS(gw_cin) = new_vector(gwi->gwion->mp);
+  const M_Object gw_cout = new_object(gwi->gwion->mp, NULL, t_cout);
   IO_FILE(gw_cout) = stdout;
-  EV_SHREDS(gw_cout) = new_vector();
-  const M_Object gw_cerr = new_object(NULL, t_cerr);
+  EV_SHREDS(gw_cout) = new_vector(gwi->gwion->mp);
+  const M_Object gw_cerr = new_object(gwi->gwion->mp, NULL, t_cerr);
   IO_FILE(gw_cerr) = stderr;
-  EV_SHREDS(gw_cerr) = new_vector();
+  EV_SHREDS(gw_cerr) = new_vector(gwi->gwion->mp);
   gwi_item_ini(gwi, "FileIO", "cin");
   gwi_item_end(gwi, ae_flag_const, gw_cin);
   gwi_item_ini(gwi, "FileIO", "cout");

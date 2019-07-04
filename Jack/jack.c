@@ -33,7 +33,7 @@ static void inner_cb(struct JackInfo* info, jack_default_audio_sample_t** in,
   for(frame = 0; frame < nframes; frame++) {
     for(chan = 0; chan < vm->bbq->si->in; chan++)
       vm->bbq->in[chan] = in[chan][frame];
-    vm_run(vm);
+    vm->bbq->run(vm);
     for(chan = 0; chan < (m_uint)vm->bbq->si->out; chan++)
       out[chan][frame] = vm->bbq->out[chan];
     ++vm->bbq->pos;

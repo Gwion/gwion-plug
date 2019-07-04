@@ -57,7 +57,7 @@ static MFUN(reset_errno) {
 
 static MFUN(errstr) {
   m_str str = fann_get_errstr(ERROR(o));
-  *(m_uint*)RETURN = (m_uint)new_string(shred, str ? str : "no error");
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, str ? str : "no error");
 }
 
 static MFUN(reset_errstr) {
@@ -168,8 +168,8 @@ static MFUN(layers) {
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(t_int, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   unsigned int j[size];
   fann_get_layer_array(FANN(o), j);
   for(i = 0; i < size; i++)
@@ -182,8 +182,8 @@ static MFUN(bias) {
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(t_int, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   unsigned int j[size];
   fann_get_bias_array(FANN(o), j);
   for(i = 0; i < size; i++)
@@ -199,8 +199,8 @@ static struct fann_connection to_fann(M_Object o) {
   return c;
 }
 
-static M_Object from_fann(struct fann_connection c) {
-  M_Object o= new_object(NULL, t_fann_connect);
+static M_Object from_fann(const VM_Shred shred, struct fann_connection c) {
+  M_Object o= new_object(shred->info->vm->gwion->mp, NULL, t_fann_connect);
   *(m_uint*)(o->data + o_fann_from)    = c.from_neuron;
   *(m_uint*)(o->data + o_fann_to)      = c.to_neuron;
   *(m_float*)(o->data + o_fann_weight) = c.weight;
@@ -213,12 +213,12 @@ static MFUN(connection_array){
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(t_int, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   struct fann_connection c[size];
   fann_get_connection_array(FANN(o), c);
   for(i= 0; i < size; i++) {
-   M_Object obj = from_fann(c[i]);
+   M_Object obj = from_fann(shred, c[i]);
    m_vector_set(ARRAY(ret), i, (char*)&obj);
   }
   *(m_uint*)RETURN = (m_uint)ret;
@@ -251,8 +251,8 @@ static MFUN(get_weigths) {
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(t_float, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   m_float f[size];
   fann_get_weights(FANN(o), f);
   for(i = 0; i < size; i++)
@@ -269,7 +269,7 @@ static MFUN(set_weigths) {
   M_Object ret = *(M_Object*)MEM(SZ_INT);
   if(m_vector_size(ARRAY(ret)) < size)
   if(!FANN(o)) {
-    err_msg(0, "invalid array size for weights (%i). should be %i", m_vector_size(ARRAY(ret)), size);
+    gw_err("invalid array size for weights (%i). should be %i", m_vector_size(ARRAY(ret)), size);
     *(m_uint*)RETURN = 0;
     return;
   }
@@ -307,7 +307,7 @@ static SFUN(type_str) {
     *(m_uint*)RETURN = 0;
     return;
   }
-  *(m_uint*)RETURN = (m_uint)new_string(shred, (m_str)FANN_NETTYPE_NAMES[i]);
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, (m_str)FANN_NETTYPE_NAMES[i]);
 }
 
 static MFUN(load) {
@@ -346,8 +346,8 @@ static MFUN(test) {
   for(i = 0; i < s_out; i++)
     m_vector_get(ARRAY(o_out), i, (char*)&out[i]);
   m_float* f = fann_test(FANN(o), in, out);
-  Type t = array_type(t_float, 1);
-  M_Object ret = new_array(t, s_ret);
+  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, s_ret);
   for(i = 0; i < s_ret; i++)
     m_vector_set(ARRAY(o_out), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
@@ -376,8 +376,8 @@ static MFUN(run) {
   m_float  ptr[size];
   for(i = 0; i < size; i++)
     m_vector_get(ARRAY(array), i, &ptr[i]);
-  Type t = array_type(t_float, 1);
-  M_Object ret = new_array(t, fann_get_num_output(FANN(o)));
+  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, fann_get_num_output(FANN(o)));
   m_float *f = fann_run(FANN(o), ptr);
   for(i = 0; i < fann_get_num_output(FANN(o)); i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
@@ -548,8 +548,8 @@ static MFUN(train_input) {
   }
   m_float* f = fann_get_train_input(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(t_float, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
@@ -562,8 +562,8 @@ static MFUN(train_output) {
   }
   m_float* f = fann_get_train_output(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(t_float, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
   *(m_uint*)RETURN = (m_uint)ret;
@@ -643,7 +643,7 @@ static MFUN(train_save) {
 }
 
 static SFUN(train_merge) {
-  M_Object ret = new_object(shred, t_fann_data);
+  M_Object ret = new_object(shred->info->vm->gwion->mp, shred, t_fann_data);
   M_Object l = *(M_Object*)MEM(0);
   M_Object r = *(M_Object*)MEM(SZ_INT);
   DATA(ret) = fann_merge_train_data(DATA(l), DATA(r));
@@ -651,7 +651,7 @@ static SFUN(train_merge) {
 }
 
 static SFUN(train_duplicate) {
-  M_Object ret = new_object(shred, t_fann_data);
+  M_Object ret = new_object(shred->info->vm->gwion->mp, shred, t_fann_data);
   M_Object l = *(M_Object*)MEM(0);
   M_Object r = *(M_Object*)MEM(SZ_INT);
   DATA(ret) = fann_duplicate_train_data(DATA(l));
@@ -659,7 +659,7 @@ static SFUN(train_duplicate) {
 }
 
 static MFUN(train_do_subset) {
-  M_Object ret = new_object(shred, t_fann_data);
+  M_Object ret = new_object(shred->info->vm->gwion->mp, shred, t_fann_data);
   m_uint pos = *(m_uint*)MEM(SZ_INT);
   m_uint len = *(m_uint*)MEM(SZ_INT*2);
   DATA(ret) = fann_subset_train_data(DATA(o), pos, len);
@@ -979,8 +979,8 @@ MFUN(get_cascade_activation_functions) {
   }
   m_uint i, size = fann_get_cascade_activation_functions_count(FANN(o));
   enum fann_activationfunc_enum * tmp = fann_get_cascade_activation_functions(FANN(o));
-  Type t = array_type(t_int, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
   *(m_uint*)RETURN = (m_uint)ret;
@@ -1012,8 +1012,8 @@ MFUN(get_cascade_activation_steepnesses) {
   }
   m_uint i, size = fann_get_cascade_activation_steepnesses_count(FANN(o));
   m_float* tmp = fann_get_cascade_activation_steepnesses(FANN(o));
-  Type t = array_type(t_float, 1);
-  M_Object ret = new_array(t, size);
+  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
   *(m_uint*)RETURN = (m_uint)ret;
@@ -1050,20 +1050,20 @@ GWION_IMPORT(fann) {
   CHECK_OB((t_fann = gwi_mk_type(gwi, "FANN", SZ_INT, t_fann_base )))
   CHECK_OB((t_fann_data = gwi_mk_type(gwi, "FANN_data", SZ_INT, t_fann_base )))
   CHECK_BB(gwi_class_ini(gwi, t_fann_connect, NULL, NULL))
-	gwi_item_ini(gwi,"int",  "from");
+  gwi_item_ini(gwi,"int",  "from");
   o_fann_from = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fann_from)
-	gwi_item_ini(gwi,"int",  "to");
+  gwi_item_ini(gwi,"int",  "to");
   o_fann_to = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fann_to)
-	gwi_item_ini(gwi,"int",  "weight");
+  gwi_item_ini(gwi,"int",  "weight");
   o_fann_weight = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fann_weight)
   CHECK_BB(gwi_class_end(gwi))
 
   // this is for error handling
   CHECK_BB(gwi_class_ini(gwi, t_fann_base, NULL, NULL))
-	gwi_item_ini(gwi,"int",  "@data");
+  gwi_item_ini(gwi,"int",  "@data");
   o_fann_error = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fann_error)
   gwi_func_ini(gwi, "void", "log", error_log);

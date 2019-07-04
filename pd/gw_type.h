@@ -40,7 +40,7 @@ ANN m_bool type_ref(Type) __attribute__((pure));
 __attribute__((returns_nonnull))
 ANN Type template_parent(const Type type);
 //static inline Type actual_type(const Type t) {
-//  return isa(t, t_class) > 0 ? t->d.base_type : t;
+//  return isa(t, t_class) > 0 ? t->e->d.base_type : t;
 //}
 #endif
 

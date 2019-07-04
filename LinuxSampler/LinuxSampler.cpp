@@ -93,8 +93,8 @@ static CTOR(linuxsampler_ctor) {
   std::map<String,LinuxSampler::DeviceCreationParameter*> param;
   myLinuxSampler* ls = *(myLinuxSampler**)(o->data + o_ls_data) = new 
     myLinuxSampler(param, shred->info->vm->bbq->si->sr);
-  ugen_ini(UGEN(o), 0, 2);
-  ugen_gen(UGEN(o), tick, (void*)ls, 0);
+  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 2);
+  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tick, (void*)ls, 0);
 }
 
 static DTOR(linuxsampler_dtor) {

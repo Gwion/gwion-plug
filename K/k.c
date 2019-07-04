@@ -78,7 +78,7 @@ m_float** kmeans_refine(m_uint x, m_uint y, m_float** d, m_uint iter, m_uint n_p
     m_float sub[n_points][y];
     centroid[i] = matrix_alloc(n_label, y);
     /* make new subsample */
-    /*m_float** sub =	matrix_alloc(n_points, y);*/
+    /*m_float** sub =  matrix_alloc(n_points, y);*/
     for(j = 0; j < n_points; j++)
       memcpy(sub[j], d[(int) round(rand()/(m_float)RAND_MAX * (y-1))], y * sizeof(m_float));
     /* run kmeans for subsample */
@@ -87,7 +87,7 @@ m_float** kmeans_refine(m_uint x, m_uint y, m_float** d, m_uint iter, m_uint n_p
     dist[i] = 0;
     /* for each point in the subsample */
     for(k = 0; k < n_points; k++)
-      /* 	and in each dimension, */
+      /*   and in each dimension, */
       for(l = 0; l < y; l++)
         /* sum squares of distances */
         dist[i] += (sub[k][l] - centroid[i][labels[k]][l])  *
@@ -174,8 +174,8 @@ m_uint knn_classify(m_uint x, m_uint y, m_float** d, m_uint n_labels, m_uint* la
 {
   m_uint i, j = 0, ret;
   m_float  max = 0.0;
-  id_dist 	id[x];
-  id_dist		ret_id[x];
+  id_dist   id[x];
+  id_dist    ret_id[x];
   m_uint _labels[n_labels];
  
   for(i = 0; i < x; i++)
@@ -205,8 +205,8 @@ m_uint* knn_classify_multi(m_uint x, m_uint y, m_float** d, m_uint n_labels, m_u
   for(l = 0; l < n_instance; l++) {
     m_uint i, j = 0;
     m_float  max = 0.0;
-    id_dist 	id[x];
-    id_dist		ret_id[x];
+    id_dist   id[x];
+    id_dist    ret_id[x];
     m_uint _labels[n_labels];
     for(i = 0; i < x; i++)
     {

@@ -81,8 +81,8 @@ static TICK(fft_tick) {
 
 static CTOR(fft_ctor) {
   Fft* fft = UGEN(o)->module.gen.data = (Fft*)xcalloc(1, sizeof(Fft));
-  ugen_ini(UGEN(o), 1, 1);
-  ugen_gen(UGEN(o), fft_tick, fft, 1);
+  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fft_tick, fft, 1);
   fft->sp = shred->info->vm->bbq;
 }
 
@@ -270,9 +270,9 @@ m_float compute_freq(Ana* fft) {
   m_float max = -0;
   m_float where = 0;
   for(i = 0; i < fft->size / 2; i++) {
-    /*		if(fft->cval[i][0] > max)*/
+    /*    if(fft->cval[i][0] > max)*/
     if(fft->fval[i] > max) {
-      /*			max = fft->cval[i][0];*/
+      /*      max = fft->cval[i][0];*/
       max = fft->fval[i];
       where = i;
     }
@@ -451,7 +451,7 @@ static MFUN(ana_set_fft) {
   }
   fft = (Fft*)UGEN(obj)->module.gen.data;
   if(!fft || !fft->buf) {
-    err_msg(0, "FFT probably not initialised.");
+    gw_err("FFT probably not initialised.");
     release(obj, shred);
     return;
   }
@@ -476,13 +476,13 @@ static DTOR(ana_dtor) {
 static m_bool import_ana(Gwi gwi) {
   CHECK_OB((t_ana = gwi_mk_type(gwi, "ANA", SZ_INT , NULL)))
   CHECK_BB(gwi_class_ini(gwi, t_ana, ana_ctor, ana_dtor))
-	gwi_item_ini(gwi,"int", "@_fft");
+  gwi_item_ini(gwi,"int", "@_fft");
   o_ana_ana = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_ana_ana)
-	gwi_item_ini(gwi,"FFT", "@fft");
+  gwi_item_ini(gwi,"FFT", "@fft");
   o_ana_fft = gwi_item_end(gwi,  ae_flag_ref, NULL);
   CHECK_BB(o_ana_fft)
-	gwi_item_ini(gwi, "int", "@fn");
+  gwi_item_ini(gwi, "int", "@fn");
   o_ana_fn = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_ana_fn)
   gwi_func_ini(gwi, "float", "compute", ana_compute);
@@ -610,18 +610,18 @@ static m_bool import_ass(Gwi gwi) {
 
 static m_int o_fc_vector;
 static CTOR(fc_ctor) {
-  *(Vector*)(o->data + o_fc_vector) = new_vector();
+  *(Vector*)(o->data + o_fc_vector) = new_vector(shred->info->vm->gwion->mp);
 }
 static DTOR(fc_dtor) {
-  free_vector(*(Vector*)(o->data + o_fc_vector));
+  free_vector(shred->info->vm->gwion->mp, *(Vector*)(o->data + o_fc_vector));
 }
 
 static MFUN(fc_compute) {
   m_uint i;
   M_Object ret;
   Vector v = *(Vector*)(o->data + o_fc_vector);
-  Type t = array_type(t_float, 1);
-  ret = new_array(t, vector_size(v));
+  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  ret = new_array(shred->info->vm->gwion->mp, t, vector_size(v));
   vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
     M_Object obj = (M_Object)vector_at(v, i);
@@ -658,7 +658,7 @@ static MFUN(fc_rem) {
   *(m_uint*)RETURN = (m_uint)obj;
 }
 
-INSTR(fc_connect) { GWDEBUG_EXE
+INSTR(fc_connect) {
   POP_REG(shred, SZ_INT * 2);
   M_Object o   = *(M_Object*)REG(0);
   M_Object obj = **(M_Object**)REG(SZ_INT);
@@ -674,7 +674,7 @@ INSTR(fc_connect) { GWDEBUG_EXE
   PUSH_REG(shred, SZ_INT);
 }
 
-INSTR(fc_disconnect) { GWDEBUG_EXE
+INSTR(fc_disconnect) {
   POP_REG(shred, SZ_INT * 2);
   M_Object o   = *(M_Object*)REG(0);
   M_Object obj = *(M_Object*)REG(SZ_INT); // WARN inconsistency
@@ -694,7 +694,7 @@ static m_bool import_fc(Gwi gwi) {
   Type t_fc;
   CHECK_OB((t_fc = gwi_mk_type(gwi, "FC", SZ_INT , NULL)))
   CHECK_BB(gwi_class_ini(gwi, t_fc, fc_ctor, fc_dtor))
-	gwi_item_ini(gwi,"int", "@vector");
+  gwi_item_ini(gwi,"int", "@vector");
   o_fc_vector = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fc_vector)
   gwi_func_ini(gwi, "float[]", "compute", fc_compute);

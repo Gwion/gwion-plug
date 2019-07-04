@@ -17,6 +17,8 @@
 #include "plug.h"
 #include "import.h"
 #include "ugen.h"
+#include "gwi.h"
+#include "gwion.h"
 #include "fmsynth.h"
 
 static m_int o_fmsynth_data, o_fmsynth_name, o_fmsynth_author;
@@ -39,11 +41,11 @@ static TICK(fmsynth_tick) {
 }
 
 CTOR(ctor) {
-  NAME(o) = new_string(NULL, "name");
-  AUTHOR(o) = new_string(NULL, "author");
+  NAME(o) = new_string(shred->info->vm->gwion->mp, NULL, "name");
+  AUTHOR(o) = new_string(shred->info->vm->gwion->mp, NULL, "author");
   SYNTH(o) = fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY);
-  ugen_ini(UGEN(o), 0, 2);
-  ugen_gen(UGEN(o), fmsynth_tick, SYNTH(o), 0);
+  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 2);
+  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fmsynth_tick, SYNTH(o), 0);
 }
 
 DTOR(dtor) {
@@ -159,140 +161,140 @@ static m_int o_amp, o_pan, o_freq_mod, o_freq_offset,
   o_ok, o_busy, o_small, o_nonul, o_format, o_unknown;
 
 GWION_IMPORT(fmsynth) {
-  ALLOC_PTR(amp, m_uint, FMSYNTH_PARAM_AMP);
-  ALLOC_PTR(pan, m_uint, FMSYNTH_PARAM_PAN);
-  ALLOC_PTR(freq_mod, m_uint, FMSYNTH_PARAM_FREQ_MOD);
-  ALLOC_PTR(freq_offset, m_uint, FMSYNTH_PARAM_FREQ_OFFSET);
-  ALLOC_PTR(target0, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET0);
-  ALLOC_PTR(target1, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET1);
-  ALLOC_PTR(target2, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET2);
-  ALLOC_PTR(delay0, m_uint, FMSYNTH_PARAM_DELAY0);
-  ALLOC_PTR(delay1, m_uint, FMSYNTH_PARAM_DELAY1);
-  ALLOC_PTR(delay2, m_uint, FMSYNTH_PARAM_DELAY2);
-  ALLOC_PTR(rel, m_uint, FMSYNTH_PARAM_RELEASE_TIME);
-  ALLOC_PTR(mid_point, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_MID_POINT);
-  ALLOC_PTR(low_fact, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_LOW_FACTOR);
-  ALLOC_PTR(high_fact, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_HIGH_FACTOR);
-  ALLOC_PTR(velo_sens, m_uint, FMSYNTH_PARAM_VELOCITY_SENSITIVITY);
-  ALLOC_PTR(wheel_sens, m_uint, FMSYNTH_PARAM_MOD_WHEEL_SENSITIVITY);
-  ALLOC_PTR(lfo_amp_sens, m_uint, FMSYNTH_PARAM_LFO_AMP_SENSITIVITY);
-  ALLOC_PTR(lfo_freq_mod, m_uint, FMSYNTH_PARAM_LFO_FREQ_MOD_DEPTH);
-  ALLOC_PTR(enable, m_uint, FMSYNTH_PARAM_ENABLE);
-  ALLOC_PTR(carriers, m_uint, FMSYNTH_PARAM_CARRIERS);
-  ALLOC_PTR(carrier0, m_uint, FMSYNTH_PARAM_MOD_TO_CARRIERS0);
-  ALLOC_PTR(g_vol, m_uint, FMSYNTH_GLOBAL_PARAM_VOLUME);
-  ALLOC_PTR(g_lfo, m_uint, FMSYNTH_GLOBAL_PARAM_LFO_FREQ);
-  ALLOC_PTR(ok, m_uint, FMSYNTH_STATUS_OK);
-  ALLOC_PTR(busy, m_uint, FMSYNTH_STATUS_BUSY);
-  ALLOC_PTR(small, m_uint, FMSYNTH_STATUS_BUFFER_TOO_SMALL);
-  ALLOC_PTR(nonul, m_uint, FMSYNTH_STATUS_NO_NUL_TERMINATE);
-  ALLOC_PTR(format, m_uint, FMSYNTH_STATUS_INVALID_FORMAT);
-  ALLOC_PTR(unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
+  ALLOC_PTR(gwi->gwion->mp, amp, m_uint, FMSYNTH_PARAM_AMP);
+  ALLOC_PTR(gwi->gwion->mp, pan, m_uint, FMSYNTH_PARAM_PAN);
+  ALLOC_PTR(gwi->gwion->mp, freq_mod, m_uint, FMSYNTH_PARAM_FREQ_MOD);
+  ALLOC_PTR(gwi->gwion->mp, freq_offset, m_uint, FMSYNTH_PARAM_FREQ_OFFSET);
+  ALLOC_PTR(gwi->gwion->mp, target0, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET0);
+  ALLOC_PTR(gwi->gwion->mp, target1, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET1);
+  ALLOC_PTR(gwi->gwion->mp, target2, m_uint, FMSYNTH_PARAM_ENVELOPE_TARGET2);
+  ALLOC_PTR(gwi->gwion->mp, delay0, m_uint, FMSYNTH_PARAM_DELAY0);
+  ALLOC_PTR(gwi->gwion->mp, delay1, m_uint, FMSYNTH_PARAM_DELAY1);
+  ALLOC_PTR(gwi->gwion->mp, delay2, m_uint, FMSYNTH_PARAM_DELAY2);
+  ALLOC_PTR(gwi->gwion->mp, rel, m_uint, FMSYNTH_PARAM_RELEASE_TIME);
+  ALLOC_PTR(gwi->gwion->mp, mid_point, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_MID_POINT);
+  ALLOC_PTR(gwi->gwion->mp, low_fact, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_LOW_FACTOR);
+  ALLOC_PTR(gwi->gwion->mp, high_fact, m_uint, FMSYNTH_PARAM_KEYBOARD_SCALING_HIGH_FACTOR);
+  ALLOC_PTR(gwi->gwion->mp, velo_sens, m_uint, FMSYNTH_PARAM_VELOCITY_SENSITIVITY);
+  ALLOC_PTR(gwi->gwion->mp, wheel_sens, m_uint, FMSYNTH_PARAM_MOD_WHEEL_SENSITIVITY);
+  ALLOC_PTR(gwi->gwion->mp, lfo_amp_sens, m_uint, FMSYNTH_PARAM_LFO_AMP_SENSITIVITY);
+  ALLOC_PTR(gwi->gwion->mp, lfo_freq_mod, m_uint, FMSYNTH_PARAM_LFO_FREQ_MOD_DEPTH);
+  ALLOC_PTR(gwi->gwion->mp, enable, m_uint, FMSYNTH_PARAM_ENABLE);
+  ALLOC_PTR(gwi->gwion->mp, carriers, m_uint, FMSYNTH_PARAM_CARRIERS);
+  ALLOC_PTR(gwi->gwion->mp, carrier0, m_uint, FMSYNTH_PARAM_MOD_TO_CARRIERS0);
+  ALLOC_PTR(gwi->gwion->mp, g_vol, m_uint, FMSYNTH_GLOBAL_PARAM_VOLUME);
+  ALLOC_PTR(gwi->gwion->mp, g_lfo, m_uint, FMSYNTH_GLOBAL_PARAM_LFO_FREQ);
+  ALLOC_PTR(gwi->gwion->mp, ok, m_uint, FMSYNTH_STATUS_OK);
+  ALLOC_PTR(gwi->gwion->mp, busy, m_uint, FMSYNTH_STATUS_BUSY);
+  ALLOC_PTR(gwi->gwion->mp, small, m_uint, FMSYNTH_STATUS_BUFFER_TOO_SMALL);
+  ALLOC_PTR(gwi->gwion->mp, nonul, m_uint, FMSYNTH_STATUS_NO_NUL_TERMINATE);
+  ALLOC_PTR(gwi->gwion->mp, format, m_uint, FMSYNTH_STATUS_INVALID_FORMAT);
+  ALLOC_PTR(gwi->gwion->mp, unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
   Type t_fmsynth;
   CHECK_BB((t_fmsynth = gwi_mk_type(gwi, "FMSynth", SZ_INT, t_ugen)))
   CHECK_BB(gwi_class_ini(gwi, t_fmsynth, ctor, dtor))
-	gwi_item_ini(gwi,"int", "&synth");
+  gwi_item_ini(gwi,"int", "&synth");
   o_fmsynth_data = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_data)
-	gwi_item_ini(gwi,"string", "name");
+  gwi_item_ini(gwi,"string", "name");
   o_fmsynth_name = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_name)
-	gwi_item_ini(gwi,"string", "author");
+  gwi_item_ini(gwi,"string", "author");
   o_fmsynth_author = gwi_item_end(gwi, ae_flag_member, NULL);
   CHECK_BB(o_fmsynth_author)
 
   // params
-	gwi_item_ini(gwi,"int", "AMP");
+  gwi_item_ini(gwi,"int", "AMP");
   o_amp = gwi_item_end(gwi, ae_flag_static | ae_flag_const, amp);
   CHECK_BB(o_pan)
-	gwi_item_ini(gwi,"int", "PAN");
+  gwi_item_ini(gwi,"int", "PAN");
   o_pan = gwi_item_end(gwi, ae_flag_static | ae_flag_const, pan);
   CHECK_BB(o_pan)
 
-	gwi_item_ini(gwi,"int", "FREQ_MOD");
+  gwi_item_ini(gwi,"int", "FREQ_MOD");
   o_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, freq_mod);
   CHECK_BB(o_freq_offset)
-	gwi_item_ini(gwi,"int", "FREQ_OFFSET");
+  gwi_item_ini(gwi,"int", "FREQ_OFFSET");
   o_freq_offset = gwi_item_end(gwi, ae_flag_static | ae_flag_const, freq_offset);
   CHECK_BB(o_freq_mod)
-	gwi_item_ini(gwi,"int", "TARGET0");
+  gwi_item_ini(gwi,"int", "TARGET0");
   o_target0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, target0);
   CHECK_BB(o_target0)
-	gwi_item_ini(gwi,"int", "TARGET1");
+  gwi_item_ini(gwi,"int", "TARGET1");
   o_target1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, target1);
   CHECK_BB(o_target1)
-	gwi_item_ini(gwi,"int", "TARGET2");
+  gwi_item_ini(gwi,"int", "TARGET2");
   o_target2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, target2);
   CHECK_BB(o_target2)
-	gwi_item_ini(gwi,"int", "DELAY0");
+  gwi_item_ini(gwi,"int", "DELAY0");
   o_delay0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, delay0);
   CHECK_BB(o_delay0)
-	gwi_item_ini(gwi,"int", "DELAY1");
+  gwi_item_ini(gwi,"int", "DELAY1");
   o_delay1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, delay1);
   CHECK_BB(o_delay0)
-	gwi_item_ini(gwi,"int", "DELAY2");
+  gwi_item_ini(gwi,"int", "DELAY2");
   o_delay2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, delay2);
   CHECK_BB(o_delay2)
-	gwi_item_ini(gwi,"int", "RELEASE");
+  gwi_item_ini(gwi,"int", "RELEASE");
   o_rel = gwi_item_end(gwi, ae_flag_static | ae_flag_const, rel);
   CHECK_BB(o_rel)
-	gwi_item_ini(gwi,"int", "MID_POINT");
+  gwi_item_ini(gwi,"int", "MID_POINT");
   o_mid_point = gwi_item_end(gwi, ae_flag_static | ae_flag_const, mid_point);
   CHECK_BB(o_mid_point)
-	gwi_item_ini(gwi,"int", "LOW_FACTOR");
+  gwi_item_ini(gwi,"int", "LOW_FACTOR");
   o_low_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, low_fact);
   CHECK_BB(o_low_fact)
-	gwi_item_ini(gwi,"int", "HIGH_FACTOR");
+  gwi_item_ini(gwi,"int", "HIGH_FACTOR");
   o_high_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, high_fact);
   CHECK_BB(o_high_fact)
-	gwi_item_ini(gwi,"int", "VELO_SENS");
+  gwi_item_ini(gwi,"int", "VELO_SENS");
   o_velo_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, velo_sens);
   CHECK_BB(o_velo_sens)
-	gwi_item_ini(gwi,"int", "WHEEL_SENS");
+  gwi_item_ini(gwi,"int", "WHEEL_SENS");
   o_wheel_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, wheel_sens);
   CHECK_BB(o_wheel_sens)
-	gwi_item_ini(gwi,"int", "LFO_AMP_SENS");
+  gwi_item_ini(gwi,"int", "LFO_AMP_SENS");
   o_lfo_amp_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, lfo_amp_sens);
   CHECK_BB(o_lfo_amp_sens)
-	gwi_item_ini(gwi,"int", "LFO_FREQ_MOD");
+  gwi_item_ini(gwi,"int", "LFO_FREQ_MOD");
   o_lfo_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, lfo_freq_mod);
   CHECK_BB(o_lfo_freq_mod)
-	gwi_item_ini(gwi,"int", "ENABLE");
+  gwi_item_ini(gwi,"int", "ENABLE");
   o_enable = gwi_item_end(gwi, ae_flag_static | ae_flag_const, enable);
   CHECK_BB(o_enable)
-	gwi_item_ini(gwi,"int", "CARRIERS");
+  gwi_item_ini(gwi,"int", "CARRIERS");
   o_carriers = gwi_item_end(gwi, ae_flag_static | ae_flag_const, carriers);
   CHECK_BB(o_carriers)
-	gwi_item_ini(gwi,"int", "CARRIER0");
+  gwi_item_ini(gwi,"int", "CARRIER0");
   o_carrier0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, carrier0);
   CHECK_BB(o_carrier0)
 
   // global
-	gwi_item_ini(gwi,"int", "GVOL");
+  gwi_item_ini(gwi,"int", "GVOL");
   o_g_vol    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, g_vol);
   CHECK_BB(o_g_vol)
 
-	gwi_item_ini(gwi,"int", "GLFO");
+  gwi_item_ini(gwi,"int", "GLFO");
   o_g_lfo    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, g_lfo);
   CHECK_BB(o_g_lfo)
   // status
-	gwi_item_ini(gwi,"int", "OK");
+  gwi_item_ini(gwi,"int", "OK");
   o_ok    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, ok);
   CHECK_BB(o_ok)
-	gwi_item_ini(gwi,"int", "BUSY");
+  gwi_item_ini(gwi,"int", "BUSY");
   o_busy   = gwi_item_end(gwi, ae_flag_static | ae_flag_const, busy);
   CHECK_BB(o_busy)
-	gwi_item_ini(gwi,"int", "SMALL");
+  gwi_item_ini(gwi,"int", "SMALL");
   o_small  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, small);
   CHECK_BB(o_small)
-	gwi_item_ini(gwi,"int", "NONUL");
+  gwi_item_ini(gwi,"int", "NONUL");
   o_nonul  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, nonul);
   CHECK_BB(o_nonul)
-	gwi_item_ini(gwi,"int", "FORMAT");
+  gwi_item_ini(gwi,"int", "FORMAT");
   o_format = gwi_item_end(gwi, ae_flag_static | ae_flag_const, format);
   CHECK_BB(o_format)
-	gwi_item_ini(gwi,"int", "UNKNOWN");
+  gwi_item_ini(gwi,"int", "UNKNOWN");
   o_unknown = gwi_item_end(gwi, ae_flag_static | ae_flag_const, unknown);
   CHECK_BB(o_unknown)
  

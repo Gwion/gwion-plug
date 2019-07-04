@@ -133,7 +133,7 @@ MFUN(midifile_event)
 //    exit(12);
   Alg_track* tr = seq->track(track);
 //  M_Object obj = *(M_Object*)MEM(SZ_INT*3);
-  M_Object obj = new_object(shred, t_midifileev);
+  M_Object obj = new_object(shred->info->vm->gwion->mp, shred, t_midifileev);
   if(n < 0 || n >= tr->length())
       TYPE(obj) = 'e'; // error
   else
@@ -157,11 +157,7 @@ MFUN(midifile_add_note)
   Alg_seq* seq = SEQ(o);
   M_Object obj = *(M_Object*)MEM(SZ_INT);
   if(TYPE(obj) != 'n')
-  {
-    err_msg(0, "not a note.");
-    shred->info->me = NULL;
-    return;
-  }
+    Except(0, (m_str)"not a note.");
   Alg_note* ev = new Alg_note();
   ev->pitch = PITCH(obj);
   ev->loud  = LOUD(obj);
