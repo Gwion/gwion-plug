@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <string.h>
 #include <soundpipe.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
@@ -9,6 +7,8 @@
 #include "type.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "operator.h"
 #include "import.h"
 #include "ugen.h"
 #include "sporth.h"
@@ -59,14 +59,14 @@ static CTOR(sporth_ctor) {
   sporthData * data = (sporthData*)xmalloc(sizeof(sporthData));
   data->parsed = 0;
   data->in = 0;
-  data->sp = shred->vm->sp;
+  data->sp = (sp_data*)get_module(shred->info->vm->gwion, "Soundpipe");
   plumber_register(&data->pd);
   data->pd.sporth.flist[SPORTH_IN - SPORTH_FOFFSET].func = sporth_chuck_in;
   plumber_init(&data->pd);
   data->pd.sp = data->sp;
   data->pd.ud = data;
-  ugen_ini(UGEN(o), 1, 1);
-  ugen_gen(UGEN(o), gwsporth_tick, data, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), gwsporth_tick, data, 0);
 }
 
 static DTOR(sporth_dtor) {
@@ -177,38 +177,38 @@ static MFUN(sporth_parse_file) {
 }
 
 GWION_IMPORT(sporth) {
-  Type t_gworth = gwi_mk_type(gwi, "Sporth", SZ_INT, t_ugen);
+  Type t_gworth = gwi_mk_type(gwi, "Sporth", SZ_INT, "UGen");
 
-  CHECK_BB(gwi_class_ini(gwi, t_gworth, sporth_ctor, sporth_dtor))
+  GWI_BB(gwi_class_ini(gwi, t_gworth, sporth_ctor, sporth_dtor))
 
-  CHECK_BB(gwi_func_ini(gwi, "float", "p", sporth_setp))
-  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "val"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "float", "p", sporth_setp))
+  GWI_BB(gwi_func_arg(gwi, "int", "index"))
+  GWI_BB(gwi_func_arg(gwi, "float", "val"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "float", "p", sporth_getp))
-  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "float", "p", sporth_getp))
+  GWI_BB(gwi_func_arg(gwi, "int", "index"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "float", "t", sporth_set_table))
-  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "val"))
-  CHECK_BB(gwi_func_arg(gwi, "string", "table"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "float", "t", sporth_set_table))
+  GWI_BB(gwi_func_arg(gwi, "int", "index"))
+  GWI_BB(gwi_func_arg(gwi, "float", "val"))
+  GWI_BB(gwi_func_arg(gwi, "string", "table"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "float", "t", sporth_get_table))
-  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
-  CHECK_BB(gwi_func_arg(gwi, "string", "table"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "float", "t", sporth_get_table))
+  GWI_BB(gwi_func_arg(gwi, "int", "index"))
+  GWI_BB(gwi_func_arg(gwi, "string", "table"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "string", "parse", sporth_parse_string))
-  CHECK_BB(gwi_func_arg(gwi, "string", "arg"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "string", "parse", sporth_parse_string))
+  GWI_BB(gwi_func_arg(gwi, "string", "arg"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "string", "parsefile", sporth_parse_file))
-  CHECK_BB(gwi_func_arg(gwi, "string", "arg"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "string", "parsefile", sporth_parse_file))
+  GWI_BB(gwi_func_arg(gwi, "string", "arg"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
   return 1;
 }

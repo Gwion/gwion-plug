@@ -15,6 +15,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 #include "ugen.h"
 #include "gwi.h"
@@ -44,8 +45,8 @@ CTOR(ctor) {
   NAME(o) = new_string(shred->info->vm->gwion->mp, NULL, "name");
   AUTHOR(o) = new_string(shred->info->vm->gwion->mp, NULL, "author");
   SYNTH(o) = fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fmsynth_tick, SYNTH(o), 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), fmsynth_tick, SYNTH(o), 0);
 }
 
 DTOR(dtor) {
@@ -192,151 +193,151 @@ GWION_IMPORT(fmsynth) {
   ALLOC_PTR(gwi->gwion->mp, unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
   Type t_fmsynth;
-  CHECK_BB((t_fmsynth = gwi_mk_type(gwi, "FMSynth", SZ_INT, t_ugen)))
-  CHECK_BB(gwi_class_ini(gwi, t_fmsynth, ctor, dtor))
+  GWI_BB((t_fmsynth = gwi_mk_type(gwi, "FMSynth", SZ_INT, "UGen")))
+  GWI_BB(gwi_class_ini(gwi, t_fmsynth, ctor, dtor))
   gwi_item_ini(gwi,"int", "&synth");
   o_fmsynth_data = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fmsynth_data)
+  GWI_BB(o_fmsynth_data)
   gwi_item_ini(gwi,"string", "name");
   o_fmsynth_name = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fmsynth_name)
+  GWI_BB(o_fmsynth_name)
   gwi_item_ini(gwi,"string", "author");
   o_fmsynth_author = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fmsynth_author)
+  GWI_BB(o_fmsynth_author)
 
   // params
   gwi_item_ini(gwi,"int", "AMP");
   o_amp = gwi_item_end(gwi, ae_flag_static | ae_flag_const, amp);
-  CHECK_BB(o_pan)
+  GWI_BB(o_pan)
   gwi_item_ini(gwi,"int", "PAN");
   o_pan = gwi_item_end(gwi, ae_flag_static | ae_flag_const, pan);
-  CHECK_BB(o_pan)
+  GWI_BB(o_pan)
 
   gwi_item_ini(gwi,"int", "FREQ_MOD");
   o_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, freq_mod);
-  CHECK_BB(o_freq_offset)
+  GWI_BB(o_freq_offset)
   gwi_item_ini(gwi,"int", "FREQ_OFFSET");
   o_freq_offset = gwi_item_end(gwi, ae_flag_static | ae_flag_const, freq_offset);
-  CHECK_BB(o_freq_mod)
+  GWI_BB(o_freq_mod)
   gwi_item_ini(gwi,"int", "TARGET0");
   o_target0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, target0);
-  CHECK_BB(o_target0)
+  GWI_BB(o_target0)
   gwi_item_ini(gwi,"int", "TARGET1");
   o_target1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, target1);
-  CHECK_BB(o_target1)
+  GWI_BB(o_target1)
   gwi_item_ini(gwi,"int", "TARGET2");
   o_target2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, target2);
-  CHECK_BB(o_target2)
+  GWI_BB(o_target2)
   gwi_item_ini(gwi,"int", "DELAY0");
   o_delay0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, delay0);
-  CHECK_BB(o_delay0)
+  GWI_BB(o_delay0)
   gwi_item_ini(gwi,"int", "DELAY1");
   o_delay1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, delay1);
-  CHECK_BB(o_delay0)
+  GWI_BB(o_delay0)
   gwi_item_ini(gwi,"int", "DELAY2");
   o_delay2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, delay2);
-  CHECK_BB(o_delay2)
+  GWI_BB(o_delay2)
   gwi_item_ini(gwi,"int", "RELEASE");
   o_rel = gwi_item_end(gwi, ae_flag_static | ae_flag_const, rel);
-  CHECK_BB(o_rel)
+  GWI_BB(o_rel)
   gwi_item_ini(gwi,"int", "MID_POINT");
   o_mid_point = gwi_item_end(gwi, ae_flag_static | ae_flag_const, mid_point);
-  CHECK_BB(o_mid_point)
+  GWI_BB(o_mid_point)
   gwi_item_ini(gwi,"int", "LOW_FACTOR");
   o_low_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, low_fact);
-  CHECK_BB(o_low_fact)
+  GWI_BB(o_low_fact)
   gwi_item_ini(gwi,"int", "HIGH_FACTOR");
   o_high_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, high_fact);
-  CHECK_BB(o_high_fact)
+  GWI_BB(o_high_fact)
   gwi_item_ini(gwi,"int", "VELO_SENS");
   o_velo_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, velo_sens);
-  CHECK_BB(o_velo_sens)
+  GWI_BB(o_velo_sens)
   gwi_item_ini(gwi,"int", "WHEEL_SENS");
   o_wheel_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, wheel_sens);
-  CHECK_BB(o_wheel_sens)
+  GWI_BB(o_wheel_sens)
   gwi_item_ini(gwi,"int", "LFO_AMP_SENS");
   o_lfo_amp_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, lfo_amp_sens);
-  CHECK_BB(o_lfo_amp_sens)
+  GWI_BB(o_lfo_amp_sens)
   gwi_item_ini(gwi,"int", "LFO_FREQ_MOD");
   o_lfo_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, lfo_freq_mod);
-  CHECK_BB(o_lfo_freq_mod)
+  GWI_BB(o_lfo_freq_mod)
   gwi_item_ini(gwi,"int", "ENABLE");
   o_enable = gwi_item_end(gwi, ae_flag_static | ae_flag_const, enable);
-  CHECK_BB(o_enable)
+  GWI_BB(o_enable)
   gwi_item_ini(gwi,"int", "CARRIERS");
   o_carriers = gwi_item_end(gwi, ae_flag_static | ae_flag_const, carriers);
-  CHECK_BB(o_carriers)
+  GWI_BB(o_carriers)
   gwi_item_ini(gwi,"int", "CARRIER0");
   o_carrier0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, carrier0);
-  CHECK_BB(o_carrier0)
+  GWI_BB(o_carrier0)
 
   // global
   gwi_item_ini(gwi,"int", "GVOL");
   o_g_vol    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, g_vol);
-  CHECK_BB(o_g_vol)
+  GWI_BB(o_g_vol)
 
   gwi_item_ini(gwi,"int", "GLFO");
   o_g_lfo    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, g_lfo);
-  CHECK_BB(o_g_lfo)
+  GWI_BB(o_g_lfo)
   // status
   gwi_item_ini(gwi,"int", "OK");
   o_ok    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, ok);
-  CHECK_BB(o_ok)
+  GWI_BB(o_ok)
   gwi_item_ini(gwi,"int", "BUSY");
   o_busy   = gwi_item_end(gwi, ae_flag_static | ae_flag_const, busy);
-  CHECK_BB(o_busy)
+  GWI_BB(o_busy)
   gwi_item_ini(gwi,"int", "SMALL");
   o_small  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, small);
-  CHECK_BB(o_small)
+  GWI_BB(o_small)
   gwi_item_ini(gwi,"int", "NONUL");
   o_nonul  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, nonul);
-  CHECK_BB(o_nonul)
+  GWI_BB(o_nonul)
   gwi_item_ini(gwi,"int", "FORMAT");
   o_format = gwi_item_end(gwi, ae_flag_static | ae_flag_const, format);
-  CHECK_BB(o_format)
+  GWI_BB(o_format)
   gwi_item_ini(gwi,"int", "UNKNOWN");
   o_unknown = gwi_item_end(gwi, ae_flag_static | ae_flag_const, unknown);
-  CHECK_BB(o_unknown)
+  GWI_BB(o_unknown)
  
   gwi_func_ini(gwi, "void", "init", init);
     gwi_func_arg(gwi, "int", "plyphony");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "parameter", parameter);
     gwi_func_arg(gwi, "int", "parameter");
     gwi_func_arg(gwi, "int", "operator_index");
     gwi_func_arg(gwi, "float", "value");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "parameter", global_parameter);
     gwi_func_arg(gwi, "int", "parameter");
     gwi_func_arg(gwi, "float", "value");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "noteon", noteon);
     gwi_func_arg(gwi, "int", "note");
     gwi_func_arg(gwi, "int", "velocity");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "reset", synth_reset);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "noteoff", noteoff);
     gwi_func_arg(gwi, "int", "note");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "sustain", sustain);
     gwi_func_arg(gwi, "int", "enable");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "wheel", wheel);
     gwi_func_arg(gwi, "int", "value");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "bend", bend);
     gwi_func_arg(gwi, "int", "value");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "release", release_all);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "load", load);
     gwi_func_arg(gwi, "string", "filename");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "save", save);
     gwi_func_arg(gwi, "string", "filename");
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 

@@ -11,6 +11,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 static Map map = NULL;
@@ -32,6 +33,7 @@ struct Method
   m_str path, type;
   Vector client;
   lo_method method;
+  MemPool p;
 };
 
 struct Server
@@ -39,6 +41,7 @@ struct Server
   m_uint port, ref;
   lo_server_thread thread;
   Vector method;
+  MemPool p;
 };
 
 void release_Arg(struct Arg* arg)
@@ -64,7 +67,7 @@ void release_server(struct Server* s)
     lo_server_thread_stop(s->thread);
     lo_server_thread_free(s->thread);
     if(!map_size(map))
-      free_map(map);
+      free_map(s->p, map);
   }
 }
 
@@ -111,7 +114,7 @@ static MFUN(osc_send)
   lo_message msg;
   if(!ADDR(o))
   {
-    err_msg(0, "oscsend address not set. shred[%i] exiting.", shred->tick->xid);
+    gw_err("oscsend address not set. shred[%i] exiting.", shred->tick->xid);
     vm_shred_exit(shred);
     return;
   }
@@ -131,7 +134,7 @@ static MFUN(osc_send)
         lo_message_add_string(msg, arg->data.s);
         break;
       default:
-          err_msg(0, "oscsend invalid type: '%c'  in arg '%i'\n", arg->t, i);
+          gw_err("oscsend invalid type: '%c'  in arg '%i'\n", arg->t, i);
           vm_shred_exit(shred);
           return;
     }
@@ -141,26 +144,26 @@ static MFUN(osc_send)
   *(m_uint*)RETURN = lo_send_message(ADDR(o), STRING(*(M_Object*)MEM(SZ_INT)), msg) ? 1 : 0;
 }
 
-static INSTR(oscsend_add_int) { GWDEBUG_EXE
+static INSTR(oscsend_add_int) {
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('i', REG(0)));
   release(**(M_Object**)REG(0), shred);
 }
 
-static INSTR(oscsend_add_float) { GWDEBUG_EXE
+static INSTR(oscsend_add_float) {
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('d', REG(0)));
   release(**(M_Object**)REG(0), shred);
 }
 
-static INSTR(oscsend_add_string) { GWDEBUG_EXE
+static INSTR(oscsend_add_string) {
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('s', REG(0)));
   release(**(M_Object**)REG(0), shred);
 }
 
 static void osc_error_handler(int num, const char *msg, const char *where)
-{ err_msg(0, "problem %i with osc: %s %s", num, msg, where); }
+{ gw_err("problem %i with osc: %s %s", num, msg, where); }
 
 static int osc_method_handler(const char* path, const char* type,
   lo_arg **argv, int argc, lo_message msg, void *data)
@@ -170,7 +173,7 @@ static int osc_method_handler(const char* path, const char* type,
   M_Object o;
   Vector v;
 
-  v = new_vector();
+  v = new_vector(m->p);
   for(i = 0; i < argc; i++)
   {
     struct Arg* arg = (struct Arg*)xmalloc(sizeof(struct Arg));
@@ -193,7 +196,7 @@ static int osc_method_handler(const char* path, const char* type,
         arg->data.s = strdup((m_str)argv[i]);
         break;
       default:
-        err_msg(0, "unhandled osc arg type '%c'", type[i]);
+        gw_err("unhandled osc arg type '%c'", type[i]);
         return GW_OK;
     }
     arg->t = type[i];
@@ -205,11 +208,11 @@ static int osc_method_handler(const char* path, const char* type,
       ((struct Arg*)vector_at(v, j))->ref++;
     o = (M_Object)vector_at(m->client, i);
     broadcast(o);
-    vector_add(ARGS(o), (vtype)vector_copy(v));
+    vector_add(ARGS(o), (vtype)vector_copy(m->p, v));
   }
   for(i = 0; i < argc; i++)
     release_Arg((struct Arg*)vector_at(v, i));
-  free_vector(v);
+  free_vector(m->p, v);
   return 0;
 }
 
@@ -238,6 +241,7 @@ static MFUN(osc_port)
     sprintf(c, "%i", port);
     s = (struct Server*)xcalloc(1, sizeof(struct Server));
     s->thread = lo_server_thread_new(c, osc_error_handler);
+    s->p = shred->info->mp;
     if(!s->thread)
     {
       free(s);
@@ -245,10 +249,10 @@ static MFUN(osc_port)
       return;
     }
     lo_server_enable_coercion(lo_server_thread_get_server(s->thread), 0);
-    s->method = new_vector();
+    s->method = new_vector(s->p);
     s->ref = 0;
     if(!map)
-      map = new_map();
+      map = new_map(s->p);
     map_set(map, (vtype)port, (vtype)s);
   }
   s->ref++;
@@ -276,7 +280,8 @@ static MFUN(osc_add_method)
   m = (struct Method*)xcalloc(1, sizeof(struct Method));
   m->path = path;
   m->type = type;
-  m->client = new_vector();
+  m->p = shred->info->mp;
+  m->client = new_vector(m->p);
   m->method = lo_server_thread_add_method(s->thread, path, type, osc_method_handler, m);
   vector_add(s->method, (vtype)m);
   m->ref = 0;
@@ -289,11 +294,11 @@ found:
   *(m_uint*)RETURN = 1;
 }
 
-static CTOR(lo_ctor){ ARGS(o) = new_vector(); }
-static CTOR(loin_ctor){ METH(o) = new_vector(); CURR(o) = new_vector();}
-static CTOR(lo_dtor) { free_vector(ARGS(o)); }
+static CTOR(lo_ctor){ ARGS(o) = new_vector(shred->info->mp); }
+static CTOR(loin_ctor){ METH(o) = new_vector(shred->info->mp); CURR(o) = new_vector(shred->info->mp);}
+static CTOR(lo_dtor) { free_vector(shred->info->mp, ARGS(o)); }
 static CTOR(loout_dtor){ if(ADDR(o))lo_address_free(ADDR(o));}
-static CTOR(loin_dtor){ free_vector(METH(o)); free_vector(CURR(o));}
+static CTOR(loin_dtor){ free_vector(shred->info->mp, METH(o)); free_vector(shred->info->mp, CURR(o));}
 
 static MFUN(oscin_stop)
 {
@@ -370,78 +375,78 @@ static MFUN(oscin_get_s)
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
   vector_rem(c_arg, 0);
-  *(m_uint*)RETURN = (m_uint)new_string(shred, arg->data.s);
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, arg->data.s);
   release_Arg(arg);
 }
 
 GWION_IMPORT(lo) {
   Type t_lo, t_loin, t_loout;
-  CHECK_OB((t_lo    = gwi_mk_type(gwi, "Lo",     SZ_INT, t_event)))
-  CHECK_OB((t_loin  = gwi_mk_type(gwi, "OscIn",  SZ_INT, t_lo)))
-  CHECK_OB((t_loout = gwi_mk_type(gwi, "OscOut", SZ_INT, t_lo)))
+  GWI_OB((t_lo    = gwi_mk_type(gwi, "Lo",     SZ_INT, "Event")))
+  GWI_OB((t_loin  = gwi_mk_type(gwi, "OscIn",  SZ_INT, "Lo")))
+  GWI_OB((t_loout = gwi_mk_type(gwi, "OscOut", SZ_INT, "Lo")))
   SET_FLAG(t_lo, abstract);
 
-  CHECK_BB(gwi_class_ini(gwi, t_lo, lo_ctor, NULL))
-	gwi_item_ini(gwi,"int",  "@args");
+  GWI_BB(gwi_class_ini(gwi, t_lo, lo_ctor, NULL))
+  gwi_item_ini(gwi,"int",  "@args");
   o_lo_args = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_lo_args)
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(o_lo_args)
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, t_loout, NULL, loout_dtor))
-	gwi_item_ini(gwi,"int",  "@addr");
+  GWI_BB(gwi_class_ini(gwi, t_loout, NULL, loout_dtor))
+  gwi_item_ini(gwi,"int",  "@addr");
   o_lo_addr = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_lo_addr)
+  GWI_BB(o_lo_addr)
   gwi_func_ini(gwi, "int", "addr", osc_addr);
     gwi_func_arg(gwi, "string", "host");
     gwi_func_arg(gwi, "string", "port");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "send", osc_send);
     gwi_func_arg(gwi, "string", "path");
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, t_loin, loin_ctor, NULL))
-	gwi_item_ini(gwi,"int",  "@serv");
+  GWI_BB(gwi_class_ini(gwi, t_loin, loin_ctor, NULL))
+  gwi_item_ini(gwi,"int",  "@serv");
   o_lo_serv = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_lo_serv)
-	gwi_item_ini(gwi,"int",  "@meth");
+  GWI_BB(o_lo_serv)
+  gwi_item_ini(gwi,"int",  "@meth");
   o_lo_meth = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_lo_meth)
-	gwi_item_ini(gwi,"int",  "@curr");
+  GWI_BB(o_lo_meth)
+  gwi_item_ini(gwi,"int",  "@curr");
   o_lo_curr = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_lo_curr)
+  GWI_BB(o_lo_curr)
   gwi_func_ini(gwi, "int", "add", osc_add_method);
     gwi_func_arg(gwi, "string", "path");
     gwi_func_arg(gwi, "string", "type");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "port", osc_get_port);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "port", osc_port);
     gwi_func_arg(gwi, "int", "port");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "start", oscin_start);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "stop", oscin_stop);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "recv", osc_recv);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "get_i", oscin_get_i);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "get_f", oscin_get_f);
-  CHECK_BB(gwi_func_end(gwi, 0))  
+  GWI_BB(gwi_func_end(gwi, 0))  
   gwi_func_ini(gwi, "string", "get_s", oscin_get_s);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_oper_ini(gwi, "int", "OscOut", "int"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, oscsend_add_int))
-  CHECK_BB(gwi_oper_ini(gwi,"float",  "OscOut", "float"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, oscsend_add_float))
-  CHECK_BB(gwi_oper_ini(gwi, "string", "OscOut", "string"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, oscsend_add_string))
+  GWI_BB(gwi_oper_ini(gwi, "int", "OscOut", "int"))
+  GWI_BB(gwi_oper_end(gwi, "=>", oscsend_add_int))
+  GWI_BB(gwi_oper_ini(gwi,"float",  "OscOut", "float"))
+  GWI_BB(gwi_oper_end(gwi, "=>", oscsend_add_float))
+  GWI_BB(gwi_oper_ini(gwi, "string", "OscOut", "string"))
+  GWI_BB(gwi_oper_end(gwi, "=>", oscsend_add_string))
 
   return GW_OK;
 }

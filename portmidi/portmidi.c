@@ -16,6 +16,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 
@@ -211,63 +212,63 @@ static MFUN(midiin_read)
 
 GWION_IMPORT(portmidi) {
   Type t_portmidi, t_midiout, t_midiin;
-  CHECK_OB((t_portmidi = gwi_mk_type(gwi, "PortMidi", SZ_INT, t_event)))
-  CHECK_OB((t_midiout  = gwi_mk_type(gwi, "MidiOut", SZ_INT,  t_portmidi)))
-  CHECK_OB((t_midiin   = gwi_mk_type(gwi, "MidiIn", SZ_INT,   t_portmidi)))
+  GWI_OB((t_portmidi = gwi_mk_type(gwi, "PortMidi", SZ_INT, "Event")))
+  GWI_OB((t_midiout  = gwi_mk_type(gwi, "MidiOut", SZ_INT,  "PortMidi")))
+  GWI_OB((t_midiin   = gwi_mk_type(gwi, "MidiIn", SZ_INT,   "PortMidi")))
   SET_FLAG(t_portmidi, abstract);
 
-  CHECK_BB(gwi_class_ini(gwi, t_portmidi, pm_ctor, pm_dtor))
+  GWI_BB(gwi_class_ini(gwi, t_portmidi, pm_ctor, pm_dtor))
   gwi_item_ini(gwi,"int",  "@dummy");
    gwi_item_end(gwi, ae_flag_member, NULL);
   gwi_item_ini(gwi,"int",  "@stream");
   o_pm_stream = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_pm_stream)
+  GWI_BB(o_pm_stream)
   gwi_item_ini(gwi,"int",  "id");
   o_pm_id = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_pm_id)
+  GWI_BB(o_pm_id)
   gwi_item_ini(gwi,"int",  "status");
   o_pm_status  = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_pm_status)
+  GWI_BB(o_pm_status)
   gwi_item_ini(gwi,"int",  "data1");
   o_pm_data1 = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_pm_data1)
+  GWI_BB(o_pm_data1)
   gwi_item_ini(gwi,"int",  "data2");
   o_pm_data2 = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_pm_data2)
+  GWI_BB(o_pm_data2)
   gwi_item_ini(gwi,"int",  "@msg");
   o_pm_msg = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_pm_msg)
+  GWI_BB(o_pm_msg)
   gwi_func_ini(gwi, "string", "name", pm_name);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "string", "error", pm_error);
     gwi_func_arg(gwi, "int", "id");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
   gwi_func_ini(gwi, "int", "close", pm_close);
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, t_midiout, NULL, NULL))
+  GWI_BB(gwi_class_ini(gwi, t_midiout, NULL, NULL))
   gwi_func_ini(gwi, "int", "open", midiout_open);
     gwi_func_arg(gwi, "int", "id");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "send", midiout_send_self);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "send", midiout_send);
     gwi_func_arg(gwi, "int", "status");
     gwi_func_arg(gwi, "int", "data1");
     gwi_func_arg(gwi, "int", "data2");
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, t_midiin, NULL, NULL))
+  GWI_BB(gwi_class_ini(gwi, t_midiin, NULL, NULL))
   gwi_func_ini(gwi, "int", "open", midiin_open);
     gwi_func_arg(gwi, "int", "id");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "recv", midiin_recv);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "read", midiin_read);
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
 
   return GW_OK;
 }

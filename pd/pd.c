@@ -4,11 +4,13 @@
 #include "oo.h"
 #include "env.h"
 #include "vm.h"
+#include "type.h"
 #include "gw_type.h"
 #include "instr.h"
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 static m_int o_pd_file;
@@ -47,16 +49,16 @@ static MFUN(gwpd_close) {
 }
 
 GWION_IMPORT(pd) {
-  const Type t_gwpd = gwi_mk_type(gwi, "PD", SZ_INT, t_ugen);
-  CHECK_BB(gwi_class_ini(gwi, t_gwpd, pd_ctor, pd_dtor))
-  CHECK_BB(gwi_item_ini(gwi,"int",  "@file"))
-  CHECK_BB((o_pd_file = gwi_item_end(gwi, ae_flag_member, NULL)))
-  CHECK_BB((gwi_func_ini(gwi, "int", "open", gwpd_open)))
-  CHECK_BB(gwi_func_arg(gwi, "string", "basename"))
-  CHECK_BB(gwi_func_arg(gwi, "string", "dirname"))
-  CHECK_OB(gwi_func_end(gwi, ae_flag_member))
-  CHECK_BB(gwi_func_ini(gwi, "int", "close", gwpd_close))
-  CHECK_OB(gwi_func_end(gwi, ae_flag_member))
-  CHECK_BB(gwi_class_end(gwi))
+  const Type t_gwpd = gwi_mk_type(gwi, "PD", SZ_INT, "UGen");
+  GWI_BB(gwi_class_ini(gwi, t_gwpd, pd_ctor, pd_dtor))
+  GWI_BB(gwi_item_ini(gwi,"int",  "@file"))
+  GWI_BB((o_pd_file = gwi_item_end(gwi, ae_flag_member, NULL)))
+  GWI_BB((gwi_func_ini(gwi, "int", "open", gwpd_open)))
+  GWI_BB(gwi_func_arg(gwi, "string", "basename"))
+  GWI_BB(gwi_func_arg(gwi, "string", "dirname"))
+  GWI_OB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "int", "close", gwpd_close))
+  GWI_OB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

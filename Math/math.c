@@ -10,6 +10,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 static SFUN(math_abs) {
@@ -106,34 +107,34 @@ math2(max)
 #define decl_math1(name, func)                   \
   gwi_func_ini(gwi, "float", name, math_##func); \
   gwi_func_arg(gwi, "float", "value");           \
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))    \
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))    \
 
 #define decl_math2(name, func)                   \
   gwi_func_ini(gwi, "float", name, math_##func); \
   gwi_func_arg(gwi, "float", "value1");          \
   gwi_func_arg(gwi, "float", "value2");          \
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))    \
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))    \
 
 GWION_IMPORT(math) {
   const Type t_math = gwi_mk_type(gwi, "Math", 0, NULL);
-  CHECK_OB(t_math)
+  GWI_OB(t_math)
 
-  CHECK_BB(gwi_class_ini(gwi, t_math, NULL, NULL))
+  GWI_BB(gwi_class_ini(gwi, t_math, NULL, NULL))
 
   gwi_func_ini(gwi, "int", "abs", math_abs);
   gwi_func_arg(gwi, "int", "value");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "rand", math_rand);
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "rand2", math_rand2);
   gwi_func_arg(gwi, "int", "min");
   gwi_func_arg(gwi, "int", "max");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "randf", math_randf);
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   decl_math2("rand2f", rand2f)
 
@@ -171,6 +172,6 @@ GWION_IMPORT(math) {
   decl_math2("remainder", remainder)
   decl_math2("min",       min)
   decl_math2("max",       max)
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

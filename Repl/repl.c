@@ -12,10 +12,11 @@
 #include "func.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "operator.h"
 #include "import.h"
 #include "traverse.h"
 #include "template.h"
-#include "optim.h"
 #include "parse.h"
 #include "nspc.h"
 #include "operator.h"
@@ -91,36 +92,24 @@ INSTR(EOC2) {
 ANN static m_bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
   if(vm->shreduler->list && shred == vm->shreduler->list->self) {
     gw_err("shred[%"UINT_F"] is running.please use '\\C-f' to spork it\n", shred->tick->xid);
-    return;
+    return GW_ERROR;
   }
+/*
   FILE* f = fmemopen(line, strlen(line), "r");
-//  const Ast ast = parse(vm->scan, "repl", f);
-//  if(!ast)
-//    goto close;
-//  const m_str str = strdup("repl");
-//  if(traverse_ast(vm->gwion->env, ast) < 0)
-//    goto close;
-const Gwion gwion = vm->gwion;
+  const Gwion gwion = vm->gwion;
   struct ScannerArg_ arg = { "repl", f, gwion->st };
   MUTEX_LOCK(gwion->data->mutex);
   DECL_OB(Ast, ast, = parse(&arg))
   gwion->env->name = "repl";
-//  const m_bool ret = type_engine_check_prog(gwion->env, ast);
   if(traverse_ast(vm->gwion->env, ast) < 0)
     goto close;
-  if(!(shred->code = emit_ast(vm->gwion->emit, ast)))
+  if(!(shred->code = emit_ast(vm->gwion->env, ast)))
     goto close;
   MUTEX_UNLOCK(gwion->data->mutex);
-// change last instr opcode
-  const m_uint sz = (vector_size(shred->code->instr)-1) * BYTECODE_SZ;
-  *(m_bit*)(shred->code->bytecode + sz) = eOP_MAX;
-  *(Instr*)(shred->code->bytecode + sz+SZ_INT) =
-  (Instr)vector_back(shred->code->instr);
-  *(m_uint*)(shred->code->bytecode + sz+SZ_INT*2) = EOC2;
-  vm_add_shred(vm, shred);
 close:
   fclose(f);
-//  compile_string(vm->gwion, "repl", line);
+*/
+  compile_string(vm->gwion, "repl", line);
 }
 
 struct Repl {

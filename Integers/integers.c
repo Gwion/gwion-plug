@@ -9,9 +9,10 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 GWION_IMPORT(Integers) {
   const Type t_uint = gwi_mk_type(gwi, "uint", SZ_INT, NULL);
-  return 1;
+  return GW_OK;
 }

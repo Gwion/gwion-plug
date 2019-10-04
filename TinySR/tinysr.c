@@ -10,6 +10,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 #include "ugen.h"
 
@@ -81,9 +82,9 @@ static TICK(tinysr_tick) {
 
 static CTOR(tinysr_ctor) {
   struct sr_data* sr = new_sr_data(o, shred->info->vm->bbq->si->sr);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tinysr_tick, sr, 0);
-  const M_Object ev = TINY_EV(o) = new_object(shred->info->vm->gwion->mp, NULL, t_event);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tinysr_tick, sr, 0);
+  const M_Object ev = TINY_EV(o) = new_object(shred->info->vm->gwion->mp, NULL, shred->info->vm->gwion->type[et_event]);
   EV_SHREDS(ev) = new_vector(shred->info->vm->gwion->mp);
 }
 
@@ -128,33 +129,33 @@ static MFUN(state) {
 }
 
 GWION_IMPORT(tinysr) {
-  const Type t_tinysr = gwi_mk_type(gwi, "TinySR", SZ_INT, t_ugen);
+  const Type t_tinysr = gwi_mk_type(gwi, "TinySR", SZ_INT, "UGen");
 
-  CHECK_BB(gwi_class_ini(gwi, t_tinysr,tinysr_ctor, tinysr_dtor))
+  GWI_BB(gwi_class_ini(gwi, t_tinysr,tinysr_ctor, tinysr_dtor))
 
-  CHECK_BB(gwi_item_ini(gwi, "Event", "ev"))
-  CHECK_BB((o_tinysr_ev = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "Event", "ev"))
+  GWI_BB((o_tinysr_ev = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "index"))
-  CHECK_BB((o_tinysr_idx = gwi_item_end(gwi, ae_flag_const , NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "index"))
+  GWI_BB((o_tinysr_idx = gwi_item_end(gwi, ae_flag_const , NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "float", "score"))
-  CHECK_BB((o_tinysr_score = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "float", "score"))
+  GWI_BB((o_tinysr_score = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "load", load))
-  CHECK_BB(gwi_func_arg(gwi, "string", "file"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "int", "load", load))
+  GWI_BB(gwi_func_arg(gwi, "string", "file"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "string", "word", word))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "string", "word", word))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "string", "word", word_index))
-  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "string", "word", word_index))
+  GWI_BB(gwi_func_arg(gwi, "int", "index"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_func_ini(gwi, "string", "state", state))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "string", "state", state))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

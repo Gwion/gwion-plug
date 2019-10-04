@@ -9,9 +9,10 @@
 #include "err_msg.h"
 #include "instr.h"
 #include "object.h"
+#include "gwion.h"
+#include "operator.h"
 #include "import.h"
 #include "ugen.h"
-#include "gwion.h"
 #include "gwi.h"
 #include "array.h"
 #include "func.h"
@@ -45,8 +46,8 @@ static CTOR(adsr_ctor) {
   ug->sp = sp;
   sp_adsr_create(&ug->osc);
   sp_adsr_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), adsr_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), adsr_tick, ug, 0);
 }
 
 static DTOR(adsr_dtor) {
@@ -124,8 +125,8 @@ static CTOR(allpass_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), allpass_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), allpass_tick, ug, 0);
 }
 
 static DTOR(allpass_dtor) {
@@ -179,8 +180,8 @@ static CTOR(atone_ctor) {
   ug->sp = sp;
   sp_atone_create(&ug->osc);
   sp_atone_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), atone_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), atone_tick, ug, 0);
 }
 
 static DTOR(atone_dtor) {
@@ -217,8 +218,8 @@ static CTOR(autowah_ctor) {
   ug->sp = sp;
   sp_autowah_create(&ug->osc);
   sp_autowah_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), autowah_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), autowah_tick, ug, 0);
 }
 
 static DTOR(autowah_dtor) {
@@ -279,8 +280,8 @@ static CTOR(bal_ctor) {
   ug->sp = sp;
   sp_bal_create(&ug->osc);
   sp_bal_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), bal_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), bal_tick, ug, 0);
 }
 
 static DTOR(bal_dtor) {
@@ -310,8 +311,8 @@ static CTOR(bar_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), bar_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), bar_tick, ug, 1);
 }
 
 static DTOR(bar_dtor) {
@@ -439,8 +440,8 @@ static CTOR(biquad_ctor) {
   ug->sp = sp;
   sp_biquad_create(&ug->osc);
   sp_biquad_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), biquad_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), biquad_tick, ug, 0);
 }
 
 static DTOR(biquad_dtor) {
@@ -537,8 +538,8 @@ static CTOR(biscale_ctor) {
   ug->sp = sp;
   sp_biscale_create(&ug->osc);
   sp_biscale_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), biscale_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), biscale_tick, ug, 0);
 }
 
 static DTOR(biscale_dtor) {
@@ -587,8 +588,8 @@ static CTOR(bitcrush_ctor) {
   ug->sp = sp;
   sp_bitcrush_create(&ug->osc);
   sp_bitcrush_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), bitcrush_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), bitcrush_tick, ug, 0);
 }
 
 static DTOR(bitcrush_dtor) {
@@ -637,8 +638,8 @@ static CTOR(blsaw_ctor) {
   ug->sp = sp;
   sp_blsaw_create(&ug->osc);
   sp_blsaw_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), blsaw_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), blsaw_tick, ug, 0);
 }
 
 static DTOR(blsaw_dtor) {
@@ -687,8 +688,8 @@ static CTOR(blsquare_ctor) {
   ug->sp = sp;
   sp_blsquare_create(&ug->osc);
   sp_blsquare_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), blsquare_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), blsquare_tick, ug, 0);
 }
 
 static DTOR(blsquare_dtor) {
@@ -749,8 +750,8 @@ static CTOR(bltriangle_ctor) {
   ug->sp = sp;
   sp_bltriangle_create(&ug->osc);
   sp_bltriangle_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), bltriangle_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), bltriangle_tick, ug, 0);
 }
 
 static DTOR(bltriangle_dtor) {
@@ -799,8 +800,8 @@ static CTOR(brown_ctor) {
   ug->sp = sp;
   sp_brown_create(&ug->osc);
   sp_brown_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), brown_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), brown_tick, ug, 0);
 }
 
 static DTOR(brown_dtor) {
@@ -825,8 +826,8 @@ static CTOR(butbp_ctor) {
   ug->sp = sp;
   sp_butbp_create(&ug->osc);
   sp_butbp_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), butbp_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), butbp_tick, ug, 0);
 }
 
 static DTOR(butbp_dtor) {
@@ -875,8 +876,8 @@ static CTOR(butbr_ctor) {
   ug->sp = sp;
   sp_butbr_create(&ug->osc);
   sp_butbr_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), butbr_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), butbr_tick, ug, 0);
 }
 
 static DTOR(butbr_dtor) {
@@ -925,8 +926,8 @@ static CTOR(buthp_ctor) {
   ug->sp = sp;
   sp_buthp_create(&ug->osc);
   sp_buthp_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), buthp_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), buthp_tick, ug, 0);
 }
 
 static DTOR(buthp_dtor) {
@@ -963,8 +964,8 @@ static CTOR(butlp_ctor) {
   ug->sp = sp;
   sp_butlp_create(&ug->osc);
   sp_butlp_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), butlp_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), butlp_tick, ug, 0);
 }
 
 static DTOR(butlp_dtor) {
@@ -1001,8 +1002,8 @@ static CTOR(clip_ctor) {
   ug->sp = sp;
   sp_clip_create(&ug->osc);
   sp_clip_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), clip_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), clip_tick, ug, 0);
 }
 
 static DTOR(clip_dtor) {
@@ -1039,8 +1040,8 @@ static CTOR(clock_ctor) {
   ug->sp = sp;
   sp_clock_create(&ug->osc);
   sp_clock_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), clock_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), clock_tick, ug, 1);
 }
 
 static DTOR(clock_dtor) {
@@ -1094,8 +1095,8 @@ static CTOR(comb_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), comb_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), comb_tick, ug, 0);
 }
 
 static DTOR(comb_dtor) {
@@ -1149,8 +1150,8 @@ static CTOR(compressor_ctor) {
   ug->sp = sp;
   sp_compressor_create(&ug->osc);
   sp_compressor_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), compressor_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), compressor_tick, ug, 0);
 }
 
 static DTOR(compressor_dtor) {
@@ -1228,8 +1229,8 @@ static CTOR(conv_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), conv_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), conv_tick, ug, 0);
 }
 
 static DTOR(conv_dtor) {
@@ -1275,8 +1276,8 @@ static CTOR(count_ctor) {
   ug->sp = sp;
   sp_count_create(&ug->osc);
   sp_count_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), count_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), count_tick, ug, 1);
 }
 
 static DTOR(count_dtor) {
@@ -1325,8 +1326,8 @@ static CTOR(crossfade_ctor) {
   ug->sp = sp;
   sp_crossfade_create(&ug->osc);
   sp_crossfade_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), crossfade_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), crossfade_tick, ug, 0);
 }
 
 static DTOR(crossfade_dtor) {
@@ -1363,8 +1364,8 @@ static CTOR(dcblock_ctor) {
   ug->sp = sp;
   sp_dcblock_create(&ug->osc);
   sp_dcblock_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), dcblock_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), dcblock_tick, ug, 0);
 }
 
 static DTOR(dcblock_dtor) {
@@ -1394,8 +1395,8 @@ static CTOR(delay_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), delay_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), delay_tick, ug, 0);
 }
 
 static DTOR(delay_dtor) {
@@ -1449,8 +1450,8 @@ static CTOR(diode_ctor) {
   ug->sp = sp;
   sp_diode_create(&ug->osc);
   sp_diode_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), diode_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), diode_tick, ug, 0);
 }
 
 static DTOR(diode_dtor) {
@@ -1504,8 +1505,8 @@ static CTOR(diskin_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), diskin_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), diskin_tick, ug, 0);
 }
 
 static DTOR(diskin_dtor) {
@@ -1549,8 +1550,8 @@ static CTOR(dist_ctor) {
   ug->sp = sp;
   sp_dist_create(&ug->osc);
   sp_dist_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), dist_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), dist_tick, ug, 0);
 }
 
 static DTOR(dist_dtor) {
@@ -1623,8 +1624,8 @@ static CTOR(dmetro_ctor) {
   ug->sp = sp;
   sp_dmetro_create(&ug->osc);
   sp_dmetro_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), dmetro_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), dmetro_tick, ug, 0);
 }
 
 static DTOR(dmetro_dtor) {
@@ -1666,8 +1667,8 @@ static CTOR(drip_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), drip_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), drip_tick, ug, 1);
 }
 
 static DTOR(drip_dtor) {
@@ -1798,8 +1799,8 @@ static CTOR(dtrig_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), dtrig_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), dtrig_tick, ug, 1);
 }
 
 static DTOR(dtrig_dtor) {
@@ -1879,8 +1880,8 @@ static CTOR(dust_ctor) {
   ug->sp = sp;
   sp_dust_create(&ug->osc);
   sp_dust_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), dust_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), dust_tick, ug, 0);
 }
 
 static DTOR(dust_dtor) {
@@ -1941,8 +1942,8 @@ static CTOR(eqfil_ctor) {
   ug->sp = sp;
   sp_eqfil_create(&ug->osc);
   sp_eqfil_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), eqfil_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), eqfil_tick, ug, 0);
 }
 
 static DTOR(eqfil_dtor) {
@@ -2003,8 +2004,8 @@ static CTOR(expon_ctor) {
   ug->sp = sp;
   sp_expon_create(&ug->osc);
   sp_expon_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), expon_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), expon_tick, ug, 1);
 }
 
 static DTOR(expon_dtor) {
@@ -2070,8 +2071,8 @@ static CTOR(fof_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fof_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), fof_tick, ug, 0);
 }
 
 static DTOR(fof_dtor) {
@@ -2219,8 +2220,8 @@ static CTOR(fofilt_ctor) {
   ug->sp = sp;
   sp_fofilt_create(&ug->osc);
   sp_fofilt_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fofilt_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), fofilt_tick, ug, 0);
 }
 
 static DTOR(fofilt_dtor) {
@@ -2286,8 +2287,8 @@ static CTOR(fog_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fog_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), fog_tick, ug, 0);
 }
 
 static DTOR(fog_dtor) {
@@ -2447,8 +2448,8 @@ static CTOR(fold_ctor) {
   ug->sp = sp;
   sp_fold_create(&ug->osc);
   sp_fold_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fold_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), fold_tick, ug, 0);
 }
 
 static DTOR(fold_dtor) {
@@ -2490,8 +2491,8 @@ static CTOR(fosc_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), fosc_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), fosc_tick, ug, 0);
 }
 
 static DTOR(fosc_dtor) {
@@ -2600,8 +2601,8 @@ static CTOR(gbuzz_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), gbuzz_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), gbuzz_tick, ug, 0);
 }
 
 static DTOR(gbuzz_dtor) {
@@ -2826,6 +2827,17 @@ static MFUN(ftbl_gen_sinesum) {
   FTBL(o) = ftbl;
 }
 
+static MFUN(ftbl_gen_triangle) {
+  sp_ftbl* ftbl = FTBL(o);
+  if(FTBL(o))
+    sp_ftbl_destroy(&ftbl);
+  m_int size = *(m_int*)(shred->mem + SZ_INT);
+  CHECK_SIZE(size);
+  sp_ftbl_create(sp, &ftbl, size);
+  sp_gen_triangle(sp, ftbl);
+  FTBL(o) = ftbl;
+}
+
 static MFUN(ftbl_gen_xline) {
   sp_ftbl* ftbl = FTBL(o);
   m_uint gw_offset = SZ_INT*2;
@@ -2857,8 +2869,8 @@ static CTOR(hilbert_ctor) {
   ug->sp = sp;
   sp_hilbert_create(&ug->osc);
   sp_hilbert_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), hilbert_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), hilbert_tick, ug, 0);
 }
 
 static DTOR(hilbert_dtor) {
@@ -2883,8 +2895,8 @@ static CTOR(in_ctor) {
   ug->sp = sp;
   sp_in_create(&ug->osc);
   sp_in_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), in_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), in_tick, ug, 0);
 }
 
 static DTOR(in_dtor) {
@@ -2914,8 +2926,8 @@ static CTOR(incr_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), incr_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), incr_tick, ug, 1);
 }
 
 static DTOR(incr_dtor) {
@@ -2993,8 +3005,8 @@ static CTOR(jcrev_ctor) {
   ug->sp = sp;
   sp_jcrev_create(&ug->osc);
   sp_jcrev_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), jcrev_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), jcrev_tick, ug, 0);
 }
 
 static DTOR(jcrev_dtor) {
@@ -3019,8 +3031,8 @@ static CTOR(jitter_ctor) {
   ug->sp = sp;
   sp_jitter_create(&ug->osc);
   sp_jitter_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), jitter_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), jitter_tick, ug, 0);
 }
 
 static DTOR(jitter_dtor) {
@@ -3081,8 +3093,8 @@ static CTOR(line_ctor) {
   ug->sp = sp;
   sp_line_create(&ug->osc);
   sp_line_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), line_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), line_tick, ug, 1);
 }
 
 static DTOR(line_dtor) {
@@ -3148,8 +3160,8 @@ static CTOR(lpc_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), lpc_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), lpc_tick, ug, 0);
 }
 
 static DTOR(lpc_dtor) {
@@ -3191,8 +3203,8 @@ static CTOR(lpf18_ctor) {
   ug->sp = sp;
   sp_lpf18_create(&ug->osc);
   sp_lpf18_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), lpf18_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), lpf18_tick, ug, 0);
 }
 
 static DTOR(lpf18_dtor) {
@@ -3253,8 +3265,8 @@ static CTOR(maygate_ctor) {
   ug->sp = sp;
   sp_maygate_create(&ug->osc);
   sp_maygate_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), maygate_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), maygate_tick, ug, 1);
 }
 
 static DTOR(maygate_dtor) {
@@ -3303,8 +3315,8 @@ static CTOR(metro_ctor) {
   ug->sp = sp;
   sp_metro_create(&ug->osc);
   sp_metro_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), metro_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), metro_tick, ug, 0);
 }
 
 static DTOR(metro_dtor) {
@@ -3346,8 +3358,8 @@ static CTOR(mincer_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), mincer_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), mincer_tick, ug, 0);
 }
 
 static DTOR(mincer_dtor) {
@@ -3429,8 +3441,8 @@ static CTOR(mode_ctor) {
   ug->sp = sp;
   sp_mode_create(&ug->osc);
   sp_mode_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), mode_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), mode_tick, ug, 0);
 }
 
 static DTOR(mode_dtor) {
@@ -3479,8 +3491,8 @@ static CTOR(moogladder_ctor) {
   ug->sp = sp;
   sp_moogladder_create(&ug->osc);
   sp_moogladder_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), moogladder_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), moogladder_tick, ug, 0);
 }
 
 static DTOR(moogladder_dtor) {
@@ -3529,8 +3541,8 @@ static CTOR(noise_ctor) {
   ug->sp = sp;
   sp_noise_create(&ug->osc);
   sp_noise_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), noise_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), noise_tick, ug, 0);
 }
 
 static DTOR(noise_dtor) {
@@ -3572,8 +3584,8 @@ static CTOR(nsmp_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), nsmp_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), nsmp_tick, ug, 1);
 }
 
 static DTOR(nsmp_dtor) {
@@ -3640,8 +3652,8 @@ static CTOR(osc_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), osc_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), osc_tick, ug, 0);
 }
 
 static DTOR(osc_dtor) {
@@ -3718,8 +3730,8 @@ static CTOR(oscmorph_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), oscmorph_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), oscmorph_tick, ug, 0);
 }
 
 static DTOR(oscmorph_dtor) {
@@ -3814,8 +3826,8 @@ static CTOR(pan2_ctor) {
   ug->sp = sp;
   sp_pan2_create(&ug->osc);
   sp_pan2_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), pan2_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), pan2_tick, ug, 0);
 }
 
 static DTOR(pan2_dtor) {
@@ -3864,8 +3876,8 @@ static CTOR(panst_ctor) {
   ug->sp = sp;
   sp_panst_create(&ug->osc);
   sp_panst_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), panst_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), panst_tick, ug, 0);
 }
 
 static DTOR(panst_dtor) {
@@ -3914,8 +3926,8 @@ static CTOR(pareq_ctor) {
   ug->sp = sp;
   sp_pareq_create(&ug->osc);
   sp_pareq_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), pareq_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), pareq_tick, ug, 0);
 }
 
 static DTOR(pareq_dtor) {
@@ -3993,8 +4005,8 @@ static CTOR(paulstretch_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), paulstretch_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), paulstretch_tick, ug, 0);
 }
 
 static DTOR(paulstretch_dtor) {
@@ -4042,8 +4054,8 @@ static CTOR(pdhalf_ctor) {
   ug->sp = sp;
   sp_pdhalf_create(&ug->osc);
   sp_pdhalf_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), pdhalf_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), pdhalf_tick, ug, 0);
 }
 
 static DTOR(pdhalf_dtor) {
@@ -4080,8 +4092,8 @@ static CTOR(peaklim_ctor) {
   ug->sp = sp;
   sp_peaklim_create(&ug->osc);
   sp_peaklim_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), peaklim_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), peaklim_tick, ug, 0);
 }
 
 static DTOR(peaklim_dtor) {
@@ -4142,8 +4154,8 @@ static CTOR(phaser_ctor) {
   ug->sp = sp;
   sp_phaser_create(&ug->osc);
   sp_phaser_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), phaser_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), phaser_tick, ug, 0);
 }
 
 static DTOR(phaser_dtor) {
@@ -4293,8 +4305,8 @@ static CTOR(phasor_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), phasor_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), phasor_tick, ug, 0);
 }
 
 static DTOR(phasor_dtor) {
@@ -4348,8 +4360,8 @@ static CTOR(pinknoise_ctor) {
   ug->sp = sp;
   sp_pinknoise_create(&ug->osc);
   sp_pinknoise_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), pinknoise_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), pinknoise_tick, ug, 0);
 }
 
 static DTOR(pinknoise_dtor) {
@@ -4391,8 +4403,8 @@ static CTOR(pitchamdf_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), pitchamdf_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), pitchamdf_tick, ug, 0);
 }
 
 static DTOR(pitchamdf_dtor) {
@@ -4441,8 +4453,8 @@ static CTOR(pluck_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), pluck_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), pluck_tick, ug, 1);
 }
 
 static DTOR(pluck_dtor) {
@@ -4513,8 +4525,8 @@ static CTOR(port_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), port_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), port_tick, ug, 0);
 }
 
 static DTOR(port_dtor) {
@@ -4540,6 +4552,18 @@ static MFUN(port_init) {
   ug->is_init = 1;
 }
 
+static MFUN(port_get_htime) {
+  const GW_port* ug = (GW_port*)UGEN(o)->module.gen.data;
+  *(m_float*)RETURN = ug->osc->htime;
+}
+
+static MFUN(port_set_htime) {
+  const m_uint gw_offset = SZ_INT;
+  const GW_port* ug = (GW_port*)UGEN(o)->module.gen.data;
+  m_float htime = *(m_float*)(shred->mem + gw_offset);
+  *(m_float*)RETURN = (ug->osc->htime = htime);
+}
+
 typedef struct {
   sp_data* sp;
   sp_posc3* osc;
@@ -4561,8 +4585,8 @@ static CTOR(posc3_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), posc3_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), posc3_tick, ug, 0);
 }
 
 static DTOR(posc3_dtor) {
@@ -4630,8 +4654,8 @@ static CTOR(progress_ctor) {
   ug->sp = sp;
   sp_progress_create(&ug->osc);
   sp_progress_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), progress_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), progress_tick, ug, 0);
 }
 
 static DTOR(progress_dtor) {
@@ -4685,8 +4709,8 @@ static CTOR(prop_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), prop_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), prop_tick, ug, 0);
 }
 
 static DTOR(prop_dtor) {
@@ -4742,8 +4766,8 @@ static CTOR(pshift_ctor) {
   ug->sp = sp;
   sp_pshift_create(&ug->osc);
   sp_pshift_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), pshift_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), pshift_tick, ug, 0);
 }
 
 static DTOR(pshift_dtor) {
@@ -4809,8 +4833,8 @@ static CTOR(ptrack_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), ptrack_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), ptrack_tick, ug, 0);
 }
 
 static DTOR(ptrack_dtor) {
@@ -4854,8 +4878,8 @@ static CTOR(randh_ctor) {
   ug->sp = sp;
   sp_randh_create(&ug->osc);
   sp_randh_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), randh_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), randh_tick, ug, 0);
 }
 
 static DTOR(randh_dtor) {
@@ -4916,8 +4940,8 @@ static CTOR(randi_ctor) {
   ug->sp = sp;
   sp_randi_create(&ug->osc);
   sp_randi_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), randi_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), randi_tick, ug, 0);
 }
 
 static DTOR(randi_dtor) {
@@ -4990,8 +5014,8 @@ static CTOR(random_ctor) {
   ug->sp = sp;
   sp_random_create(&ug->osc);
   sp_random_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), random_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), random_tick, ug, 0);
 }
 
 static DTOR(random_dtor) {
@@ -5040,8 +5064,8 @@ static CTOR(reson_ctor) {
   ug->sp = sp;
   sp_reson_create(&ug->osc);
   sp_reson_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), reson_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), reson_tick, ug, 0);
 }
 
 static DTOR(reson_dtor) {
@@ -5095,8 +5119,8 @@ static CTOR(reverse_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), reverse_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), reverse_tick, ug, 0);
 }
 
 static DTOR(reverse_dtor) {
@@ -5138,8 +5162,8 @@ static CTOR(revsc_ctor) {
   ug->sp = sp;
   sp_revsc_create(&ug->osc);
   sp_revsc_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), revsc_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), revsc_tick, ug, 0);
 }
 
 static DTOR(revsc_dtor) {
@@ -5188,8 +5212,8 @@ static CTOR(rms_ctor) {
   ug->sp = sp;
   sp_rms_create(&ug->osc);
   sp_rms_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), rms_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), rms_tick, ug, 0);
 }
 
 static DTOR(rms_dtor) {
@@ -5231,8 +5255,8 @@ static CTOR(rpt_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), rpt_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), rpt_tick, ug, 1);
 }
 
 static DTOR(rpt_dtor) {
@@ -5274,8 +5298,8 @@ static CTOR(rspline_ctor) {
   ug->sp = sp;
   sp_rspline_create(&ug->osc);
   sp_rspline_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), rspline_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), rspline_tick, ug, 0);
 }
 
 static DTOR(rspline_dtor) {
@@ -5348,8 +5372,8 @@ static CTOR(samphold_ctor) {
   ug->sp = sp;
   sp_samphold_create(&ug->osc);
   sp_samphold_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), samphold_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), samphold_tick, ug, 1);
 }
 
 static DTOR(samphold_dtor) {
@@ -5374,8 +5398,8 @@ static CTOR(saturator_ctor) {
   ug->sp = sp;
   sp_saturator_create(&ug->osc);
   sp_saturator_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), saturator_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), saturator_tick, ug, 0);
 }
 
 static DTOR(saturator_dtor) {
@@ -5424,8 +5448,8 @@ static CTOR(scale_ctor) {
   ug->sp = sp;
   sp_scale_create(&ug->osc);
   sp_scale_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), scale_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), scale_tick, ug, 0);
 }
 
 static DTOR(scale_dtor) {
@@ -5479,8 +5503,8 @@ static CTOR(sdelay_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), sdelay_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), sdelay_tick, ug, 0);
 }
 
 static DTOR(sdelay_dtor) {
@@ -5527,8 +5551,8 @@ static CTOR(slice_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), slice_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), slice_tick, ug, 1);
 }
 
 static DTOR(slice_dtor) {
@@ -5593,8 +5617,8 @@ static CTOR(smoothdelay_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), smoothdelay_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), smoothdelay_tick, ug, 0);
 }
 
 static DTOR(smoothdelay_dtor) {
@@ -5667,8 +5691,8 @@ static CTOR(spa_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), spa_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), spa_tick, ug, 0);
 }
 
 static DTOR(spa_dtor) {
@@ -5717,8 +5741,8 @@ static CTOR(sparec_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), sparec_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), sparec_tick, ug, 0);
 }
 
 static DTOR(sparec_dtor) {
@@ -5762,8 +5786,8 @@ static CTOR(streson_ctor) {
   ug->sp = sp;
   sp_streson_create(&ug->osc);
   sp_streson_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), streson_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), streson_tick, ug, 0);
 }
 
 static DTOR(streson_dtor) {
@@ -5812,8 +5836,8 @@ static CTOR(switch_ctor) {
   ug->sp = sp;
   sp_switch_create(&ug->osc);
   sp_switch_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 3, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), switch_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 3, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), switch_tick, ug, 1);
 }
 
 static DTOR(switch_dtor) {
@@ -5843,8 +5867,8 @@ static CTOR(tabread_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tabread_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tabread_tick, ug, 0);
 }
 
 static DTOR(tabread_dtor) {
@@ -5926,8 +5950,8 @@ static CTOR(tadsr_ctor) {
   ug->sp = sp;
   sp_tadsr_create(&ug->osc);
   sp_tadsr_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tadsr_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tadsr_tick, ug, 1);
 }
 
 static DTOR(tadsr_dtor) {
@@ -6000,8 +6024,8 @@ static CTOR(talkbox_ctor) {
   ug->sp = sp;
   sp_talkbox_create(&ug->osc);
   sp_talkbox_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), talkbox_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), talkbox_tick, ug, 0);
 }
 
 static DTOR(talkbox_dtor) {
@@ -6043,8 +6067,8 @@ static CTOR(tblrec_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tblrec_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tblrec_tick, ug, 1);
 }
 
 static DTOR(tblrec_dtor) {
@@ -6088,8 +6112,8 @@ static CTOR(tbvcf_ctor) {
   ug->sp = sp;
   sp_tbvcf_create(&ug->osc);
   sp_tbvcf_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tbvcf_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tbvcf_tick, ug, 0);
 }
 
 static DTOR(tbvcf_dtor) {
@@ -6162,8 +6186,8 @@ static CTOR(tdiv_ctor) {
   ug->sp = sp;
   sp_tdiv_create(&ug->osc);
   sp_tdiv_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tdiv_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tdiv_tick, ug, 1);
 }
 
 static DTOR(tdiv_dtor) {
@@ -6212,8 +6236,8 @@ static CTOR(tenv_ctor) {
   ug->sp = sp;
   sp_tenv_create(&ug->osc);
   sp_tenv_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tenv_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tenv_tick, ug, 1);
 }
 
 static DTOR(tenv_dtor) {
@@ -6274,8 +6298,8 @@ static CTOR(tenv2_ctor) {
   ug->sp = sp;
   sp_tenv2_create(&ug->osc);
   sp_tenv2_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tenv2_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tenv2_tick, ug, 1);
 }
 
 static DTOR(tenv2_dtor) {
@@ -6324,8 +6348,8 @@ static CTOR(tenvx_ctor) {
   ug->sp = sp;
   sp_tenvx_create(&ug->osc);
   sp_tenvx_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tenvx_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tenvx_tick, ug, 1);
 }
 
 static DTOR(tenvx_dtor) {
@@ -6386,8 +6410,8 @@ static CTOR(tgate_ctor) {
   ug->sp = sp;
   sp_tgate_create(&ug->osc);
   sp_tgate_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tgate_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tgate_tick, ug, 1);
 }
 
 static DTOR(tgate_dtor) {
@@ -6424,8 +6448,8 @@ static CTOR(thresh_ctor) {
   ug->sp = sp;
   sp_thresh_create(&ug->osc);
   sp_thresh_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), thresh_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), thresh_tick, ug, 0);
 }
 
 static DTOR(thresh_dtor) {
@@ -6474,8 +6498,8 @@ static CTOR(timer_ctor) {
   ug->sp = sp;
   sp_timer_create(&ug->osc);
   sp_timer_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), timer_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), timer_tick, ug, 0);
 }
 
 static DTOR(timer_dtor) {
@@ -6500,8 +6524,8 @@ static CTOR(tin_ctor) {
   ug->sp = sp;
   sp_tin_create(&ug->osc);
   sp_tin_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tin_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tin_tick, ug, 1);
 }
 
 static DTOR(tin_dtor) {
@@ -6526,8 +6550,8 @@ static CTOR(tone_ctor) {
   ug->sp = sp;
   sp_tone_create(&ug->osc);
   sp_tone_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tone_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tone_tick, ug, 0);
 }
 
 static DTOR(tone_dtor) {
@@ -6564,8 +6588,8 @@ static CTOR(trand_ctor) {
   ug->sp = sp;
   sp_trand_create(&ug->osc);
   sp_trand_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), trand_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), trand_tick, ug, 1);
 }
 
 static DTOR(trand_dtor) {
@@ -6619,8 +6643,8 @@ static CTOR(tseg_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tseg_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tseg_tick, ug, 1);
 }
 
 static DTOR(tseg_dtor) {
@@ -6703,8 +6727,8 @@ static CTOR(tseq_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tseq_tick, ug, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tseq_tick, ug, 1);
 }
 
 static DTOR(tseq_dtor) {
@@ -6765,8 +6789,8 @@ static CTOR(vdelay_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), vdelay_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), vdelay_tick, ug, 0);
 }
 
 static DTOR(vdelay_dtor) {
@@ -6804,6 +6828,18 @@ static MFUN(vdelay_set_del) {
   *(m_float*)RETURN = (ug->osc->del = del);
 }
 
+static MFUN(vdelay_get_feedback) {
+  const GW_vdelay* ug = (GW_vdelay*)UGEN(o)->module.gen.data;
+  *(m_float*)RETURN = ug->osc->feedback;
+}
+
+static MFUN(vdelay_set_feedback) {
+  const m_uint gw_offset = SZ_INT;
+  const GW_vdelay* ug = (GW_vdelay*)UGEN(o)->module.gen.data;
+  m_float feedback = *(m_float*)(shred->mem + gw_offset);
+  *(m_float*)RETURN = (ug->osc->feedback = feedback);
+}
+
 typedef struct {
   sp_data* sp;
   sp_voc* osc;
@@ -6820,8 +6856,8 @@ static CTOR(voc_ctor) {
   ug->sp = sp;
   sp_voc_create(&ug->osc);
   sp_voc_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), voc_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), voc_tick, ug, 0);
 }
 
 static DTOR(voc_dtor) {
@@ -6846,8 +6882,8 @@ static CTOR(vocoder_ctor) {
   ug->sp = sp;
   sp_vocoder_create(&ug->osc);
   sp_vocoder_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), vocoder_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), vocoder_tick, ug, 0);
 }
 
 static DTOR(vocoder_dtor) {
@@ -6913,8 +6949,8 @@ static CTOR(waveset_ctor) {
   ug->sp = sp;
   ug->is_init = 0;
   ug->osc = NULL;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), waveset_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), waveset_tick, ug, 0);
 }
 
 static DTOR(waveset_dtor) {
@@ -6954,6 +6990,106 @@ static MFUN(waveset_set_rep) {
 
 typedef struct {
   sp_data* sp;
+  sp_wavin* osc;
+  m_bool is_init;
+} GW_wavin;
+
+static TICK(wavin_tick) {
+  const GW_wavin* ug = (GW_wavin*)u->module.gen.data;
+  if(!ug->is_init) { // LCOV_EXCL_START
+    u->out = 0;
+    return;
+  } // LCOV_EXCL_STOP
+  sp_wavin_compute(ug->sp, ug->osc, NULL, &u->out);
+
+}
+
+static CTOR(wavin_ctor) {
+  GW_wavin* ug = (GW_wavin*)xcalloc(1, sizeof(GW_wavin));
+  ug->sp = sp;
+  ug->is_init = 0;
+  ug->osc = NULL;
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), wavin_tick, ug, 0);
+}
+
+static DTOR(wavin_dtor) {
+  GW_wavin* ug = UGEN(o)->module.gen.data;
+  if(ug->is_init) {
+
+    sp_wavin_destroy(&ug->osc);
+  }
+  xfree(ug);
+}
+
+static MFUN(wavin_init) {
+  const m_uint gw_offset = SZ_INT;
+  GW_wavin* ug = (GW_wavin*)UGEN(o)->module.gen.data;
+  if(ug->osc) {
+    sp_wavin_destroy(&ug->osc);
+    ug->osc = NULL;
+  }
+  M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
+  m_str filename = STRING(filename_obj);
+  release(filename_obj, shred);
+  if(sp_wavin_create(&ug->osc) == SP_NOT_OK || sp_wavin_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
+    Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
+  }
+  ug->is_init = 1;
+}
+
+typedef struct {
+  sp_data* sp;
+  sp_wavout* osc;
+  m_bool is_init;
+} GW_wavout;
+
+static TICK(wavout_tick) {
+  const GW_wavout* ug = (GW_wavout*)u->module.gen.data;
+  if(!ug->is_init) { // LCOV_EXCL_START
+    u->out = 0;
+    return;
+  } // LCOV_EXCL_STOP
+  sp_wavout_compute(ug->sp, ug->osc, &u->in, &u->out);
+
+}
+
+static CTOR(wavout_ctor) {
+  GW_wavout* ug = (GW_wavout*)xcalloc(1, sizeof(GW_wavout));
+  ug->sp = sp;
+  ug->is_init = 0;
+  ug->osc = NULL;
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), wavout_tick, ug, 0);
+}
+
+static DTOR(wavout_dtor) {
+  GW_wavout* ug = UGEN(o)->module.gen.data;
+  if(ug->is_init) {
+
+    sp_wavout_destroy(&ug->osc);
+  }
+  xfree(ug);
+}
+
+static MFUN(wavout_init) {
+  const m_uint gw_offset = SZ_INT;
+  GW_wavout* ug = (GW_wavout*)UGEN(o)->module.gen.data;
+  if(ug->osc) {
+    sp_wavout_destroy(&ug->osc);
+    ug->osc = NULL;
+  }
+  M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
+  m_str filename = STRING(filename_obj);
+  release(filename_obj, shred);
+  if(sp_wavout_create(&ug->osc) == SP_NOT_OK || sp_wavout_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
+    Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
+  }
+  ug->is_init = 1;
+}
+
+typedef struct {
+  sp_data* sp;
   sp_wpkorg35* osc;
 } GW_wpkorg35;
 
@@ -6968,8 +7104,8 @@ static CTOR(wpkorg35_ctor) {
   ug->sp = sp;
   sp_wpkorg35_create(&ug->osc);
   sp_wpkorg35_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 1, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), wpkorg35_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), wpkorg35_tick, ug, 0);
 }
 
 static DTOR(wpkorg35_dtor) {
@@ -7030,8 +7166,8 @@ static CTOR(zitarev_ctor) {
   ug->sp = sp;
   sp_zitarev_create(&ug->osc);
   sp_zitarev_init(ug->sp, ug->osc);
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 2, 2);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), zitarev_tick, ug, 0);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), zitarev_tick, ug, 0);
 }
 
 static DTOR(zitarev_dtor) {
@@ -7179,10 +7315,9 @@ GWION_IMPORT(soundpipe) {
 
   VM* vm = gwi_vm(gwi);
   const uint8_t nchan = vm->bbq->si->out;
-printf("vm %p", vm->bbq->si->sr);
   sp_createn(&sp, nchan);
   sp->sr = vm->bbq->si->sr;
-  Type t_ftbl = gwi_mk_type(gwi, "ftbl", SZ_INT, t_object);
+  Type t_ftbl = gwi_mk_type(gwi, "ftbl", SZ_INT, "Object");
   CHECK_BB(gwi_class_ini(gwi, t_ftbl, NULL, ftbl_dtor))
   CHECK_BB(gwi_item_ini(gwi, "int", "@ftbl"))
   gwi_item_end(gwi, 0, NULL);
@@ -7224,13 +7359,16 @@ printf("vm %p", vm->bbq->si->sr);
   gwi_func_arg(gwi, "int", "size");
      gwi_func_arg(gwi, "string", "argstring");
   CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "void", "gen_triangle", ftbl_gen_triangle);
+  gwi_func_arg(gwi, "int", "size");
+  CHECK_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "gen_xline", ftbl_gen_xline);
   gwi_func_arg(gwi, "int", "size");
      gwi_func_arg(gwi, "string", "argstring");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_adsr = gwi_mk_type(gwi, "Adsr", SZ_INT, t_ugen);
+  const Type t_adsr = gwi_mk_type(gwi, "Adsr", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_adsr, adsr_ctor, adsr_dtor))
   gwi_func_ini(gwi, "float", "atk", adsr_get_atk);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7254,7 +7392,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_allpass = gwi_mk_type(gwi, "Allpass", SZ_INT, t_ugen);
+  const Type t_allpass = gwi_mk_type(gwi, "Allpass", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_allpass, allpass_ctor, allpass_dtor))
   gwi_func_ini(gwi, "void", "init", allpass_init);
      gwi_func_arg(gwi, "float", "looptime");
@@ -7266,7 +7404,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_atone = gwi_mk_type(gwi, "Atone", SZ_INT, t_ugen);
+  const Type t_atone = gwi_mk_type(gwi, "Atone", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_atone, atone_ctor, atone_dtor))
   gwi_func_ini(gwi, "float", "hp", atone_get_hp);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7275,7 +7413,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_autowah = gwi_mk_type(gwi, "Autowah", SZ_INT, t_ugen);
+  const Type t_autowah = gwi_mk_type(gwi, "Autowah", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_autowah, autowah_ctor, autowah_dtor))
   gwi_func_ini(gwi, "float", "level", autowah_get_level);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7294,11 +7432,11 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_bal = gwi_mk_type(gwi, "Bal", SZ_INT, t_ugen);
+  const Type t_bal = gwi_mk_type(gwi, "Bal", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_bal, bal_ctor, bal_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_bar = gwi_mk_type(gwi, "Bar", SZ_INT, t_ugen);
+  const Type t_bar = gwi_mk_type(gwi, "Bar", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_bar, bar_ctor, bar_dtor))
   gwi_func_ini(gwi, "void", "init", bar_init);
      gwi_func_arg(gwi, "float", "iK");
@@ -7341,7 +7479,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_biquad = gwi_mk_type(gwi, "Biquad", SZ_INT, t_ugen);
+  const Type t_biquad = gwi_mk_type(gwi, "Biquad", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_biquad, biquad_ctor, biquad_dtor))
   gwi_func_ini(gwi, "float", "b0", biquad_get_b0);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7375,7 +7513,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_biscale = gwi_mk_type(gwi, "Biscale", SZ_INT, t_ugen);
+  const Type t_biscale = gwi_mk_type(gwi, "Biscale", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_biscale, biscale_ctor, biscale_dtor))
   gwi_func_ini(gwi, "float", "min", biscale_get_min);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7389,7 +7527,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_bitcrush = gwi_mk_type(gwi, "Bitcrush", SZ_INT, t_ugen);
+  const Type t_bitcrush = gwi_mk_type(gwi, "Bitcrush", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_bitcrush, bitcrush_ctor, bitcrush_dtor))
   gwi_func_ini(gwi, "float", "bitdepth", bitcrush_get_bitdepth);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7403,7 +7541,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_blsaw = gwi_mk_type(gwi, "Blsaw", SZ_INT, t_ugen);
+  const Type t_blsaw = gwi_mk_type(gwi, "Blsaw", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_blsaw, blsaw_ctor, blsaw_dtor))
   gwi_func_ini(gwi, "float", "freq", blsaw_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7417,7 +7555,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_blsquare = gwi_mk_type(gwi, "Blsquare", SZ_INT, t_ugen);
+  const Type t_blsquare = gwi_mk_type(gwi, "Blsquare", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_blsquare, blsquare_ctor, blsquare_dtor))
   gwi_func_ini(gwi, "float", "freq", blsquare_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7436,7 +7574,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_bltriangle = gwi_mk_type(gwi, "Bltriangle", SZ_INT, t_ugen);
+  const Type t_bltriangle = gwi_mk_type(gwi, "Bltriangle", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_bltriangle, bltriangle_ctor, bltriangle_dtor))
   gwi_func_ini(gwi, "float", "freq", bltriangle_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7450,11 +7588,11 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_brown = gwi_mk_type(gwi, "Brown", SZ_INT, t_ugen);
+  const Type t_brown = gwi_mk_type(gwi, "Brown", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_brown, brown_ctor, brown_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_butbp = gwi_mk_type(gwi, "Butbp", SZ_INT, t_ugen);
+  const Type t_butbp = gwi_mk_type(gwi, "Butbp", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_butbp, butbp_ctor, butbp_dtor))
   gwi_func_ini(gwi, "float", "freq", butbp_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7468,7 +7606,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_butbr = gwi_mk_type(gwi, "Butbr", SZ_INT, t_ugen);
+  const Type t_butbr = gwi_mk_type(gwi, "Butbr", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_butbr, butbr_ctor, butbr_dtor))
   gwi_func_ini(gwi, "float", "freq", butbr_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7482,7 +7620,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_buthp = gwi_mk_type(gwi, "Buthp", SZ_INT, t_ugen);
+  const Type t_buthp = gwi_mk_type(gwi, "Buthp", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_buthp, buthp_ctor, buthp_dtor))
   gwi_func_ini(gwi, "float", "freq", buthp_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7491,7 +7629,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_butlp = gwi_mk_type(gwi, "Butlp", SZ_INT, t_ugen);
+  const Type t_butlp = gwi_mk_type(gwi, "Butlp", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_butlp, butlp_ctor, butlp_dtor))
   gwi_func_ini(gwi, "float", "freq", butlp_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7500,7 +7638,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_clip = gwi_mk_type(gwi, "Clip", SZ_INT, t_ugen);
+  const Type t_clip = gwi_mk_type(gwi, "Clip", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_clip, clip_ctor, clip_dtor))
   gwi_func_ini(gwi, "float", "lim", clip_get_lim);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7509,7 +7647,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_clock = gwi_mk_type(gwi, "Clock", SZ_INT, t_ugen);
+  const Type t_clock = gwi_mk_type(gwi, "Clock", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_clock, clock_ctor, clock_dtor))
   gwi_func_ini(gwi, "float", "bpm", clock_get_bpm);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7523,7 +7661,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_comb = gwi_mk_type(gwi, "Comb", SZ_INT, t_ugen);
+  const Type t_comb = gwi_mk_type(gwi, "Comb", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_comb, comb_ctor, comb_dtor))
   gwi_func_ini(gwi, "void", "init", comb_init);
      gwi_func_arg(gwi, "float", "looptime");
@@ -7535,7 +7673,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_compressor = gwi_mk_type(gwi, "Compressor", SZ_INT, t_ugen);
+  const Type t_compressor = gwi_mk_type(gwi, "Compressor", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_compressor, compressor_ctor, compressor_dtor))
   gwi_func_ini(gwi, "float", "ratio", compressor_get_ratio);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7559,7 +7697,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_conv = gwi_mk_type(gwi, "Conv", SZ_INT, t_ugen);
+  const Type t_conv = gwi_mk_type(gwi, "Conv", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_conv, conv_ctor, conv_dtor))
   gwi_func_ini(gwi, "void", "init", conv_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -7567,7 +7705,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_count = gwi_mk_type(gwi, "Count", SZ_INT, t_ugen);
+  const Type t_count = gwi_mk_type(gwi, "Count", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_count, count_ctor, count_dtor))
   gwi_func_ini(gwi, "float", "count", count_get_count);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7581,7 +7719,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_crossfade = gwi_mk_type(gwi, "Crossfade", SZ_INT, t_ugen);
+  const Type t_crossfade = gwi_mk_type(gwi, "Crossfade", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_crossfade, crossfade_ctor, crossfade_dtor))
   gwi_func_ini(gwi, "float", "pos", crossfade_get_pos);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7590,11 +7728,11 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_dcblock = gwi_mk_type(gwi, "Dcblock", SZ_INT, t_ugen);
+  const Type t_dcblock = gwi_mk_type(gwi, "Dcblock", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_dcblock, dcblock_ctor, dcblock_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_delay = gwi_mk_type(gwi, "Delay", SZ_INT, t_ugen);
+  const Type t_delay = gwi_mk_type(gwi, "Delay", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_delay, delay_ctor, delay_dtor))
   gwi_func_ini(gwi, "void", "init", delay_init);
      gwi_func_arg(gwi, "float", "time");
@@ -7606,7 +7744,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_diode = gwi_mk_type(gwi, "Diode", SZ_INT, t_ugen);
+  const Type t_diode = gwi_mk_type(gwi, "Diode", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_diode, diode_ctor, diode_dtor))
   gwi_func_ini(gwi, "float", "freq", diode_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7620,14 +7758,14 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_diskin = gwi_mk_type(gwi, "Diskin", SZ_INT, t_ugen);
+  const Type t_diskin = gwi_mk_type(gwi, "Diskin", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_diskin, diskin_ctor, diskin_dtor))
   gwi_func_ini(gwi, "void", "init", diskin_init);
      gwi_func_arg(gwi, "string", "filename");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_dist = gwi_mk_type(gwi, "Dist", SZ_INT, t_ugen);
+  const Type t_dist = gwi_mk_type(gwi, "Dist", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_dist, dist_ctor, dist_dtor))
   gwi_func_ini(gwi, "float", "pregain", dist_get_pregain);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7651,7 +7789,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_dmetro = gwi_mk_type(gwi, "Dmetro", SZ_INT, t_ugen);
+  const Type t_dmetro = gwi_mk_type(gwi, "Dmetro", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_dmetro, dmetro_ctor, dmetro_dtor))
   gwi_func_ini(gwi, "float", "time", dmetro_get_time);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7660,7 +7798,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_drip = gwi_mk_type(gwi, "Drip", SZ_INT, t_ugen);
+  const Type t_drip = gwi_mk_type(gwi, "Drip", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_drip, drip_ctor, drip_dtor))
   gwi_func_ini(gwi, "void", "init", drip_init);
      gwi_func_arg(gwi, "float", "dettack");
@@ -7702,7 +7840,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_dtrig = gwi_mk_type(gwi, "Dtrig", SZ_INT, t_ugen);
+  const Type t_dtrig = gwi_mk_type(gwi, "Dtrig", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_dtrig, dtrig_ctor, dtrig_dtor))
   gwi_func_ini(gwi, "void", "init", dtrig_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -7724,7 +7862,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_dust = gwi_mk_type(gwi, "Dust", SZ_INT, t_ugen);
+  const Type t_dust = gwi_mk_type(gwi, "Dust", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_dust, dust_ctor, dust_dtor))
   gwi_func_ini(gwi, "float", "amp", dust_get_amp);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7743,7 +7881,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_eqfil = gwi_mk_type(gwi, "Eqfil", SZ_INT, t_ugen);
+  const Type t_eqfil = gwi_mk_type(gwi, "Eqfil", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_eqfil, eqfil_ctor, eqfil_dtor))
   gwi_func_ini(gwi, "float", "freq", eqfil_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7762,7 +7900,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_expon = gwi_mk_type(gwi, "Expon", SZ_INT, t_ugen);
+  const Type t_expon = gwi_mk_type(gwi, "Expon", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_expon, expon_ctor, expon_dtor))
   gwi_func_ini(gwi, "float", "a", expon_get_a);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7781,7 +7919,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_fof = gwi_mk_type(gwi, "Fof", SZ_INT, t_ugen);
+  const Type t_fof = gwi_mk_type(gwi, "Fof", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_fof, fof_ctor, fof_dtor))
   gwi_func_ini(gwi, "void", "init", fof_init);
      gwi_func_arg(gwi, "ftbl", "sine");
@@ -7831,7 +7969,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_fofilt = gwi_mk_type(gwi, "Fofilt", SZ_INT, t_ugen);
+  const Type t_fofilt = gwi_mk_type(gwi, "Fofilt", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_fofilt, fofilt_ctor, fofilt_dtor))
   gwi_func_ini(gwi, "float", "freq", fofilt_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7850,7 +7988,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_fog = gwi_mk_type(gwi, "Fog", SZ_INT, t_ugen);
+  const Type t_fog = gwi_mk_type(gwi, "Fog", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_fog, fog_ctor, fog_dtor))
   gwi_func_ini(gwi, "void", "init", fog_init);
      gwi_func_arg(gwi, "ftbl", "wav");
@@ -7905,7 +8043,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_fold = gwi_mk_type(gwi, "Fold", SZ_INT, t_ugen);
+  const Type t_fold = gwi_mk_type(gwi, "Fold", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_fold, fold_ctor, fold_dtor))
   gwi_func_ini(gwi, "float", "incr", fold_get_incr);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -7914,7 +8052,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_fosc = gwi_mk_type(gwi, "Fosc", SZ_INT, t_ugen);
+  const Type t_fosc = gwi_mk_type(gwi, "Fosc", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_fosc, fosc_ctor, fosc_dtor))
   gwi_func_ini(gwi, "void", "init", fosc_init);
      gwi_func_arg(gwi, "ftbl", "tbl");
@@ -7946,7 +8084,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_gbuzz = gwi_mk_type(gwi, "Gbuzz", SZ_INT, t_ugen);
+  const Type t_gbuzz = gwi_mk_type(gwi, "Gbuzz", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_gbuzz, gbuzz_ctor, gbuzz_dtor))
   gwi_func_ini(gwi, "void", "init", gbuzz_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -7979,15 +8117,15 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_hilbert = gwi_mk_type(gwi, "Hilbert", SZ_INT, t_ugen);
+  const Type t_hilbert = gwi_mk_type(gwi, "Hilbert", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_hilbert, hilbert_ctor, hilbert_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_in = gwi_mk_type(gwi, "In", SZ_INT, t_ugen);
+  const Type t_in = gwi_mk_type(gwi, "In", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_in, in_ctor, in_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_incr = gwi_mk_type(gwi, "Incr", SZ_INT, t_ugen);
+  const Type t_incr = gwi_mk_type(gwi, "Incr", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_incr, incr_ctor, incr_dtor))
   gwi_func_ini(gwi, "void", "init", incr_init);
      gwi_func_arg(gwi, "float", "val");
@@ -8009,11 +8147,11 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_jcrev = gwi_mk_type(gwi, "Jcrev", SZ_INT, t_ugen);
+  const Type t_jcrev = gwi_mk_type(gwi, "Jcrev", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_jcrev, jcrev_ctor, jcrev_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_jitter = gwi_mk_type(gwi, "Jitter", SZ_INT, t_ugen);
+  const Type t_jitter = gwi_mk_type(gwi, "Jitter", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_jitter, jitter_ctor, jitter_dtor))
   gwi_func_ini(gwi, "float", "amp", jitter_get_amp);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8032,7 +8170,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_line = gwi_mk_type(gwi, "Line", SZ_INT, t_ugen);
+  const Type t_line = gwi_mk_type(gwi, "Line", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_line, line_ctor, line_dtor))
   gwi_func_ini(gwi, "float", "a", line_get_a);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8051,14 +8189,14 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_lpc = gwi_mk_type(gwi, "Lpc", SZ_INT, t_ugen);
+  const Type t_lpc = gwi_mk_type(gwi, "Lpc", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_lpc, lpc_ctor, lpc_dtor))
   gwi_func_ini(gwi, "void", "init", lpc_init);
      gwi_func_arg(gwi, "int", "framesize");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_lpf18 = gwi_mk_type(gwi, "Lpf18", SZ_INT, t_ugen);
+  const Type t_lpf18 = gwi_mk_type(gwi, "Lpf18", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_lpf18, lpf18_ctor, lpf18_dtor))
   gwi_func_ini(gwi, "float", "cutoff", lpf18_get_cutoff);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8077,7 +8215,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_maygate = gwi_mk_type(gwi, "Maygate", SZ_INT, t_ugen);
+  const Type t_maygate = gwi_mk_type(gwi, "Maygate", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_maygate, maygate_ctor, maygate_dtor))
   gwi_func_ini(gwi, "float", "prob", maygate_get_prob);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8091,7 +8229,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_metro = gwi_mk_type(gwi, "Metro", SZ_INT, t_ugen);
+  const Type t_metro = gwi_mk_type(gwi, "Metro", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_metro, metro_ctor, metro_dtor))
   gwi_func_ini(gwi, "float", "freq", metro_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8100,7 +8238,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_mincer = gwi_mk_type(gwi, "Mincer", SZ_INT, t_ugen);
+  const Type t_mincer = gwi_mk_type(gwi, "Mincer", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_mincer, mincer_ctor, mincer_dtor))
   gwi_func_ini(gwi, "void", "init", mincer_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -8123,7 +8261,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_mode = gwi_mk_type(gwi, "Mode", SZ_INT, t_ugen);
+  const Type t_mode = gwi_mk_type(gwi, "Mode", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_mode, mode_ctor, mode_dtor))
   gwi_func_ini(gwi, "float", "freq", mode_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8137,7 +8275,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_moogladder = gwi_mk_type(gwi, "Moogladder", SZ_INT, t_ugen);
+  const Type t_moogladder = gwi_mk_type(gwi, "Moogladder", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_moogladder, moogladder_ctor, moogladder_dtor))
   gwi_func_ini(gwi, "float", "freq", moogladder_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8151,7 +8289,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_noise = gwi_mk_type(gwi, "Noise", SZ_INT, t_ugen);
+  const Type t_noise = gwi_mk_type(gwi, "Noise", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_noise, noise_ctor, noise_dtor))
   gwi_func_ini(gwi, "float", "amp", noise_get_amp);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8160,7 +8298,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_nsmp = gwi_mk_type(gwi, "Nsmp", SZ_INT, t_ugen);
+  const Type t_nsmp = gwi_mk_type(gwi, "Nsmp", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_nsmp, nsmp_ctor, nsmp_dtor))
   gwi_func_ini(gwi, "void", "init", nsmp_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -8174,7 +8312,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_osc = gwi_mk_type(gwi, "Osc", SZ_INT, t_ugen);
+  const Type t_osc = gwi_mk_type(gwi, "Osc", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_osc, osc_ctor, osc_dtor))
   gwi_func_ini(gwi, "void", "init", osc_init);
      gwi_func_arg(gwi, "ftbl", "tbl");
@@ -8192,7 +8330,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_oscmorph = gwi_mk_type(gwi, "Oscmorph", SZ_INT, t_ugen);
+  const Type t_oscmorph = gwi_mk_type(gwi, "Oscmorph", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_oscmorph, oscmorph_ctor, oscmorph_dtor))
   gwi_func_ini(gwi, "void", "init", oscmorph_init);
      gwi_func_arg(gwi, "ftbl[]", "tbl");
@@ -8216,7 +8354,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_pan2 = gwi_mk_type(gwi, "Pan2", SZ_INT, t_ugen);
+  const Type t_pan2 = gwi_mk_type(gwi, "Pan2", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_pan2, pan2_ctor, pan2_dtor))
   gwi_func_ini(gwi, "int", "type", pan2_get_type);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8230,7 +8368,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_panst = gwi_mk_type(gwi, "Panst", SZ_INT, t_ugen);
+  const Type t_panst = gwi_mk_type(gwi, "Panst", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_panst, panst_ctor, panst_dtor))
   gwi_func_ini(gwi, "int", "type", panst_get_type);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8244,7 +8382,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_pareq = gwi_mk_type(gwi, "Pareq", SZ_INT, t_ugen);
+  const Type t_pareq = gwi_mk_type(gwi, "Pareq", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_pareq, pareq_ctor, pareq_dtor))
   gwi_func_ini(gwi, "float", "fc", pareq_get_fc);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8268,7 +8406,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_paulstretch = gwi_mk_type(gwi, "Paulstretch", SZ_INT, t_ugen);
+  const Type t_paulstretch = gwi_mk_type(gwi, "Paulstretch", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_paulstretch, paulstretch_ctor, paulstretch_dtor))
   gwi_func_ini(gwi, "void", "init", paulstretch_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -8277,7 +8415,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_pdhalf = gwi_mk_type(gwi, "Pdhalf", SZ_INT, t_ugen);
+  const Type t_pdhalf = gwi_mk_type(gwi, "Pdhalf", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_pdhalf, pdhalf_ctor, pdhalf_dtor))
   gwi_func_ini(gwi, "float", "amount", pdhalf_get_amount);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8286,7 +8424,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_peaklim = gwi_mk_type(gwi, "Peaklim", SZ_INT, t_ugen);
+  const Type t_peaklim = gwi_mk_type(gwi, "Peaklim", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_peaklim, peaklim_ctor, peaklim_dtor))
   gwi_func_ini(gwi, "float", "atk", peaklim_get_atk);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8305,7 +8443,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_phaser = gwi_mk_type(gwi, "Phaser", SZ_INT, t_ugen);
+  const Type t_phaser = gwi_mk_type(gwi, "Phaser", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_phaser, phaser_ctor, phaser_dtor))
   gwi_func_ini(gwi, "float", "MaxNotch1Freq", phaser_get_MaxNotch1Freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8359,7 +8497,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_phasor = gwi_mk_type(gwi, "Phasor", SZ_INT, t_ugen);
+  const Type t_phasor = gwi_mk_type(gwi, "Phasor", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_phasor, phasor_ctor, phasor_dtor))
   gwi_func_ini(gwi, "void", "init", phasor_init);
      gwi_func_arg(gwi, "float", "iphs");
@@ -8371,7 +8509,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_pinknoise = gwi_mk_type(gwi, "Pinknoise", SZ_INT, t_ugen);
+  const Type t_pinknoise = gwi_mk_type(gwi, "Pinknoise", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_pinknoise, pinknoise_ctor, pinknoise_dtor))
   gwi_func_ini(gwi, "float", "amp", pinknoise_get_amp);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8380,7 +8518,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_pitchamdf = gwi_mk_type(gwi, "Pitchamdf", SZ_INT, t_ugen);
+  const Type t_pitchamdf = gwi_mk_type(gwi, "Pitchamdf", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_pitchamdf, pitchamdf_ctor, pitchamdf_dtor))
   gwi_func_ini(gwi, "void", "init", pitchamdf_init);
      gwi_func_arg(gwi, "float", "min");
@@ -8388,7 +8526,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_pluck = gwi_mk_type(gwi, "Pluck", SZ_INT, t_ugen);
+  const Type t_pluck = gwi_mk_type(gwi, "Pluck", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_pluck, pluck_ctor, pluck_dtor))
   gwi_func_ini(gwi, "void", "init", pluck_init);
      gwi_func_arg(gwi, "float", "ifreq");
@@ -8405,14 +8543,19 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_port = gwi_mk_type(gwi, "Port", SZ_INT, t_ugen);
+  const Type t_port = gwi_mk_type(gwi, "Port", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_port, port_ctor, port_dtor))
   gwi_func_ini(gwi, "void", "init", port_init);
      gwi_func_arg(gwi, "float", "htime");
   CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "float", "htime", port_get_htime);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "float", "htime", port_set_htime);
+     gwi_func_arg(gwi, "float", "htime");
+  CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_posc3 = gwi_mk_type(gwi, "Posc3", SZ_INT, t_ugen);
+  const Type t_posc3 = gwi_mk_type(gwi, "Posc3", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_posc3, posc3_ctor, posc3_dtor))
   gwi_func_ini(gwi, "void", "init", posc3_init);
      gwi_func_arg(gwi, "ftbl", "tbl");
@@ -8429,7 +8572,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_progress = gwi_mk_type(gwi, "Progress", SZ_INT, t_ugen);
+  const Type t_progress = gwi_mk_type(gwi, "Progress", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_progress, progress_ctor, progress_dtor))
   gwi_func_ini(gwi, "int", "nbars", progress_get_nbars);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8443,7 +8586,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_prop = gwi_mk_type(gwi, "Prop", SZ_INT, t_ugen);
+  const Type t_prop = gwi_mk_type(gwi, "Prop", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_prop, prop_ctor, prop_dtor))
   gwi_func_ini(gwi, "void", "init", prop_init);
      gwi_func_arg(gwi, "string", "str");
@@ -8455,7 +8598,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_pshift = gwi_mk_type(gwi, "Pshift", SZ_INT, t_ugen);
+  const Type t_pshift = gwi_mk_type(gwi, "Pshift", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_pshift, pshift_ctor, pshift_dtor))
   gwi_func_ini(gwi, "float", "shift", pshift_get_shift);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8474,7 +8617,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_ptrack = gwi_mk_type(gwi, "Ptrack", SZ_INT, t_ugen);
+  const Type t_ptrack = gwi_mk_type(gwi, "Ptrack", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_ptrack, ptrack_ctor, ptrack_dtor))
   gwi_func_ini(gwi, "void", "init", ptrack_init);
      gwi_func_arg(gwi, "int", "ihopsize");
@@ -8482,7 +8625,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_randh = gwi_mk_type(gwi, "Randh", SZ_INT, t_ugen);
+  const Type t_randh = gwi_mk_type(gwi, "Randh", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_randh, randh_ctor, randh_dtor))
   gwi_func_ini(gwi, "float", "min", randh_get_min);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8501,7 +8644,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_randi = gwi_mk_type(gwi, "Randi", SZ_INT, t_ugen);
+  const Type t_randi = gwi_mk_type(gwi, "Randi", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_randi, randi_ctor, randi_dtor))
   gwi_func_ini(gwi, "float", "min", randi_get_min);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8525,7 +8668,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_random = gwi_mk_type(gwi, "Random", SZ_INT, t_ugen);
+  const Type t_random = gwi_mk_type(gwi, "Random", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_random, random_ctor, random_dtor))
   gwi_func_ini(gwi, "float", "min", random_get_min);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8539,7 +8682,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_reson = gwi_mk_type(gwi, "Reson", SZ_INT, t_ugen);
+  const Type t_reson = gwi_mk_type(gwi, "Reson", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_reson, reson_ctor, reson_dtor))
   gwi_func_ini(gwi, "float", "freq", reson_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8553,14 +8696,14 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_reverse = gwi_mk_type(gwi, "Reverse", SZ_INT, t_ugen);
+  const Type t_reverse = gwi_mk_type(gwi, "Reverse", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_reverse, reverse_ctor, reverse_dtor))
   gwi_func_ini(gwi, "void", "init", reverse_init);
      gwi_func_arg(gwi, "float", "delay");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_revsc = gwi_mk_type(gwi, "Revsc", SZ_INT, t_ugen);
+  const Type t_revsc = gwi_mk_type(gwi, "Revsc", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_revsc, revsc_ctor, revsc_dtor))
   gwi_func_ini(gwi, "float", "feedback", revsc_get_feedback);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8574,7 +8717,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_rms = gwi_mk_type(gwi, "Rms", SZ_INT, t_ugen);
+  const Type t_rms = gwi_mk_type(gwi, "Rms", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_rms, rms_ctor, rms_dtor))
   gwi_func_ini(gwi, "float", "ihp", rms_get_ihp);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8583,14 +8726,14 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_rpt = gwi_mk_type(gwi, "Rpt", SZ_INT, t_ugen);
+  const Type t_rpt = gwi_mk_type(gwi, "Rpt", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_rpt, rpt_ctor, rpt_dtor))
   gwi_func_ini(gwi, "void", "init", rpt_init);
      gwi_func_arg(gwi, "float", "maxdur");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_rspline = gwi_mk_type(gwi, "Rspline", SZ_INT, t_ugen);
+  const Type t_rspline = gwi_mk_type(gwi, "Rspline", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_rspline, rspline_ctor, rspline_dtor))
   gwi_func_ini(gwi, "float", "min", rspline_get_min);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8614,11 +8757,11 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_samphold = gwi_mk_type(gwi, "Samphold", SZ_INT, t_ugen);
+  const Type t_samphold = gwi_mk_type(gwi, "Samphold", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_samphold, samphold_ctor, samphold_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_saturator = gwi_mk_type(gwi, "Saturator", SZ_INT, t_ugen);
+  const Type t_saturator = gwi_mk_type(gwi, "Saturator", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_saturator, saturator_ctor, saturator_dtor))
   gwi_func_ini(gwi, "float", "drive", saturator_get_drive);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8632,7 +8775,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_scale = gwi_mk_type(gwi, "Scale", SZ_INT, t_ugen);
+  const Type t_scale = gwi_mk_type(gwi, "Scale", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_scale, scale_ctor, scale_dtor))
   gwi_func_ini(gwi, "float", "min", scale_get_min);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8646,14 +8789,14 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_sdelay = gwi_mk_type(gwi, "Sdelay", SZ_INT, t_ugen);
+  const Type t_sdelay = gwi_mk_type(gwi, "Sdelay", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_sdelay, sdelay_ctor, sdelay_dtor))
   gwi_func_ini(gwi, "void", "init", sdelay_init);
      gwi_func_arg(gwi, "float", "size");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_slice = gwi_mk_type(gwi, "Slice", SZ_INT, t_ugen);
+  const Type t_slice = gwi_mk_type(gwi, "Slice", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_slice, slice_ctor, slice_dtor))
   gwi_func_ini(gwi, "void", "init", slice_init);
      gwi_func_arg(gwi, "ftbl", "vals");
@@ -8666,7 +8809,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_smoothdelay = gwi_mk_type(gwi, "Smoothdelay", SZ_INT, t_ugen);
+  const Type t_smoothdelay = gwi_mk_type(gwi, "Smoothdelay", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_smoothdelay, smoothdelay_ctor, smoothdelay_dtor))
   gwi_func_ini(gwi, "void", "init", smoothdelay_init);
      gwi_func_arg(gwi, "float", "maxdel");
@@ -8684,21 +8827,21 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_spa = gwi_mk_type(gwi, "Spa", SZ_INT, t_ugen);
+  const Type t_spa = gwi_mk_type(gwi, "Spa", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_spa, spa_ctor, spa_dtor))
   gwi_func_ini(gwi, "void", "init", spa_init);
      gwi_func_arg(gwi, "string", "filename");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_sparec = gwi_mk_type(gwi, "Sparec", SZ_INT, t_ugen);
+  const Type t_sparec = gwi_mk_type(gwi, "Sparec", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_sparec, sparec_ctor, sparec_dtor))
   gwi_func_ini(gwi, "void", "init", sparec_init);
      gwi_func_arg(gwi, "string", "filename");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_streson = gwi_mk_type(gwi, "Streson", SZ_INT, t_ugen);
+  const Type t_streson = gwi_mk_type(gwi, "Streson", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_streson, streson_ctor, streson_dtor))
   gwi_func_ini(gwi, "float", "freq", streson_get_freq);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8712,11 +8855,11 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_switch = gwi_mk_type(gwi, "Switch", SZ_INT, t_ugen);
+  const Type t_switch = gwi_mk_type(gwi, "Switch", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_switch, switch_ctor, switch_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tabread = gwi_mk_type(gwi, "Tabread", SZ_INT, t_ugen);
+  const Type t_tabread = gwi_mk_type(gwi, "Tabread", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tabread, tabread_ctor, tabread_dtor))
   gwi_func_ini(gwi, "void", "init", tabread_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -8739,7 +8882,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tadsr = gwi_mk_type(gwi, "Tadsr", SZ_INT, t_ugen);
+  const Type t_tadsr = gwi_mk_type(gwi, "Tadsr", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tadsr, tadsr_ctor, tadsr_dtor))
   gwi_func_ini(gwi, "float", "atk", tadsr_get_atk);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8763,7 +8906,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_talkbox = gwi_mk_type(gwi, "Talkbox", SZ_INT, t_ugen);
+  const Type t_talkbox = gwi_mk_type(gwi, "Talkbox", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_talkbox, talkbox_ctor, talkbox_dtor))
   gwi_func_ini(gwi, "float", "quality", talkbox_get_quality);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8772,14 +8915,14 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tblrec = gwi_mk_type(gwi, "Tblrec", SZ_INT, t_ugen);
+  const Type t_tblrec = gwi_mk_type(gwi, "Tblrec", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tblrec, tblrec_ctor, tblrec_dtor))
   gwi_func_ini(gwi, "void", "init", tblrec_init);
      gwi_func_arg(gwi, "ftbl", "bar");
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tbvcf = gwi_mk_type(gwi, "Tbvcf", SZ_INT, t_ugen);
+  const Type t_tbvcf = gwi_mk_type(gwi, "Tbvcf", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tbvcf, tbvcf_ctor, tbvcf_dtor))
   gwi_func_ini(gwi, "float", "fco", tbvcf_get_fco);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8803,7 +8946,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tdiv = gwi_mk_type(gwi, "Tdiv", SZ_INT, t_ugen);
+  const Type t_tdiv = gwi_mk_type(gwi, "Tdiv", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tdiv, tdiv_ctor, tdiv_dtor))
   gwi_func_ini(gwi, "float", "num", tdiv_get_num);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8817,7 +8960,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tenv = gwi_mk_type(gwi, "Tenv", SZ_INT, t_ugen);
+  const Type t_tenv = gwi_mk_type(gwi, "Tenv", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tenv, tenv_ctor, tenv_dtor))
   gwi_func_ini(gwi, "float", "atk", tenv_get_atk);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8836,7 +8979,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tenv2 = gwi_mk_type(gwi, "Tenv2", SZ_INT, t_ugen);
+  const Type t_tenv2 = gwi_mk_type(gwi, "Tenv2", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tenv2, tenv2_ctor, tenv2_dtor))
   gwi_func_ini(gwi, "float", "atk", tenv2_get_atk);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8850,7 +8993,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tenvx = gwi_mk_type(gwi, "Tenvx", SZ_INT, t_ugen);
+  const Type t_tenvx = gwi_mk_type(gwi, "Tenvx", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tenvx, tenvx_ctor, tenvx_dtor))
   gwi_func_ini(gwi, "float", "atk", tenvx_get_atk);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8869,7 +9012,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tgate = gwi_mk_type(gwi, "Tgate", SZ_INT, t_ugen);
+  const Type t_tgate = gwi_mk_type(gwi, "Tgate", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tgate, tgate_ctor, tgate_dtor))
   gwi_func_ini(gwi, "float", "time", tgate_get_time);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8878,7 +9021,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_thresh = gwi_mk_type(gwi, "Thresh", SZ_INT, t_ugen);
+  const Type t_thresh = gwi_mk_type(gwi, "Thresh", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_thresh, thresh_ctor, thresh_dtor))
   gwi_func_ini(gwi, "float", "thresh", thresh_get_thresh);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8892,15 +9035,15 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_timer = gwi_mk_type(gwi, "Timer", SZ_INT, t_ugen);
+  const Type t_timer = gwi_mk_type(gwi, "Timer", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_timer, timer_ctor, timer_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tin = gwi_mk_type(gwi, "Tin", SZ_INT, t_ugen);
+  const Type t_tin = gwi_mk_type(gwi, "Tin", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tin, tin_ctor, tin_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tone = gwi_mk_type(gwi, "Tone", SZ_INT, t_ugen);
+  const Type t_tone = gwi_mk_type(gwi, "Tone", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tone, tone_ctor, tone_dtor))
   gwi_func_ini(gwi, "float", "hp", tone_get_hp);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8909,7 +9052,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_trand = gwi_mk_type(gwi, "Trand", SZ_INT, t_ugen);
+  const Type t_trand = gwi_mk_type(gwi, "Trand", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_trand, trand_ctor, trand_dtor))
   gwi_func_ini(gwi, "float", "min", trand_get_min);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8923,7 +9066,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tseg = gwi_mk_type(gwi, "Tseg", SZ_INT, t_ugen);
+  const Type t_tseg = gwi_mk_type(gwi, "Tseg", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tseg, tseg_ctor, tseg_dtor))
   gwi_func_ini(gwi, "void", "init", tseg_init);
      gwi_func_arg(gwi, "float", "ibeg");
@@ -8945,7 +9088,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_tseq = gwi_mk_type(gwi, "Tseq", SZ_INT, t_ugen);
+  const Type t_tseq = gwi_mk_type(gwi, "Tseq", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_tseq, tseq_ctor, tseq_dtor))
   gwi_func_ini(gwi, "void", "init", tseq_init);
      gwi_func_arg(gwi, "ftbl", "ft");
@@ -8957,7 +9100,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_vdelay = gwi_mk_type(gwi, "Vdelay", SZ_INT, t_ugen);
+  const Type t_vdelay = gwi_mk_type(gwi, "Vdelay", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_vdelay, vdelay_ctor, vdelay_dtor))
   gwi_func_ini(gwi, "void", "init", vdelay_init);
      gwi_func_arg(gwi, "float", "maxdel");
@@ -8967,13 +9110,18 @@ printf("vm %p", vm->bbq->si->sr);
   gwi_func_ini(gwi, "float", "del", vdelay_set_del);
      gwi_func_arg(gwi, "float", "del");
   CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "float", "feedback", vdelay_get_feedback);
+  CHECK_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "float", "feedback", vdelay_set_feedback);
+     gwi_func_arg(gwi, "float", "feedback");
+  CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_voc = gwi_mk_type(gwi, "Voc", SZ_INT, t_ugen);
+  const Type t_voc = gwi_mk_type(gwi, "Voc", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_voc, voc_ctor, voc_dtor))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_vocoder = gwi_mk_type(gwi, "Vocoder", SZ_INT, t_ugen);
+  const Type t_vocoder = gwi_mk_type(gwi, "Vocoder", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_vocoder, vocoder_ctor, vocoder_dtor))
   gwi_func_ini(gwi, "float", "atk", vocoder_get_atk);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -8992,7 +9140,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_waveset = gwi_mk_type(gwi, "Waveset", SZ_INT, t_ugen);
+  const Type t_waveset = gwi_mk_type(gwi, "Waveset", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_waveset, waveset_ctor, waveset_dtor))
   gwi_func_ini(gwi, "void", "init", waveset_init);
      gwi_func_arg(gwi, "float", "ilen");
@@ -9004,7 +9152,21 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_wpkorg35 = gwi_mk_type(gwi, "Wpkorg35", SZ_INT, t_ugen);
+  const Type t_wavin = gwi_mk_type(gwi, "Wavin", SZ_INT, "UGen");
+  CHECK_BB(gwi_class_ini(gwi, t_wavin, wavin_ctor, wavin_dtor))
+  gwi_func_ini(gwi, "void", "init", wavin_init);
+     gwi_func_arg(gwi, "string", "filename");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
+
+  const Type t_wavout = gwi_mk_type(gwi, "Wavout", SZ_INT, "UGen");
+  CHECK_BB(gwi_class_ini(gwi, t_wavout, wavout_ctor, wavout_dtor))
+  gwi_func_ini(gwi, "void", "init", wavout_init);
+     gwi_func_arg(gwi, "string", "filename");
+  CHECK_BB(gwi_func_end(gwi, 0))
+  CHECK_BB(gwi_class_end(gwi))
+
+  const Type t_wpkorg35 = gwi_mk_type(gwi, "Wpkorg35", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_wpkorg35, wpkorg35_ctor, wpkorg35_dtor))
   gwi_func_ini(gwi, "float", "cutoff", wpkorg35_get_cutoff);
   CHECK_BB(gwi_func_end(gwi, 0))
@@ -9023,7 +9185,7 @@ printf("vm %p", vm->bbq->si->sr);
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
 
-  const Type t_zitarev = gwi_mk_type(gwi, "Zitarev", SZ_INT, t_ugen);
+  const Type t_zitarev = gwi_mk_type(gwi, "Zitarev", SZ_INT, "UGen");
   CHECK_BB(gwi_class_ini(gwi, t_zitarev, zitarev_ctor, zitarev_dtor))
   gwi_func_ini(gwi, "float", "in_delay", zitarev_get_in_delay);
   CHECK_BB(gwi_func_end(gwi, 0))

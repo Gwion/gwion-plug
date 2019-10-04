@@ -27,8 +27,7 @@ static int callback(const void *inputBuffer, void *outputBuffer,
   for(i = 0; i < framesPerBuffer; i++) {
     for(j = 0; j < vm->bbq->n_in; j++)
       vm->bbq->in[j] = *in++;
-//    di->run(vm);
-    vm_run(vm);
+    vm->bbq->run(vm);
     for(j = 0; j < (m_uint)vm->bbq->nchan; j++)
       *out++ = vm->bbq->out[j];
     ++vm->bbq->pos;

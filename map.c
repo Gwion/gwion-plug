@@ -35,19 +35,19 @@ static m_bool cmp(const m_bit* restrict a, const unsigned char*restrict b, const
 }
 
 static CTOR(map_ctor) {
-  struct Map_Info_* info = mp_alloc(Map_Info);
+  struct Map_Info_* info = mp_calloc(Map_Info);
   info->t = array_base(o->type_ref->parent);
   const Env env = shred->vm->emit->env;
   const Nspc curr = env->curr;
   const m_str key_name = get_type_name(info->t->name, 1);
   m_uint depth;
   Type_Decl* key_decl = str2decl(env, key_name, &depth);
-  const Type key_type = type_decl_resolve(env, key_decl);
+  const Type key_type = known_type(env, key_decl);
   free_type_decl(key_decl);
   info->key_size = key_type->size;
   const m_str val_name = get_type_name(info->t->name, 2);
   Type_Decl* val_decl = str2decl(env, val_name, &depth);
-  const Type val_type = type_decl_resolve(env, val_decl);
+  const Type val_type = known_type(env, val_decl);
   free_type_decl(val_decl);
   info->val_size = val_type->size;
   MAP_INFO(o) = info;
@@ -101,9 +101,9 @@ GWION_IMPORT(map) {
   CHECK_BB(gwi_tmpl_ini(gwi, 2, types))
   CHECK_BB(gwi_class_ini(gwi, t_map, map_ctor, map_dtor))
   CHECK_BB(gwi_tmpl_end(gwi))
-  Type_Decl* td  = new_type_decl(prepend_id_list(insert_symbol("Pair"), NULL, 0), 0, 0);
-  Type_Decl* td0 = new_type_decl(prepend_id_list(insert_symbol("A"), NULL, 0), 0, 0);
-  Type_Decl* td1 = new_type_decl(prepend_id_list(insert_symbol("B"), NULL, 0), 0, 0);
+  Type_Decl* td  = new_type_decl(prepend_id_list(insert_symbol("Pair"), NULL, 0), 0);
+  Type_Decl* td0 = new_type_decl(prepend_id_list(insert_symbol("A"), NULL, 0), 0);
+  Type_Decl* td1 = new_type_decl(prepend_id_list(insert_symbol("B"), NULL, 0), 0);
   Type_List tl1  = new_type_list(td1, NULL);
   Type_List tl0  = new_type_list(td0, tl1);
   td->types = tl0;

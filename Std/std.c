@@ -11,6 +11,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 #include <dirent.h>
 #ifdef USE_DOUBLE
@@ -19,7 +20,6 @@
 #else
 #define fabs fabsf
 #endif
-#include <soundpipe.h> // for sp_rand
 #include <err_msg.h>
 
 #define LOGTWO log(2)
@@ -148,24 +148,24 @@ std(lintodb, 20.0 * log10)
 #define import_stdx(name, t1, t2)             \
   gwi_func_ini(gwi, #t1, #name, std_##name);  \
   gwi_func_arg(gwi, #t2, "value");            \
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static)) \
+  GWI_BB(gwi_func_end(gwi, ae_flag_static)) \
 
 GWION_IMPORT(std) {
   const Type t_std = gwi_mk_type(gwi, "Std", 0, NULL);
-  CHECK_OB(t_std)
-  CHECK_BB(gwi_class_ini(gwi,  t_std, NULL, NULL))
+  GWI_OB(t_std)
+  GWI_BB(gwi_class_ini(gwi,  t_std, NULL, NULL))
 
   gwi_func_ini(gwi, "int", "clamp", std_clamp);
   gwi_func_arg(gwi, "int", "value");
   gwi_func_arg(gwi, "int", "min");
   gwi_func_arg(gwi, "int", "max");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "clampf", std_clampf);
   gwi_func_arg(gwi, "float", "value");
   gwi_func_arg(gwi, "float", "min");
   gwi_func_arg(gwi, "float", "max");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "scale", std_scale);
   gwi_func_arg(gwi, "float", "value");
@@ -173,12 +173,12 @@ GWION_IMPORT(std) {
   gwi_func_arg(gwi, "float", "srcmax");
   gwi_func_arg(gwi, "float", "dstmin");
   gwi_func_arg(gwi, "float", "dstmax");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "setenv", std_setenv);
   gwi_func_arg(gwi, "string", "key");
   gwi_func_arg(gwi, "string", "value");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   import_stdx(system , int,    string)
   import_stdx(getenv , string, string)
@@ -195,6 +195,6 @@ GWION_IMPORT(std) {
   import_stdx(dbtorms, float,  float)
   import_stdx(dbtolin, float,  float)
   import_stdx(lintodb, float,  float)
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

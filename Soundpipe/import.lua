@@ -158,8 +158,8 @@ function print_mod_func(name, mod)
     print("  sp_"..name.."_create(&ug->osc);")
     print("  sp_"..name.."_init(ug->sp, ug->osc);")
   end
-  print("  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), "..mod.ninputs..", "..mod.noutputs..");")
-  print("  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), "..name.."_tick, ug, "..ntrig..");")
+  print("  ugen_ini(shred->info->vm->gwion, UGEN(o), "..mod.ninputs..", "..mod.noutputs..");")
+  print("  ugen_gen(shred->info->vm->gwion, UGEN(o), "..name.."_tick, ug, "..ntrig..");")
   print("}\n")
   print("static DTOR("..name.."_dtor) {\n  GW_"..name.."* ug = UGEN(o)->module.gen.data;")
   if(nmandatory > 0) then
@@ -303,9 +303,10 @@ print('#include <stdlib.h>\
 #include "err_msg.h"\
 #include "instr.h"\
 #include "object.h"\
+#include "gwion.h"\
+#include "operator.h"\
 #include "import.h"\
 #include "ugen.h"\
-#include "gwion.h"\
 #include "gwi.h"\
 #include "array.h"\
 #include "func.h"')
@@ -336,7 +337,6 @@ print("")
 print("GWION_IMPORT(soundpipe) {\n")
 print("  VM* vm = gwi_vm(gwi);")
 print("  const uint8_t nchan = vm->bbq->si->out;")
-print("printf(\"vm %p\", vm->bbq->si->sr);")
 print("  sp_createn(&sp, nchan);")
 print("  sp->sr = vm->bbq->si->sr;")
 --print("  M_Object o = new_M_UGen(gwi->gwion->mp);")
@@ -347,7 +347,7 @@ print("  sp->sr = vm->bbq->si->sr;")
 --print("  gwi_item_end(gwi, ae_flag_ref | ae_flag_const, o);")
 --print("  gw_connect(UGEN(o), UGEN(vm->dac));")
 --print("  ugen_connect(UGEN(o), UGEN(vector_at(&vm->ugen, 0)));")
-print("  Type t_ftbl = gwi_mk_type(gwi, \"ftbl\", SZ_INT, t_object);")
+print("  Type t_ftbl = gwi_mk_type(gwi, \"ftbl\", SZ_INT, \"Object\");")
 print("  CHECK_BB(gwi_class_ini(gwi, t_ftbl, NULL, ftbl_dtor))")
 print("  CHECK_BB(gwi_item_ini(gwi, \"int\", \"@ftbl\"))")
 print("  gwi_item_end(gwi, 0, NULL);")
@@ -374,7 +374,7 @@ for n in ipairs(a) do
   local object = sptbl[mod_name]
   if not string.match(object.modtype, "gen") and not string.match(mod_name, "foo")then
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
-    print("  const Type t_"..mod_name.." = gwi_mk_type(gwi, \""..title.."\", SZ_INT, t_ugen);")
+    print("  const Type t_"..mod_name.." = gwi_mk_type(gwi, \""..title.."\", SZ_INT, \"UGen\");")
     print("  CHECK_BB(gwi_class_ini(gwi, t_"..mod_name..", "..mod_name.."_ctor, "..mod_name.."_dtor))")
     local nmandatory = 0
     local tbl = object.params.mandatory

@@ -13,6 +13,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 ANN static void push_string(const VM_Shred shred, const M_Object obj, const m_str c) {
@@ -590,182 +591,182 @@ static SFUN(char_toString) {
 
 //ANN m_bool import_string(const Gwi gwi) {
 GWION_IMPORT(string) {
-  CHECK_OB((t_string = gwi_mk_type(gwi, "string", SZ_INT, t_object)))
-  CHECK_BB(gwi_class_ini(gwi,  t_string, string_ctor, NULL))
+  const Type t_string = gwi_mk_type(gwi, "string", SZ_INT, "Object");
+  GWI_BB(gwi_class_ini(gwi,  t_string, string_ctor, NULL))
 
   gwi_item_ini(gwi, "int", "@data");
-  CHECK_BB(gwi_item_end(gwi,   ae_flag_const, NULL))
+  GWI_BB(gwi_item_end(gwi,   ae_flag_const, NULL))
 
   gwi_func_ini(gwi, "int", "size", string_len);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "upper", string_upper);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "lower", string_lower);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "ltrim", string_ltrim);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "rtrim", string_rtrim);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "trim", string_trim);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "charAt", string_charAt);
   gwi_func_arg(gwi, "int", "pos");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "charAt", string_setCharAt);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "char");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "substring", string_substring);
   gwi_func_arg(gwi, "int", "start");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "substring", string_substringN);
   gwi_func_arg(gwi, "int", "start");
   gwi_func_arg(gwi, "int", "end");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "insert", string_insert);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "string");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "replace", string_replace);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "string");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "replace", string_replaceN);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "n");
   gwi_func_arg(gwi, "string", "string");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "find", string_find);
   gwi_func_arg(gwi, "int", "char");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "find", string_findStart);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "char");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "find", string_findStr);
   gwi_func_arg(gwi, "string", "str");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "find", string_findStrStart);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "str");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "rfind", string_rfind);
   gwi_func_arg(gwi, "int", "char");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "rfind", string_rfindStart);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "char");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "rfind", string_rfindStr);
   gwi_func_arg(gwi, "string", "str");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "rfind", string_rfindStrStart);
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "str");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "void",   "erase", string_erase);
   gwi_func_arg(gwi, "int", "start");
   gwi_func_arg(gwi, "int", "length");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "toInt", string_toInt);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "float", "toFloat", string_toFloat);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "string", "char", char_toString);
   gwi_func_arg(gwi, "int", "c");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
-  CHECK_BB(gwi_class_end(gwi))
-  CHECK_BB(gwi_oper_ini(gwi, "string",  "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       String_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, String_Plus))
+  GWI_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_oper_ini(gwi, "string",  "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       String_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi, "string",  "string", "int"))
-  CHECK_BB(gwi_oper_end(gwi, op_eq,       String_eq))
-  CHECK_BB(gwi_oper_end(gwi, op_ne,       String_neq))
+  GWI_BB(gwi_oper_ini(gwi, "string",  "string", "int"))
+  GWI_BB(gwi_oper_end(gwi, "==",       String_eq))
+  GWI_BB(gwi_oper_end(gwi, "!=",       String_neq))
 
-  CHECK_BB(gwi_oper_ini(gwi, "int",     "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Int_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Int_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Int_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi, "int",     "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Int_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Int_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Int_String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi, "float",   "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Float_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Float_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Float_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi, "float",   "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Float_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Float_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Float_String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi, "complex", "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Complex_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Complex_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Complex_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi, "complex", "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Complex_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Complex_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Complex_String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi, "polar",   "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Polar_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Polar_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Polar_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi, "polar",   "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Polar_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Polar_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Polar_String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi,"Vec3",     "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Vec3_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Vec3_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Vec3_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi,"Vec3",     "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Vec3_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Vec3_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Vec3_String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi, "Vec4",    "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Vec4_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Vec4_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Vec4_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi, "Vec4",    "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Vec4_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Vec4_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Vec4_String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi, "Object",  "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Object_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Object_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Object_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi, "Object",  "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Object_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Object_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Object_String_Plus))
 
-  CHECK_BB(gwi_oper_ini(gwi, "@null",   "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck,      Object_String_Assign))
-  CHECK_BB(gwi_oper_end(gwi, op_add,       Object_String))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_radd, Object_String_Plus))
+  GWI_BB(gwi_oper_ini(gwi, "@null",   "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>",      Object_String_Assign))
+  GWI_BB(gwi_oper_end(gwi, "+",       Object_String))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "+=>", Object_String_Plus))
   return GW_OK;
 }
 

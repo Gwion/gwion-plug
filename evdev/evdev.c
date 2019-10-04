@@ -17,6 +17,7 @@
 #include "instr.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 #define EVDEV_PREFIX "/dev/input/event"
@@ -91,11 +92,11 @@ describe_absinfo(fuzz)
 describe_absinfo(flat)
 describe_absinfo(resolution)
 #define import_absinfo(name)                                    \
-  CHECK_BB(gwi_func_ini(gwi, "int", #name, absinfo_get_##name)) \
-  CHECK_BB(gwi_func_end(gwi, 0))                                \
-  CHECK_BB(gwi_func_ini(gwi, "int", #name, absinfo_set_##name)) \
-  CHECK_BB(gwi_func_arg(gwi, "int", "val"))                     \
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", #name, absinfo_get_##name)) \
+  GWI_BB(gwi_func_end(gwi, 0))                                \
+  GWI_BB(gwi_func_ini(gwi, "int", #name, absinfo_set_##name)) \
+  GWI_BB(gwi_func_arg(gwi, "int", "val"))                     \
+  GWI_BB(gwi_func_end(gwi, 0))
 
 static MFUN(evdevev_is_type) {
   struct input_event ev;
@@ -253,11 +254,11 @@ static MFUN(evdev_set_##func) {                  \
 }
 
 #define import_var(func)                                         \
-  CHECK_BB(gwi_func_ini(gwi, "string", #func, evdev_##func))     \
-  CHECK_BB(gwi_func_end(gwi, 0))                                 \
-  CHECK_BB(gwi_func_ini(gwi, "string", #func, evdev_set_##func)) \
-  CHECK_BB(gwi_func_arg(gwi, "string", "str"))                   \
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "string", #func, evdev_##func))     \
+  GWI_BB(gwi_func_end(gwi, 0))                                 \
+  GWI_BB(gwi_func_ini(gwi, "string", #func, evdev_set_##func)) \
+  GWI_BB(gwi_func_arg(gwi, "string", "str"))                   \
+  GWI_BB(gwi_func_end(gwi, 0))
 describe_var(name)
 describe_var(phys)
 describe_var(uniq)
@@ -323,19 +324,19 @@ static MFUN(evdev_fetch_##func##_value) {                                       
 describe_get_set_fetch(event)
 describe_get_set_fetch(slot)
 #define import_get_set_fetch(func)                                              \
-  CHECK_BB(gwi_func_ini(gwi, "void", "get_" #func, evdev_get_##func##_value))   \
-  CHECK_BB(gwi_func_arg(gwi, "int", "type"))                                    \
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))                                    \
-  CHECK_BB(gwi_func_end(gwi, 0))                                                \
-  CHECK_BB(gwi_func_ini(gwi, "void", "set_" #func, evdev_set_##func##_value))   \
-  CHECK_BB(gwi_func_arg(gwi, "int", "type"))                                    \
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))                                    \
-  CHECK_BB(gwi_func_arg(gwi, "int", "value"))                                   \
-  CHECK_BB(gwi_func_end(gwi, 0))                                                \
-  CHECK_BB(gwi_func_ini(gwi, "void", "fetch_" #func, evdev_get_##func##_value)) \
-  CHECK_BB(gwi_func_arg(gwi, "int", "type"))                                    \
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))                                    \
-  CHECK_BB(gwi_func_end(gwi, 0))                                                \
+  GWI_BB(gwi_func_ini(gwi, "void", "get_" #func, evdev_get_##func##_value))   \
+  GWI_BB(gwi_func_arg(gwi, "int", "type"))                                    \
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))                                    \
+  GWI_BB(gwi_func_end(gwi, 0))                                                \
+  GWI_BB(gwi_func_ini(gwi, "void", "set_" #func, evdev_set_##func##_value))   \
+  GWI_BB(gwi_func_arg(gwi, "int", "type"))                                    \
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))                                    \
+  GWI_BB(gwi_func_arg(gwi, "int", "value"))                                   \
+  GWI_BB(gwi_func_end(gwi, 0))                                                \
+  GWI_BB(gwi_func_ini(gwi, "void", "fetch_" #func, evdev_get_##func##_value)) \
+  GWI_BB(gwi_func_arg(gwi, "int", "type"))                                    \
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))                                    \
+  GWI_BB(gwi_func_end(gwi, 0))                                                \
 
 static MFUN(evdev_has_property) {
   const EvdevInfo* info = INFO(o);
@@ -425,13 +426,13 @@ static MFUN(evdev_get_abs_info) {
 }
 
 #define import_abs(name)                                                  \
-  CHECK_BB(gwi_func_ini(gwi, "void", "abs_" #name, evdev_get_abs_##name)) \
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))                              \
-  CHECK_BB(gwi_func_end(gwi, 0))                                          \
-  CHECK_BB(gwi_func_ini(gwi, "void", "abs_" #name, evdev_set_abs_##name)) \
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))                              \
-  CHECK_BB(gwi_func_arg(gwi, "int", "val"))                               \
-  CHECK_BB(gwi_func_end(gwi, 0))                                          \
+  GWI_BB(gwi_func_ini(gwi, "void", "abs_" #name, evdev_get_abs_##name)) \
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))                              \
+  GWI_BB(gwi_func_end(gwi, 0))                                          \
+  GWI_BB(gwi_func_ini(gwi, "void", "abs_" #name, evdev_set_abs_##name)) \
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))                              \
+  GWI_BB(gwi_func_arg(gwi, "int", "val"))                               \
+  GWI_BB(gwi_func_end(gwi, 0))                                          \
 
 static MFUN(evdev_set_abs_info) {
   const EvdevInfo* info = INFO(o);
@@ -448,10 +449,10 @@ static MFUN(evdev_kernel_set_abs_info) {
   *(m_int*)RETURN = libevdev_kernel_set_abs_info(info->evdev, code, abs);
 }
 #define import_set_absinfo(type, func)                                          \
-  CHECK_BB(gwi_func_ini(gwi, #type, #func "absinfo", evdev_##func##set_abs_info)) \
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))                                    \
-  CHECK_BB(gwi_func_arg(gwi, "AbsInfo", "abs"))                                 \
-  CHECK_BB(gwi_func_end(gwi, 0))                                                \
+  GWI_BB(gwi_func_ini(gwi, #type, #func "absinfo", evdev_##func##set_abs_info)) \
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))                                    \
+  GWI_BB(gwi_func_arg(gwi, "AbsInfo", "abs"))                                 \
+  GWI_BB(gwi_func_end(gwi, 0))                                                \
 
 #define describe_id(name)                                \
 static MFUN(evdev_get_id_##name) {                       \
@@ -469,11 +470,11 @@ describe_id(vendor)
 describe_id(bustype)
 describe_id(version)
 #define import_id(name)                                         \
-  CHECK_BB(gwi_func_ini(gwi, "int", #name, evdev_get_id_##name)) \
-  CHECK_BB(gwi_func_end(gwi, 0))                                 \
-  CHECK_BB(gwi_func_ini(gwi, "int", #name, evdev_set_id_##name)) \
-  CHECK_BB(gwi_func_arg(gwi, "int", "id"))                       \
-  CHECK_BB(gwi_func_end(gwi, 0))                                 \
+  GWI_BB(gwi_func_ini(gwi, "int", #name, evdev_get_id_##name)) \
+  GWI_BB(gwi_func_end(gwi, 0))                                 \
+  GWI_BB(gwi_func_ini(gwi, "int", #name, evdev_set_id_##name)) \
+  GWI_BB(gwi_func_arg(gwi, "int", "id"))                       \
+  GWI_BB(gwi_func_end(gwi, 0))                                 \
 
 #define describe_from_name(func)                                \
 static MFUN(evdev_##func##_from_name) {                       \
@@ -493,13 +494,13 @@ describe_from_name(event_type)
 //describe_from_name(event_code)
 describe_from_name(property)
 #define import_from_name(func)                                         \
-  CHECK_BB(gwi_func_ini(gwi, "int", #func, evdev_##func##_from_name)) \
-  CHECK_BB(gwi_func_arg(gwi, "string", "name"))                       \
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))                                 \
-  CHECK_BB(gwi_func_ini(gwi, "int", #func, evdev_##func##_from_name_n)) \
-  CHECK_BB(gwi_func_arg(gwi, "string", "name"))                       \
-  CHECK_BB(gwi_func_arg(gwi, "int", "n"))                       \
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))                                 \
+  GWI_BB(gwi_func_ini(gwi, "int", #func, evdev_##func##_from_name)) \
+  GWI_BB(gwi_func_arg(gwi, "string", "name"))                       \
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))                                 \
+  GWI_BB(gwi_func_ini(gwi, "int", #func, evdev_##func##_from_name_n)) \
+  GWI_BB(gwi_func_arg(gwi, "string", "name"))                       \
+  GWI_BB(gwi_func_arg(gwi, "int", "n"))                       \
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))                                 \
 
 static MFUN(evdev_event_code_from_name) {
   const EvdevInfo* info = INFO(o);
@@ -562,101 +563,101 @@ static MFUN(uinput_write) {
 }
 
 GWION_IMPORT(evdev) {
-  t_evdevev = gwi_mk_type(gwi, "EvdevEv", SZ_INT, t_object);
-  CHECK_BB(gwi_class_ini(gwi, t_evdevev, NULL, NULL))
-  CHECK_BB(gwi_item_ini(gwi, "int", "type"))
-  CHECK_BB((o_evdevev_type  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  t_evdevev = gwi_mk_type(gwi, "EvdevEv", SZ_INT, "Object");
+  GWI_BB(gwi_class_ini(gwi, t_evdevev, NULL, NULL))
+  GWI_BB(gwi_item_ini(gwi, "int", "type"))
+  GWI_BB((o_evdevev_type  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "code"))
-  CHECK_BB((o_evdevev_code  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "code"))
+  GWI_BB((o_evdevev_code  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "value"))
-  CHECK_BB((o_evdevev_value  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "value"))
+  GWI_BB((o_evdevev_value  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "sec"))
-  CHECK_BB((o_evdevev_sec  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "sec"))
+  GWI_BB((o_evdevev_sec  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "usec"))
-  CHECK_BB((o_evdevev_usec  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "usec"))
+  GWI_BB((o_evdevev_usec  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "is_type", evdevev_is_type))
-  CHECK_BB(gwi_func_arg(gwi, "int", "type"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "is_type", evdevev_is_type))
+  GWI_BB(gwi_func_arg(gwi, "int", "type"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "is_code", evdevev_is_code))
-  CHECK_BB(gwi_func_arg(gwi, "int", "type"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "is_code", evdevev_is_code))
+  GWI_BB(gwi_func_arg(gwi, "int", "type"))
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
 
-  t_absinfo = gwi_mk_type(gwi, "AbsInfo", SZ_INT, t_object);
-  CHECK_BB(gwi_class_ini(gwi, t_absinfo, absinfo_ctor, absinfo_dtor))
-  CHECK_BB(gwi_item_ini(gwi, "int", "@info"))
-  CHECK_BB((o_absinfo = gwi_item_end(gwi, ae_flag_const, NULL)))
-  CHECK_BB(gwi_item_ini(gwi, "int", "const"))
-  CHECK_BB((o_absinfo_const = gwi_item_end(gwi, ae_flag_const, NULL)))
+  t_absinfo = gwi_mk_type(gwi, "AbsInfo", SZ_INT, "Object");
+  GWI_BB(gwi_class_ini(gwi, t_absinfo, absinfo_ctor, absinfo_dtor))
+  GWI_BB(gwi_item_ini(gwi, "int", "@info"))
+  GWI_BB((o_absinfo = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "const"))
+  GWI_BB((o_absinfo_const = gwi_item_end(gwi, ae_flag_const, NULL)))
   import_absinfo(value)
   import_absinfo(minimum)
   import_absinfo(maximum)
   import_absinfo(fuzz)
   import_absinfo(flat)
   import_absinfo(resolution)
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
 
-  const Type t_evdev_base = gwi_mk_type(gwi, "Evdev", SZ_INT, t_event);
-  CHECK_BB(gwi_class_ini(gwi, t_evdev_base, evdev_base_ctor, evdev_dtor))
+  const Type t_evdev_base = gwi_mk_type(gwi, "Evdev", SZ_INT, "Event");
+  GWI_BB(gwi_class_ini(gwi, t_evdev_base, evdev_base_ctor, evdev_dtor))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "@info"))
-  CHECK_BB((o_evdev_info = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "@info"))
+  GWI_BB((o_evdev_info = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "repeat_delay"))
-  CHECK_BB((o_evdev_delay  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "repeat_delay"))
+  GWI_BB((o_evdev_delay  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "repeat_period"))
-  CHECK_BB((o_evdev_period  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_item_ini(gwi, "int", "repeat_period"))
+  GWI_BB((o_evdev_period  = gwi_item_end(gwi, ae_flag_const, NULL)))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "index", evdev_index))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "index", evdev_index))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "index", evdev_get_index))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "index", evdev_get_index))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "num_slots", evdev_get_num_slot))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "num_slots", evdev_get_num_slot))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "curent_slot", evdev_get_current_slot))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "curent_slot", evdev_get_current_slot))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "index", evdev_index_block))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "block"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "index", evdev_index_block))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_arg(gwi, "int", "block"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   import_var(name)
   import_var(phys)
   import_var(uniq)
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "recv", evdev_recv))
-  CHECK_BB(gwi_func_arg(gwi, "EvdevEv", "ev"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "recv", evdev_recv))
+  GWI_BB(gwi_func_arg(gwi, "EvdevEv", "ev"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "version", evdev_version))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "version", evdev_version))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "grab", evdev_grab))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "grab", evdev_grab))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "clock", evdev_clock))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "clock", evdev_clock))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "led", evdev_led))
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "state"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "led", evdev_led))
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))
+  GWI_BB(gwi_func_arg(gwi, "int", "state"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   import_abs(minimum)
   import_abs(maximum)
@@ -665,9 +666,9 @@ GWION_IMPORT(evdev) {
   import_abs(resolution)
   import_set_absinfo(void,)
   import_set_absinfo(int, kernel_)
-  CHECK_BB(gwi_func_ini(gwi, "AbsInfo", "get_absinfo", evdev_get_abs_info))
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "AbsInfo", "get_absinfo", evdev_get_abs_info))
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   import_id(product)
   import_id(vendor)
@@ -677,73 +678,73 @@ GWION_IMPORT(evdev) {
   import_from_name(event_type)
 //  import_from_name(event_code)
   import_from_name(property)
-  CHECK_BB(gwi_func_ini(gwi, "int", "event_code", evdev_event_code_from_name))
-  CHECK_BB(gwi_func_arg(gwi, "int", "type"))
-  CHECK_BB(gwi_func_arg(gwi, "string", "name"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
-  CHECK_BB(gwi_func_ini(gwi, "int", "event_code", evdev_eventcode_from_name_n))
-  CHECK_BB(gwi_func_arg(gwi, "string", "name"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "n"))
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_ini(gwi, "int", "event_code", evdev_event_code_from_name))
+  GWI_BB(gwi_func_arg(gwi, "int", "type"))
+  GWI_BB(gwi_func_arg(gwi, "string", "name"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_ini(gwi, "int", "event_code", evdev_eventcode_from_name_n))
+  GWI_BB(gwi_func_arg(gwi, "string", "name"))
+  GWI_BB(gwi_func_arg(gwi, "int", "n"))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "has_property", evdev_has_property))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "int", "enable_property", evdev_enable_property))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "has_property", evdev_has_property))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "enable_property", evdev_enable_property))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
 /*
-  CHECK_BB(gwi_func_ini(gwi, "int", "disable_property", evdev_disable_property))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "disable_property", evdev_disable_property))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
 */
-  CHECK_BB(gwi_func_ini(gwi, "int", "has_event_type", evdev_has_event_type))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "int", "enable_event_type", evdev_enable_event_type))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "int", "disable_event_type", evdev_disable_event_type))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "int", "has_event_code", evdev_has_event_code))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "int", "enable_event_code", evdev_enable_event_code))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))
-  CHECK_BB(gwi_func_arg(gwi, "Object", "opt"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "int", "disable_event_code", evdev_disable_event_code))
-  CHECK_BB(gwi_func_arg(gwi, "int", "i"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "has_event_type", evdev_has_event_type))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "enable_event_type", evdev_enable_event_type))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "disable_event_type", evdev_disable_event_type))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "has_event_code", evdev_has_event_code))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "enable_event_code", evdev_enable_event_code))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))
+  GWI_BB(gwi_func_arg(gwi, "Object", "opt"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "disable_event_code", evdev_disable_event_code))
+  GWI_BB(gwi_func_arg(gwi, "int", "i"))
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   import_get_set_fetch(event)
   import_get_set_fetch(slot)
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
 
-  const Type t_uinput = gwi_mk_type(gwi, "Uinput", SZ_INT, t_object);
-  CHECK_BB(gwi_class_ini(gwi, t_uinput, NULL, uinput_dtor))
-  CHECK_BB(gwi_item_ini(gwi, "int", "@uinput"))
-  CHECK_BB((o_uinput = gwi_item_end(gwi, ae_flag_const, NULL)))
-  CHECK_BB(gwi_func_ini(gwi, "int", "create", uinput_create))
-  CHECK_BB(gwi_func_arg(gwi, "Evdev", "ev"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "int", "fd", uinput_fd))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "string", "syspath", uinput_syspath))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "string", "devnode", uinput_devnode))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_ini(gwi, "string", "write", uinput_write))
-  CHECK_BB(gwi_func_arg(gwi, "int", "type"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "code"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "value"))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  const Type t_uinput = gwi_mk_type(gwi, "Uinput", SZ_INT, "Object");
+  GWI_BB(gwi_class_ini(gwi, t_uinput, NULL, uinput_dtor))
+  GWI_BB(gwi_item_ini(gwi, "int", "@uinput"))
+  GWI_BB((o_uinput = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB(gwi_func_ini(gwi, "int", "create", uinput_create))
+  GWI_BB(gwi_func_arg(gwi, "Evdev", "ev"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "fd", uinput_fd))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "string", "syspath", uinput_syspath))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "string", "devnode", uinput_devnode))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "string", "write", uinput_write))
+  GWI_BB(gwi_func_arg(gwi, "int", "type"))
+  GWI_BB(gwi_func_arg(gwi, "int", "code"))
+  GWI_BB(gwi_func_arg(gwi, "int", "value"))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
 
   return GW_OK;
 }

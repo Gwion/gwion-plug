@@ -13,6 +13,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 #include "array.h"
 #include "gwi.h"
@@ -163,7 +164,7 @@ static SFUN(file_list) {
     *(m_uint*)RETURN = 0;
     return;
   }
-  const Type t = array_type(shred->info->vm->gwion->env, t_string, 1);
+  const Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_string], 1);
   const M_Object ret = new_array(shred->info->vm->gwion->mp, t, n);
   vector_add(&shred->gc, (vtype)ret);
   for(m_uint i = 0; i < (m_uint)n; i++) {
@@ -177,73 +178,73 @@ static SFUN(file_list) {
 
 GWION_IMPORT(fileio) {
   Type t_fileio, t_cout, t_cerr, t_cin;
-  CHECK_OB((t_fileio  = gwi_mk_type(gwi, "FileIO", SZ_INT, t_event)))
-  CHECK_OB((t_cout    = gwi_mk_type(gwi, "@Cout",  SZ_INT, t_fileio)))
-  CHECK_OB((t_cerr    = gwi_mk_type(gwi, "@Cerr",  SZ_INT, t_fileio)))
-  CHECK_OB((t_cin     = gwi_mk_type(gwi, "@Cin",   SZ_INT, t_fileio)))
-  CHECK_BB(gwi_class_ini(gwi,  t_fileio, NULL, fileio_dtor))
+  GWI_OB((t_fileio  = gwi_mk_type(gwi, "FileIO", SZ_INT, "Event")))
+  GWI_OB((t_cout    = gwi_mk_type(gwi, "@Cout",  SZ_INT, "FileIO")))
+  GWI_OB((t_cerr    = gwi_mk_type(gwi, "@Cerr",  SZ_INT, "FileIO")))
+  GWI_OB((t_cin     = gwi_mk_type(gwi, "@Cin",   SZ_INT, "FileIO")))
+  GWI_BB(gwi_class_ini(gwi,  t_fileio, NULL, fileio_dtor))
 
   // import vars
   gwi_item_ini(gwi, "int", "@file");
   o_fileio_file = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fileio_file)
+  GWI_BB(o_fileio_file)
 
   // import funcs
   gwi_func_ini(gwi, "int", "nl", file_nl);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "open", file_open);
   gwi_func_arg(gwi, "string", "filename");
   gwi_func_arg(gwi, "string", "mode");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "close", file_close);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "fileno", file_fileno);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "remove", file_remove);
   gwi_func_arg(gwi, "string", "filename");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
   gwi_func_ini(gwi, "string[]", "list", file_list);
   gwi_func_arg(gwi, "string", "filename");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_oper_ini(gwi, "int",    "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, int_to_file))
-  CHECK_BB(gwi_oper_ini(gwi, "float",  "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, float_to_file))
-  CHECK_BB(gwi_oper_ini(gwi, "complex",  "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, complex_to_file))
-  CHECK_BB(gwi_oper_ini(gwi, "polar",  "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, polar_to_file))
-  CHECK_BB(gwi_oper_ini(gwi, "Vec3",  "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, vec3_to_file))
-  CHECK_BB(gwi_oper_ini(gwi, "Vec4",  "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, vec4_to_file))
-  CHECK_BB(gwi_oper_ini(gwi,"string", "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, string_to_file))
-  CHECK_BB(gwi_oper_ini(gwi,"Object", "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, object_to_file))
-  CHECK_BB(gwi_oper_ini(gwi,"@null",  "FileIO", "FileIO"))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, object_to_file))
-  CHECK_BB(gwi_oper_ini(gwi, "FileIO", "string", "string"))
-  CHECK_BB(gwi_oper_add(gwi, opck_const_rhs))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, file_to_string))
-  CHECK_BB(gwi_oper_ini(gwi, "FileIO", "int",    "int"))
-  CHECK_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, file_to_int))
-  CHECK_BB(gwi_oper_ini(gwi, "FileIO", "float",  "float"))
-  CHECK_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
-  CHECK_BB(gwi_oper_end(gwi, op_chuck, file_to_float))
+  GWI_BB(gwi_oper_ini(gwi, "int",    "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", int_to_file))
+  GWI_BB(gwi_oper_ini(gwi, "float",  "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", float_to_file))
+  GWI_BB(gwi_oper_ini(gwi, "complex",  "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", complex_to_file))
+  GWI_BB(gwi_oper_ini(gwi, "polar",  "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", polar_to_file))
+  GWI_BB(gwi_oper_ini(gwi, "Vec3",  "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", vec3_to_file))
+  GWI_BB(gwi_oper_ini(gwi, "Vec4",  "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", vec4_to_file))
+  GWI_BB(gwi_oper_ini(gwi,"string", "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", string_to_file))
+  GWI_BB(gwi_oper_ini(gwi,"Object", "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", object_to_file))
+  GWI_BB(gwi_oper_ini(gwi,"@null",  "FileIO", "FileIO"))
+  GWI_BB(gwi_oper_end(gwi, "=>", object_to_file))
+  GWI_BB(gwi_oper_ini(gwi, "FileIO", "string", "string"))
+  GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
+  GWI_BB(gwi_oper_end(gwi, "=>", file_to_string))
+  GWI_BB(gwi_oper_ini(gwi, "FileIO", "int",    "int"))
+  GWI_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
+  GWI_BB(gwi_oper_end(gwi, "=>", file_to_int))
+  GWI_BB(gwi_oper_ini(gwi, "FileIO", "float",  "float"))
+  GWI_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
+  GWI_BB(gwi_oper_end(gwi, "=>", file_to_float))
 
-  CHECK_BB(gwi_class_ini(gwi,  t_cout, NULL, static_fileio_dtor))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_ini(gwi,  t_cout, NULL, static_fileio_dtor))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi,  t_cerr, NULL, static_fileio_dtor))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_ini(gwi,  t_cerr, NULL, static_fileio_dtor))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi,  t_cin, NULL, static_fileio_dtor))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_ini(gwi,  t_cin, NULL, static_fileio_dtor))
+  GWI_BB(gwi_class_end(gwi))
 
   const M_Object gw_cin = new_object(gwi->gwion->mp, NULL, t_cin);
   IO_FILE(gw_cin) = stdin;

@@ -33,63 +33,63 @@ MFUN(midifile_add_track);
 MFUN(midifile_add_note);
 MFUN(midifile_write);
 GWION_IMPORT(portsmf) {
-  t_midifileev = gwi_mk_type(gwi, "MidiFileEv", SZ_INT, t_event);
-  CHECK_BB(gwi_class_ini(gwi, t_midifileev, NULL, NULL))
+  t_midifileev = gwi_mk_type(gwi, "MidiFileEv", SZ_INT, "Event");
+  GWI_BB(gwi_class_ini(gwi, t_midifileev, NULL, NULL))
 	gwi_item_ini(gwi,"int", "type");
   o_midiev_type = gwi_item_end(gwi,   ae_flag_const, NULL);
-  CHECK_BB(o_midiev_type);
+  GWI_BB(o_midiev_type);
 	gwi_item_ini(gwi,"float", "pitch");
   o_midiev_pitch = gwi_item_end(gwi, ae_flag_const, NULL);
-  CHECK_BB(o_midiev_pitch);
+  GWI_BB(o_midiev_pitch);
 	gwi_item_ini(gwi,"float", "loud");
   o_midiev_loud  = gwi_item_end(gwi,  ae_flag_const, NULL);
-  CHECK_BB(o_midiev_loud);
+  GWI_BB(o_midiev_loud);
 	gwi_item_ini(gwi,"float", "start");
   o_midiev_start = gwi_item_end(gwi, ae_flag_const, NULL);
-  CHECK_BB(o_midiev_start);
+  GWI_BB(o_midiev_start);
 	gwi_item_ini(gwi,"float", "end");
   o_midiev_end   = gwi_item_end(gwi,   ae_flag_const, NULL);
-  CHECK_BB(o_midiev_start);
+  GWI_BB(o_midiev_start);
 	gwi_item_ini(gwi,"float", "dur");
   o_midiev_dur   = gwi_item_end(gwi,   ae_flag_const, NULL);
-  CHECK_BB(o_midiev_dur);
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(o_midiev_dur);
+  GWI_BB(gwi_class_end(gwi))
 
-  const Type t_midifile = gwi_mk_type(gwi, "MidiFile",  SZ_INT, t_object);
-  CHECK_BB(gwi_class_ini(gwi, t_midifile, ctor, dtor))
+  const Type t_midifile = gwi_mk_type(gwi, "MidiFile",  SZ_INT, "Object");
+  GWI_BB(gwi_class_ini(gwi, t_midifile, ctor, dtor))
 	gwi_item_ini(gwi,"int", "@seq");
   o_midifile_seq = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_midifile_seq);
+  GWI_BB(o_midifile_seq);
   gwi_func_ini(gwi, "void", "open", (m_uint)midifile_open);
     gwi_func_arg(gwi, "string", "filename");
     gwi_func_arg(gwi, "int", "smf");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
   gwi_func_ini(gwi, "int", "tracks", (m_uint)midifile_tracks);
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
   gwi_func_ini(gwi, "int", "len", (m_uint)midifile_track_len);
     gwi_func_arg(gwi, "int", "track");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
   gwi_func_ini(gwi, "MidiFileEv", "event", (m_uint)midifile_event);
     gwi_func_arg(gwi, "int", "track");
     gwi_func_arg(gwi, "int", "event_number");
 //    gwi_func_arg(gwi, "MidiFileEv", "event");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
   gwi_func_ini(gwi, "void", "add_track", (m_uint)midifile_add_track);
     gwi_func_arg(gwi, "int", "number");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
   gwi_func_ini(gwi, "int", "add_note", (m_uint)midifile_add_note);
     gwi_func_arg(gwi, "int", "track");
     gwi_func_arg(gwi, "MidiFileEv", "note");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
 
   gwi_func_ini(gwi, "void", "write", (m_uint)midifile_write);
     gwi_func_arg(gwi, "string", "filename");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_member))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, ae_flag_member))
+  GWI_BB(gwi_class_end(gwi))
   return 1;
 }
 }

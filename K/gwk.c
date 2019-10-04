@@ -10,6 +10,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 #include "array.h"
 #include "k.h"
@@ -52,7 +53,7 @@ static SFUN(gw_knn) {
   m_uint* labl = (m_uint*)ARRAY(labl_obj)->ptr;
   m_uint* ret = knn_classify_multi(data_x, data_y, data, n_labl, labl, inst_x, inst, k);
 
-  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret_obj = new_array(shred->info->vm->gwion->mp, t, inst_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
@@ -76,7 +77,7 @@ static SFUN(gw_kmeans) {
   m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** cent = gw2c(ARRAY(cent_obj), &cent_x, &cent_y);
   m_uint* ret = kmeans(data_x, data_y, data, k, theta, cent, initial);
-  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret_obj = new_array(shred->info->vm->gwion->mp, t, data_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
@@ -98,12 +99,12 @@ static SFUN(gw_kmeans_refine) {
   m_uint data_x, data_y;
   m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** ret = kmeans_refine(data_x, data_y, data, iter, n_points, n_label);
-  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret_obj = new_array(shred->info->vm->gwion->mp, t, data_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
-  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
     M_Object obj = new_array(shred->info->vm->gwion->mp, t, data_y);
     memcpy(ARRAY(obj)->ptr, ret[i], data_y * sizeof(m_float));
     m_vector_set(ARRAY(ret_obj), i, (char*)&obj);
@@ -116,14 +117,14 @@ static SFUN(gw_kmeans_refine) {
 
 GWION_IMPORT(gwk) {
   const Type t_k = gwi_mk_type(gwi, "K", 0, NULL );
-  CHECK_BB(gwi_class_ini(gwi, t_k, NULL, NULL))
+  GWI_BB(gwi_class_ini(gwi, t_k, NULL, NULL))
 
   gwi_func_ini(gwi, "int[]", "nn", gw_knn);
     gwi_func_arg(gwi, "float", "data[][]");
     gwi_func_arg(gwi, "int", "labels[]");
     gwi_func_arg(gwi, "float", "instances[][]");
     gwi_func_arg(gwi, "int", "k");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "int[]", "means", gw_kmeans);
     gwi_func_arg(gwi, "float", "data[][]");
@@ -131,15 +132,15 @@ GWION_IMPORT(gwk) {
     gwi_func_arg(gwi, "int", "k");
     gwi_func_arg(gwi, "int", "initial_centroid");
     gwi_func_arg(gwi, "float", "theta");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
   
   gwi_func_ini(gwi, "int[]", "fine_means", gw_kmeans_refine);
     gwi_func_arg(gwi, "float", "data[][]");
     gwi_func_arg(gwi, "int", "iter");
     gwi_func_arg(gwi, "int", "n_points");
     gwi_func_arg(gwi, "int", "k");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
   
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

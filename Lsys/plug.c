@@ -8,6 +8,7 @@
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 #include "vm.h"
 #include "ugen.h"
@@ -53,8 +54,8 @@ static CTOR(ctor) {
   lsys_init(&l->lsys);
   l->is_init = 0;
   l->pos = 0;
-  ugen_ini(shred->info->vm->gwion->mp, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion->mp, UGEN(o), tick, l, 1);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), tick, l, 1);
 }
 
 static DTOR(dtor)
@@ -110,22 +111,22 @@ static MFUN(gw_lsys_get) {
 }
 
 GWION_IMPORT(lsys) {
-  const Type t_lsys = gwi_mk_type(gwi, "Lsys", SZ_INT, t_ugen);
-  CHECK_BB(gwi_class_ini(gwi, t_lsys, ctor, dtor))
+  const Type t_lsys = gwi_mk_type(gwi, "Lsys", SZ_INT, "UGen");
+  GWI_BB(gwi_class_ini(gwi, t_lsys, ctor, dtor))
 
-  CHECK_BB(gwi_func_ini(gwi, "void", "parse", gw_lsys_parse))
-    CHECK_BB(gwi_func_arg(gwi, "int",    "ord"))
-    CHECK_BB(gwi_func_arg(gwi, "string", "str"))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "void", "parse", gw_lsys_parse))
+    GWI_BB(gwi_func_arg(gwi, "int",    "ord"))
+    GWI_BB(gwi_func_arg(gwi, "string", "str"))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "void", "reset", gw_lsys_reset))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "void", "reset", gw_lsys_reset))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "size", gw_lsys_size))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "size", gw_lsys_size))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_func_ini(gwi, "string", "get", gw_lsys_get))
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_ini(gwi, "string", "get", gw_lsys_get))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

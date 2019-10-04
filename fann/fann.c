@@ -21,6 +21,7 @@
 #include "instr.h"
 #include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
 
 static Type t_fann_connect, t_fann_data;
@@ -168,7 +169,7 @@ static MFUN(layers) {
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   unsigned int j[size];
   fann_get_layer_array(FANN(o), j);
@@ -182,7 +183,7 @@ static MFUN(bias) {
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   unsigned int j[size];
   fann_get_bias_array(FANN(o), j);
@@ -213,7 +214,7 @@ static MFUN(connection_array){
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   struct fann_connection c[size];
   fann_get_connection_array(FANN(o), c);
@@ -251,7 +252,7 @@ static MFUN(get_weigths) {
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   m_float f[size];
   fann_get_weights(FANN(o), f);
@@ -346,7 +347,7 @@ static MFUN(test) {
   for(i = 0; i < s_out; i++)
     m_vector_get(ARRAY(o_out), i, (char*)&out[i]);
   m_float* f = fann_test(FANN(o), in, out);
-  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, s_ret);
   for(i = 0; i < s_ret; i++)
     m_vector_set(ARRAY(o_out), i, (char*)&f[i]);
@@ -376,7 +377,7 @@ static MFUN(run) {
   m_float  ptr[size];
   for(i = 0; i < size; i++)
     m_vector_get(ARRAY(array), i, &ptr[i]);
-  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, fann_get_num_output(FANN(o)));
   m_float *f = fann_run(FANN(o), ptr);
   for(i = 0; i < fann_get_num_output(FANN(o)); i++)
@@ -548,7 +549,7 @@ static MFUN(train_input) {
   }
   m_float* f = fann_get_train_input(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
@@ -562,7 +563,7 @@ static MFUN(train_output) {
   }
   m_float* f = fann_get_train_output(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
@@ -979,7 +980,7 @@ MFUN(get_cascade_activation_functions) {
   }
   m_uint i, size = fann_get_cascade_activation_functions_count(FANN(o));
   enum fann_activationfunc_enum * tmp = fann_get_cascade_activation_functions(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, t_int, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
@@ -1012,7 +1013,7 @@ MFUN(get_cascade_activation_steepnesses) {
   }
   m_uint i, size = fann_get_cascade_activation_steepnesses_count(FANN(o));
   m_float* tmp = fann_get_cascade_activation_steepnesses(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, t_float, 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   M_Object ret = new_array(shred->info->vm->gwion->mp, t, size);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
@@ -1045,196 +1046,196 @@ MFUN(set_cascade_num_candidate_groups) {
 
 GWION_IMPORT(fann) {
   Type t_fann_connect,  t_fann_base, t_fann, t_fann_data;
-  CHECK_OB((t_fann_connect = gwi_mk_type(gwi, "FANN_connect", SZ_INT , NULL)))
-  CHECK_OB((t_fann_base = gwi_mk_type(gwi, "FANN_base", SZ_INT , NULL)))
-  CHECK_OB((t_fann = gwi_mk_type(gwi, "FANN", SZ_INT, t_fann_base )))
-  CHECK_OB((t_fann_data = gwi_mk_type(gwi, "FANN_data", SZ_INT, t_fann_base )))
-  CHECK_BB(gwi_class_ini(gwi, t_fann_connect, NULL, NULL))
+  GWI_OB((t_fann_connect = gwi_mk_type(gwi, "FANN_connect", SZ_INT , NULL)))
+  GWI_OB((t_fann_base = gwi_mk_type(gwi, "FANN_base", SZ_INT , NULL)))
+  GWI_OB((t_fann = gwi_mk_type(gwi, "FANN", SZ_INT, "FANN_base" )))
+  GWI_OB((t_fann_data = gwi_mk_type(gwi, "FANN_data", SZ_INT, "FANN_base" )))
+  GWI_BB(gwi_class_ini(gwi, t_fann_connect, NULL, NULL))
   gwi_item_ini(gwi,"int",  "from");
   o_fann_from = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fann_from)
+  GWI_BB(o_fann_from)
   gwi_item_ini(gwi,"int",  "to");
   o_fann_to = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fann_to)
+  GWI_BB(o_fann_to)
   gwi_item_ini(gwi,"int",  "weight");
   o_fann_weight = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fann_weight)
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(o_fann_weight)
+  GWI_BB(gwi_class_end(gwi))
 
   // this is for error handling
-  CHECK_BB(gwi_class_ini(gwi, t_fann_base, NULL, NULL))
+  GWI_BB(gwi_class_ini(gwi, t_fann_base, NULL, NULL))
   gwi_item_ini(gwi,"int",  "@data");
   o_fann_error = gwi_item_end(gwi, ae_flag_member, NULL);
-  CHECK_BB(o_fann_error)
+  GWI_BB(o_fann_error)
   gwi_func_ini(gwi, "void", "log", error_log);
     gwi_func_arg(gwi, "FileIO", "f");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "errno", errno);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "reset_errno", reset_errno);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "reset_errstr", reset_errstr);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "errstr", errstr);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "print_error", print_error);
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_class_end(gwi))
 
 //  Training Data Manipulation
-  CHECK_BB(gwi_class_ini(gwi, t_fann_data, NULL, data_dtor))
+  GWI_BB(gwi_class_ini(gwi, t_fann_data, NULL, data_dtor))
   gwi_func_ini(gwi, "void", "from_data", train_from_array);
     gwi_func_arg(gwi, "int", "num");
     gwi_func_arg(gwi, "float[][]", "in");
     gwi_func_arg(gwi, "float[][]", "out");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "load", train_from_file);
     gwi_func_arg(gwi, "string", "filename");
     gwi_func_arg(gwi, "int", "epochs");
     gwi_func_arg(gwi, "int", "report");
     gwi_func_arg(gwi, "float", "error");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "save", train_save);
     gwi_func_arg(gwi, "string", "filename");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "create", train_create);
     gwi_func_arg(gwi, "int", "num_data");
     gwi_func_arg(gwi, "int", "num_in");
     gwi_func_arg(gwi, "int", "num_out");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "input", train_input);
     gwi_func_arg(gwi, "int", "position");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "output", train_output);
     gwi_func_arg(gwi, "int", "position");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "shuffle", train_shuffle);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "min_in", train_min_in);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "max_in", train_max_in);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "max_in", train_max_in);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "max_out", train_max_out);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "length", train_length);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "num_input", train_num_input);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "num_ouput", train_num_output);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "FANN_data", "subset", train_do_subset);
     gwi_func_arg(gwi, "int", "pos");
     gwi_func_arg(gwi, "int", "len");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "FANN_data", "merge", train_merge);
     gwi_func_arg(gwi, "FANN_data", "l");
     gwi_func_arg(gwi, "FANN_data", "r");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
   gwi_func_ini(gwi, "FANN_data", "duplicate", train_duplicate);
     gwi_func_arg(gwi, "FANN_data", "l");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
 
-  CHECK_BB(gwi_class_ini(gwi, t_fann, NULL, fann_dtor))
+  GWI_BB(gwi_class_ini(gwi, t_fann, NULL, fann_dtor))
   gwi_func_ini(gwi, "string", "type_str", type_str);
     gwi_func_arg(gwi, "int", "layer");
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
   gwi_func_ini(gwi, "void", "standard", standard);
     gwi_func_arg(gwi, "int", "layer");
     gwi_func_arg(gwi, "int[]", "outputs");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "shortcut", shortcut);
     gwi_func_arg(gwi, "int", "layer");
     gwi_func_arg(gwi, "int[]", "outputs");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "sparse", sparse);
     gwi_func_arg(gwi, "float", "rate");
     gwi_func_arg(gwi, "int", "layer");
     gwi_func_arg(gwi, "int[]", "outputs");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "randomize", randomize);
     gwi_func_arg(gwi, "float", "min");
     gwi_func_arg(gwi, "float", "max");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "init", init);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "print", print_connections);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   // parameters
   gwi_func_ini(gwi, "void", "parameters", parameters);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "input",  input);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "output", output);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "neurons", neurons);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "connections", connections);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "type", type);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rate", rate);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "layer", layer);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int[]", "layers", layers);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int[]", "bias",  bias);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "FANN_connect[]", "connection_array", connection_array);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "weigth_array", weigth_array);
     gwi_func_arg(gwi, "FANN_connect[]", "array");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "weigth", weigth);
     gwi_func_arg(gwi, "int", "from");
     gwi_func_arg(gwi, "int", "to");
     gwi_func_arg(gwi, "float", "weigth");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "weigths", get_weigths);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "weigths", set_weigths);
     gwi_func_arg(gwi, "float[]", "f");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 // get/set user data
   gwi_func_ini(gwi, "void", "disable_seed", disable_seed);
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
   gwi_func_ini(gwi, "void", "enable_seed", enable_seed);
-  CHECK_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, ae_flag_static))
 
   gwi_func_ini(gwi, "void", "load",  load);
   gwi_func_arg(gwi, "string", "file");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "save", save);
     gwi_func_arg(gwi, "string", "file");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "run", run);
     gwi_func_arg(gwi, "float[]", "in");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   // FIXED POINT only
 /*  gwi_func_ini(gwi, "void", "decimal_point",  decimal_point);*/
-/*  CHECK_BB(gwi_func_end(gwi, 0))*/
+/*  GWI_BB(gwi_func_end(gwi, 0))*/
 /*  gwi_func_ini(gwi, "void", "multiplier", multiplier);*/
-/*  CHECK_BB(gwi_func_end(gwi, 0))*/
+/*  GWI_BB(gwi_func_end(gwi, 0))*/
 
 // training
   gwi_func_ini(gwi, "void", "train", train);
     gwi_func_arg(gwi, "float[]", "in");
     gwi_func_arg(gwi, "float[]", "out");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "test", test);
     gwi_func_arg(gwi, "float[]", "in");
     gwi_func_arg(gwi, "float[]", "out");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "mse", get_MSE);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "bit_fail", get_bit_fail);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "reset_mse", reset_MSE);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
 // Training Data Training
   gwi_func_ini(gwi, "void", "on_data", train_on_data);
@@ -1242,263 +1243,263 @@ GWION_IMPORT(fann) {
     gwi_func_arg(gwi, "int",   "epoch");
     gwi_func_arg(gwi, "int",   "report");
     gwi_func_arg(gwi, "float", "error");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "on_file", train_on_file);
     gwi_func_arg(gwi, "string", "filename");
     gwi_func_arg(gwi, "int",   "epoch");
     gwi_func_arg(gwi, "int",   "report");
     gwi_func_arg(gwi, "float", "error");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "epoch", train_epoch);
     gwi_func_arg(gwi, "FANN_data", "data");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "epoch", test_data);
     gwi_func_arg(gwi, "FANN_data", "data");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 /*  gwi_func_ini(gwi, "void", "test", train_test);*/
 /*    gwi_func_arg(gwi, "FANN_data", "data");*/
-/*  CHECK_BB(gwi_func_end(gwi, 0))*/
+/*  GWI_BB(gwi_func_end(gwi, 0))*/
 
 // Training Data Manipulation
   gwi_func_ini(gwi, "void", "scale", scale_train);
     gwi_func_arg(gwi, "FANN_data", "data");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "descale", descale_train);
     gwi_func_arg(gwi, "FANN_data", "data");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "in_scaling_params", input_scaling_params);
     gwi_func_arg(gwi, "FANN_data", "data");
     gwi_func_arg(gwi, "float", "min");
     gwi_func_arg(gwi, "float", "max");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "out_scaling_params", output_scaling_params);
     gwi_func_arg(gwi, "FANN_data", "data");
     gwi_func_arg(gwi, "float", "min");
     gwi_func_arg(gwi, "float", "max");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "scaling_params", scaling_params);
     gwi_func_arg(gwi, "FANN_data", "data");
     gwi_func_arg(gwi, "float", "imin");
     gwi_func_arg(gwi, "float", "imax");
     gwi_func_arg(gwi, "float", "omin");
     gwi_func_arg(gwi, "float", "omax");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "clear_scaling_params", scaling_params);
-  CHECK_BB(gwi_func_end(gwi, 0))
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "scale_input", scale_input);
     gwi_func_arg(gwi, "float[]", "in");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "scale_output", scale_output);
     gwi_func_arg(gwi, "float[]", "out");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "descale_input", descale_input);
     gwi_func_arg(gwi, "float[]", "in");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "descale_output", descale_output);
     gwi_func_arg(gwi, "float[]", "out");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "scale_in", train_input_scale);
     gwi_func_arg(gwi, "FANN_data", "data");
     gwi_func_arg(gwi, "float", "min");
     gwi_func_arg(gwi, "float", "max");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "scale_out", train_output_scale);
     gwi_func_arg(gwi, "FANN_data", "data");
     gwi_func_arg(gwi, "float", "min");
     gwi_func_arg(gwi, "float", "max");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "void", "scale", train_scale);
     gwi_func_arg(gwi, "FANN_data", "data");
     gwi_func_arg(gwi, "float", "min");
     gwi_func_arg(gwi, "float", "max");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
   gwi_func_ini(gwi, "int", "training_algorithm", get_training_algorithm);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "training_algorithm", set_training_algorithm);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "learning_rate", get_learning_rate);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "learning_rate", set_learning_rate);
     gwi_func_arg(gwi, "float", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "learning_momentum", get_learning_momentum);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "learning_momentum", set_learning_momentum);
     gwi_func_arg(gwi, "float", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "activation_function", get_activation_function);
     gwi_func_arg(gwi, "int", "layer");
     gwi_func_arg(gwi, "int", "neuron");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "activation_function", set_activation_function);
     gwi_func_arg(gwi, "int", "arg");
     gwi_func_arg(gwi, "int", "layer");
     gwi_func_arg(gwi, "int", "neuron");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "activation_function_layer", set_activation_function_layer);
     gwi_func_arg(gwi, "int", "layer");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "activation_function_output", set_activation_function_output);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "activation_steepness", get_activation_steepness);
     gwi_func_arg(gwi, "int", "layer");
     gwi_func_arg(gwi, "int", "neuron");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "activation_steepness", set_activation_steepness);
     gwi_func_arg(gwi, "int", "arg");
     gwi_func_arg(gwi, "int", "layer");
     gwi_func_arg(gwi, "int", "neuron");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "activation_steepness_layer", set_activation_steepness_layer);
     gwi_func_arg(gwi, "int", "layer");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "activation_steepness_output", set_activation_steepness_output);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "train_error_function", get_train_error_function);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "train_error_function", set_train_error_function);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "train_stop_function", get_train_stop_function);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "train_stop_function", set_train_stop_function);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "bit_fail_limit", get_bit_fail_limit);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "bit_fail_limit", set_bit_fail_limit);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "quickprop_decay", get_quickprop_decay);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "quickprop_decay", set_quickprop_decay);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "quickprop_mu", get_quickprop_mu);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "quickprop_mu", set_quickprop_mu);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_increase_factor", get_rprop_increase_factor);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_increase_factor", set_rprop_increase_factor);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_decrease_factor", get_rprop_decrease_factor);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_decrease_factor", set_rprop_decrease_factor);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_delta_min", get_rprop_delta_min);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_delta_min", set_rprop_delta_min);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_delta_max", get_rprop_delta_max);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_delta_max", set_rprop_delta_max);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_delta_zero", get_rprop_delta_zero);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "rprop_delta_zero", set_rprop_delta_zero);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "sarprop_weight_decay_shift", get_sarprop_weight_decay_shift);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "sarprop_weight_decay_shift", set_sarprop_weight_decay_shift);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "sarprop_step_error_threshold_factor", get_sarprop_step_error_threshold_factor);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "sarprop_step_error_threshold_factor", set_sarprop_step_error_threshold_factor);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
    gwi_func_ini(gwi, "float", "sarprop_step_error_shift", get_sarprop_step_error_shift);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "sarprop_step_error_shift", set_sarprop_step_error_shift);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "sarprop_temperature", get_sarprop_temperature);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "sarprop_temperature", set_sarprop_temperature);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_output_change_fraction", get_cascade_output_change_fraction);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_output_change_fraction",  set_cascade_output_change_fraction);
     gwi_func_arg(gwi, "float", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
    gwi_func_ini(gwi, "int", "cascade_output_stagnation_epochs",  get_cascade_output_stagnation_epochs);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_output_stagnation_epochs",  set_cascade_output_stagnation_epochs);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_candidate_change_fraction",  get_cascade_candidate_change_fraction);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_candidate_change_fraction",  set_cascade_candidate_change_fraction);
     gwi_func_arg(gwi, "float", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_candidate_stagnation_epochs",  get_cascade_candidate_stagnation_epochs);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_candidate_stagnation_epochs",  set_cascade_candidate_stagnation_epochs);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_weight_multiplier",  get_cascade_weight_multiplier);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_weight_multiplier",  set_cascade_weight_multiplier);
     gwi_func_arg(gwi, "float", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_candidate_limit",  get_cascade_candidate_limit);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float", "cascade_candidate_limit",  set_cascade_candidate_limit);
     gwi_func_arg(gwi, "float", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_max_out_epochs",  get_cascade_max_out_epochs);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_max_out_epochs",  set_cascade_max_out_epochs);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_min_out_epochs",  get_cascade_min_out_epochs);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_min_out_epochs",  set_cascade_min_out_epochs);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
    gwi_func_ini(gwi, "int", "cascade_max_cand_epochs",  get_cascade_max_cand_epochs);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_max_cand_epochs",  set_cascade_max_cand_epochs);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_min_cand_epochs",  get_cascade_min_cand_epochs);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_min_cand_epochs",  set_cascade_min_cand_epochs);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_activation_functions_count",  get_cascade_activation_functions_count);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int[]", "cascade_activation_functions",  get_cascade_activation_functions);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int[]", "cascade_activation_functions",  set_cascade_activation_functions);
     gwi_func_arg(gwi, "int[]", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_activation_steepnesses_count",  get_cascade_activation_steepnesses_count);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "cascade_activation_steepnesses",  get_cascade_activation_steepnesses);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "float[]", "cascade_activation_steepnesses",  set_cascade_activation_steepnesses);
     gwi_func_arg(gwi, "float[]", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_num_candidate_groups",  get_cascade_num_candidate_groups);
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
   gwi_func_ini(gwi, "int", "cascade_num_candidate_groups",  set_cascade_num_candidate_groups);
     gwi_func_arg(gwi, "int", "arg");
-  CHECK_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, 0))
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
