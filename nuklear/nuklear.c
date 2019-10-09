@@ -18,6 +18,7 @@
 #include "instr.h"
 #include "object.h"
 #include "gwion.h"
+#include "value.h"
 #include "operator.h"
 #include "import.h"
 

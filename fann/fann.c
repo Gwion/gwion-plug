@@ -21,6 +21,7 @@
 #include "instr.h"
 #include "gwion.h"
 #include "plug.h"
+#include "value.h"
 #include "operator.h"
 #include "import.h"
 
