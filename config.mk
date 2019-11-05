@@ -9,7 +9,8 @@ OBJ       = $(SRC:.c=.o)
 OBJ      += $(CPP_SRC:.cpp=.o)
 CFLAGS    = -I${INC}
 CFLAGS   += -I.. -g
-LDFLAGS   = -shared -fPIC -g
+LDFLAGS   = -shared -fPIC
+# -g
 
 ifeq ( $(shell (${GWION} -k 2>&1 | grep double)), 1)
 CFLAGS   += -DSPFLOAT=double

@@ -136,30 +136,24 @@ static MFUN(fft_compute) {
 }
 
 static m_bool import_fft(Gwi gwi) {
-  Type t_fft;
-
-  GWI_OB((t_fft = gwi_mk_type(gwi, "FFT", SZ_INT, "UGen")))
-  GWI_BB(gwi_class_ini(gwi, t_fft, fft_ctor, fft_dtor))
-  gwi_func_ini(gwi, "int", "init", fft_init);
+  GWI_BB(gwi_class_ini(gwi, "FFT", "UGen"))
+  gwi_class_xtor(gwi, fft_ctor, fft_dtor);
+  gwi_func_ini(gwi, "int", "init");
   gwi_func_arg(gwi, "int", "size");
-  GWI_BB(gwi_func_end(gwi, 0))
-  /*  gwi_func_ini(gwi, "int", "init", fft_init2);*/
+  GWI_BB(gwi_func_end(gwi, fft_init, ae_flag_none))
+  /*  gwi_func_ini(gwi, "int", "init");
   /*    gwi_func_arg(gwi, "int", "size");*/
   /*    gwi_func_arg(gwi, "float[]", "window");*/
-  /*  GWI_BB(gwi_func_end(gwi, 0))*/
-  /*  gwi_func_ini(gwi, "int", "init", fft_init3);*/
+  /*  gwi_func_ini(gwi, "int", "init");
   /*    gwi_func_arg(gwi, "int", "size");*/
   /*    gwi_func_arg(gwi, "string", "window");*/
-  /*  GWI_BB(gwi_func_end(gwi, 0))*/
-  /*  gwi_func_ini(gwi, "int", "window", fft_win);*/
+  /*  gwi_func_ini(gwi, "int", "window");
   /*    gwi_func_arg(gwi, "float[]", "window");*/
-  /*  GWI_BB(gwi_func_end(gwi, 0))*/
-  /*  gwi_func_ini(gwi, "int", "window", fft_win_name);*/
+  /*  gwi_func_ini(gwi, "int", "window");
   /*    gwi_func_arg(gwi, "string", "name");*/
-  /*  GWI_BB(gwi_func_end(gwi, 0))*/
-  /*  gwi_func_ini(gwi, "complex[]", "compute", fft_compute);*/
-  gwi_func_ini(gwi, "void", "compute", fft_compute);
-  GWI_BB(gwi_func_end(gwi, 0))
+  /*  gwi_func_ini(gwi, "complex[]", "compute");*/
+  gwi_func_ini(gwi, "void", "compute");
+  GWI_BB(gwi_func_end(gwi, fft_compute, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
@@ -476,24 +470,24 @@ static DTOR(ana_dtor) {
 }
 
 static m_bool import_ana(Gwi gwi) {
-  GWI_OB((t_ana = gwi_mk_type(gwi, "ANA", SZ_INT , NULL)))
-  GWI_BB(gwi_class_ini(gwi, t_ana, ana_ctor, ana_dtor))
-  gwi_item_ini(gwi,"int", "@_fft");
+  GWI_BB(gwi_class_ini(gwi, "ANA", NULL))
+  gwi_class_xtor(gwi, ana_ctor, ana_dtor);
+  gwi_item_ini(gwi, "@internal", "@_fft");
   o_ana_ana = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_ana_ana)
   gwi_item_ini(gwi,"FFT", "@fft");
   o_ana_fft = gwi_item_end(gwi,  ae_flag_ref, NULL);
   GWI_BB(o_ana_fft)
-  gwi_item_ini(gwi, "int", "@fn");
+  gwi_item_ini(gwi, "@internal", "@fn");
   o_ana_fn = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_ana_fn)
-  gwi_func_ini(gwi, "float", "compute", ana_compute);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "FFT", "fft", ana_get_fft);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "FFT", "fft", ana_set_fft);
+  gwi_func_ini(gwi, "float", "compute");
+  GWI_BB(gwi_func_end(gwi, ana_compute, ae_flag_none))
+  gwi_func_ini(gwi, "FFT", "fft");
+  GWI_BB(gwi_func_end(gwi, ana_get_fft, ae_flag_none))
+  gwi_func_ini(gwi, "FFT", "fft");
   gwi_func_arg(gwi, "FFT", "arg");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, ana_set_fft, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -502,9 +496,8 @@ static CTOR(centroid_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_centroid;
 }
 static m_bool import_centroid(Gwi gwi) {
-  Type t_centroid;
-  GWI_OB((t_centroid = gwi_mk_type(gwi, "Centroid", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_centroid, centroid_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "Centroid", "ANA"))
+  gwi_class_xtor(gwi, centroid_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -513,9 +506,8 @@ static CTOR(spread_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_spread;
 }
 static m_bool import_spread(Gwi gwi) {
-  Type t_spread;
-  GWI_OB((t_spread = gwi_mk_type(gwi, "Spread", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_spread, spread_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "Spread", "ANA"))
+  gwi_class_xtor(gwi, spread_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -524,9 +516,8 @@ static CTOR(skewness_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_skewness;
 }
 static m_bool import_skewness(Gwi gwi) {
-  Type t_skewness;
-  GWI_OB((t_skewness = gwi_mk_type(gwi, "Skewness", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_skewness, skewness_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "Skewness", "ANA"))
+  gwi_class_xtor(gwi, skewness_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -535,9 +526,8 @@ static CTOR(kurtosis_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_kurtosis;
 }
 static m_bool import_kurtosis(Gwi gwi) {
-  Type t_kurtosis;
-  GWI_OB((t_kurtosis = gwi_mk_type(gwi, "Kurtosis", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_kurtosis, kurtosis_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "Kurtosis", "ANA"))
+  gwi_class_xtor(gwi, kurtosis_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -546,9 +536,8 @@ static CTOR(rms_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rms;
 }
 static m_bool import_rms(Gwi gwi) {
-  Type t_rms;
-  GWI_OB((t_rms = gwi_mk_type(gwi, "RMS", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_rms, rms_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "RMS", "ANA"))
+  gwi_class_xtor(gwi, rms_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -565,14 +554,13 @@ static MFUN(rolloff_set_percent) {
   *(m_float*)RETURN = (ana->percent = *(m_float*)MEM(SZ_INT));
 }
 static m_bool import_rolloff(Gwi gwi) {
-  Type t_rolloff;
-  GWI_OB((t_rolloff = gwi_mk_type(gwi, "Rolloff", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_rolloff, rolloff_ctor, NULL))
-  gwi_func_ini(gwi, "float", "percent", rolloff_get_percent);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "percent", rolloff_set_percent);
+  GWI_BB(gwi_class_ini(gwi, "Rolloff", "ANA"))
+  gwi_class_xtor(gwi, rolloff_ctor, NULL);
+  gwi_func_ini(gwi, "float", "percent");
+  GWI_BB(gwi_func_end(gwi, rolloff_get_percent, ae_flag_none))
+  gwi_func_ini(gwi, "float", "percent");
   gwi_func_arg(gwi, "float", "arg");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, rolloff_set_percent, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -581,9 +569,8 @@ static CTOR(freq_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_freq;
 }
 static m_bool import_freq(Gwi gwi) {
-  Type t_freq;
-  GWI_OB((t_freq = gwi_mk_type(gwi, "Freq", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_freq, freq_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "Freq", "ANA"))
+  gwi_class_xtor(gwi, freq_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -592,9 +579,8 @@ static CTOR(asc_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_asc;
 }
 static m_bool import_asc(Gwi gwi) {
-  Type t_asc;
-  GWI_OB((t_asc = gwi_mk_type(gwi, "ASC", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_asc, asc_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "ASC", "ANA"))
+  gwi_class_xtor(gwi, asc_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -603,9 +589,8 @@ static CTOR(ass_ctor) {
   *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_ass;
 }
 static m_bool import_ass(Gwi gwi) {
-  Type t_ass;
-  GWI_OB((t_ass = gwi_mk_type(gwi, "ASS", SZ_INT, "ANA")))
-  GWI_BB(gwi_class_ini(gwi, t_ass, ass_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "ASS", "ANA"))
+  gwi_class_xtor(gwi, ass_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
@@ -693,20 +678,19 @@ INSTR(fc_disconnect) {
 }
 
 static m_bool import_fc(Gwi gwi) {
-  Type t_fc;
-  GWI_OB((t_fc = gwi_mk_type(gwi, "FC", SZ_INT , NULL)))
-  GWI_BB(gwi_class_ini(gwi, t_fc, fc_ctor, fc_dtor))
-  gwi_item_ini(gwi,"int", "@vector");
+  GWI_BB(gwi_class_ini(gwi, "FC", NULL))
+  gwi_class_xtor(gwi, fc_ctor, fc_dtor);
+  gwi_item_ini(gwi, "@internal", "@vector");
   o_fc_vector = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_fc_vector)
-  gwi_func_ini(gwi, "float[]", "compute", fc_compute);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "ANA", "add", fc_add);
+  gwi_func_ini(gwi, "float[]", "compute");
+  GWI_BB(gwi_func_end(gwi, fc_compute, ae_flag_none))
+  gwi_func_ini(gwi, "ANA", "add");
   gwi_func_arg(gwi, "ANA", "arg");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "ANA", "rem", fc_rem);
+  GWI_BB(gwi_func_end(gwi, fc_add, ae_flag_none))
+  gwi_func_ini(gwi, "ANA", "rem");
   gwi_func_arg(gwi, "ANA", "arg");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, fc_rem, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

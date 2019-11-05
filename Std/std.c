@@ -147,39 +147,37 @@ std(dbtolin, pow10)
 std(lintodb, 20.0 * log10)
 
 #define import_stdx(name, t1, t2)             \
-  gwi_func_ini(gwi, #t1, #name, std_##name);  \
+  gwi_func_ini(gwi, #t1, #name);\
   gwi_func_arg(gwi, #t2, "value");            \
-  GWI_BB(gwi_func_end(gwi, ae_flag_static)) \
+  GWI_BB(gwi_func_end(gwi, std_##name  , ae_flag_static)) \
 
 GWION_IMPORT(std) {
-  const Type t_std = gwi_mk_type(gwi, "Std", 0, NULL);
-  GWI_OB(t_std)
-  GWI_BB(gwi_class_ini(gwi,  t_std, NULL, NULL))
+  GWI_BB(gwi_class_ini(gwi, "Std", NULL))
 
-  gwi_func_ini(gwi, "int", "clamp", std_clamp);
+  gwi_func_ini(gwi, "int", "clamp");
   gwi_func_arg(gwi, "int", "value");
   gwi_func_arg(gwi, "int", "min");
   gwi_func_arg(gwi, "int", "max");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, std_clamp, ae_flag_static))
 
-  gwi_func_ini(gwi, "float", "clampf", std_clampf);
+  gwi_func_ini(gwi, "float", "clampf");
   gwi_func_arg(gwi, "float", "value");
   gwi_func_arg(gwi, "float", "min");
   gwi_func_arg(gwi, "float", "max");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, std_clampf, ae_flag_static))
 
-  gwi_func_ini(gwi, "float", "scale", std_scale);
+  gwi_func_ini(gwi, "float", "scale");
   gwi_func_arg(gwi, "float", "value");
   gwi_func_arg(gwi, "float", "srcmin");
   gwi_func_arg(gwi, "float", "srcmax");
   gwi_func_arg(gwi, "float", "dstmin");
   gwi_func_arg(gwi, "float", "dstmax");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, std_scale, ae_flag_static))
 
-  gwi_func_ini(gwi, "int", "setenv", std_setenv);
+  gwi_func_ini(gwi, "int", "setenv");
   gwi_func_arg(gwi, "string", "key");
   gwi_func_arg(gwi, "string", "value");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, std_setenv, ae_flag_static))
 
   import_stdx(system , int,    string)
   import_stdx(getenv , string, string)

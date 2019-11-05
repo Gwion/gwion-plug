@@ -590,116 +590,115 @@ static SFUN(char_toString) {
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, c);
 }
 
-//ANN m_bool import_string(const Gwi gwi) {
 GWION_IMPORT(string) {
-  const Type t_string = gwi_mk_type(gwi, "string", SZ_INT, "Object");
-  GWI_BB(gwi_class_ini(gwi,  t_string, string_ctor, NULL))
+  GWI_BB(gwi_class_ini(gwi, "string", NULL))
+  gwi_class_xtor(gwi, string_ctor, NULL);
 
-  gwi_item_ini(gwi, "int", "@data");
+  gwi_item_ini(gwi, "@internal", "@data");
   GWI_BB(gwi_item_end(gwi,   ae_flag_const, NULL))
 
-  gwi_func_ini(gwi, "int", "size", string_len);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "size");
+  GWI_BB(gwi_func_end(gwi, string_len, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "upper", string_upper);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "string", "upper");
+  GWI_BB(gwi_func_end(gwi, string_upper, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "lower", string_lower);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "string", "lower");
+  GWI_BB(gwi_func_end(gwi, string_lower, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "ltrim", string_ltrim);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "string", "ltrim");
+  GWI_BB(gwi_func_end(gwi, string_ltrim, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "rtrim", string_rtrim);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "string", "rtrim");
+  GWI_BB(gwi_func_end(gwi, string_rtrim, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "trim", string_trim);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "string", "trim");
+  GWI_BB(gwi_func_end(gwi, string_trim, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "charAt", string_charAt);
+  gwi_func_ini(gwi, "int", "charAt");
   gwi_func_arg(gwi, "int", "pos");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_charAt, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "charAt", string_setCharAt);
+  gwi_func_ini(gwi, "int", "charAt");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "char");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_setCharAt, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "substring", string_substring);
+  gwi_func_ini(gwi, "string", "substring");
   gwi_func_arg(gwi, "int", "start");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_substring, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "substring", string_substringN);
+  gwi_func_ini(gwi, "string", "substring");
   gwi_func_arg(gwi, "int", "start");
   gwi_func_arg(gwi, "int", "end");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_substringN, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "insert", string_insert);
+  gwi_func_ini(gwi, "string", "insert");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "string");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_insert, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "replace", string_replace);
+  gwi_func_ini(gwi, "string", "replace");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "string");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_replace, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "replace", string_replaceN);
+  gwi_func_ini(gwi, "string", "replace");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "n");
   gwi_func_arg(gwi, "string", "string");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_replaceN, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "find", string_find);
+  gwi_func_ini(gwi, "int", "find");
   gwi_func_arg(gwi, "int", "char");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_find, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "find", string_findStart);
+  gwi_func_ini(gwi, "int", "find");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "char");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_findStart, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "find", string_findStr);
+  gwi_func_ini(gwi, "int", "find");
   gwi_func_arg(gwi, "string", "str");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_findStr, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "find", string_findStrStart);
+  gwi_func_ini(gwi, "int", "find");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "str");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_findStrStart, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "rfind", string_rfind);
+  gwi_func_ini(gwi, "int", "rfind");
   gwi_func_arg(gwi, "int", "char");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_rfind, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "rfind", string_rfindStart);
+  gwi_func_ini(gwi, "int", "rfind");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "int", "char");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_rfindStart, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "rfind", string_rfindStr);
+  gwi_func_ini(gwi, "int", "rfind");
   gwi_func_arg(gwi, "string", "str");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_rfindStr, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "rfind", string_rfindStrStart);
+  gwi_func_ini(gwi, "int", "rfind");
   gwi_func_arg(gwi, "int", "pos");
   gwi_func_arg(gwi, "string", "str");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_rfindStrStart, ae_flag_none))
 
-  gwi_func_ini(gwi, "void",   "erase", string_erase);
+  gwi_func_ini(gwi, "void",   "erase");
   gwi_func_arg(gwi, "int", "start");
   gwi_func_arg(gwi, "int", "length");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, string_erase, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "toInt", string_toInt);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "int", "toInt");
+  GWI_BB(gwi_func_end(gwi, string_toInt, ae_flag_none))
 
-  gwi_func_ini(gwi, "float", "toFloat", string_toFloat);
-  GWI_BB(gwi_func_end(gwi, 0))
+  gwi_func_ini(gwi, "float", "toFloat");
+  GWI_BB(gwi_func_end(gwi, string_toFloat, ae_flag_none))
 
-  gwi_func_ini(gwi, "string", "char", char_toString);
+  gwi_func_ini(gwi, "string", "char");
   gwi_func_arg(gwi, "int", "c");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, char_toString, ae_flag_static))
 
   GWI_BB(gwi_class_end(gwi))
   GWI_BB(gwi_oper_ini(gwi, "string",  "string", "string"))

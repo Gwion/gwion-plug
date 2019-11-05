@@ -1,6 +1,6 @@
 USE_LD=1
 include ../config.mk
-NAME=Alsa
+NAME=alsa
 CFLAGS += -Wall -Wextra
 #LDFLAGS+=-lsporth_dyn
 LDFLAGS+=-lasound

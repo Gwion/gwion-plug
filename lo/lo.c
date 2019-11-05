@@ -381,63 +381,60 @@ static MFUN(oscin_get_s)
 }
 
 GWION_IMPORT(lo) {
-  Type t_lo, t_loin, t_loout;
-  GWI_OB((t_lo    = gwi_mk_type(gwi, "Lo",     SZ_INT, "Event")))
-  GWI_OB((t_loin  = gwi_mk_type(gwi, "OscIn",  SZ_INT, "Lo")))
-  GWI_OB((t_loout = gwi_mk_type(gwi, "OscOut", SZ_INT, "Lo")))
+  const Type t_lo = gwi_class_ini(gwi, "Lo", "Event");
   SET_FLAG(t_lo, abstract);
-
-  GWI_BB(gwi_class_ini(gwi, t_lo, lo_ctor, NULL))
-  gwi_item_ini(gwi,"int",  "@args");
+  gwi_item_ini(gwi, "@internal", "@args");
   o_lo_args = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_lo_args)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, t_loout, NULL, loout_dtor))
-  gwi_item_ini(gwi,"int",  "@addr");
+  GWI_BB(gwi_class_ini(gwi, "OscOut", "Lo"))
+  gwi_class_xtor(gwi, NULL, loout_dtor);
+  gwi_item_ini(gwi, "@internal", "@addr");
   o_lo_addr = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_lo_addr)
-  gwi_func_ini(gwi, "int", "addr", osc_addr);
+  gwi_func_ini(gwi, "int", "addr");
     gwi_func_arg(gwi, "string", "host");
     gwi_func_arg(gwi, "string", "port");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "send", osc_send);
+  GWI_BB(gwi_func_end(gwi, osc_addr, ae_flag_none))
+  gwi_func_ini(gwi, "int", "send");
     gwi_func_arg(gwi, "string", "path");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, osc_send, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, t_loin, loin_ctor, NULL))
-  gwi_item_ini(gwi,"int",  "@serv");
+  GWI_BB(gwi_class_ini(gwi, "OscIn", "Lo"))
+  gwi_class_xtor(gwi, loin_ctor, NULL);
+  gwi_item_ini(gwi, "@internal", "@serv");
   o_lo_serv = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_lo_serv)
-  gwi_item_ini(gwi,"int",  "@meth");
+  gwi_item_ini(gwi, "@internal", "@meth");
   o_lo_meth = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_lo_meth)
-  gwi_item_ini(gwi,"int",  "@curr");
+  gwi_item_ini(gwi, "@internal", "@curr");
   o_lo_curr = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_lo_curr)
-  gwi_func_ini(gwi, "int", "add", osc_add_method);
+  gwi_func_ini(gwi, "int", "add");
     gwi_func_arg(gwi, "string", "path");
     gwi_func_arg(gwi, "string", "type");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, osc_add_method, ae_flag_none))
 
-  gwi_func_ini(gwi, "int", "port", osc_get_port);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "port", osc_port);
+  gwi_func_ini(gwi, "int", "port");
+  GWI_BB(gwi_func_end(gwi, osc_get_port, ae_flag_none))
+  gwi_func_ini(gwi, "int", "port");
     gwi_func_arg(gwi, "int", "port");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "start", oscin_start);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "stop", oscin_stop);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "recv", osc_recv);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "get_i", oscin_get_i);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "get_f", oscin_get_f);
-  GWI_BB(gwi_func_end(gwi, 0))  
-  gwi_func_ini(gwi, "string", "get_s", oscin_get_s);
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, osc_port, ae_flag_none))
+  gwi_func_ini(gwi, "int", "start");
+  GWI_BB(gwi_func_end(gwi, oscin_start, ae_flag_none))
+  gwi_func_ini(gwi, "int", "stop");
+  GWI_BB(gwi_func_end(gwi, oscin_stop, ae_flag_none))
+  gwi_func_ini(gwi, "int", "recv");
+  GWI_BB(gwi_func_end(gwi, osc_recv, ae_flag_none))
+  gwi_func_ini(gwi, "int", "get_i");
+  GWI_BB(gwi_func_end(gwi, oscin_get_i, ae_flag_none))
+  gwi_func_ini(gwi, "float", "get_f");
+  GWI_BB(gwi_func_end(gwi, oscin_get_f, ae_flag_none))  
+  gwi_func_ini(gwi, "string", "get_s");
+  GWI_BB(gwi_func_end(gwi, oscin_get_s, ae_flag_none))
 
 
   GWI_BB(gwi_class_end(gwi))

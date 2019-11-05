@@ -106,36 +106,33 @@ math2(min)
 math2(max)
 
 #define decl_math1(name, func)                   \
-  gwi_func_ini(gwi, "float", name, math_##func); \
+  gwi_func_ini(gwi, "float", name);              \
   gwi_func_arg(gwi, "float", "value");           \
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))    \
+  GWI_BB(gwi_func_end(gwi, math_##func , ae_flag_static))    \
 
 #define decl_math2(name, func)                   \
-  gwi_func_ini(gwi, "float", name, math_##func); \
+  gwi_func_ini(gwi, "float", name);              \
   gwi_func_arg(gwi, "float", "value1");          \
   gwi_func_arg(gwi, "float", "value2");          \
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))    \
+  GWI_BB(gwi_func_end(gwi, math_##func , ae_flag_static))    \
 
 GWION_IMPORT(math) {
-  const Type t_math = gwi_mk_type(gwi, "Math", 0, NULL);
-  GWI_OB(t_math)
+  GWI_BB(gwi_class_ini(gwi, "Math", NULL))
 
-  GWI_BB(gwi_class_ini(gwi, t_math, NULL, NULL))
-
-  gwi_func_ini(gwi, "int", "abs", math_abs);
+  gwi_func_ini(gwi, "int", "abs");
   gwi_func_arg(gwi, "int", "value");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, math_abs, ae_flag_static))
 
-  gwi_func_ini(gwi, "int", "rand", math_rand);
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  gwi_func_ini(gwi, "int", "rand");
+  GWI_BB(gwi_func_end(gwi, math_rand, ae_flag_static))
 
-  gwi_func_ini(gwi, "int", "rand2", math_rand2);
+  gwi_func_ini(gwi, "int", "rand2");
   gwi_func_arg(gwi, "int", "min");
   gwi_func_arg(gwi, "int", "max");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, math_rand2, ae_flag_static))
 
-  gwi_func_ini(gwi, "float", "randf", math_randf);
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  gwi_func_ini(gwi, "float", "randf");
+  GWI_BB(gwi_func_end(gwi, math_randf, ae_flag_static))
 
   decl_math2("rand2f", rand2f)
 

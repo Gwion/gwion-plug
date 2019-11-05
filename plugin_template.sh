@@ -63,7 +63,7 @@ static MFUN(mfun) { /*code here */ }
 static SFUN(sfun) { /*code here */ }
 
 IMPORT {
-  const Type t_${1,,} = gwi_mk_type(gwi, "$1", SZ_INT, $PARENT_CLASS);
+  const Type t_${1,,} = gwi_mk_type(gwi, "$1", SZ_INT, "$PARENT_CLASS");
   CHECK_BB(gwi_class_ini(gwi, t_${1,,},${1,,}_ctor, ${1,,}_dtor))
 
   CHECK_BB(gwi_item_ini(gwi, "int", "member"))

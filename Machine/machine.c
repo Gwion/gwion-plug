@@ -84,27 +84,25 @@ static SFUN(machine_pass) {
 }
 
 GWION_IMPORT(machine) {
-  Type t_machine;
-  GWI_OB((t_machine = gwi_mk_type(gwi, "Machine", 0, NULL)))
-  GWI_BB(gwi_class_ini(gwi,  t_machine, NULL, NULL))
-  gwi_func_ini(gwi, "void",  "add", machine_add);
+  GWI_BB(gwi_class_ini(gwi, "Machine", NULL))
+  gwi_func_ini(gwi, "void",  "add");
   gwi_func_arg(gwi,       "string",  "filename");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, machine_add, ae_flag_static))
 
-  gwi_func_ini(gwi, "int[]", "shreds", machine_shreds);
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  gwi_func_ini(gwi, "int[]", "shreds");
+  GWI_BB(gwi_func_end(gwi, machine_shreds, ae_flag_static))
 
-  gwi_func_ini(gwi, "int",  "check", machine_check);
+  gwi_func_ini(gwi, "int",  "check");
   gwi_func_arg(gwi,      "string",  "code");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, machine_check, ae_flag_static))
 
-  gwi_func_ini(gwi, "void", "compile", machine_compile);
+  gwi_func_ini(gwi, "void", "compile");
   gwi_func_arg(gwi,      "string",  "filename");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, machine_compile, ae_flag_static))
 
-  gwi_func_ini(gwi, "int", "pass", machine_pass);
+  gwi_func_ini(gwi, "int", "pass");
   gwi_func_arg(gwi,      "string[]",  "passes");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, machine_pass, ae_flag_static))
 
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;

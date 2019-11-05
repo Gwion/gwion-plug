@@ -178,35 +178,31 @@ static SFUN(file_list) {
 }
 
 GWION_IMPORT(fileio) {
-  Type t_fileio, t_cout, t_cerr, t_cin;
-  GWI_OB((t_fileio  = gwi_mk_type(gwi, "FileIO", SZ_INT, "Event")))
-  GWI_OB((t_cout    = gwi_mk_type(gwi, "@Cout",  SZ_INT, "FileIO")))
-  GWI_OB((t_cerr    = gwi_mk_type(gwi, "@Cerr",  SZ_INT, "FileIO")))
-  GWI_OB((t_cin     = gwi_mk_type(gwi, "@Cin",   SZ_INT, "FileIO")))
-  GWI_BB(gwi_class_ini(gwi,  t_fileio, NULL, fileio_dtor))
+  GWI_BB(gwi_class_ini(gwi, "FileIO", "Event"))
+  gwi_class_xtor(gwi, NULL, fileio_dtor);
 
   // import vars
-  gwi_item_ini(gwi, "int", "@file");
+  gwi_item_ini(gwi, "@internal", "@file");
   o_fileio_file = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_fileio_file)
 
   // import funcs
-  gwi_func_ini(gwi, "int", "nl", file_nl);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "open", file_open);
+  gwi_func_ini(gwi, "int", "nl");
+  GWI_BB(gwi_func_end(gwi, file_nl, ae_flag_none))
+  gwi_func_ini(gwi, "int", "open");
   gwi_func_arg(gwi, "string", "filename");
   gwi_func_arg(gwi, "string", "mode");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "close", file_close);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "fileno", file_fileno);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "remove", file_remove);
+  GWI_BB(gwi_func_end(gwi, file_open, ae_flag_none))
+  gwi_func_ini(gwi, "int", "close");
+  GWI_BB(gwi_func_end(gwi, file_close, ae_flag_none))
+  gwi_func_ini(gwi, "int", "fileno");
+  GWI_BB(gwi_func_end(gwi, file_fileno, ae_flag_none))
+  gwi_func_ini(gwi, "int", "remove");
   gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
-  gwi_func_ini(gwi, "string[]", "list", file_list);
+  GWI_BB(gwi_func_end(gwi, file_remove, ae_flag_static))
+  gwi_func_ini(gwi, "string[]", "list");
   gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, file_list, ae_flag_static))
 
   GWI_BB(gwi_class_end(gwi))
 
@@ -238,13 +234,16 @@ GWION_IMPORT(fileio) {
   GWI_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
   GWI_BB(gwi_oper_end(gwi, "=>", file_to_float))
 
-  GWI_BB(gwi_class_ini(gwi,  t_cout, NULL, static_fileio_dtor))
+  const Type t_cout = gwi_class_ini(gwi, "@Cout", "FileIo");
+  gwi_class_xtor(gwi,  NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi,  t_cerr, NULL, static_fileio_dtor))
+  const Type t_cerr = gwi_class_ini(gwi, "@Cerr", "FileIo");
+  gwi_class_xtor(gwi,  NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi,  t_cin, NULL, static_fileio_dtor))
+  const Type t_cin = gwi_class_ini(gwi, "@Cin", "FileIo");
+  gwi_class_xtor(gwi, NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 
   const M_Object gw_cin = new_object(gwi->gwion->mp, NULL, t_cin);

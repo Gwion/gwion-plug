@@ -96,25 +96,25 @@ static MFUN(sinosc_set_amp) {
 }
 
 ANN static m_bool import_sinosc(const Gwi gwi) {
-  const Type t_sinosc = gwi_mk_type(gwi, "SinOsc", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi,  t_sinosc, sinosc_ctor, sinosc_dtor))
-  gwi_func_ini(gwi, "void", "init", sinosc_size);
+  GWI_BB(gwi_class_ini(gwi, "SinOsc", "UGen"))
+  gwi_class_xtor(gwi, sinosc_ctor, sinosc_dtor);
+  gwi_func_ini(gwi, "void", "init");
   gwi_func_arg(gwi, "int", "size");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "init", sinosc_size_phase);
+  GWI_BB(gwi_func_end(gwi, sinosc_size, ae_flag_none))
+  gwi_func_ini(gwi, "void", "init");
   gwi_func_arg(gwi, "int", "size");
   gwi_func_arg(gwi, "float", "phase");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "freq", sinosc_get_freq);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "freq", sinosc_set_freq);
+  GWI_BB(gwi_func_end(gwi, sinosc_size_phase, ae_flag_none))
+  gwi_func_ini(gwi, "float", "freq");
+  GWI_BB(gwi_func_end(gwi, sinosc_get_freq, ae_flag_none))
+  gwi_func_ini(gwi, "float", "freq");
   gwi_func_arg(gwi, "float", "freq");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "amp", sinosc_get_amp);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "amp", sinosc_set_amp);
+  GWI_BB(gwi_func_end(gwi, sinosc_set_freq, ae_flag_none))
+  gwi_func_ini(gwi, "float", "amp");
+  GWI_BB(gwi_func_end(gwi, sinosc_get_amp, ae_flag_none))
+  gwi_func_ini(gwi, "float", "amp");
   gwi_func_arg(gwi, "float", "amp");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, sinosc_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }
@@ -144,13 +144,13 @@ static MFUN(gain_set_gain) {
 }
 
 ANN static m_bool import_gain(const Gwi gwi) {
-  const Type t_gain = gwi_mk_type(gwi, "Gain", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi,  t_gain, gain_ctor, basic_dtor))
-  gwi_func_ini(gwi, "float", "gain", gain_get_gain);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "gain", gain_set_gain);
+  GWI_BB(gwi_class_ini(gwi, "Gain", "UGen"))
+  gwi_class_xtor(gwi, gain_ctor, basic_dtor);
+  gwi_func_ini(gwi, "float", "gain");
+  GWI_BB(gwi_func_end(gwi, gain_get_gain, ae_flag_none))
+  gwi_func_ini(gwi, "float", "gain");
   gwi_func_arg(gwi, "float", "arg0");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, gain_set_gain, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }
@@ -175,13 +175,13 @@ static MFUN(impulse_set_next) {
 }
 
 ANN static m_bool import_impulse(const Gwi gwi) {
-  const Type t_impulse = gwi_mk_type(gwi, "Impulse", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi,  t_impulse, impulse_ctor, basic_dtor))
-  gwi_func_ini(gwi, "float", "next", impulse_get_next);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "next", impulse_set_next);
+  GWI_BB(gwi_class_ini(gwi, "Impulse", "UGen"))
+  gwi_class_xtor(gwi, impulse_ctor, basic_dtor);
+  gwi_func_ini(gwi, "float", "next");
+  GWI_BB(gwi_func_end(gwi, impulse_get_next, ae_flag_none))
+  gwi_func_ini(gwi, "float", "next");
   gwi_func_arg(gwi, "float", "arg0");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, impulse_set_next, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }
@@ -197,8 +197,8 @@ static CTOR(fullrect_ctor) {
 }
 
 ANN static m_bool import_fullrect(const Gwi gwi) {
-  const Type t_fullrect = gwi_mk_type(gwi, "FullRect", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi,  t_fullrect, fullrect_ctor, basic_dtor))
+  GWI_BB(gwi_class_ini(gwi, "FullRect", "UGen"))
+  gwi_class_xtor(gwi, fullrect_ctor, basic_dtor);
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }
@@ -217,8 +217,8 @@ static CTOR(halfrect_ctor) {
 }
 
 ANN static m_bool import_halfrect(const Gwi gwi) {
-  const Type t_halfrect = gwi_mk_type(gwi, "HalfRect", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi,  t_halfrect, halfrect_ctor, basic_dtor))
+  GWI_BB(gwi_class_ini(gwi,  "HalfRect", "UGen"))
+  gwi_class_xtor(gwi, halfrect_ctor, basic_dtor);
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }
@@ -242,13 +242,13 @@ static MFUN(step_set_next) {
 }
 
 ANN static m_bool import_step(const Gwi gwi) {
-  const Type t_step = gwi_mk_type(gwi, "Step", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi,  t_step, step_ctor, basic_dtor))
-  gwi_func_ini(gwi, "float", "next", step_get_next);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "float", "next", step_set_next);
+  GWI_BB(gwi_class_ini(gwi, "Step", "UGen"))
+  gwi_class_xtor(gwi, step_ctor, basic_dtor);
+  gwi_func_ini(gwi, "float", "next");
+  GWI_BB(gwi_func_end(gwi, step_get_next, ae_flag_none))
+  gwi_func_ini(gwi, "float", "next");
   gwi_func_arg(gwi, "float", "arg0");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, step_set_next, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }
@@ -267,8 +267,8 @@ static CTOR(zerox_ctor) {
 }
 
 ANN static m_bool import_zerox(const Gwi gwi) {
-  const Type t_zerox = gwi_mk_type(gwi, "ZeroX", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi, t_zerox, zerox_ctor, basic_dtor))
+  GWI_BB(gwi_class_ini(gwi, "ZeroX", "UGen"))
+  gwi_class_xtor(gwi, zerox_ctor, basic_dtor);
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }

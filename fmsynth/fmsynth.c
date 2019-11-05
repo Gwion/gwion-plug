@@ -194,8 +194,8 @@ GWION_IMPORT(fmsynth) {
   ALLOC_PTR(gwi->gwion->mp, unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
   Type t_fmsynth;
-  GWI_BB((t_fmsynth = gwi_mk_type(gwi, "FMSynth", SZ_INT, "UGen")))
-  GWI_BB(gwi_class_ini(gwi, t_fmsynth, ctor, dtor))
+  GWI_BB(gwi_class_ini(gwi, "FMsynth", "UGen"))
+  gwi_class_xtor(gwi, ctor, dtor);
   gwi_item_ini(gwi,"int", "&synth");
   o_fmsynth_data = gwi_item_end(gwi, ae_flag_member, NULL);
   GWI_BB(o_fmsynth_data)
@@ -300,44 +300,44 @@ GWION_IMPORT(fmsynth) {
   o_unknown = gwi_item_end(gwi, ae_flag_static | ae_flag_const, unknown);
   GWI_BB(o_unknown)
  
-  gwi_func_ini(gwi, "void", "init", init);
+  gwi_func_ini(gwi, "void", "init");
     gwi_func_arg(gwi, "int", "plyphony");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "parameter", parameter);
+  GWI_BB(gwi_func_end(gwi, init, ae_flag_none))
+  gwi_func_ini(gwi, "void", "parameter");
     gwi_func_arg(gwi, "int", "parameter");
     gwi_func_arg(gwi, "int", "operator_index");
     gwi_func_arg(gwi, "float", "value");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "parameter", global_parameter);
+  GWI_BB(gwi_func_end(gwi, parameter, ae_flag_none))
+  gwi_func_ini(gwi, "void", "parameter");
     gwi_func_arg(gwi, "int", "parameter");
     gwi_func_arg(gwi, "float", "value");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "noteon", noteon);
+  GWI_BB(gwi_func_end(gwi, global_parameter, ae_flag_none))
+  gwi_func_ini(gwi, "void", "noteon");
     gwi_func_arg(gwi, "int", "note");
     gwi_func_arg(gwi, "int", "velocity");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "reset", synth_reset);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "noteoff", noteoff);
+  GWI_BB(gwi_func_end(gwi, noteon, ae_flag_none))
+  gwi_func_ini(gwi, "void", "reset");
+  GWI_BB(gwi_func_end(gwi, synth_reset, ae_flag_none))
+  gwi_func_ini(gwi, "void", "noteoff");
     gwi_func_arg(gwi, "int", "note");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "sustain", sustain);
+  GWI_BB(gwi_func_end(gwi, noteoff, ae_flag_none))
+  gwi_func_ini(gwi, "void", "sustain");
     gwi_func_arg(gwi, "int", "enable");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "wheel", wheel);
+  GWI_BB(gwi_func_end(gwi, sustain, ae_flag_none))
+  gwi_func_ini(gwi, "void", "wheel");
     gwi_func_arg(gwi, "int", "value");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "bend", bend);
+  GWI_BB(gwi_func_end(gwi, wheel, ae_flag_none))
+  gwi_func_ini(gwi, "void", "bend");
     gwi_func_arg(gwi, "int", "value");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "void", "release", release_all);
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "load", load);
+  GWI_BB(gwi_func_end(gwi, bend, ae_flag_none))
+  gwi_func_ini(gwi, "void", "release");
+  GWI_BB(gwi_func_end(gwi, release_all, ae_flag_none))
+  gwi_func_ini(gwi, "int", "load");
     gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, 0))
-  gwi_func_ini(gwi, "int", "save", save);
+  GWI_BB(gwi_func_end(gwi, load, ae_flag_none))
+  gwi_func_ini(gwi, "int", "save");
     gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, save, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

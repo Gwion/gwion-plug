@@ -41,12 +41,12 @@ static CTOR(map_ctor) {
   const Nspc curr = env->curr;
   const m_str key_name = get_type_name(info->t->name, 1);
   m_uint depth;
-  Type_Decl* key_decl = str2decl(env, key_name, &depth);
+  Type_Decl* key_decl = str2decl(env, key_name);
   const Type key_type = known_type(env, key_decl);
   free_type_decl(key_decl);
   info->key_size = key_type->size;
   const m_str val_name = get_type_name(info->t->name, 2);
-  Type_Decl* val_decl = str2decl(env, val_name, &depth);
+  Type_Decl* val_decl = str2decl(env, val_name);
   const Type val_type = known_type(env, val_decl);
   free_type_decl(val_decl);
   info->val_size = val_type->size;
@@ -111,7 +111,7 @@ GWION_IMPORT(map) {
   const Array_Sub array = new_array_sub(e, 0);
   td->array = array;
   CHECK_BB(gwi_class_ext(gwi, td))
-  CHECK_BB(gwi_item_ini(gwi, "int", "@map_info"))
+  CHECK_BB(gwi_item_ini(gwi, "@internal", "@map_info"))
   CHECK_BB(gwi_item_end(gwi, 0, NULL));
   CHECK_BB(gwi_func_ini(gwi, "B", "set", gw_map_set))
   CHECK_BB(gwi_func_arg(gwi, "A", "key"))

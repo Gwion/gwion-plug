@@ -50,16 +50,16 @@ static MFUN(gwpd_close) {
 }
 
 GWION_IMPORT(pd) {
-  const Type t_gwpd = gwi_mk_type(gwi, "PD", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi, t_gwpd, pd_ctor, pd_dtor))
-  GWI_BB(gwi_item_ini(gwi,"int",  "@file"))
+  GWI_BB(gwi_class_ini(gwi, "PD", "UGen"))
+  gwi_class_xtor(gwi, pd_ctor, pd_dtor);
+  GWI_BB(gwi_item_ini(gwi, "@internal", "@file"))
   GWI_BB((o_pd_file = gwi_item_end(gwi, ae_flag_member, NULL)))
-  GWI_BB((gwi_func_ini(gwi, "int", "open", gwpd_open)))
+  GWI_BB(gwi_func_ini(gwi, "int", "open"))
   GWI_BB(gwi_func_arg(gwi, "string", "basename"))
   GWI_BB(gwi_func_arg(gwi, "string", "dirname"))
-  GWI_OB(gwi_func_end(gwi, ae_flag_member))
-  GWI_BB(gwi_func_ini(gwi, "int", "close", gwpd_close))
-  GWI_OB(gwi_func_end(gwi, ae_flag_member))
+  GWI_OB(gwi_func_end(gwi, gwpd_open, ae_flag_member))
+  GWI_BB(gwi_func_ini(gwi, "int", "close"))
+  GWI_OB(gwi_func_end(gwi, gwpd_close, ae_flag_member))
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

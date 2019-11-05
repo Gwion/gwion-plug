@@ -117,30 +117,29 @@ static SFUN(gw_kmeans_refine) {
 }
 
 GWION_IMPORT(gwk) {
-  const Type t_k = gwi_mk_type(gwi, "K", 0, NULL );
-  GWI_BB(gwi_class_ini(gwi, t_k, NULL, NULL))
+  GWI_BB(gwi_class_ini(gwi, "K", NULL))
 
-  gwi_func_ini(gwi, "int[]", "nn", gw_knn);
+  gwi_func_ini(gwi, "int[]", "nn");
     gwi_func_arg(gwi, "float", "data[][]");
     gwi_func_arg(gwi, "int", "labels[]");
     gwi_func_arg(gwi, "float", "instances[][]");
     gwi_func_arg(gwi, "int", "k");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, gw_knn, ae_flag_static))
 
-  gwi_func_ini(gwi, "int[]", "means", gw_kmeans);
+  gwi_func_ini(gwi, "int[]", "means");
     gwi_func_arg(gwi, "float", "data[][]");
     gwi_func_arg(gwi, "float", "centroid[][]");
     gwi_func_arg(gwi, "int", "k");
     gwi_func_arg(gwi, "int", "initial_centroid");
     gwi_func_arg(gwi, "float", "theta");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, gw_kmeans, ae_flag_static))
   
-  gwi_func_ini(gwi, "int[]", "fine_means", gw_kmeans_refine);
+  gwi_func_ini(gwi, "int[]", "fine_means");
     gwi_func_arg(gwi, "float", "data[][]");
     gwi_func_arg(gwi, "int", "iter");
     gwi_func_arg(gwi, "int", "n_points");
     gwi_func_arg(gwi, "int", "k");
-  GWI_BB(gwi_func_end(gwi, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, gw_kmeans_refine, ae_flag_static))
   
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;

@@ -112,22 +112,22 @@ static MFUN(gw_lsys_get) {
 }
 
 GWION_IMPORT(lsys) {
-  const Type t_lsys = gwi_mk_type(gwi, "Lsys", SZ_INT, "UGen");
-  GWI_BB(gwi_class_ini(gwi, t_lsys, ctor, dtor))
+  GWI_BB(gwi_class_ini(gwi, "Lsys", NULL))
+  gwi_class_xtor(gwi, ctor, dtor);
 
-  GWI_BB(gwi_func_ini(gwi, "void", "parse", gw_lsys_parse))
+  GWI_BB(gwi_func_ini(gwi, "void", "parse"))
     GWI_BB(gwi_func_arg(gwi, "int",    "ord"))
     GWI_BB(gwi_func_arg(gwi, "string", "str"))
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_end(gwi, gw_lsys_parse, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "reset", gw_lsys_reset))
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "void", "reset"))
+  GWI_BB(gwi_func_end(gwi, gw_lsys_reset, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "size", gw_lsys_size))
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "size"))
+  GWI_BB(gwi_func_end(gwi, gw_lsys_size, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "get", gw_lsys_get))
-  GWI_BB(gwi_func_end(gwi, 0))
+  GWI_BB(gwi_func_ini(gwi, "string", "get"))
+  GWI_BB(gwi_func_end(gwi, gw_lsys_get, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

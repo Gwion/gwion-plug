@@ -1,0 +1,11 @@
+fun int sqr(int a) {
+  <(1, 2, 3) @=> auto @t;
+  int i;
+  while(i < a) {
+    <(t[1], t[2], t[0]) @=> t;
+    t[0] +=> i;
+  }
+  return i;
+}
+
+10000000 => sqr;
