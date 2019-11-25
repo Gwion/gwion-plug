@@ -1,9 +1,8 @@
 #include <portaudio.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
-#include "oo.h"
+#include "gwion_env.h"
 #include "vm.h"
-#include "type.h"
 #include "object.h"
 #include "ugen.h"
 #include "driver.h"

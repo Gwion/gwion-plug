@@ -107,7 +107,7 @@ GWION_IMPORT(map) {
   Type_List tl1  = new_type_list(td1, NULL);
   Type_List tl0  = new_type_list(td0, tl1);
   td->types = tl0;
-  const Exp e = new_exp_prim_int(0, 0);
+  const Exp e = new_prim_int(0, 0);
   const Array_Sub array = new_array_sub(e, 0);
   td->array = array;
   CHECK_BB(gwi_class_ext(gwi, td))

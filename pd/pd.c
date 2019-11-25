@@ -1,16 +1,13 @@
 #include <libpd/z_libpd.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
-#include "oo.h"
-#include "env.h"
+#include "gwion_env.h"
 #include "vm.h"
-#include "type.h"
 #include "gw_type.h"
 #include "instr.h"
 #include "object.h"
 #include "gwion.h"
 #include "plug.h"
-#include "value.h"
 #include "operator.h"
 #include "import.h"
 

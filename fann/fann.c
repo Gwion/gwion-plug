@@ -11,17 +11,14 @@
 
 #include "gwion_util.h"
 #include "gwion_ast.h"
-#include "oo.h"
-#include "env.h"
+#include "gwion_env.h"
 #include "vm.h"
-#include "type.h"
 #include "err_msg.h"
 #include "object.h"
 #include "array.h"
 #include "instr.h"
 #include "gwion.h"
 #include "plug.h"
-#include "value.h"
 #include "operator.h"
 #include "import.h"
 

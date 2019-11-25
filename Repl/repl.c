@@ -4,16 +4,11 @@
 #include <pthread.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
-#include "oo.h"
+#include "gwion_env.h"
 #include "vm.h"
-#include "env.h"
-#include "type.h"
-#include "value.h"
-#include "func.h"
 #include "instr.h"
 #include "object.h"
 #include "gwion.h"
-#include "value.h"
 #include "operator.h"
 #include "import.h"
 #include "traverse.h"
@@ -98,7 +93,7 @@ ANN static m_bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
 /*
   FILE* f = fmemopen(line, strlen(line), "r");
   const Gwion gwion = vm->gwion;
-  struct ScannerArg_ arg = { "repl", f, gwion->st };
+  struct AstGetter_ arg = { "repl", f, gwion->st };
   MUTEX_LOCK(gwion->data->mutex);
   DECL_OB(Ast, ast, = parse(&arg))
   gwion->env->name = "repl";

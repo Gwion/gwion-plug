@@ -296,21 +296,17 @@ print('#include <stdlib.h>\
 #include <soundpipe.h>\
 #include "gwion_util.h"\
 #include "gwion_ast.h"\
-#include "oo.h"\
-#include "env.h"\
+#include "gwion_env.h"\
 #include "vm.h"\
-#include "type.h"\
 #include "err_msg.h"\
 #include "instr.h"\
 #include "object.h"\
 #include "gwion.h"\
-#include "value.h"\
 #include "operator.h"\
 #include "import.h"\
 #include "ugen.h"\
 #include "gwi.h"\
-#include "array.h"\
-#include "func.h"')
+#include "array.h")
 
 --print("m_uint o_ftbl_data;")
 --print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data + o_ftbl_data)")
