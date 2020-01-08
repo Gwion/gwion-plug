@@ -1,6 +1,7 @@
 include ../config.mk
 NAME=lo
 #CFLAGS+=-I<more include>
-LDFLAGS+=-llo
+CFLAGS += -g -Og
+LDFLAGS += -llo -g
 include ../config_post.mk
 

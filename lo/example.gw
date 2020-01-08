@@ -1,0 +1,11 @@
+OscIn oin;
+<<< "Created OscIn Object ", oin >>>;
+
+7777 => oin.port;
+oin.add("/name", "s");
+
+oin.start();
+oin => now;
+oin.recv();
+<<< oin.get_s() >>>;
+oin.stop();
