@@ -2,5 +2,5 @@
 include ../config.mk
 NAME=Jack
 #CFLAGS+=-I<more include>
-#LDFLAGS+=-l<more LIBS>
+LDFLAGS+=-ljack
 include ../config_post.mk

@@ -231,15 +231,15 @@ GWION_IMPORT(fileio) {
   GWI_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
   GWI_BB(gwi_oper_end(gwi, "=>", file_to_float))
 
-  const Type t_cout = gwi_class_ini(gwi, "@Cout", "FileIo");
+  const Type t_cout = gwi_class_ini(gwi, "@Cout", "FileIO");
   gwi_class_xtor(gwi,  NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  const Type t_cerr = gwi_class_ini(gwi, "@Cerr", "FileIo");
+  const Type t_cerr = gwi_class_ini(gwi, "@Cerr", "FileIO");
   gwi_class_xtor(gwi,  NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  const Type t_cin = gwi_class_ini(gwi, "@Cin", "FileIo");
+  const Type t_cin = gwi_class_ini(gwi, "@Cin", "FileIO");
   gwi_class_xtor(gwi, NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 

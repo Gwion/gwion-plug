@@ -50,41 +50,63 @@ static int sp_alsa_init(Driver* di, const char* device,
   }
   if(!snd_pcm_hw_params_test_access(handle, params, SP_ALSA_ACCESS))
     snd_pcm_hw_params_set_access(handle, params, SP_ALSA_ACCESS);
+  else return GW_ERROR;
 
   if(!snd_pcm_hw_params_test_format(handle, params, ALSA_FORMAT))
     snd_pcm_hw_params_set_format(handle, params, ALSA_FORMAT);
+  else return GW_ERROR;
 
   if(!snd_pcm_hw_params_test_rate(handle, params, di->si->sr, dir))
     snd_pcm_hw_params_set_rate_near(handle, params, &di->si->sr, &dir);
+  else return GW_ERROR;
 
   if(!snd_pcm_hw_params_test_channels(handle, params, (uint)info->chan))
     snd_pcm_hw_params_set_channels(handle, params, (uint)info->chan);
   else return GW_ERROR;
 
-  if(snd_pcm_hw_params_set_period_size_near(handle, params, &info->bufsize, &dir))
-    return GW_ERROR;
   if(snd_pcm_hw_params_set_periods_near(handle, params, &info->bufnum, &dir))
     return GW_ERROR;
-  if(snd_pcm_hw_params(handle, params))
+
+  if(snd_pcm_hw_params_set_period_size_near(handle, params, &info->bufsize, &dir))
+    return GW_ERROR;
+  if(snd_pcm_hw_params(handle, params) < 0)
     return GW_ERROR;
 
-  snd_pcm_hw_params_get_rate_max(params, &di->si->sr, &dir);
-  snd_pcm_hw_params_set_rate_near(handle, params, &di->si->sr, &dir);
+//  snd_pcm_hw_params_get_rate_max(params, &di->si->sr, &dir);
+//  snd_pcm_hw_params_set_rate_near(handle, params, &di->si->sr, &dir);
+//  snd_pcm_prepare(handle); // new
   info->handle = handle;
   return GW_OK;
 }
 
 static void alsa_run_init(Driver* d) {
   struct AlsaInfo* info = (struct AlsaInfo*)d->driver->data;
+  snd_pcm_prepare(info->pcm_out); // new
   snd_pcm_hwsync(info->pcm_out);
+  snd_pcm_prepare(info->pcm_out); // new
   snd_pcm_start(info->pcm_out);
+  snd_pcm_prepare(info->pcm_out); // new
   snd_pcm_hwsync(info->pcm_in);
   snd_pcm_start(info->pcm_in);
 }
 
 static DRVINI(alsa_ini) {
+{
+  puts(di->si->arg);
+  const Vector v = split_args(vm->gwion->mp, di->si->arg);
+printf("%s\n", 
+get_arg(vm->gwion->mp, "test", v));
+  for(m_uint i = 0; i < vector_size(v); ++i)
+    puts((m_str)vector_at(v, i));
+
+
+}
+
   struct AlsaInfo* info = (struct AlsaInfo*)xcalloc(1, sizeof(struct AlsaInfo));
+info->bufnum = 3;
+info->bufsize = 512;
 di->si->arg = "default:CARD=CODEC";
+//di->si->arg = "default";
 info->chan = di->si->out;
   di->driver->data = info;
   if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_PLAYBACK, 0) < 0) {
@@ -94,7 +116,8 @@ info->chan = di->si->out;
   info->pcm_out = info->handle;
   di->si->out = info->chan;
 info->chan = di->si->in;
-  if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_CAPTURE, SND_PCM_ASYNC |
+//  if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_CAPTURE, SND_PCM_ASYNC |
+  if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_CAPTURE, 0 |
       SND_PCM_NONBLOCK) < 0) {
     gw_err("problem with capture");
     return GW_ERROR;
@@ -168,6 +191,9 @@ static DRVRUN(alsa_run) {
   } else {
     info->in_bufi  = (void*)xcalloc(di->si->in * info->bufsize, SZ_FLOAT);
     info->out_bufi = (void*)xcalloc(di->si->out * info->bufsize, SZ_FLOAT);
+      snd_pcm_prepare(info->pcm_out);
+    snd_pcm_writen(info->pcm_out, info->_out_buf, info->bufsize);
+//      snd_pcm_prepare(info->pcm_out);
     alsa_run_interleaved(vm, di);
   }
 }
