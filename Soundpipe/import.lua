@@ -306,7 +306,7 @@ print('#include <stdlib.h>\
 #include "import.h"\
 #include "ugen.h"\
 #include "gwi.h"\
-#include "array.h")
+#include "array.h"')
 
 --print("m_uint o_ftbl_data;")
 --print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data + o_ftbl_data)")
@@ -371,7 +371,7 @@ for n in ipairs(a) do
   local object = sptbl[mod_name]
   if not string.match(object.modtype, "gen") and not string.match(mod_name, "foo")then
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
-    print("  CHECK_BB(gwi_class_ini(gwi, \""..mod_name.."\", \"UGen\"))")
+    print("  CHECK_BB(gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"))")
     print("  gwi_class_xtor(gwi, "..mod_name.."_ctor, "..mod_name.."_dtor);")
     local nmandatory = 0
     local tbl = object.params.mandatory
