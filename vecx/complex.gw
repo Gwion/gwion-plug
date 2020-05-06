@@ -1,0 +1,22 @@
+complex a, b;
+a;
+a.re;
+a.im;
+a + b;
+
+<<<a - b>>>;
+a * b;
+a / b;
+a => b;
+a +=> b;
+a -=> b;
+a *=> b;
+a /=> b;
+
+<<<"end">>>;
+12 => a.re;
+1.4 => a.im;
+<<<a.re>>>;
+<<<a.im>>>;
+
+complex(1);

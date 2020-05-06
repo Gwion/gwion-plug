@@ -81,7 +81,7 @@ static SFUN(machine_pass) {
 }
 
 GWION_IMPORT(machine) {
-  GWI_BB(gwi_class_spe(gwi, "Machine", 0))
+  GWI_BB(gwi_struct_ini(gwi, "Machine"))
   gwi_func_ini(gwi, "void",  "add");
   gwi_func_arg(gwi,       "string",  "filename");
   GWI_BB(gwi_func_end(gwi, machine_add, ae_flag_static))

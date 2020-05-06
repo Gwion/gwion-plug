@@ -3,7 +3,6 @@
 #include "gwion_ast.h"
 #include "gwion_env.h"
 #include "vm.h"
-#include "gw_type.h"
 #include "instr.h"
 #include "object.h"
 #include "gwion.h"

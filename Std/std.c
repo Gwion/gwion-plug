@@ -109,26 +109,6 @@ static SFUN(std_setenv) {
   *(m_uint*)RETURN = setenv(key, val, 1);
 }
 
-static SFUN(std_atoi) {
-  GETSTRING(val, 0)
-  *(m_uint*)RETURN = strtol(val, NULL, 10);
-}
-
-static SFUN(std_atof) {
-  GETSTRING(val, 0)
-  *(m_float*)RETURN = atof(val);
-}
-#define describe_xtoa(name, type, format)    \
-static SFUN(std_##name##toa) {               \
-  char c[1024];                              \
-  const type value = *(type*)MEM(0);         \
-  sprintf(c, format, value);                 \
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, c); \
-}
-describe_xtoa(i, m_int, "%"INT_F)
-describe_xtoa(c, char, "%c")
-describe_xtoa(f, m_float, "%f")
-
 #define pow10(a) pow(10.0, (a) / 20.0)
 #define std(name, func)\
 static SFUN(std_##name) {\
@@ -149,7 +129,7 @@ std(lintodb, 20.0 * log10)
   GWI_BB(gwi_func_end(gwi, std_##name  , ae_flag_static)) \
 
 GWION_IMPORT(std) {
-  GWI_BB(gwi_class_spe(gwi, "Std", 0))
+  GWI_BB(gwi_struct_ini(gwi, "Std"))
 
   gwi_func_ini(gwi, "int", "clamp");
   gwi_func_arg(gwi, "int", "value");
@@ -178,11 +158,6 @@ GWION_IMPORT(std) {
 
   import_stdx(system , int,    string)
   import_stdx(getenv , string, string)
-  import_stdx(atoi   , int,    string)
-  import_stdx(atof   , float,  string)
-  import_stdx(itoa   , string, int)
-  import_stdx(ctoa   , string, int)
-  import_stdx(ftoa   , string, float)
   import_stdx(mtof   , float,  float)
   import_stdx(ftom   , float,  float)
   import_stdx(powtodb, float,  float)

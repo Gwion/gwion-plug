@@ -1,0 +1,7 @@
+#! [contains] Tom
+fun void test(<~string~>Tuple t) {
+  <<< t[0] >>>;
+}
+
+Tuple( "Tom", 21) => test;
+#!<("Tom") => test;

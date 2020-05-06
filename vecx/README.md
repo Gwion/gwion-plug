@@ -1,12 +1,12 @@
-# String
+# vecx
   a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
 ## Description
-use [String](https://github.com/.../String)
+use [vecx](https://github.com/.../vecx)
 ## Configuration
 check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
 ## Building
-ensure [String](https://github.com/.../String) is installed
+ensure [vecx](https://github.com/.../vecx) is installed
 ```
 make
 # optionnal

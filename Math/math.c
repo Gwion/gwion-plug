@@ -114,7 +114,7 @@ math2(max)
   GWI_BB(gwi_func_end(gwi, math_##func , ae_flag_static))    \
 
 GWION_IMPORT(math) {
-  GWI_BB(gwi_class_spe(gwi, "Math", 0))
+  GWI_BB(gwi_struct_ini(gwi, "Math"))
 
   gwi_func_ini(gwi, "int", "abs");
   gwi_func_arg(gwi, "int", "value");

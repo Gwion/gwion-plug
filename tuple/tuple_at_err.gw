@@ -1,0 +1,4 @@
+Tuple("Tom", 6) @=> 
+<~float, int~>Tuple ref tup;
+<<< typeof(tup) >>>;
+<<< tup >>>;
