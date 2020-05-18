@@ -234,7 +234,7 @@ describe_vec(Mul, *)
 describe_vec(Div, /)
 
 static MFUN(vec3_set) {
-  m_vec3* v =  (m_vec3*)MEM(0);
+  m_vec3* v =  *(m_vec3**)MEM(0);
   v->x = *(m_float*)MEM(SZ_INT);
   v->y = *(m_float*)MEM(SZ_INT + SZ_FLOAT);
   v->z = *(m_float*)MEM(SZ_INT + SZ_FLOAT * 2);
