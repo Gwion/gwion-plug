@@ -116,11 +116,11 @@ polar_def2_r(Mul, *, +)
 polar_def2_r(Div, /, -)
 
 static GACK(gack_complex) {
-  INTERP_PRINTF("#(%.4f, %.4f)", *(m_float*)VALUE, *(m_float*)(VALUE + SZ_FLOAT));
+  INTERP_PRINTF("complex(%.4f, %.4f)", *(m_float*)VALUE, *(m_float*)(VALUE + SZ_FLOAT));
 }
 
 static GACK(gack_polar) {
-  INTERP_PRINTF("%%(%4f, %.4f*pi)", *(m_float*)VALUE, *(m_float*)(VALUE + SZ_FLOAT) / M_PI);
+  INTERP_PRINTF("polar(%4f, %.4f*pi)", *(m_float*)VALUE, *(m_float*)(VALUE + SZ_FLOAT) / M_PI);
 }
 
 EQUALITY_OPER(complex, SZ_COMPLEX)
