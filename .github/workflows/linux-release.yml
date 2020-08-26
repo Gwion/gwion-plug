@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: make
       env:
-        BASE_DIR: ./gwion
+        BASEDIR: ./gwion
         USE_LTO: 1 
 
     - name: Create Release                                                                                                                                                                
