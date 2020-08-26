@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: make
       env:
-        CFLAGS: -Igwion/util/include -Igwion/ast/include -Igwion/include
+        BASE_DIR: .
         USE_LTO: 1 
 
     - name: Create Release                                                                                                                                                                
