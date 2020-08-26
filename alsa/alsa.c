@@ -94,8 +94,8 @@ static DRVINI(alsa_ini) {
 {
   puts(di->si->arg);
   const Vector v = split_args(vm->gwion->mp, di->si->arg);
-printf("%s\n", 
-get_arg(vm->gwion->mp, "test", v));
+//printf("%s\n", 
+//get_arg(vm->gwion->mp, "test", v));
   for(m_uint i = 0; i < vector_size(v); ++i)
     puts((m_str)vector_at(v, i));
 

@@ -298,7 +298,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   CHECK_BO(scan0_class_def(env, cdef))
   SET_FLAG(cdef->base.type, abstract);
 //  cdef->base.type->e->tuple->list = tlbase;
-  CHECK_BO(traverse_cdef(env, cdef))
+  CHECK_BO(ensure_traverse(env, cdef->base.type))
   nspc_add_type_front(env->curr, sym, cdef->base.type);
   return cdef->base.type;
 }

@@ -17,44 +17,30 @@
 #define FILENAME "gwion"
 
 DRVINI(sndfile_ini) {
-  SNDFILE** sf = (SNDFILE**)xcalloc(di->si->out, sizeof(void*));
-  char tmp[140];
-  SF_INFO info;
-  info.samplerate = di->si->sr;
-  info.channels = 1;
-  info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
-  m_uint chan;
-  if(di->si->out == 1) {
-    sprintf(tmp, "%s.wav", FILENAME);
-    sf[0] = sf_open(tmp, SFM_WRITE, &info);
-  } else for(chan = 0; chan < di->si->out; chan++) {
-      sprintf(tmp, "%s_%02" UINT_F ".wav", FILENAME, chan);
-      sf[chan] = sf_open(tmp, SFM_WRITE, &info);
-  }
-  di->driver->data = sf;
+  char tmp[strlen(FILENAME) + 5];
+  SF_INFO info = { .samplerate= di->si->sr, .channels=di->si->out, .format=SF_FORMAT_WAV | SF_FORMAT_PCM_24 };
+  sprintf(tmp, "%s.wav", FILENAME);
+  di->driver->data = sf_open(tmp, SFM_WRITE, &info);
   return GW_OK;
 }
 
 DRVRUN(sndfile_run) {
-  SNDFILE** sf = (SNDFILE**)di->driver->data;
-  m_float buf[di->si->out][BUFSIZE];
+  SNDFILE* sf = (SNDFILE*)di->driver->data;
+  m_float buf[di->si->out * BUFSIZE];
   while(vm->bbq->is_running) {
-    for(m_uint i = 0; i < 256; i++) {
+    for(m_uint i = 0; i < BUFSIZE; ++i) {
       di->run(vm);
-      for(m_uint chan = 0; chan < di->si->out; chan++)
-        buf[chan][i] = vm->bbq->out[chan];
+      for(m_uint chan = 0; chan < di->si->out; ++chan)
+        buf[i + chan] = vm->bbq->out[chan];
       ++vm->bbq->pos;
     }
-    for(m_uint chan = 0; chan < di->si->out; chan++)
-      sf_write(sf[chan], (const m_float*)buf[chan], BUFSIZE);
+    sf_write(sf, (const m_float*)buf, di->si->out * BUFSIZE);
   }
 }
 
 DRVDEL(sndfile_del) {
-  SNDFILE** sf = (SNDFILE**)di->driver->data;
-  for(m_uint i = 0; i < di->si->out; i++)
-    sf_close(sf[i]);
-  free(sf);
+  SNDFILE* sf = (SNDFILE*)di->driver->data;
+  sf_close(sf);
 }
 
 GWMODSTR(sndfile)

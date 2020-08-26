@@ -116,11 +116,14 @@ polar_def2_r(Mul, *, +)
 polar_def2_r(Div, /, -)
 
 static GACK(gack_complex) {
-  INTERP_PRINTF("complex(%.4f, %.4f)", *(m_float*)VALUE, *(m_float*)(VALUE + SZ_FLOAT));
+  m_float *ptr = (m_float*)VALUE;
+printf("ptr %p\n", ptr);
+  INTERP_PRINTF("complex(%.4f, %.4f)", *ptr, *(ptr + 1));
 }
 
 static GACK(gack_polar) {
-  INTERP_PRINTF("polar(%4f, %.4f*pi)", *(m_float*)VALUE, *(m_float*)(VALUE + SZ_FLOAT) / M_PI);
+  m_float *ptr = (m_float**)VALUE;
+  INTERP_PRINTF("polar(%4f, %.4f*pi)", *ptr, *(ptr+1) / M_PI);
 }
 
 EQUALITY_OPER(complex, SZ_COMPLEX)
@@ -143,6 +146,19 @@ opem(polar, mod)
 
 OP_CHECK(opck_object_dot);
 */
+
+static CTOR(ctor) {
+  puts("lol");
+// set z
+printf("%p %p\n", o, *(m_bit*)shred->mem);
+m_float *ptr = (m_float*)o;
+  *(m_float*)(ptr) = 12;
+  *(m_float*)(ptr + 1) = 13;
+  *(m_float*)(ptr + 2) = 14;
+//  *(m_float*)(shred->mem) = 12;
+//  *(m_float*)(*(m_bit*)o + SZ_INT) = 12;
+}
+
 ANN static m_bool import_complex(const Gwi gwi) {
   const Type t_complex = gwi_struct_ini(gwi, "complex");
   GWI_BB(gwi_gack(gwi, t_complex, gack_complex))
@@ -354,7 +370,9 @@ static void vecx_base(const Gwi gwi) {
 }
 
 static GACK(gack_vec3) {
-  INTERP_PRINTF("Vec3(%.4f, %.4f, %.4f)", *(m_float*)VALUE, *(m_float*)(VALUE + SZ_FLOAT), *(m_float*)(VALUE + SZ_FLOAT*2));
+  m_float *ptr = (m_float**)VALUE;
+//  INTERP_PRINTF("lol");
+  INTERP_PRINTF("Vec3(%.4f, %.4f, %.4f)", *ptr, *(ptr + 1), *(ptr+2));
 }
 
 EQUALITY_OPER(vec3, SZ_VEC3);
@@ -392,6 +410,7 @@ OP_CHECK(opck_vecx_ctor) {
 
 ANN static m_bool import_vec3(const Gwi gwi) {
   const Type t_vec3 = gwi_struct_ini(gwi, "Vec3");
+gwi_class_xtor(gwi, ctor, NULL);
   GWI_BB(gwi_gack(gwi, t_vec3, gack_vec3))
   vecx_base(gwi);
   gwi_func_ini(gwi, "void", "set");

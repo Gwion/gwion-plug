@@ -2,5 +2,5 @@
 include ../config.mk
 NAME=Sndfile
 #CFLAGS+=-I<more include>
-#LDFLAGS+=-l<more LIBS>
+LDFLAGS+=-lsndfile
 include ../config_post.mk
