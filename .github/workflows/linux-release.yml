@@ -12,13 +12,13 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
+    - name: clone
+      uses: actions/checkout@v2
+
     - name: Gwion
       uses: fennecdjay/gwion-action@v1
       with:
         dir: gwion
-
-    - name: clone
-      uses: actions/checkout@v2
 
     - name: Build
       run: make
