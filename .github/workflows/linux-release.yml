@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: ls $BASEDIR && make
       env:
-        BASEDIR: ./gwion
+        BASEDIR: ../gwion
         USE_LTO: 1 
 
     - name: Create Release                                                                                                                                                                
