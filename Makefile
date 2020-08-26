@@ -2,6 +2,7 @@ DIR=$(wildcard */)
 
 all:
 	 +@ $(foreach dir,$(DIR), make -s            -C $(dir);)
+	exit 0
 
 install:
 	 +@ $(foreach dir, $(DIR), make -s install   -C $(dir);)
