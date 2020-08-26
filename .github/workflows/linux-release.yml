@@ -21,7 +21,7 @@ jobs:
         dir: gwion
 
     - name: Build
-      run: make
+      run: bash ./build.sh
       env:
         BASEDIR: ../gwion
         USE_LTO: 1 
