@@ -18,7 +18,8 @@
 
 DRVINI(sndfile_ini) {
   char tmp[strlen(FILENAME) + 5];
-  SF_INFO info = { .samplerate= di->si->sr, .channels=di->si->out, .format=SF_FORMAT_WAV | SF_FORMAT_PCM_24 };
+  SF_INFO info = { .samplerate= di->si->sr, .channels=di->si->out,
+    .frames=BUFSIZE*2, .format=(SF_FORMAT_WAV | SF_FORMAT_PCM_24) };
   sprintf(tmp, "%s.wav", FILENAME);
   di->driver->data = sf_open(tmp, SFM_WRITE, &info);
   return GW_OK;
@@ -31,10 +32,10 @@ DRVRUN(sndfile_run) {
     for(m_uint i = 0; i < BUFSIZE; ++i) {
       di->run(vm);
       for(m_uint chan = 0; chan < di->si->out; ++chan)
-        buf[i + chan] = vm->bbq->out[chan];
+        buf[2*i + chan] = vm->bbq->out[chan];
       ++vm->bbq->pos;
     }
-    sf_write(sf, (const m_float*)buf, di->si->out * BUFSIZE);
+    sf_write(sf, buf, di->si->out * BUFSIZE);
   }
 }
 
