@@ -40,10 +40,7 @@ jobs:
         prerelease: false       
 
     - name: Compress
-      run: |
-        for dir in */
-        do tar -czvf plug-linux.tar.gz $di/*.so
-        done
+      run: tar -czvf plug-linux.tar.gz */*.so
 
     - name: Upload Release Asset
       id: upload-release-asset 
