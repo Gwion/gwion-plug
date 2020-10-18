@@ -1,9 +1,9 @@
-float data[8][4];
-int labl[8];
-float instance[3][4];
-float cent[3][4];
-2 => int k;
-int i, j;
+var float data[8][4];
+var int labl[8];
+var float instance[3][4];
+var float cent[3][4];
+2 => var int k;
+var int i, j;
 for(0 => i; i < 8; i++) {
 	(0, 1) => Math.rand2 => labl[i];
 	for(0 => j; j < 4; j++)

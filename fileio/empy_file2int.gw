@@ -1,2 +1,2 @@
-FileIO file;
-file => int i;
+var FileIO file;
+file => var int i;

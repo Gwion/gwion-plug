@@ -1,7 +1,7 @@
-Evdev evdev;
-int i;
+var Evdev evdev;
+var int i;
 while(true) {
-  evdev.index(i) => int ret;
+  evdev.index(i) => var int ret;
   if(ret == -1)
     break;
   <<<i, " ", evdev.name()>>>;

@@ -1,5 +1,5 @@
-FFT fft;
-Centroid c;
+var FFT fft;
+var Centroid c;
 1024 => fft.init;
 fft => c.fft;
 c.compute();

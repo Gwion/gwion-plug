@@ -1,4 +1,4 @@
-Vec4 v, w;
+var Vec4 v, w;
 <<<v>>>;
 
 <<< v.x >>>;

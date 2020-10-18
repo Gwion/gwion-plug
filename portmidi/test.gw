@@ -1,4 +1,4 @@
-MidiIn min;
+var MidiIn min;
 min.open(3);
 min => now;
 while(min.recv()) {

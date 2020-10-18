@@ -1,4 +1,4 @@
-complex a, b;
+var complex a, b;
 a;
 a.re;
 a.im;

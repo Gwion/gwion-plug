@@ -1,13 +1,7 @@
-Noise n => Tone t => FFT fft => dac;
+var Noise n => var Tone t => var FFT fft => dac;
 
 20 => t.hp;
-Metro m => fft;
-//Step step ]=> fft;
-//step => dac;
-//1 => step.next;
-//Metro m => blackhole;
-//m ]=> fft => blackhole;
-//s ]=> fft => blackhole;
+var Metro m => fft;
 second => now;
 fft.compute();
 1024 => fft.init;
@@ -15,9 +9,9 @@ fft.compute();
 second => now;
 fft.compute();
 
-ANA ana;
+var ANA ana;
 
-FFT dummy;
+var FFT dummy;
 ana.compute();
 ana.fft();
 ana.fft(null);
@@ -26,21 +20,20 @@ ana.fft(fft);
 ana.fft(fft);
 ana.compute();
 
-Centroid centroid;
-Spread spread;
-Skewness skewness;
-Kurtosis kurtosis;
-RMS rms;
-Rolloff rolloff;
-Freq freq;
-ASC asc;
-ASS ass;
+var Centroid centroid;
+var Spread spread;
+var Skewness skewness;
+var Kurtosis kurtosis;
+var RMS rms;
+var Rolloff rolloff;
+var Freq freq;
+var ASC asc;
+var ASS ass;
 
-// rolloff specific
 <<< rolloff.percent() >>>;
 <<< rolloff.percent(80) >>>;
 
-FC fc;
+var FC fc;
 fc.compute();
 fc.rem(rms);
 fc.add(rms);

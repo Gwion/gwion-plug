@@ -1,11 +1,11 @@
-Evdev dev;
+var varEvdev dev;
 if(dev.index(12) < 0)
   me.exit();
-dev.name() @=> string @s;
+dev.name() @=> ref string s;
 <<<s>>>;
 while(true) {
   dev => now;
-  EvdevEv ev;
+  var EvdevEv ev;
   while(dev.recv(ev))
     <<<ev.type, " ", ev.code, " ", ev.value>>>;
 }

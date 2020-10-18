@@ -1,5 +1,4 @@
-FMSynth t => dac;
-//Fosc t => dac;
+var FMSynth t => dac;
 samp => now;
 <<<t.last()>>>;
 samp => now;

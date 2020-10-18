@@ -1,6 +1,6 @@
 polar(1);
-polar b;
-polar a;
+var polar b;
+var polar a;
 a.mod;
 a.phase;
 a;

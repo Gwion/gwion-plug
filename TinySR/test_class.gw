@@ -1,9 +1,8 @@
 "djay_model"
-//"ltc_speech_model"
     => const string model;
 -20 => const float seuil;
 class Speech extends TinySR {
-  private int try;
+  var private int try;
   if(me.args())
     Std.atoi(me.arg(0)) => try;
 
@@ -18,7 +17,7 @@ class Speech extends TinySR {
 
     if(try)
        <<<"(after ", try, " tries)">>>;
-    for(int i; i < loaded; ++i)
+    for(var int i; i < loaded; ++i)
       <<<"  * ", word(i)>>>;
     return loaded;
   }
@@ -26,7 +25,7 @@ class Speech extends TinySR {
   fun void check() {
     .5::second => now;
     if(state()) {
-      ++try => string n;
+      ++try => var string n;
       Machine.add(me.path() + ":" + n);
       me.exit();
     }
@@ -40,6 +39,6 @@ class Speech extends TinySR {
   }
 }
 
-adc => Dcblock dc => Speech sr => blackhole;
+adc => var Dcblock dc => var Speech sr => blackhole;
 model => sr.load;
 seuil => sr.loop;

@@ -1,4 +1,4 @@
-AbsInfo abs;
+var AbsInfo abs;
 <<<abs.value(), 12 => abs.value, abs.value()>>>;
 <<<abs.minimum(), 12 => abs.minimum, abs.minimum()>>>;
 <<<abs.maximum(), 12 => abs.maximum, abs.maximum()>>>;
@@ -7,10 +7,10 @@ AbsInfo abs;
 <<<abs.resolution(), 12 => abs.resolution, abs.resolution()>>>;
 
 
-Evdev dev;
+var Evdev dev;
 if(dev.index(12) < 0)
   me.exit();
-dev.get_absinfo(0) @=> AbsInfo ev_abs;
+dev.get_absinfo(0) @=> var AbsInfo ev_abs;
 <<<ev_abs>>>;
 if(ev_abs) {
   <<<ev_abs>>>;
@@ -20,9 +20,9 @@ if(ev_abs) {
 <<<"here">>>;
 
 
-dev.name() @=> string @s;
+dev.name() @=> ref string s;
 <<<s>>>;
 dev => now;
-EvdevEv ev;
+var EvdevEv ev;
 <<<dev.recv(ev)>>>;
 <<<ev.type, " ", ev.code, " ", ev.value>>>;

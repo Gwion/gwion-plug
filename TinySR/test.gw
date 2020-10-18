@@ -1,12 +1,11 @@
 "djay_model"
-//"ltc_speech_model"
     => const string model;
-int try;
+var int try;
 if(me.args())
   Std.atoi(me.arg(0)) => try;
 
 
-adc => Dcblock dc => TinySR sr => blackhole;
+adc => var Dcblock dc => var TinySR sr => blackhole;
 
 fun void load(string model) {
   model => sr.load => const int loaded;
@@ -18,14 +17,14 @@ fun void load(string model) {
   <<<"loaded ", loaded, " words from ", model, ".">>>;
   if(try)
      <<<"(after ", try, " tries)">>>;
-  for(int i; i < loaded; ++i)
+  for(var int i; i < loaded; ++i)
     <<<"  * ", sr.word(i)>>>;
 }
 
 fun void check() {
   .5::second => now;
   if(sr.state()) {
-    ++try => string n;
+    ++try => var string n;
     Machine.add(me.path() + ":" + n);
     me.exit();
   }

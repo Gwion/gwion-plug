@@ -1,2 +1,2 @@
-FC fc;
+var FC fc;
 fc.compute();

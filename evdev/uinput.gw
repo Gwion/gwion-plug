@@ -1,5 +1,5 @@
-Uinput ui;
-Evdev  ev;
+var Uinput ui;
+var Evdev  ev;
 <<<ev.index(10)>>>;
 <<<ui.create(ev)>>>;
 <<< ui.fd(), " ", ui.syspath(), " ", ui.devnode() >>>;

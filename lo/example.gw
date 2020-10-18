@@ -1,4 +1,4 @@
-OscIn oin;
+var OscIn oin;
 <<< "Created OscIn Object ", oin >>>;
 
 7777 => oin.port;
