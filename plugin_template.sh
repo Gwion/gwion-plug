@@ -24,11 +24,11 @@ EOF
 
 cat << EOF > "$1/README.md"
 # $1
-  a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
+  a [Gwion](https://github.com/Gwion/Gwion) plugin.  
 ## Description
 use [$1](https://github.com/.../$1)
 ## Configuration
-check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)  
+check your [Gwion-plug](https://github.com/Gwion/gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
 ## Building
 ensure [$1](https://github.com/.../$1) is installed
