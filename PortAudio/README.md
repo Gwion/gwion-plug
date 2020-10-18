@@ -1,9 +1,9 @@
 # PortAudio
-  a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
+  a [Gwion](https://github.com/Gwion/Gwion) plugin.  
 ## Description
 use [PortAudio](https://github.com/.../PortAudio)
 ## Configuration
-check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)  
+check your [Gwion-plug](https://github.com/Gwion/Gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
 ## Building
 ensure [PortAudio](https://github.com/.../PortAudio) is installed

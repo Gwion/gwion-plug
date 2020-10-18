@@ -1,9 +1,9 @@
 # Jack
-  a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
+  a [Gwion](https://github.com/Gwion/Gwion) plugin.  
 ## Description
 use [Jack](https://github.com/.../Jack)
 ## Configuration
-check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)  
+check your [Gwion-plug](https://github.com/Gwion/Gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
 ## Building
 ensure [Jack](https://github.com/.../Jack) is installed

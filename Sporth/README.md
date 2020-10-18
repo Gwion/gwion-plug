@@ -1,9 +1,9 @@
 # Sporth
-  a [Gwion](https://github.com/fennecdjay/Gwion) plugin.  
+  a [Gwion](https://github.com/Gwion/Gwion) plugin.  
 ## Description
 use [Sporth](https://github.com/.../Sporth)
 ## Configuration
-check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)  
+check your [Gwion-plug](https://github.com/Gwion/Gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
 ## Building
 ensure [Sporth](https://github.com/.../Sporth) is installed

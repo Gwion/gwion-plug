@@ -1,9 +1,9 @@
 #LinuSampler#
-  a [Gwion](https://github.com/fennecdjay/Gwion) plugin.
+  a [Gwion](https://github.com/Gwion/Gwion) plugin.
 ##description##
 use [linuxsampler](https://linuxsampler.org)
 ##configuration##
-check your [Gwion-plug](https://github.com/fennecdjay/Gwion-plug) configuration. (e.g. edit config.mk)
+check your [Gwion-plug](https://github.com/Gwion/Gwion-plug) configuration. (e.g. edit config.mk)
 edit Makefile
 ##building##
 ensure [linuxsampler](https://linuxsampler.org) is installed
