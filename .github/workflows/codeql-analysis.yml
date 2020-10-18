@@ -36,10 +36,11 @@ jobs:
         # a pull request then we can checkout the head.
         repository: 'Gwion/Gwion'
         fetch-depth: 2
+        submodules: 'true'
 
-    # If this run was triggered by a pull request event, then checkout
     # the head of the pull request instead of the merge commit.
-    - run: git checkout HEAD^2
+    # first get into plug directory
+    - run: cd plug; git checkout HEAD^2
       if: ${{ github.event_name == 'pull_request' }}
 
     # Initializes the CodeQL tools for scanning.
@@ -55,15 +56,14 @@ jobs:
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
 
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
+    - name: Build Gwion
+      run: |
+        make
 
-    - run: |
-       git submoudule update --init util ast plug
-       make
-       cd plug
-       make
+    - name: Build plug
+      run: |
+        cd plug
+        make
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
