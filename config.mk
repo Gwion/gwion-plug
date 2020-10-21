@@ -10,10 +10,25 @@ OBJ      += $(CPP_SRC:.cpp=.o)
 CFLAGS    = -I${INC}
 CFLAGS   += -I.. -g
 LDFLAGS   = -shared -fPIC
-# -g
-
+AUTO_INSTALL_DEPS ?= 0
+# outdated
 ifeq ( $(shell (${GWION} -k 2>&1 | grep double)), 1)
 CFLAGS   += -DSPFLOAT=double
 else
 CFLAGS   += -DSPFLOAT=float
 endif
+
+%.checklib:
+	@echo "int main(){}" > tmp.c
+ifeq (${AUTO_INSTALL_DEPS}, 1)
+	@${CC} ${LDFLAGS} tmp.c 2>/dev/null || (rm tmp.c; ${MAKE} -s get-$*)
+else
+	@${CC} ${LDFLAGS} tmp.c 2>/dev/null || (rm tmp.c; ${MAKE} -s install-$*)
+endif
+	@rm -f tmp.c a.out
+
+install-%:
+	@$(info $* is not installed)
+	@$(info you can install it with: make get-$*)
+	@$(info or use your package manager to install it)
+	@false

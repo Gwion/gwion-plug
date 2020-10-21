@@ -1,6 +1,5 @@
-all: ${NAME}.so
-
 ${NAME}.so: ${OBJ}
+
 ifeq (${USE_LD}, 1)
 	${LD} $^ -o ${NAME}.so ${LDFLAGS}
 else
