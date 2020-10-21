@@ -1,10 +1,18 @@
-USE_LD=1
-include ../config.mk
 NAME=soundpipe
-#LDFLAGS+=-lsporth_dyn
+SOUNDPIPE_LIB := gwion-soundpipe/libsoundpipe.a
+
+include ../config.mk
+
+ifeq ($(wilcard ${SOUNDPIPE_LIB}), )
+LDFLAGS += -L$(shell dirname ${SOUNDPIPE_LIB})
+endif
+
 LDFLAGS+=-lsoundpipe
-#LDFLAGS+=/usr/lib/libsporth.a
+
+all: soundpipe.checklib ${NAME}.so
+
 include ../config_post.mk
 
-#sporth.so: ${OBJ}
-#	$(LD) -o $@ $(LDFLAGS) $^
+get-soundpipe:
+	git clone https://github.com/Gwion/gwion-soundpipe
+	cd gwion-soundpipe && ${MAKE}
