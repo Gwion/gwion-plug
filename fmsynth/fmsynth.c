@@ -191,7 +191,7 @@ GWION_IMPORT(fmsynth) {
   ALLOC_PTR(gwi->gwion->mp, unknown, m_uint, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
   Type t_fmsynth;
-  GWI_BB(gwi_class_ini(gwi, "FMsynth", "UGen"))
+  GWI_BB(gwi_class_ini(gwi, "FMSynth", "UGen"))
   gwi_class_xtor(gwi, ctor, dtor);
   gwi_item_ini(gwi,"int", "&synth");
   o_fmsynth_data = gwi_item_end(gwi, ae_flag_member, NULL);
