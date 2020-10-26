@@ -6,6 +6,7 @@ LDFLAGS+=-lsporth
 SPORTH_LIB := gwion-sporth/libsporth.a
 ifeq ($(wilcard ${SPORTH_LIB}), )
 LDFLAGS += -L$(shell dirname ${SPORTH_LIB})
+CFLAGS += -Igwion-sporth/h
 endif
 
 all: sporth.checklib ${NAME}.so
