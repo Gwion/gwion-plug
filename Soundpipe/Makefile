@@ -5,6 +5,7 @@ include ../config.mk
 
 ifeq ($(wilcard ${SOUNDPIPE_LIB}), )
 LDFLAGS += -L$(shell dirname ${SOUNDPIPE_LIB})
+CFLAGS += -Igwion-soundpipe/h
 endif
 
 LDFLAGS+=-lsoundpipe
