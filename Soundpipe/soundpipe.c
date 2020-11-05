@@ -16,12 +16,6 @@
 #define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)
 #define CHECK_SIZE(size)  if(size <= 0){fprintf(stderr, "'gen_ftbl' size argument must be more than 0");return;}
 
-/*static*/ sp_data* sp;
-__attribute__((destructor)) static void sp_end(void) {sp_destroy(&sp);}
-static DTOR(sp_dtor) {
-  sp_destroy(&sp);
-}
-
 static DTOR(ftbl_dtor) {
   if(FTBL(o))
     sp_ftbl_destroy(&FTBL(o));
@@ -40,7 +34,7 @@ static TICK(adsr_tick) {
 
 static CTOR(adsr_ctor) {
   GW_adsr* ug = (GW_adsr*)xcalloc(1, sizeof(GW_adsr));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_adsr_create(&ug->osc);
   sp_adsr_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -119,7 +113,7 @@ static TICK(allpass_tick) {
 
 static CTOR(allpass_ctor) {
   GW_allpass* ug = (GW_allpass*)xcalloc(1, sizeof(GW_allpass));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -174,7 +168,7 @@ static TICK(atone_tick) {
 
 static CTOR(atone_ctor) {
   GW_atone* ug = (GW_atone*)xcalloc(1, sizeof(GW_atone));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_atone_create(&ug->osc);
   sp_atone_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -212,7 +206,7 @@ static TICK(autowah_tick) {
 
 static CTOR(autowah_ctor) {
   GW_autowah* ug = (GW_autowah*)xcalloc(1, sizeof(GW_autowah));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_autowah_create(&ug->osc);
   sp_autowah_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -274,7 +268,7 @@ static TICK(bal_tick) {
 
 static CTOR(bal_ctor) {
   GW_bal* ug = (GW_bal*)xcalloc(1, sizeof(GW_bal));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_bal_create(&ug->osc);
   sp_bal_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
@@ -305,7 +299,7 @@ static TICK(bar_tick) {
 
 static CTOR(bar_ctor) {
   GW_bar* ug = (GW_bar*)xcalloc(1, sizeof(GW_bar));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -434,7 +428,7 @@ static TICK(biquad_tick) {
 
 static CTOR(biquad_ctor) {
   GW_biquad* ug = (GW_biquad*)xcalloc(1, sizeof(GW_biquad));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_biquad_create(&ug->osc);
   sp_biquad_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -532,7 +526,7 @@ static TICK(biscale_tick) {
 
 static CTOR(biscale_ctor) {
   GW_biscale* ug = (GW_biscale*)xcalloc(1, sizeof(GW_biscale));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_biscale_create(&ug->osc);
   sp_biscale_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -582,7 +576,7 @@ static TICK(bitcrush_tick) {
 
 static CTOR(bitcrush_ctor) {
   GW_bitcrush* ug = (GW_bitcrush*)xcalloc(1, sizeof(GW_bitcrush));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_bitcrush_create(&ug->osc);
   sp_bitcrush_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -632,7 +626,7 @@ static TICK(blsaw_tick) {
 
 static CTOR(blsaw_ctor) {
   GW_blsaw* ug = (GW_blsaw*)xcalloc(1, sizeof(GW_blsaw));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_blsaw_create(&ug->osc);
   sp_blsaw_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -682,7 +676,7 @@ static TICK(blsquare_tick) {
 
 static CTOR(blsquare_ctor) {
   GW_blsquare* ug = (GW_blsquare*)xcalloc(1, sizeof(GW_blsquare));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_blsquare_create(&ug->osc);
   sp_blsquare_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -744,7 +738,7 @@ static TICK(bltriangle_tick) {
 
 static CTOR(bltriangle_ctor) {
   GW_bltriangle* ug = (GW_bltriangle*)xcalloc(1, sizeof(GW_bltriangle));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_bltriangle_create(&ug->osc);
   sp_bltriangle_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -794,7 +788,7 @@ static TICK(brown_tick) {
 
 static CTOR(brown_ctor) {
   GW_brown* ug = (GW_brown*)xcalloc(1, sizeof(GW_brown));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_brown_create(&ug->osc);
   sp_brown_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -820,7 +814,7 @@ static TICK(butbp_tick) {
 
 static CTOR(butbp_ctor) {
   GW_butbp* ug = (GW_butbp*)xcalloc(1, sizeof(GW_butbp));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_butbp_create(&ug->osc);
   sp_butbp_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -870,7 +864,7 @@ static TICK(butbr_tick) {
 
 static CTOR(butbr_ctor) {
   GW_butbr* ug = (GW_butbr*)xcalloc(1, sizeof(GW_butbr));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_butbr_create(&ug->osc);
   sp_butbr_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -920,7 +914,7 @@ static TICK(buthp_tick) {
 
 static CTOR(buthp_ctor) {
   GW_buthp* ug = (GW_buthp*)xcalloc(1, sizeof(GW_buthp));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_buthp_create(&ug->osc);
   sp_buthp_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -958,7 +952,7 @@ static TICK(butlp_tick) {
 
 static CTOR(butlp_ctor) {
   GW_butlp* ug = (GW_butlp*)xcalloc(1, sizeof(GW_butlp));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_butlp_create(&ug->osc);
   sp_butlp_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -996,7 +990,7 @@ static TICK(clip_tick) {
 
 static CTOR(clip_ctor) {
   GW_clip* ug = (GW_clip*)xcalloc(1, sizeof(GW_clip));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_clip_create(&ug->osc);
   sp_clip_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1034,7 +1028,7 @@ static TICK(clock_tick) {
 
 static CTOR(clock_ctor) {
   GW_clock* ug = (GW_clock*)xcalloc(1, sizeof(GW_clock));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_clock_create(&ug->osc);
   sp_clock_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1089,7 +1083,7 @@ static TICK(comb_tick) {
 
 static CTOR(comb_ctor) {
   GW_comb* ug = (GW_comb*)xcalloc(1, sizeof(GW_comb));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1144,7 +1138,7 @@ static TICK(compressor_tick) {
 
 static CTOR(compressor_ctor) {
   GW_compressor* ug = (GW_compressor*)xcalloc(1, sizeof(GW_compressor));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_compressor_create(&ug->osc);
   sp_compressor_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1223,7 +1217,7 @@ static TICK(conv_tick) {
 
 static CTOR(conv_ctor) {
   GW_conv* ug = (GW_conv*)xcalloc(1, sizeof(GW_conv));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1270,7 +1264,7 @@ static TICK(count_tick) {
 
 static CTOR(count_ctor) {
   GW_count* ug = (GW_count*)xcalloc(1, sizeof(GW_count));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_count_create(&ug->osc);
   sp_count_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1320,7 +1314,7 @@ static TICK(crossfade_tick) {
 
 static CTOR(crossfade_ctor) {
   GW_crossfade* ug = (GW_crossfade*)xcalloc(1, sizeof(GW_crossfade));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_crossfade_create(&ug->osc);
   sp_crossfade_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
@@ -1358,7 +1352,7 @@ static TICK(dcblock_tick) {
 
 static CTOR(dcblock_ctor) {
   GW_dcblock* ug = (GW_dcblock*)xcalloc(1, sizeof(GW_dcblock));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_dcblock_create(&ug->osc);
   sp_dcblock_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1389,7 +1383,7 @@ static TICK(delay_tick) {
 
 static CTOR(delay_ctor) {
   GW_delay* ug = (GW_delay*)xcalloc(1, sizeof(GW_delay));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1444,7 +1438,7 @@ static TICK(diode_tick) {
 
 static CTOR(diode_ctor) {
   GW_diode* ug = (GW_diode*)xcalloc(1, sizeof(GW_diode));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_diode_create(&ug->osc);
   sp_diode_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1499,7 +1493,7 @@ static TICK(diskin_tick) {
 
 static CTOR(diskin_ctor) {
   GW_diskin* ug = (GW_diskin*)xcalloc(1, sizeof(GW_diskin));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1544,7 +1538,7 @@ static TICK(dist_tick) {
 
 static CTOR(dist_ctor) {
   GW_dist* ug = (GW_dist*)xcalloc(1, sizeof(GW_dist));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_dist_create(&ug->osc);
   sp_dist_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1618,7 +1612,7 @@ static TICK(dmetro_tick) {
 
 static CTOR(dmetro_ctor) {
   GW_dmetro* ug = (GW_dmetro*)xcalloc(1, sizeof(GW_dmetro));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_dmetro_create(&ug->osc);
   sp_dmetro_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1661,7 +1655,7 @@ static TICK(drip_tick) {
 
 static CTOR(drip_ctor) {
   GW_drip* ug = (GW_drip*)xcalloc(1, sizeof(GW_drip));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1793,7 +1787,7 @@ static TICK(dtrig_tick) {
 
 static CTOR(dtrig_ctor) {
   GW_dtrig* ug = (GW_dtrig*)xcalloc(1, sizeof(GW_dtrig));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1874,7 +1868,7 @@ static TICK(dust_tick) {
 
 static CTOR(dust_ctor) {
   GW_dust* ug = (GW_dust*)xcalloc(1, sizeof(GW_dust));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_dust_create(&ug->osc);
   sp_dust_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1936,7 +1930,7 @@ static TICK(eqfil_tick) {
 
 static CTOR(eqfil_ctor) {
   GW_eqfil* ug = (GW_eqfil*)xcalloc(1, sizeof(GW_eqfil));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_eqfil_create(&ug->osc);
   sp_eqfil_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1998,7 +1992,7 @@ static TICK(expon_tick) {
 
 static CTOR(expon_ctor) {
   GW_expon* ug = (GW_expon*)xcalloc(1, sizeof(GW_expon));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_expon_create(&ug->osc);
   sp_expon_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -2065,7 +2059,7 @@ static TICK(fof_tick) {
 
 static CTOR(fof_ctor) {
   GW_fof* ug = (GW_fof*)xcalloc(1, sizeof(GW_fof));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2214,7 +2208,7 @@ static TICK(fofilt_tick) {
 
 static CTOR(fofilt_ctor) {
   GW_fofilt* ug = (GW_fofilt*)xcalloc(1, sizeof(GW_fofilt));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_fofilt_create(&ug->osc);
   sp_fofilt_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -2281,7 +2275,7 @@ static TICK(fog_tick) {
 
 static CTOR(fog_ctor) {
   GW_fog* ug = (GW_fog*)xcalloc(1, sizeof(GW_fog));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2442,7 +2436,7 @@ static TICK(fold_tick) {
 
 static CTOR(fold_ctor) {
   GW_fold* ug = (GW_fold*)xcalloc(1, sizeof(GW_fold));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_fold_create(&ug->osc);
   sp_fold_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -2485,7 +2479,7 @@ static TICK(fosc_tick) {
 
 static CTOR(fosc_ctor) {
   GW_fosc* ug = (GW_fosc*)xcalloc(1, sizeof(GW_fosc));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2595,7 +2589,7 @@ static TICK(gbuzz_tick) {
 
 static CTOR(gbuzz_ctor) {
   GW_gbuzz* ug = (GW_gbuzz*)xcalloc(1, sizeof(GW_gbuzz));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2699,6 +2693,7 @@ static MFUN(ftbl_gen_composite) {
   m_str argstring = STRING(argstring_obj);
   release(argstring_obj, shred);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_composite(sp, ftbl, argstring);
   FTBL(o) = ftbl;
@@ -2714,6 +2709,7 @@ static MFUN(ftbl_gen_file) {
   m_str filename = STRING(filename_obj);
   release(filename_obj, shred);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_file(sp, ftbl, filename);
   FTBL(o) = ftbl;
@@ -2729,6 +2725,7 @@ static MFUN(ftbl_gen_gauss) {
   gw_offset +=SZ_FLOAT;
   m_int seed = *(m_int*)(shred->mem + gw_offset);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_gauss(sp, ftbl, scale, seed);
   FTBL(o) = ftbl;
@@ -2744,6 +2741,7 @@ static MFUN(ftbl_gen_line) {
   m_str argstring = STRING(argstring_obj);
   release(argstring_obj, shred);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_line(sp, ftbl, argstring);
   FTBL(o) = ftbl;
@@ -2763,6 +2761,7 @@ static MFUN(ftbl_gen_padsynth) {
   gw_offset +=SZ_FLOAT;
   m_float bw = *(m_float*)(shred->mem + gw_offset);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_padsynth(sp, ftbl, amps, f, bw);
   FTBL(o) = ftbl;
@@ -2778,6 +2777,7 @@ static MFUN(ftbl_gen_rand) {
   m_str argstring = STRING(argstring_obj);
   release(argstring_obj, shred);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_rand(sp, ftbl, argstring);
   FTBL(o) = ftbl;
@@ -2793,6 +2793,7 @@ static MFUN(ftbl_gen_scrambler) {
   sp_ftbl** dest = &FTBL(dest_obj);
   release(dest_obj, shred);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_scrambler(sp, ftbl, dest);
   FTBL(o) = ftbl;
@@ -2804,6 +2805,7 @@ static MFUN(ftbl_gen_sine) {
     sp_ftbl_destroy(&ftbl);
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_sine(sp, ftbl);
   FTBL(o) = ftbl;
@@ -2819,6 +2821,7 @@ static MFUN(ftbl_gen_sinesum) {
   m_str argstring = STRING(argstring_obj);
   release(argstring_obj, shred);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_sinesum(sp, ftbl, argstring);
   FTBL(o) = ftbl;
@@ -2830,6 +2833,7 @@ static MFUN(ftbl_gen_triangle) {
     sp_ftbl_destroy(&ftbl);
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_triangle(sp, ftbl);
   FTBL(o) = ftbl;
@@ -2845,6 +2849,7 @@ static MFUN(ftbl_gen_xline) {
   m_str argstring = STRING(argstring_obj);
   release(argstring_obj, shred);
   CHECK_SIZE(size);
+  sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
   sp_gen_xline(sp, ftbl, argstring);
   FTBL(o) = ftbl;
@@ -2863,7 +2868,7 @@ static TICK(hilbert_tick) {
 
 static CTOR(hilbert_ctor) {
   GW_hilbert* ug = (GW_hilbert*)xcalloc(1, sizeof(GW_hilbert));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_hilbert_create(&ug->osc);
   sp_hilbert_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
@@ -2889,7 +2894,7 @@ static TICK(in_tick) {
 
 static CTOR(in_ctor) {
   GW_in* ug = (GW_in*)xcalloc(1, sizeof(GW_in));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_in_create(&ug->osc);
   sp_in_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2920,7 +2925,7 @@ static TICK(incr_tick) {
 
 static CTOR(incr_ctor) {
   GW_incr* ug = (GW_incr*)xcalloc(1, sizeof(GW_incr));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -2999,7 +3004,7 @@ static TICK(jcrev_tick) {
 
 static CTOR(jcrev_ctor) {
   GW_jcrev* ug = (GW_jcrev*)xcalloc(1, sizeof(GW_jcrev));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_jcrev_create(&ug->osc);
   sp_jcrev_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3025,7 +3030,7 @@ static TICK(jitter_tick) {
 
 static CTOR(jitter_ctor) {
   GW_jitter* ug = (GW_jitter*)xcalloc(1, sizeof(GW_jitter));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_jitter_create(&ug->osc);
   sp_jitter_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3087,7 +3092,7 @@ static TICK(line_tick) {
 
 static CTOR(line_ctor) {
   GW_line* ug = (GW_line*)xcalloc(1, sizeof(GW_line));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_line_create(&ug->osc);
   sp_line_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3154,7 +3159,7 @@ static TICK(lpc_tick) {
 
 static CTOR(lpc_ctor) {
   GW_lpc* ug = (GW_lpc*)xcalloc(1, sizeof(GW_lpc));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3197,7 +3202,7 @@ static TICK(lpf18_tick) {
 
 static CTOR(lpf18_ctor) {
   GW_lpf18* ug = (GW_lpf18*)xcalloc(1, sizeof(GW_lpf18));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_lpf18_create(&ug->osc);
   sp_lpf18_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3259,7 +3264,7 @@ static TICK(maygate_tick) {
 
 static CTOR(maygate_ctor) {
   GW_maygate* ug = (GW_maygate*)xcalloc(1, sizeof(GW_maygate));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_maygate_create(&ug->osc);
   sp_maygate_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3309,7 +3314,7 @@ static TICK(metro_tick) {
 
 static CTOR(metro_ctor) {
   GW_metro* ug = (GW_metro*)xcalloc(1, sizeof(GW_metro));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_metro_create(&ug->osc);
   sp_metro_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3352,7 +3357,7 @@ static TICK(mincer_tick) {
 
 static CTOR(mincer_ctor) {
   GW_mincer* ug = (GW_mincer*)xcalloc(1, sizeof(GW_mincer));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3435,7 +3440,7 @@ static TICK(mode_tick) {
 
 static CTOR(mode_ctor) {
   GW_mode* ug = (GW_mode*)xcalloc(1, sizeof(GW_mode));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_mode_create(&ug->osc);
   sp_mode_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3485,7 +3490,7 @@ static TICK(moogladder_tick) {
 
 static CTOR(moogladder_ctor) {
   GW_moogladder* ug = (GW_moogladder*)xcalloc(1, sizeof(GW_moogladder));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_moogladder_create(&ug->osc);
   sp_moogladder_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3535,7 +3540,7 @@ static TICK(noise_tick) {
 
 static CTOR(noise_ctor) {
   GW_noise* ug = (GW_noise*)xcalloc(1, sizeof(GW_noise));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_noise_create(&ug->osc);
   sp_noise_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3578,7 +3583,7 @@ static TICK(nsmp_tick) {
 
 static CTOR(nsmp_ctor) {
   GW_nsmp* ug = (GW_nsmp*)xcalloc(1, sizeof(GW_nsmp));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3646,7 +3651,7 @@ static TICK(osc_tick) {
 
 static CTOR(osc_ctor) {
   GW_osc* ug = (GW_osc*)xcalloc(1, sizeof(GW_osc));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3724,7 +3729,7 @@ static TICK(oscmorph_tick) {
 
 static CTOR(oscmorph_ctor) {
   GW_oscmorph* ug = (GW_oscmorph*)xcalloc(1, sizeof(GW_oscmorph));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3820,7 +3825,7 @@ static TICK(pan2_tick) {
 
 static CTOR(pan2_ctor) {
   GW_pan2* ug = (GW_pan2*)xcalloc(1, sizeof(GW_pan2));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_pan2_create(&ug->osc);
   sp_pan2_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
@@ -3870,7 +3875,7 @@ static TICK(panst_tick) {
 
 static CTOR(panst_ctor) {
   GW_panst* ug = (GW_panst*)xcalloc(1, sizeof(GW_panst));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_panst_create(&ug->osc);
   sp_panst_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
@@ -3920,7 +3925,7 @@ static TICK(pareq_tick) {
 
 static CTOR(pareq_ctor) {
   GW_pareq* ug = (GW_pareq*)xcalloc(1, sizeof(GW_pareq));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_pareq_create(&ug->osc);
   sp_pareq_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3999,7 +4004,7 @@ static TICK(paulstretch_tick) {
 
 static CTOR(paulstretch_ctor) {
   GW_paulstretch* ug = (GW_paulstretch*)xcalloc(1, sizeof(GW_paulstretch));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4048,7 +4053,7 @@ static TICK(pdhalf_tick) {
 
 static CTOR(pdhalf_ctor) {
   GW_pdhalf* ug = (GW_pdhalf*)xcalloc(1, sizeof(GW_pdhalf));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_pdhalf_create(&ug->osc);
   sp_pdhalf_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -4086,7 +4091,7 @@ static TICK(peaklim_tick) {
 
 static CTOR(peaklim_ctor) {
   GW_peaklim* ug = (GW_peaklim*)xcalloc(1, sizeof(GW_peaklim));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_peaklim_create(&ug->osc);
   sp_peaklim_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -4148,7 +4153,7 @@ static TICK(phaser_tick) {
 
 static CTOR(phaser_ctor) {
   GW_phaser* ug = (GW_phaser*)xcalloc(1, sizeof(GW_phaser));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_phaser_create(&ug->osc);
   sp_phaser_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
@@ -4299,7 +4304,7 @@ static TICK(phasor_tick) {
 
 static CTOR(phasor_ctor) {
   GW_phasor* ug = (GW_phasor*)xcalloc(1, sizeof(GW_phasor));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4354,7 +4359,7 @@ static TICK(pinknoise_tick) {
 
 static CTOR(pinknoise_ctor) {
   GW_pinknoise* ug = (GW_pinknoise*)xcalloc(1, sizeof(GW_pinknoise));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_pinknoise_create(&ug->osc);
   sp_pinknoise_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4397,7 +4402,7 @@ static TICK(pitchamdf_tick) {
 
 static CTOR(pitchamdf_ctor) {
   GW_pitchamdf* ug = (GW_pitchamdf*)xcalloc(1, sizeof(GW_pitchamdf));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
@@ -4447,7 +4452,7 @@ static TICK(pluck_tick) {
 
 static CTOR(pluck_ctor) {
   GW_pluck* ug = (GW_pluck*)xcalloc(1, sizeof(GW_pluck));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -4519,7 +4524,7 @@ static TICK(port_tick) {
 
 static CTOR(port_ctor) {
   GW_port* ug = (GW_port*)xcalloc(1, sizeof(GW_port));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -4579,7 +4584,7 @@ static TICK(posc3_tick) {
 
 static CTOR(posc3_ctor) {
   GW_posc3* ug = (GW_posc3*)xcalloc(1, sizeof(GW_posc3));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4648,7 +4653,7 @@ static TICK(progress_tick) {
 
 static CTOR(progress_ctor) {
   GW_progress* ug = (GW_progress*)xcalloc(1, sizeof(GW_progress));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_progress_create(&ug->osc);
   sp_progress_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4703,7 +4708,7 @@ static TICK(prop_tick) {
 
 static CTOR(prop_ctor) {
   GW_prop* ug = (GW_prop*)xcalloc(1, sizeof(GW_prop));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4760,7 +4765,7 @@ static TICK(pshift_tick) {
 
 static CTOR(pshift_ctor) {
   GW_pshift* ug = (GW_pshift*)xcalloc(1, sizeof(GW_pshift));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_pshift_create(&ug->osc);
   sp_pshift_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -4827,7 +4832,7 @@ static TICK(ptrack_tick) {
 
 static CTOR(ptrack_ctor) {
   GW_ptrack* ug = (GW_ptrack*)xcalloc(1, sizeof(GW_ptrack));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 2);
@@ -4872,7 +4877,7 @@ static TICK(randh_tick) {
 
 static CTOR(randh_ctor) {
   GW_randh* ug = (GW_randh*)xcalloc(1, sizeof(GW_randh));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_randh_create(&ug->osc);
   sp_randh_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4934,7 +4939,7 @@ static TICK(randi_tick) {
 
 static CTOR(randi_ctor) {
   GW_randi* ug = (GW_randi*)xcalloc(1, sizeof(GW_randi));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_randi_create(&ug->osc);
   sp_randi_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5008,7 +5013,7 @@ static TICK(random_tick) {
 
 static CTOR(random_ctor) {
   GW_random* ug = (GW_random*)xcalloc(1, sizeof(GW_random));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_random_create(&ug->osc);
   sp_random_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5058,7 +5063,7 @@ static TICK(reson_tick) {
 
 static CTOR(reson_ctor) {
   GW_reson* ug = (GW_reson*)xcalloc(1, sizeof(GW_reson));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_reson_create(&ug->osc);
   sp_reson_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5113,7 +5118,7 @@ static TICK(reverse_tick) {
 
 static CTOR(reverse_ctor) {
   GW_reverse* ug = (GW_reverse*)xcalloc(1, sizeof(GW_reverse));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5156,7 +5161,7 @@ static TICK(revsc_tick) {
 
 static CTOR(revsc_ctor) {
   GW_revsc* ug = (GW_revsc*)xcalloc(1, sizeof(GW_revsc));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_revsc_create(&ug->osc);
   sp_revsc_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
@@ -5206,7 +5211,7 @@ static TICK(rms_tick) {
 
 static CTOR(rms_ctor) {
   GW_rms* ug = (GW_rms*)xcalloc(1, sizeof(GW_rms));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_rms_create(&ug->osc);
   sp_rms_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5249,7 +5254,7 @@ static TICK(rpt_tick) {
 
 static CTOR(rpt_ctor) {
   GW_rpt* ug = (GW_rpt*)xcalloc(1, sizeof(GW_rpt));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
@@ -5292,7 +5297,7 @@ static TICK(rspline_tick) {
 
 static CTOR(rspline_ctor) {
   GW_rspline* ug = (GW_rspline*)xcalloc(1, sizeof(GW_rspline));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_rspline_create(&ug->osc);
   sp_rspline_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5366,7 +5371,7 @@ static TICK(samphold_tick) {
 
 static CTOR(samphold_ctor) {
   GW_samphold* ug = (GW_samphold*)xcalloc(1, sizeof(GW_samphold));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_samphold_create(&ug->osc);
   sp_samphold_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
@@ -5392,7 +5397,7 @@ static TICK(saturator_tick) {
 
 static CTOR(saturator_ctor) {
   GW_saturator* ug = (GW_saturator*)xcalloc(1, sizeof(GW_saturator));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_saturator_create(&ug->osc);
   sp_saturator_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5442,7 +5447,7 @@ static TICK(scale_tick) {
 
 static CTOR(scale_ctor) {
   GW_scale* ug = (GW_scale*)xcalloc(1, sizeof(GW_scale));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_scale_create(&ug->osc);
   sp_scale_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5497,7 +5502,7 @@ static TICK(sdelay_tick) {
 
 static CTOR(sdelay_ctor) {
   GW_sdelay* ug = (GW_sdelay*)xcalloc(1, sizeof(GW_sdelay));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5545,7 +5550,7 @@ static TICK(slice_tick) {
 
 static CTOR(slice_ctor) {
   GW_slice* ug = (GW_slice*)xcalloc(1, sizeof(GW_slice));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5611,7 +5616,7 @@ static TICK(smoothdelay_tick) {
 
 static CTOR(smoothdelay_ctor) {
   GW_smoothdelay* ug = (GW_smoothdelay*)xcalloc(1, sizeof(GW_smoothdelay));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5685,7 +5690,7 @@ static TICK(spa_tick) {
 
 static CTOR(spa_ctor) {
   GW_spa* ug = (GW_spa*)xcalloc(1, sizeof(GW_spa));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5735,7 +5740,7 @@ static TICK(sparec_tick) {
 
 static CTOR(sparec_ctor) {
   GW_sparec* ug = (GW_sparec*)xcalloc(1, sizeof(GW_sparec));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5780,7 +5785,7 @@ static TICK(streson_tick) {
 
 static CTOR(streson_ctor) {
   GW_streson* ug = (GW_streson*)xcalloc(1, sizeof(GW_streson));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_streson_create(&ug->osc);
   sp_streson_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5830,7 +5835,7 @@ static TICK(switch_tick) {
 
 static CTOR(switch_ctor) {
   GW_switch* ug = (GW_switch*)xcalloc(1, sizeof(GW_switch));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_switch_create(&ug->osc);
   sp_switch_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 3, 1);
@@ -5861,7 +5866,7 @@ static TICK(tabread_tick) {
 
 static CTOR(tabread_ctor) {
   GW_tabread* ug = (GW_tabread*)xcalloc(1, sizeof(GW_tabread));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5944,7 +5949,7 @@ static TICK(tadsr_tick) {
 
 static CTOR(tadsr_ctor) {
   GW_tadsr* ug = (GW_tadsr*)xcalloc(1, sizeof(GW_tadsr));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tadsr_create(&ug->osc);
   sp_tadsr_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6018,7 +6023,7 @@ static TICK(talkbox_tick) {
 
 static CTOR(talkbox_ctor) {
   GW_talkbox* ug = (GW_talkbox*)xcalloc(1, sizeof(GW_talkbox));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_talkbox_create(&ug->osc);
   sp_talkbox_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
@@ -6061,7 +6066,7 @@ static TICK(tblrec_tick) {
 
 static CTOR(tblrec_ctor) {
   GW_tblrec* ug = (GW_tblrec*)xcalloc(1, sizeof(GW_tblrec));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
@@ -6106,7 +6111,7 @@ static TICK(tbvcf_tick) {
 
 static CTOR(tbvcf_ctor) {
   GW_tbvcf* ug = (GW_tbvcf*)xcalloc(1, sizeof(GW_tbvcf));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tbvcf_create(&ug->osc);
   sp_tbvcf_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6180,7 +6185,7 @@ static TICK(tdiv_tick) {
 
 static CTOR(tdiv_ctor) {
   GW_tdiv* ug = (GW_tdiv*)xcalloc(1, sizeof(GW_tdiv));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tdiv_create(&ug->osc);
   sp_tdiv_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6230,7 +6235,7 @@ static TICK(tenv_tick) {
 
 static CTOR(tenv_ctor) {
   GW_tenv* ug = (GW_tenv*)xcalloc(1, sizeof(GW_tenv));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tenv_create(&ug->osc);
   sp_tenv_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6292,7 +6297,7 @@ static TICK(tenv2_tick) {
 
 static CTOR(tenv2_ctor) {
   GW_tenv2* ug = (GW_tenv2*)xcalloc(1, sizeof(GW_tenv2));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tenv2_create(&ug->osc);
   sp_tenv2_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6342,7 +6347,7 @@ static TICK(tenvx_tick) {
 
 static CTOR(tenvx_ctor) {
   GW_tenvx* ug = (GW_tenvx*)xcalloc(1, sizeof(GW_tenvx));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tenvx_create(&ug->osc);
   sp_tenvx_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6404,7 +6409,7 @@ static TICK(tgate_tick) {
 
 static CTOR(tgate_ctor) {
   GW_tgate* ug = (GW_tgate*)xcalloc(1, sizeof(GW_tgate));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tgate_create(&ug->osc);
   sp_tgate_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6442,7 +6447,7 @@ static TICK(thresh_tick) {
 
 static CTOR(thresh_ctor) {
   GW_thresh* ug = (GW_thresh*)xcalloc(1, sizeof(GW_thresh));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_thresh_create(&ug->osc);
   sp_thresh_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6492,7 +6497,7 @@ static TICK(timer_tick) {
 
 static CTOR(timer_ctor) {
   GW_timer* ug = (GW_timer*)xcalloc(1, sizeof(GW_timer));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_timer_create(&ug->osc);
   sp_timer_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6518,7 +6523,7 @@ static TICK(tin_tick) {
 
 static CTOR(tin_ctor) {
   GW_tin* ug = (GW_tin*)xcalloc(1, sizeof(GW_tin));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tin_create(&ug->osc);
   sp_tin_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6544,7 +6549,7 @@ static TICK(tone_tick) {
 
 static CTOR(tone_ctor) {
   GW_tone* ug = (GW_tone*)xcalloc(1, sizeof(GW_tone));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_tone_create(&ug->osc);
   sp_tone_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6582,7 +6587,7 @@ static TICK(trand_tick) {
 
 static CTOR(trand_ctor) {
   GW_trand* ug = (GW_trand*)xcalloc(1, sizeof(GW_trand));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_trand_create(&ug->osc);
   sp_trand_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6637,7 +6642,7 @@ static TICK(tseg_tick) {
 
 static CTOR(tseg_ctor) {
   GW_tseg* ug = (GW_tseg*)xcalloc(1, sizeof(GW_tseg));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6721,7 +6726,7 @@ static TICK(tseq_tick) {
 
 static CTOR(tseq_ctor) {
   GW_tseq* ug = (GW_tseq*)xcalloc(1, sizeof(GW_tseq));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6783,7 +6788,7 @@ static TICK(vdelay_tick) {
 
 static CTOR(vdelay_ctor) {
   GW_vdelay* ug = (GW_vdelay*)xcalloc(1, sizeof(GW_vdelay));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -6850,7 +6855,7 @@ static TICK(voc_tick) {
 
 static CTOR(voc_ctor) {
   GW_voc* ug = (GW_voc*)xcalloc(1, sizeof(GW_voc));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_voc_create(&ug->osc);
   sp_voc_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -6876,7 +6881,7 @@ static TICK(vocoder_tick) {
 
 static CTOR(vocoder_ctor) {
   GW_vocoder* ug = (GW_vocoder*)xcalloc(1, sizeof(GW_vocoder));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_vocoder_create(&ug->osc);
   sp_vocoder_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 1);
@@ -6943,7 +6948,7 @@ static TICK(waveset_tick) {
 
 static CTOR(waveset_ctor) {
   GW_waveset* ug = (GW_waveset*)xcalloc(1, sizeof(GW_waveset));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -7003,7 +7008,7 @@ static TICK(wavin_tick) {
 
 static CTOR(wavin_ctor) {
   GW_wavin* ug = (GW_wavin*)xcalloc(1, sizeof(GW_wavin));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -7053,7 +7058,7 @@ static TICK(wavout_tick) {
 
 static CTOR(wavout_ctor) {
   GW_wavout* ug = (GW_wavout*)xcalloc(1, sizeof(GW_wavout));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   ug->is_init = 0;
   ug->osc = NULL;
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -7098,7 +7103,7 @@ static TICK(wpkorg35_tick) {
 
 static CTOR(wpkorg35_ctor) {
   GW_wpkorg35* ug = (GW_wpkorg35*)xcalloc(1, sizeof(GW_wpkorg35));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_wpkorg35_create(&ug->osc);
   sp_wpkorg35_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -7160,7 +7165,7 @@ static TICK(zitarev_tick) {
 
 static CTOR(zitarev_ctor) {
   GW_zitarev* ug = (GW_zitarev*)xcalloc(1, sizeof(GW_zitarev));
-  ug->sp = sp;
+  ug->sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_zitarev_create(&ug->osc);
   sp_zitarev_init(ug->sp, ug->osc);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
@@ -7308,12 +7313,33 @@ static MFUN(zitarev_set_level) {
 static TICK(sp_tick) {
   ++((sp_data*)u->module.gen.data)->pos; }
 
+GWMODINI(Soundpipe) {
+  sp_data *sp;
+  sp_createn(&sp, gwion->vm->bbq->si->out);
+  sp->sr = gwion->vm->bbq->si->sr;
+  return sp;
+}
+
+GWMODEND(Soundpipe) {
+  if(self)
+  sp_destroy((sp_data**)&self);
+}
 GWION_IMPORT(soundpipe) {
 
   VM* vm = gwi_vm(gwi);
+  sp_data *sp = get_module(vm->gwion, "Soundpipe");
+  if(!sp) {
+    sp = GWMODINI_NAME(vm->gwion, NULL);
+    set_module(vm->gwion, "Soundpipe", sp);
+  }
   const uint8_t nchan = vm->bbq->si->out;
-  sp_createn(&sp, nchan);
-  sp->sr = vm->bbq->si->sr;
+  M_Object o = new_M_UGen(gwi->gwion);
+  ugen_ini(gwi->gwion, UGEN(o), 1, 1);
+  ugen_gen(gwi->gwion, UGEN(o), sp_tick, sp, 0);
+  vector_add(&vm->ugen, (vtype)UGEN(o));
+  gwi_item_ini(gwi, "UGen", "@soundpipe main ugen");
+  gwi_item_end(gwi, ae_flag_ref | ae_flag_const, o);
+  ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));
   CHECK_BB(gwi_class_ini(gwi, "ftbl", NULL))
   gwi_class_xtor(gwi, NULL, ftbl_dtor);
   CHECK_BB(gwi_item_ini(gwi, "@internal", "@ftbl"))

@@ -44,7 +44,6 @@ DRVDEL(sndfile_del) {
   sf_close(sf);
 }
 
-GWMODSTR(sndfile)
 GWDRIVER(sndfile) {
   d->ini = sndfile_ini;
   d->run = sndfile_run;

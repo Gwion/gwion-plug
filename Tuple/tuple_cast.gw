@@ -1,0 +1,5 @@
+#require Tuple
+ref Tuple:[int] a;
+
+<<< a >>>;
+<<< a $ Tuple >>>;

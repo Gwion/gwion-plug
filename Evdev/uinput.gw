@@ -1,0 +1,7 @@
+#require Evdev
+var Uinput ui;
+var Evdev  ev;
+<<<ev.index(10)>>>;
+<<<ui.create(ev)>>>;
+<<< ui.fd(), " ", ui.syspath(), " ", ui.devnode() >>>;
+ui.write(2, 0, 16);

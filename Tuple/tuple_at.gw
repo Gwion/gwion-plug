@@ -1,0 +1,6 @@
+#require Tuple
+<<< Tuple("Tom", 6) @=>  ref Tuple:[string, int] tup >>>;
+<<< typeof(tup) >>>;
+<<< tup >>>;
+<<< tup[0] >>>;
+<<< tup[1] >>>;

@@ -1,8 +1,0 @@
-Tuple([1,2], "Tom") @=> ref Tuple:[int[], string] tup;
-
-var Tuple:[int[], string] stack[3];
-tup @=> stack[2];
-<<< stack[2] >>>;
-<<< stack[2][1] >>>;
-<<< stack[2][0] >>>;
-<<< stack[2][0][1] >>>;

@@ -1,3 +1,8 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "gwion_env.h"
@@ -10,10 +15,6 @@
 #include "import.h"
 #include "vm.h"
 #include "ugen.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
 
 #include "lsys.h"
 

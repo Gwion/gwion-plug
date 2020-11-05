@@ -22,6 +22,9 @@ struct JackInfo {
 static void gwion_shutdown(void *arg) {
   VM *vm = (VM *)arg;
   vm->bbq->is_running = 0;
+  struct JackInfo* info = (struct JackInfo*)vm->bbq->driver->data;
+  free(info->iport);
+  free(info->oport);
 }
 
 static void inner_cb(struct JackInfo* info, jack_default_audio_sample_t** in,
@@ -139,12 +142,10 @@ static void jack_del(VM* vm __attribute__((unused)), Driver* di) {
   struct JackInfo* info = (struct JackInfo*)di->driver->data;
   jack_deactivate(info->client);
   jack_client_close(info->client);
-  free(info->iport);
-  free(info->oport);
+//  free(info->iport);
+//  free(info->oport);
 }
 
-//void jack_driver(Driver* d) {
-GWMODSTR(jack)
 GWDRIVER(jack) {
   d->ini = jack_ini;
   d->run = jack_run;

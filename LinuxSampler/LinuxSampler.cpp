@@ -166,38 +166,38 @@ GWION_IMPORT(linuxsampler) {
   GWI_BB(gwi_class_ini(gwi, "LinuxSampler", "UGen"))
   gwi_class_xtor(gwi, linuxsampler_ctor, linuxsampler_dtor);
 	gwi_item_ini(gwi,(m_str)"int", (m_str)"@sampler");
-  o_ls_data = gwi_item_end(gwi, ae_flag_member, NULL);
+  o_ls_data = gwi_item_end(gwi, ae_flag_none, NULL);
   gwi_func_ini(gwi, "void", "load");
     gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, (f_xfun)linuxsampler_load, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)linuxsampler_load, ae_flag_none))
   gwi_func_ini(gwi, "void", "load");
     gwi_func_arg(gwi, "string", "filename");
     gwi_func_arg(gwi, "int", "index");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_load_instrument, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_load_instrument, ae_flag_none))
   gwi_func_ini(gwi, "int", "noteOn");
     gwi_func_arg(gwi, "int", "note");
     gwi_func_arg(gwi, "int", "velocity");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_noteOn, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_noteOn, ae_flag_none))
   gwi_func_ini(gwi, "int", "noteOff");
     gwi_func_arg(gwi, "int", "note");
     gwi_func_arg(gwi, "int", "velocity");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_noteOff, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_noteOff, ae_flag_none))
   gwi_func_ini(gwi, "void", "noteOff");
     gwi_func_arg(gwi, "int", "pitch");
     gwi_func_arg(gwi, "int", "note");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_pitchbend, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_pitchbend, ae_flag_none))
   gwi_func_ini(gwi, "int", "status");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_status, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_status, ae_flag_none))
   gwi_func_ini(gwi, "float", "gain");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_getgain, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_getgain, ae_flag_none))
   gwi_func_ini(gwi, "float", "gain");
     gwi_func_arg(gwi, "float", "f");
-  GWI_BB(gwi_func_end(gwi,  linuxsampler_setgain, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi,  linuxsampler_setgain, ae_flag_none))
   gwi_func_ini(gwi, "float", "pan");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_getpan, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_getpan, ae_flag_none))
   gwi_func_ini(gwi, "float", "pan");
     gwi_func_arg(gwi, "float", "f");
-  GWI_BB(gwi_func_end(gwi, linuxsampler_setpan, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, linuxsampler_setpan, ae_flag_none))
   GWI_BB(gwi_class_end(gwi));
   return GW_OK;
 }

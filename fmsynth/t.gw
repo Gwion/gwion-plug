@@ -1,6 +1,0 @@
-var FMSynth t => dac;
-samp => now;
-<<<t.last()>>>;
-samp => now;
-<<<t.last()>>>;
-<<<t.last()>>>;

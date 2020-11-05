@@ -1,3 +1,5 @@
+#require TinySR
+
 "djay_model"
     => const string model;
 var int try;

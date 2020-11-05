@@ -63,7 +63,6 @@ THREAD_RETURN(NULL);
 //  return NULL;
 }
 
-GWMODSTR(jit)
 GWMODINI(jit) {
   struct JitEngine_ *jit = mp_calloc(gwion->mp, JitEngine);
   jit->jb = jb_ini(gwion);

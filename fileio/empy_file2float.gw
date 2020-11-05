@@ -1,2 +1,0 @@
-var FileIO file;
-file => var float f;

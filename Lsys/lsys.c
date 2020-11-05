@@ -70,8 +70,7 @@
 #include "lsys.h"
 
 
-#include "defs.h"
-#include "err_msg.h"
+#include "gwion_util.h"
 
 /* static funcs */
 static int toint(unsigned char a) {

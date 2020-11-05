@@ -1,0 +1,3 @@
+#! [contains] Type 'Tuple' is abstract, declare as ref
+#require Tuple
+var Tuple u;

@@ -1,0 +1,3 @@
+#require Tuple
+ref Tuple tup;
+tup[1];

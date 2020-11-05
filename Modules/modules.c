@@ -279,3 +279,6 @@ GWION_IMPORT(modules) {
   GWI_BB(import_zerox(gwi))
   return 1;
 }
+
+static m_str deps[] = { "Soundpipe", NULL };
+GWDEPEND{ return deps; }

@@ -143,17 +143,17 @@ GWION_IMPORT(tinysr) {
 
   GWI_BB(gwi_func_ini(gwi, "int", "load"))
   GWI_BB(gwi_func_arg(gwi, "string", "file"))
-  GWI_BB(gwi_func_end(gwi, load, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, load, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "string", "word"))
-  GWI_BB(gwi_func_end(gwi, word, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, word, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "string", "word"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_end(gwi, word_index, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, word_index, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "string", "state"))
-  GWI_BB(gwi_func_end(gwi, state, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, state, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;

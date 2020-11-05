@@ -1,4 +1,0 @@
-ref Tuple:[int] a;
-
-<<< a >>>;
-<<< a $ Tuple >>>;

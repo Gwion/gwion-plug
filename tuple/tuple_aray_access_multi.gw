@@ -1,4 +1,0 @@
-var Tuple:[string,int] t[2];
-<<< t >>>;
-<<< t[0] >>>;
-<<< Tuple("tom", 12) @=> t[0] >>> ;

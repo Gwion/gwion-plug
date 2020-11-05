@@ -1,0 +1,3 @@
+#require FileIO
+
+12 => var FileIO file;

@@ -1,3 +1,6 @@
+#require Sporth
+#require Math
+
 var Sporth s1 => dac;
 s1.parse("0 p 0.01 port mtof 1 p 0.003 port 1 1 2 p 0.01 port fm 0.5 * dup dup 0.94 10000 revsc drop 0.1 * +");
 s1.p(1, 0.5);

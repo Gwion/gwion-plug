@@ -1,0 +1,19 @@
+#require Vecx
+
+polar(1);
+var polar b;
+var polar a;
+a.mod;
+a.phase;
+a;
+a + b;
+a - b;
+a * b;
+a / b;
+a +=> b;
+a -=> b;
+a *=> b;
+a /=> b;
+1 => a.mod;
+1 => a.phase;
+<<< a >>>;

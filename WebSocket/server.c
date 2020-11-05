@@ -74,7 +74,6 @@ static DRVDEL(ws_del) {
 	lws_context_destroy(context);
 }
 
-GWMODSTR(ws)
 GWDRIVER(ws) {
   d->ini = ws_ini;
   d->run = ws_run;

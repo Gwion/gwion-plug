@@ -1,0 +1,11 @@
+#require Nucklear
+
+<<<var NkPanel panel>>>;
+<<<var NkLayout layout>>>;
+"test" => layout.name;
+<<<var NkSlider slider>>>;
+"test" => slider.name;
+spork { while(true) { slider => now; }};
+var NkButton b;
+"Hit me to Quit!" => b.name;
+b => now;

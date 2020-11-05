@@ -266,7 +266,6 @@ ANN static void* repl_process(void* data) {
   return NULL;
 }
 
-GWMODSTR(repl);
 GWMODINI(repl) {
   shreduler_set_loop(gwion->vm->shreduler, 1);
   pthread_create(&repl_thread, NULL, repl_process, gwion->vm);

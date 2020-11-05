@@ -1,3 +1,5 @@
+#require Lsys
+
 "01|0:121|1:01|2:1" =>
 var string str;
 var Lsys lsys => dac;

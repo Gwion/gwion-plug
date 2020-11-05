@@ -1,3 +1,0 @@
-Tuple("Tom", 6) @=> ref Tuple:[float, int] tup;
-<<< typeof(tup) >>>;
-<<< tup >>>;

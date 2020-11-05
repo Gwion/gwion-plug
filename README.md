@@ -1,5 +1,5 @@
 # Gwion-plug
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FGwion%2FGwion-plug.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffennecdjay%2FGwion-plug?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FGwion%2FGwion-plug.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FGwion%2FGwion-plug?ref=badge_shield)
 
 plugins for [Gwion](github.com/Gwion/Gwion)  
 actually a Gwion submodule
@@ -21,4 +21,4 @@ make install
 
 
 ## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FGwion%2FGwion-plug.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffennecdjay%2FGwion-plug?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FGwion%2FGwion-plug.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FGwion%2FGwion-plug?ref=badge_large)

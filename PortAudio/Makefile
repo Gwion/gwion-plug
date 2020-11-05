@@ -2,5 +2,5 @@
 include ../config.mk
 NAME=PortAudio
 #CFLAGS+=-I<more include>
-#LDFLAGS+=-l<more LIBS>
+LDFLAGS+=-lportaudio
 include ../config_post.mk

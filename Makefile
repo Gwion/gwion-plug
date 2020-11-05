@@ -1,14 +1,14 @@
 DIR=$(wildcard */)
 
 all:
-	 +@ $(foreach dir,$(DIR), make -s            -C $(dir);)
+	 +@ $(foreach dir,$(DIR), ${MAKE} -s            -C $(dir);)
 	exit 0
 
 install:
-	 +@ $(foreach dir, $(DIR), make -s install   -C $(dir);)
+	 +@ $(foreach dir, $(DIR), ${MAKE} -s install   -C $(dir);)
 
 clean:
-	 +@ $(foreach dir, $(DIR), make -s clean     -C $(dir);)
+	 +@ $(foreach dir, $(DIR), ${MAKE} -s clean     -C $(dir);)
 
 uninstall:
-	 +@ $(foreach dir, $(DIR), make -s uninstall -C $(dir);)
+	 +@ $(foreach dir, $(DIR), ${MAKE} -s uninstall -C $(dir);)

@@ -1,14 +1,17 @@
 #include <stdlib.h>
-#include <string.h>
-#include "type.h"
+#include <math.h>
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "gwion_env.h"
+#include "vm.h"
 #include "instr.h"
+#include "object.h"
+#include "gwion.h"
 #include "plug.h"
+#include "operator.h"
 #include "import.h"
-#include "emit.h"
-
-#include "func.h"
-#include "type.h"
-#include "mpool.h"
+#include "array.h"
+#include <string.h>
 
 #define MAP_INFO(o) (*(struct Map_Info_**)(o->data + t_array->nspc->offset))
 #define MAP_KEY(p) ((m_bit*)(p->data))
@@ -35,20 +38,16 @@ static m_bool cmp(const m_bit* restrict a, const unsigned char*restrict b, const
 }
 
 static CTOR(map_ctor) {
-  struct Map_Info_* info = mp_calloc(Map_Info);
-  info->t = array_base(o->type_ref->parent);
-  const Env env = shred->vm->emit->env;
+  struct Map_Info_* info = mp_calloc(shred->info->mp, Map_Info);
+  info->t = array_base(o->type_ref->e->parent);
+  const Env env = shred->info->vm->gwion->env;
   const Nspc curr = env->curr;
-  const m_str key_name = get_type_name(info->t, 1);
-  m_uint depth;
-  Type_Decl* key_decl = str2decl(env, key_name);
-  const Type key_type = known_type(env, key_decl);
-  free_type_decl(key_decl);
+  const m_str key_name = get_type_name(env, info->t, 1);
+  struct loc_t_ pos = {};
+  const Type key_type = str2type(env->gwion, key_name, &pos);
   info->key_size = key_type->size;
-  const m_str val_name = get_type_name(info->t, 2);
-  Type_Decl* val_decl = str2decl(env, val_name);
-  const Type val_type = known_type(env, val_decl);
-  free_type_decl(val_decl);
+  const m_str val_name = get_type_name(env, info->t, 2);
+  const Type val_type = str2type(env->gwion, val_name, &pos);
   info->val_size = val_type->size;
   MAP_INFO(o) = info;
   env->curr = curr;
@@ -56,7 +55,7 @@ static CTOR(map_ctor) {
     MAP_INFO(o)->cmp = string_cmp;
   else
     MAP_INFO(o)->cmp = cmp;
-  ADD_REF(o->type_ref->parent);
+  ADD_REF(o->type_ref->e->parent);
 }
 
 static DTOR(map_dtor) {
@@ -65,11 +64,11 @@ static DTOR(map_dtor) {
 
 
 static MFUN(gw_map_get) {
-  const VM_Vec v = ARRAY(o);
-  const m_uint size = vm_vec_size(v);
+  const M_Vector v = ARRAY(o);
+  const m_uint size = m_vector_size(v);
   for(m_uint i = 0; i < size; i++) {
     M_Object p;
-    vm_vec_get(v, i, &p);
+    m_vector_get(v, i, &p);
     if(MAP_INFO(o)->cmp(MAP_KEY(p), MEM(SZ_INT), MAP_INFO(o)->key_size)) {
       memcpy((m_bit*)RETURN, MAP_VAL(p, o), MAP_INFO(o)->key_size);
       return;
@@ -79,23 +78,24 @@ static MFUN(gw_map_get) {
 }
 
 static MFUN(gw_map_set) {
-  const VM_Vec v = ARRAY(o);
-  const m_uint size = vm_vec_size(v);
+  const M_Vector v = ARRAY(o);
+  const m_uint size = m_vector_size(v);
   memcpy((m_bit*)RETURN, MEM(SZ_INT + MAP_INFO(o)->key_size), MAP_INFO(o)->val_size);
   for(m_uint i = 0; i < size; i++) {
     M_Object p;
-    vm_vec_get(v, i, &p);
+    m_vector_get(v, i, &p);
     if(MAP_INFO(o)->cmp(MAP_KEY(p), MEM(SZ_INT), MAP_INFO(o)->key_size)) {
       memcpy(MAP_VAL(p, o), MEM(SZ_INT + MAP_INFO(o)->key_size), MAP_INFO(o)->key_size);
       return;
     }
   }
-  const M_Object pair = new_object(NULL, MAP_INFO(o)->t);
+  const M_Object pair = new_object(shred->info->mp, NULL, MAP_INFO(o)->t);
   memcpy(pair->data, MEM(SZ_INT), MAP_INFO(o)->key_size + MAP_INFO(o)->val_size);
-  vm_vec_add(v, (m_bit*)&pair);
+  m_vector_add(v, (m_bit*)&pair);
 }
 
 GWION_IMPORT(map) {
+/*
   const m_str types[] = { "A", "B" };
   const Type t_map = gwi_mk_type(gwi, "Map", SZ_INT, NULL);
   CHECK_BB(gwi_tmpl_ini(gwi, 2, types))
@@ -121,5 +121,6 @@ GWION_IMPORT(map) {
   CHECK_BB(gwi_func_arg(gwi, "A", "key"))
   CHECK_BB(gwi_func_end(gwi, 0))
   CHECK_BB(gwi_class_end(gwi))
+*/
   return GW_OK;
 }

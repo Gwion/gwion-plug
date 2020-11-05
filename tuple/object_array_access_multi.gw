@@ -1,3 +1,0 @@
-var Object t[2];
-<<< t >>>;
-Tuple("tom", 12) @=> t[0];

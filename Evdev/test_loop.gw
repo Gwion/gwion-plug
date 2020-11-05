@@ -1,0 +1,12 @@
+#require Evdev
+var varEvdev dev;
+if(dev.index(12) < 0)
+  me.exit();
+dev.name() @=> ref string s;
+<<<s>>>;
+while(true) {
+  dev => now;
+  var EvdevEv ev;
+  while(dev.recv(ev))
+    <<<ev.type, " ", ev.code, " ", ev.value>>>;
+}

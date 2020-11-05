@@ -1,4 +1,0 @@
-var Joystick joy;
-joy.index(0);
-<<<joy>>>;
-joy => now;

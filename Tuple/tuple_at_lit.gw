@@ -1,0 +1,3 @@
+#! [contains] cannot assign
+#require Tuple
+Tuple("Tom", 6) @=> Tuple("Pat", 22);

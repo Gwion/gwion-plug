@@ -9,7 +9,8 @@
 #include "operator.h"
 #include "import.h"
 #include "ugen.h"
-#include "sporth.h"
+//#include "sporth.h"
+#include "plumber.h"
 
 typedef struct sporthData {
   sp_data *sp;
@@ -181,31 +182,34 @@ GWION_IMPORT(sporth) {
   GWI_BB(gwi_func_ini(gwi, "float", "p"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
   GWI_BB(gwi_func_arg(gwi, "float", "val"))
-  GWI_BB(gwi_func_end(gwi, sporth_setp, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, sporth_setp, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "float", "p"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_end(gwi, sporth_getp, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, sporth_getp, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "float", "t"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
   GWI_BB(gwi_func_arg(gwi, "float", "val"))
   GWI_BB(gwi_func_arg(gwi, "string", "table"))
-  GWI_BB(gwi_func_end(gwi, sporth_set_table, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, sporth_set_table, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "float", "t"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
   GWI_BB(gwi_func_arg(gwi, "string", "table"))
-  GWI_BB(gwi_func_end(gwi, sporth_get_table, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, sporth_get_table, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "string", "parse"))
   GWI_BB(gwi_func_arg(gwi, "string", "arg"))
-  GWI_BB(gwi_func_end(gwi, sporth_parse_string, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, sporth_parse_string, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "string", "parsefile"))
   GWI_BB(gwi_func_arg(gwi, "string", "arg"))
-  GWI_BB(gwi_func_end(gwi, sporth_parse_file, ae_flag_member))
+  GWI_BB(gwi_func_end(gwi, sporth_parse_file, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
   return 1;
 }
+
+static const m_str deps[] = { "Soundpipe", NULL };
+GWDEPEND{ return deps; }

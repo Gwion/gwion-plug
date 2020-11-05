@@ -90,7 +90,6 @@ static DRVRUN(portaudio_run) {
     Pa_Sleep(1);
 }
 
-GWMODSTR(portaudio);
 GWDRIVER(portaudio) {
   d->ini = portaudio_ini;
   d->run = portaudio_run;

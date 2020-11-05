@@ -1,3 +1,5 @@
+#require LinuxSampler
+
 #! simple soundchain
 var LinuxSampler ls => dac;
 

@@ -1,0 +1,12 @@
+#require FMSynth
+var FMSynth fm => dac;
+"/home/djay/src/libfmsynth-master/presets/clocky.fmp" => fm.load;
+fm.noteon(80, 110);
+2::second => now,
+fm.noteon(79, 80);
+.3::second => now;
+<<<fm.last()>>>;
+fm.noteoff(80);
+fm.noteoff(79);
+second => now;
+<<<fm>>>;
