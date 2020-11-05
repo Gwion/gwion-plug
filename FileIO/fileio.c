@@ -225,10 +225,10 @@ GWION_IMPORT(fileio) {
   GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
   GWI_BB(gwi_oper_end(gwi, "=>", file_to_string))
   GWI_BB(gwi_oper_ini(gwi, "FileIO", "int",    "int"))
-  GWI_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
+  GWI_BB(gwi_oper_add(gwi, opck_rassign))
   GWI_BB(gwi_oper_end(gwi, "=>", file_to_int))
   GWI_BB(gwi_oper_ini(gwi, "FileIO", "float",  "float"))
-  GWI_BB(gwi_oper_add(gwi, opck_rhs_emit_var))
+  GWI_BB(gwi_oper_add(gwi, opck_rassign))
   GWI_BB(gwi_oper_end(gwi, "=>", file_to_float))
 
   const Type t_cout = gwi_class_ini(gwi, "@Cout", "FileIO");
