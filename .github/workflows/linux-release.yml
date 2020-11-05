@@ -21,7 +21,10 @@ jobs:
         dir: gwion
 
     - name: Build
-      run: bash ./build.sh
+      run: |
+        for plug in $(cat list.txt)
+        do make -C $plug
+        done
       env:
         BASEDIR: ../gwion
         USE_LTO: 1 

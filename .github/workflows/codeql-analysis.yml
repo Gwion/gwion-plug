@@ -63,7 +63,9 @@ jobs:
     - name: Build plug
       run: |
         cd plug
-        make
+        for plug in $(cat list.txt)
+        do make -C $plug
+        done
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
