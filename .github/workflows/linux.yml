@@ -27,4 +27,6 @@ jobs:
       uses: ./.github/workflows/gwion
 
     - name: Build Plug
-      run: make BASEDIR=Gwion
+      run: make
+      env:
+        BASEDIR: Gwion
