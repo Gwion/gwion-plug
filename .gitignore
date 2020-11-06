@@ -1,2 +1,5 @@
 *.o
 *.so
+Soundpipe/gwion-soundpipe/
+Sporth/gwion-sporth/
+FMSynth/libfmsynth
