@@ -1,0 +1,29 @@
+name: Linux
+
+on: [push, pull_request]
+
+env:
+  CFLAGS: -fsanitize=address -fno-omit-frame-pointer
+  LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
+
+jobs:
+  build:
+    name: Linux ${{ matrix.cc }} ${{ matrix.double && 'double' || 'float'}}
+    runs-on: ubuntu-latest
+    env:
+      CC: ${{ matrix.cc }}
+      USE_DOUBLE: ${{ matrix.double }}
+    strategy:
+      matrix:
+        cc: [gcc, clang]
+        double: [0, 1]
+
+
+    steps:
+    - name: Build Gwion
+      uses: ./.github/workflows/gwion
+
+    - name: Build Plug
+      run: |
+        cd plug
+        make
