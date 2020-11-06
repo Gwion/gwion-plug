@@ -3,7 +3,7 @@ runs:
   steps:
 
   - run: |
-      git clone --depth=1 https://github.com/Gwion
+      git clone --depth=1 https://github.com/Gwion/Gwion
       git submodule init util ast
       for i in $(git submodule | sed -e 's/.* //'); do
         spath=$(git config -f .gitmodules --get submodule.$i.path)
