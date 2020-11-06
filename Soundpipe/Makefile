@@ -1,4 +1,3 @@
-NAME=Soundpipe
 SOUNDPIPE_LIB := gwion-soundpipe/libsoundpipe.a
 
 include ../config.mk

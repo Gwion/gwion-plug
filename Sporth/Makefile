@@ -1,6 +1,5 @@
 include ../config.mk
 
-NAME=Sporth
 LDFLAGS+=-lsporth
 
 SPORTH_LIB := gwion-sporth/libsporth.a

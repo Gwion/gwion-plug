@@ -1,11 +1,12 @@
 include ../config.mk
 
-NAME=FMSynth
-
 all: fmsynth.checklib ${NAME}.so
+
 include ../config_post.mk
+
 LDFLAGS+=-lfmsynth
 FMSYNTH_LIB := libfmsynth/libfmsynth.a
+
 ifeq ($(wilcard ${FMSYNTH_LIB}), )
 LDFLAGS += -L$(shell dirname ${FMSYNTH_LIB})
 endif
