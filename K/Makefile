@@ -1,7 +1,4 @@
 include ../config.mk
-NAME=K
-CFLAGS+=-g
-LDFLAGS+=-g
 include ../config_post.mk
 
 k.o:

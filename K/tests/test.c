@@ -13,7 +13,11 @@ static m_float** matrix_file(const char* s)
   for(i = 0; i < 150; i++) {
     m_float a, b, c, d;
     char e[16];
+#ifdef USE_DOUBLE
+    fscanf(f, "%lf,%lf,%lf,%lf,Iris-%15s",  &a, &b, &c, &d, &e);
+#else
     fscanf(f, "%f,%f,%f,%f,Iris-%15s",  &a, &b, &c, &d, &e);
+#endif
     ret[i][0] = a;
     ret[i][1] = b;
     ret[i][2] = c;
@@ -67,7 +71,7 @@ int main() {
   matrix_release(centroids);
   matrix_release(instances);
 
-  m_float** iris = matrix_file("iris.data");
+  m_float** iris = matrix_file("../iris.data");
   m_uint iris_labels[150];
   for(i = 0; i < 50; i++) {
      iris_labels[i] = 0;

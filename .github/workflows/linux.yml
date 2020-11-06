@@ -30,3 +30,4 @@ jobs:
       run: make
       env:
         BASEDIR: ../Gwion
+        AUTO_INSTALL_DEPS: 1
