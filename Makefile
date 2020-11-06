@@ -1,5 +1,8 @@
 DIR=$(wildcard */)
 
+list:
+	+@ $(foreach dir,$(shell cat list.txt), ${MAKE} -s            -C $(dir);)
+
 all:
 	 +@ $(foreach dir,$(DIR), ${MAKE} -s            -C $(dir);)
 	exit 0
