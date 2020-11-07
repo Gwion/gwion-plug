@@ -70,22 +70,22 @@ GWION_IMPORT($1) {
   DECL_OB(const Type, t_${1,,}, = gwi_class_ini(gwi, "${1,,}", "$PARENT_CLASS"))
   gwi_class_xtor(gwi, ${1,,}_ctor, ${1,,}_dtor);
 
-  CHECK_BB(gwi_item_ini(gwi, "int", "member"))
+  GWI_BB(gwi_item_ini(gwi, "int", "member"))
   CHECK_BB((o_${1,,}_member_data = gwi_item_end(gwi, ae_flag_none, NULL)))
 
   ${1,,}_static_value = malloc(sizeof(m_int));
-  CHECK_BB(gwi_item_ini(gwi, "int", "static"))
+  GWI_BB(gwi_item_ini(gwi, "int", "static"))
   CHECK_BB((o_${1,,}_static_data = gwi_item_end(gwi, ae_flag_static, ${1,,}_static_value)))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "mfun"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "arg"))
-  CHECK_BB(gwi_func_end(gwi, mfun, ae_flag_none))
+  GWI_BB(gwi_func_ini(gwi, "int", "mfun"))
+  GWI_BB(gwi_func_arg(gwi, "int", "arg"))
+  GWI_BB(gwi_func_end(gwi, mfun, ae_flag_none))
 
-  CHECK_BB(gwi_func_ini(gwi, "int", "sfun"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "arg"))
-  CHECK_BB(gwi_func_end(gwi, sfun, ae_flag_static))
+  GWI_BB(gwi_func_ini(gwi, "int", "sfun"))
+  GWI_BB(gwi_func_arg(gwi, "int", "arg"))
+  GWI_BB(gwi_func_end(gwi, sfun, ae_flag_static))
 
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi))
   return 1;
 }
 EOF

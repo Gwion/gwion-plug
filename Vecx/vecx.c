@@ -578,15 +578,15 @@ ANN static m_bool import_vec4(const Gwi gwi) {
   gwi_func_arg(gwi, "float", "y");
   gwi_func_arg(gwi, "float", "z");
   gwi_func_arg(gwi, "float", "w");
-  CHECK_BB(gwi_func_end(gwi, vec4_set, ae_flag_none))
+  GWI_BB(gwi_func_end(gwi, vec4_set, ae_flag_none))
     gwi_func_ini(gwi, "void", "setAll");
   gwi_func_arg(gwi, "float", "x");
-  CHECK_BB(gwi_func_end(gwi, vec4_setAll, ae_flag_none))
+  GWI_BB(gwi_func_end(gwi, vec4_setAll, ae_flag_none))
     gwi_func_ini(gwi, "float", "magnitude");
-  CHECK_BB(gwi_func_end(gwi, vec4_magnitude, ae_flag_none))
+  GWI_BB(gwi_func_end(gwi, vec4_magnitude, ae_flag_none))
     gwi_func_ini(gwi, "void", "normalize");
-  CHECK_BB(gwi_func_end(gwi, vec4_normalize, ae_flag_none))
-  CHECK_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_func_end(gwi, vec4_normalize, ae_flag_none))
+  GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "Vec4", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
@@ -595,22 +595,22 @@ ANN static m_bool import_vec4(const Gwi gwi) {
   GWI_BB(gwi_oper_ini(gwi, "Vec4", "Vec4", "bool"))
   GWI_BB(gwi_oper_end(gwi, "==",          vec4_eq))
   GWI_BB(gwi_oper_end(gwi, "!=",          vec4_ne))
-  CHECK_BB(gwi_oper_ini(gwi, "Vec4", "Vec4", "Vec4"))
-  CHECK_BB(gwi_oper_end(gwi, "+",  Vec4Add))
-  CHECK_BB(gwi_oper_end(gwi, "-", Vec4Sub))
-  CHECK_BB(gwi_oper_end(gwi, "*", Vec4Mul))
-  CHECK_BB(gwi_oper_end(gwi, "/", Vec4Div))
-  CHECK_BB(gwi_oper_add(gwi, opck_rassign))
-  CHECK_BB(gwi_oper_end(gwi, "=>", Vec4RAssign))
-  CHECK_BB(gwi_oper_ini(gwi, "Vec4", "float", "Vec4"))
-  CHECK_BB(gwi_oper_end(gwi, "+", Vec4AddFloat))
-  CHECK_BB(gwi_oper_end(gwi, "-", Vec4SubFloat))
-  CHECK_BB(gwi_oper_end(gwi, "*", Vec4MulFloat))
-  CHECK_BB(gwi_oper_end(gwi, "/", Vec4DivFloat))
-  CHECK_BB(gwi_oper_ini(gwi, "float", "Vec4", "Vec4"))
-  CHECK_BB(gwi_oper_end(gwi, "+", FloatAddVec4))
-  CHECK_BB(gwi_oper_end(gwi, "-", FloatSubVec4))
-  CHECK_BB(gwi_oper_end(gwi, "*", FloatMulVec4))
+  GWI_BB(gwi_oper_ini(gwi, "Vec4", "Vec4", "Vec4"))
+  GWI_BB(gwi_oper_end(gwi, "+",  Vec4Add))
+  GWI_BB(gwi_oper_end(gwi, "-", Vec4Sub))
+  GWI_BB(gwi_oper_end(gwi, "*", Vec4Mul))
+  GWI_BB(gwi_oper_end(gwi, "/", Vec4Div))
+  GWI_BB(gwi_oper_add(gwi, opck_rassign))
+  GWI_BB(gwi_oper_end(gwi, "=>", Vec4RAssign))
+  GWI_BB(gwi_oper_ini(gwi, "Vec4", "float", "Vec4"))
+  GWI_BB(gwi_oper_end(gwi, "+", Vec4AddFloat))
+  GWI_BB(gwi_oper_end(gwi, "-", Vec4SubFloat))
+  GWI_BB(gwi_oper_end(gwi, "*", Vec4MulFloat))
+  GWI_BB(gwi_oper_end(gwi, "/", Vec4DivFloat))
+  GWI_BB(gwi_oper_ini(gwi, "float", "Vec4", "Vec4"))
+  GWI_BB(gwi_oper_end(gwi, "+", FloatAddVec4))
+  GWI_BB(gwi_oper_end(gwi, "-", FloatSubVec4))
+  GWI_BB(gwi_oper_end(gwi, "*", FloatMulVec4))
   return (m_bool)gwi_oper_end(gwi, "/", FloatDivVec4);
 }
 

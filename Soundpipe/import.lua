@@ -362,9 +362,9 @@ print("  gwi_item_end(gwi, ae_flag_ref | ae_flag_const, o);")
 --print("printf(\"==%p==\\n\", vector_front(&vm->ugen));")
 
 print("  ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));")
-print("  CHECK_BB(gwi_class_ini(gwi, \"ftbl\", NULL))")
+print("  GWI_BB(gwi_class_ini(gwi, \"ftbl\", NULL))")
 print("  gwi_class_xtor(gwi, NULL, ftbl_dtor);")
-print("  CHECK_BB(gwi_item_ini(gwi, \"@internal\", \"@ftbl\"))")
+print("  GWI_BB(gwi_item_ini(gwi, \"@internal\", \"@ftbl\"))")
 print("  gwi_item_end(gwi, 0, NULL);")
 for n in ipairs(a) do
   local gen_name = a[n]
@@ -379,17 +379,17 @@ for n in ipairs(a) do
         i = i+1
       end
     end
-    print("  CHECK_BB(gwi_func_end(gwi, ftbl_"..gen_name..", ae_flag_none))")
+    print("  GWI_BB(gwi_func_end(gwi, ftbl_"..gen_name..", ae_flag_none))")
   end
 end
-print("  CHECK_BB(gwi_class_end(gwi))\n")
+print("  GWI_BB(gwi_class_end(gwi))\n")
 
 for n in ipairs(a) do
   local mod_name = a[n]
   local object = sptbl[mod_name]
   if not string.match(object.modtype, "gen") and not string.match(mod_name, "foo")then
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
-    print("  CHECK_BB(gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"))")
+    print("  GWI_BB(gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"))")
     print("  gwi_class_xtor(gwi, "..mod_name.."_ctor, "..mod_name.."_dtor);")
     local nmandatory = 0
     local tbl = object.params.mandatory
@@ -406,7 +406,7 @@ for n in ipairs(a) do
           declare_gw_param(v)
         end
       end
-      print("  CHECK_BB(gwi_func_end(gwi, "..mod_name.."_init, ae_flag_none))")
+      print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_init, ae_flag_none))")
     end
     local tbl = object.params.optional
     if tbl then
@@ -423,7 +423,7 @@ for n in ipairs(a) do
         elseif string.match(v.type, "sp_ftbl%s%*") then
           print("  gwi_func_ini(gwi, \"ftbl\", \""..name.."\");")
         end
-        print("  CHECK_BB(gwi_func_end(gwi, "..mod_name.."_get_"..v.name..", ae_flag_none))")
+        print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_get_"..v.name..", ae_flag_none))")
         if string.match(v.type, "int") then
           print("  gwi_func_ini(gwi, \"int\", \""..name.."\");")
         elseif string.match(v.type, "SPFLOAT") then
@@ -436,10 +436,10 @@ for n in ipairs(a) do
           print("  gwi_func_ini(gwi, \"ftbl\", \""..name.."\");")
         end
         declare_gw_param(v)
-        print("  CHECK_BB(gwi_func_end(gwi, "..mod_name.."_set_"..v.name..", ae_flag_none))")
+        print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_set_"..v.name..", ae_flag_none))")
       end
     end
-    print("  CHECK_BB(gwi_class_end(gwi))\n")
+    print("  GWI_BB(gwi_class_end(gwi))\n")
   end
 end
 --print("  CHECK_BB(import_modules(gwi))")
