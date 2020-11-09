@@ -80,7 +80,7 @@ static inline VM_Shred repl_shred(MemPool p) {
 INSTR(EOC2) {
   shreduler_remove(shred->info->vm->shreduler, shred, 0);
   shred->pc = 0;
-  REM_REF(shred->code, shred->info->vm->gwion);
+  vmcode_remref(shred->code, shred->info->vm->gwion);
 }
 
 ANN static m_bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
@@ -127,7 +127,7 @@ ANN static void free_repl(struct Repl* repl, const VM* vm) {
   } else if(repl->shred->tick)
     shreduler_remove(vm->shreduler, repl->shred, 1);
 */
-  REM_REF(repl->ctx, vm->gwion);
+  context_remref(repl->ctx, vm->gwion);
   free(repl);
 }
 

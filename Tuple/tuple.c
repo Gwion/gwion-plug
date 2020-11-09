@@ -39,8 +39,8 @@ static INSTR(TupleUnpack) {
 }
 
 ANN static inline Type tuple_base(Type t, const m_uint idx) {
-  while(t->e->tuple->start > idx)
-    t = t->e->parent;
+  while(t->info->tuple->start > idx)
+    t = t->info->parent;
   return t;
 }
 
@@ -48,9 +48,9 @@ INSTR(TupleMember) {
   const M_Object o = *(M_Object*)(shred->reg - SZ_INT);
   const Type base = tuple_base(o->type_ref, instr->m_val);
   const m_bit* byte = shred->code->bytecode + shred->pc * BYTECODE_SZ;
-  const m_uint idx = instr->m_val - base->e->tuple->start;
-  const Type t = (Type)vector_at(&base->e->tuple->types, idx);
-  const m_uint offset = vector_at(&base->e->tuple->offset, idx);
+  const m_uint idx = instr->m_val - base->info->tuple->start;
+  const Type t = (Type)vector_at(&base->info->tuple->types, idx);
+  const m_uint offset = vector_at(&base->info->tuple->offset, idx);
   *(m_uint*)(byte + SZ_INT) = offset;
   if(!instr->m_val2) {
     if(t->size == SZ_INT)
@@ -114,12 +114,12 @@ ANN void emit_unpack_instr(const Emitter emit, struct TupleEmit *te) {
 }
 
 static void get(const Vector v, Type t) {
-  if(t->e->parent)
-    get(v, t->e->parent);
-  if(!t->e->tuple) // necessary ?
+  if(t->info->parent)
+    get(v, t->info->parent);
+  if(!t->info->tuple) // necessary ?
     return;
-  for(m_uint i = 0; i < vector_size(&t->e->tuple->types); ++i)
-    vector_add(v, (m_uint)vector_at(&t->e->tuple->types, i));
+  for(m_uint i = 0; i < vector_size(&t->info->tuple->types); ++i)
+    vector_add(v, (m_uint)vector_at(&t->info->tuple->types, i));
 }
 
 struct Matcher {
@@ -172,7 +172,7 @@ static OP_CHECK(opck_at_tuple_object) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   if(opck_rassign(env, data, mut) == env->gwion->type[et_null])
     return env->gwion->type[et_null];
-  if(!bin->rhs->info->type->e->tuple)
+  if(!bin->rhs->info->type->info->tuple)
     return bin->rhs->info->type;
   if(tuple_match(env, bin->rhs->info->type, bin->lhs->info->type) < 0)
     return env->gwion->type[et_null];
@@ -297,7 +297,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   cdef->base.tmpl = tmpl;
   CHECK_BO(scan0_class_def(env, cdef))
   SET_FLAG(cdef->base.type, abstract);
-//  cdef->base.type->e->tuple->list = tlbase;
+//  cdef->base.type->info->tuple->list = tlbase;
   CHECK_BO(ensure_traverse(env, cdef->base.type))
   nspc_add_type_front(env->curr, sym, cdef->base.type);
   return cdef->base.type;
@@ -312,8 +312,8 @@ static OP_CHECK(opck_tuple) {
      exp->d.prim.prim_type != ae_prim_num)
     ERR_O(exp->pos, _("tuple subscripts must be litteral"))
   const m_uint idx = exp->d.prim.d.num;
-  const Vector v = array->type->e->tuple ?
-    &array->type->e->tuple->types : NULL;
+  const Vector v = array->type->info->tuple ?
+    &array->type->info->tuple->types : NULL;
   if(!v || idx >= vector_size(v))
     ERR_O(exp->pos, _("tuple subscripts too big"))
   const Type type = (Type)vector_at(v, idx);
@@ -374,7 +374,7 @@ static OP_CHECK(unpack_ck) {
     e = e->next;
   }
   exp_setmeta(exp_self(call), 0);
-  return call->func->info->type->e->d.base_type;
+  return call->func->info->type->info->base_type;
 }
 
 static OP_EMIT(unpack_em) {
@@ -386,7 +386,7 @@ static OP_EMIT(unpack_em) {
 }
 
 static void parents(const Env env, const Type t, const Vector v) {
-  const Nspc parent = t->e->owner;
+  const Nspc parent = t->info->owner;
   if(parent->parent && parent != env->context->nspc && parent != env->global_nspc) {
     const Type older = nspc_lookup_type1(parent->parent, insert_symbol(parent->name));
     parents(env, older, v);
@@ -400,7 +400,7 @@ static OP_CHECK(opck_at_unpack) {
   int i = 0;
   while(e) {
     if(e->exp_type == ae_exp_decl) {
-      DECL_OO(const Type, t, = (Type)VPTR(&bin->lhs->info->type->e->tuple->types, i))
+      DECL_OO(const Type, t, = (Type)VPTR(&bin->lhs->info->type->info->tuple->types, i))
       struct Vector_ v; // hoist?
       vector_init(&v);
       parents(env, t, &v);
@@ -438,7 +438,7 @@ static OP_EMIT(opem_at_unpack) {
     while((e = e->next));
     const Instr pop = emit_add_instr(emit, RegPop);
     pop->m_val = sz;
-    const Vector v = &bin->lhs->info->type->e->tuple->types;
+    const Vector v = &bin->lhs->info->type->info->tuple->types;
     struct TupleEmit te = { .e=bin->rhs->d.exp_call.args, .v=v };
     emit_unpack_instr(emit, &te);
     const Instr pop2 = emit_add_instr(emit, RegPop);
@@ -487,7 +487,7 @@ static OP_EMIT(opem_tuple_access) {
   tuple_access(emit, info->array.exp->d.prim.d.num, (info->array.depth -1)? 0 : info->is_var);
   if(!info->array.exp->next)
     return (Instr)GW_OK;
-  const Type type = (Type)vector_at(&info->array.type->e->tuple->types, idx);
+  const Type type = (Type)vector_at(&info->array.type->info->tuple->types, idx);
   struct Array_Sub_ next = { info->array.exp->next, type, info->array.depth - 1 };
   info->array = next;
   return (Instr)(m_uint)emit_array_access(emit, info);
