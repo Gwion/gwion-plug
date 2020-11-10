@@ -31,7 +31,7 @@ jobs:
       env:
         BASEDIR: ../gwion
         USE_LTO: 1 
-				AUTO_INSTALL_DEPS: 1
+        AUTO_INSTALL_DEPS: 1
 
     - name: Create Release                                                                                                                                                                
       id: create_release                                                                                                                                                                  
