@@ -1,15 +1,14 @@
-Analys
 FileIO
 FMSynth
 K
 Lsys
 Machine
 Math
-Modules
 Repl
 Soundpipe
+Analys
+Modules
 Sporth
 Std
 Tuple
 Vecx
-WebSocket
