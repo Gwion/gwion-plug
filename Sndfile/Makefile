@@ -7,7 +7,7 @@ LDFLAGS += -L$(shell dirname ${SNDFILE_LIB})
 CFLAGS += -Ilibsndfile/include
 endif
 
-all: soundpipe.checklib ${NAME}.so
+all: sndfile.checklib ${NAME}.so
 
 include ../config_post.mk
 
