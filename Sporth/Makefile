@@ -14,7 +14,7 @@ LDFLAGS += -L$(shell dirname ${SPORTH_LIB})
 CFLAGS += -Igwion-sporth/h
 endif
 
-all: soundpipe.checklib sporth.checklib ${NAME}.so
+all: sporth.checklib ${NAME}.so
 
 include ../config_post.mk
 
