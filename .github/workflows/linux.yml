@@ -34,3 +34,4 @@ jobs:
       env:
         BASEDIR: ../Gwion
         AUTO_INSTALL_DEPS: 1
+        USE_DOUBLE: ${{ matrix.double }}
