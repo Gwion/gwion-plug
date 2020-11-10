@@ -105,8 +105,8 @@ static DRVINI(alsa_ini) {
 info->bufnum = 3;
 info->bufsize = 512;
 //di->si->arg = "default:CARD=CODEC";
-//di->si->arg = "default";
-di->si->arg = "plughw:5,0";
+di->si->arg = "default";
+//di->si->arg = "plughw:5,0";
 //di->si->arg = "PulseAudio";
 info->chan = di->si->out;
   di->driver->data = info;
