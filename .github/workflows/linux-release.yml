@@ -17,15 +17,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Gwion
-      uses: fennecdjay/gwion-action@v1
-      with:
-        dir: gwion
+      uses: ./.github/workflows/gwion
 
     - name: Build
-      run: |
-        for plug in $(cat list.txt)
-        do make -C $plug
-        done
+      run: make
       env:
         BASEDIR: ../gwion
         USE_LTO: 1 
