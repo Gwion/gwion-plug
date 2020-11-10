@@ -70,6 +70,7 @@ jobs:
         for plug in $(cat list.txt)
         do make -C $plug
         done
-
+      env:
+        AUTO_INSTALL_DEPS: 1
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
