@@ -1,7 +1,6 @@
-SOUNDPIPE_LIB := gwion-soundpipe/libsoundpipe.a
-
 include ../config.mk
 
+SOUNDPIPE_LIB := gwion-soundpipe/libsoundpipe.a
 ifeq ($(wilcard ${SOUNDPIPE_LIB}), )
 LDFLAGS += -L$(shell dirname ${SOUNDPIPE_LIB})
 CFLAGS += -Igwion-soundpipe/h
