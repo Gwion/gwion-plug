@@ -20,4 +20,4 @@ include ../config_post.mk
 
 get-sporth:
 	git clone --depth=1 https://github.com/Gwion/gwion-sporth
-	cd gwion-sporth && ${MAKE} CFLAGS=${CFLAGS} libsporth.a
+	cd gwion-sporth && CFLAGS=${CFLAGS} ${MAKE} libsporth.a
