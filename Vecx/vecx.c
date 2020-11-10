@@ -150,10 +150,7 @@ OP_CHECK(opck_object_dot);
 */
 
 static CTOR(ctor) {
-  puts("lol");
-// set z
-printf("%p %p\n", o, *(m_bit*)shred->mem);
-m_float *ptr = (m_float*)o;
+  m_float *ptr = (m_float*)o;
   *(m_float*)(ptr) = 12;
   *(m_float*)(ptr + 1) = 13;
   *(m_float*)(ptr + 2) = 14;
