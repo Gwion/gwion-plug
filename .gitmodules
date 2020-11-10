@@ -1,3 +1,6 @@
+[submodule "FMSynth/libfmsynth"]
+	path = FMSynth/libfmsynth
+	url = https://github.com/Themaister/libfmsynth
 [submodule "nuklear/nuklear"]
 	path = Nuklear/nuklear
 	url = https://github.com/vurtun/nuklear
