@@ -4,7 +4,7 @@ LDFLAGS+=-lsndfile
 SNDFILE_LIB := libsndfile/libsndfile.a
 ifeq ($(wilcard ${SNDFILE_LIB}), )
 LDFLAGS += -L$(shell dirname ${SNDFILE_LIB})
-CFLAGS += -Ilibsndfile/libsndfile/include
+CFLAGS += -Ilibsndfile/include
 endif
 
 include ../config_post.mk
