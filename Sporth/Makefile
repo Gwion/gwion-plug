@@ -6,7 +6,7 @@ SOUNDPIPE_LIB := ../Soundpipe/gwion-soundpipe/libsoundpipe.a
 ifeq ($(wilcard ${SOUNDPIPE_LIB}), )
 LDFLAGS += -L$(shell dirname ${SOUNDPIPE_LIB})
 CFLAGS += -I../Soundpipe/gwion-soundpipe/h
-SPORTH_CFLAGS += .-I$(shell realpath ../Soundpipe/gwion-soundpipe/h)
+SPORTH_CFLAGS += .-I$PWD/../Soundpipe/gwion-soundpipe/h)
 endif
 
 SPORTH_LIB := gwion-sporth/libsporth.a
