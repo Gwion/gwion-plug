@@ -12,6 +12,7 @@ SPORTH_LIB := gwion-sporth/libsporth.a
 ifeq ($(wilcard ${SPORTH_LIB}), )
 LDFLAGS += -L$(shell dirname ${SPORTH_LIB})
 CFLAGS += -Igwion-sporth/h
+SPORTH_CFLAGS += ../Soundpipe/gwion-soundpipe/h
 endif
 
 all: sporth.checklib ${NAME}.so
@@ -20,4 +21,4 @@ include ../config_post.mk
 
 get-sporth:
 	git clone --depth=1 https://github.com/Gwion/gwion-sporth
-	cd gwion-sporth && CFLAGS=${CFLAGS} ${MAKE} libsporth.a
+	cd gwion-sporth && CFLAGS=${SPORTH_CFLAGS} ${MAKE} libsporth.a
