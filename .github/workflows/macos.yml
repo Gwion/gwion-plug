@@ -33,6 +33,6 @@ jobs:
     - name: Build Plug
       run: make
       env:
-        CFLAGS: -I/usr/local/include
+        CFLAGS: -I/usr/local/opt/include
         BASEDIR: ../Gwion
         AUTO_INSTALL_DEPS: 1
