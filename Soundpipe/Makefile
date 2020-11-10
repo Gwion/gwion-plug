@@ -6,6 +6,12 @@ LDFLAGS += -L$(shell dirname ${SOUNDPIPE_LIB})
 CFLAGS += -Igwion-soundpipe/h
 endif
 
+SNDFILE_LIB := ../Sndfile/libsndfile/libsndfile.a
+ifeq ($(wilcard ${SNDFILE_LIB}), )
+LDFLAGS += -L$(shell dirname ${SNDFILE_LIB})
+CFLAGS += -I../Sndfile/libsndfile/include
+endif
+
 LDFLAGS+=-lsoundpipe
 
 all: soundpipe.checklib ${NAME}.so

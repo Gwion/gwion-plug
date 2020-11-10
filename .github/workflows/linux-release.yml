@@ -16,7 +16,7 @@ jobs:
     - name: clone
       uses: actions/checkout@v2
 
-    - name: Gwion
+    - name: Build Gwion
       uses: ./.github/workflows/gwion
 
     - name: Build
