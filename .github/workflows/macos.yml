@@ -21,9 +21,11 @@ jobs:
 
     steps:
     - name: Dependencies
-      run: | 
-        brew install libsndfile
+      run: brew install libsndfile
 
+    - name: Debug
+      run: ls /home/linuxbrew/.linuxbrew/Cellar/libsndfile/1.0.30/*
+        
     - name: Checkout
       uses: actions/checkout@v2
 
