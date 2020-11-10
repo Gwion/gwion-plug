@@ -21,9 +21,6 @@ jobs:
 
     steps:
 
-    - name: Debug
-      run: ls /home/linuxbrew/.linuxbrew/Cellar/libsndfile/1.0.30/*
-        
     - name: Checkout
       uses: actions/checkout@v2
 
