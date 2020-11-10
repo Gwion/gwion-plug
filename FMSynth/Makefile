@@ -8,6 +8,7 @@ LDFLAGS+=-lfmsynth
 FMSYNTH_LIB := libfmsynth/libfmsynth.a
 
 ifeq ($(wilcard ${FMSYNTH_LIB}), )
+INC += -Ilibfmsynth/include
 LDFLAGS += -L$(shell dirname ${FMSYNTH_LIB})
 endif
 
