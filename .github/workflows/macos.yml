@@ -20,8 +20,6 @@ jobs:
 
 
     steps:
-    - name: Dependencies
-      run: brew install libsndfile
 
     - name: Debug
       run: ls /home/linuxbrew/.linuxbrew/Cellar/libsndfile/1.0.30/*
@@ -35,6 +33,5 @@ jobs:
     - name: Build Plug
       run: make
       env:
-        CFLAGS: -I/home/linuxbrew/.linuxbrew/Cellar/libsndfile/1.0.30/include
         BASEDIR: ../Gwion
         AUTO_INSTALL_DEPS: 1

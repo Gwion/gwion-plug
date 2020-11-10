@@ -30,9 +30,6 @@ jobs:
 
     steps:
 
-    - name: Dependencies
-      run: sudo apt-get install libsndfile-dev
-
     - name: Checkout repository
       uses: actions/checkout@v2
       with:

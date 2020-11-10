@@ -4,6 +4,7 @@ Lsys
 Machine
 Math
 Repl
+Sndfile
 Soundpipe
 Analys
 Modules

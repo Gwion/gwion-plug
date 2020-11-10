@@ -20,8 +20,6 @@ jobs:
 
 
     steps:
-    - name: Dependencies
-      run: sudo apt-get install libsndfile-dev
 
     - name: Checkout
       uses: actions/checkout@v2
