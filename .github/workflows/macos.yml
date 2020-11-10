@@ -33,6 +33,6 @@ jobs:
     - name: Build Plug
       run: make
       env:
-        CFLAGS: -I/usr/local/opt/libsndfile/include
+        CFLAGS: /home/linuxbrew/.linuxbrew/Cellar/libsndfile/1.0.30/include
         BASEDIR: ../Gwion
         AUTO_INSTALL_DEPS: 1
