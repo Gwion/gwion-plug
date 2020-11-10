@@ -12,6 +12,9 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
+    - name: Dependencies
+      run: sudo apt-get install libsndfile-dev
+
     - name: clone
       uses: actions/checkout@v2
 
