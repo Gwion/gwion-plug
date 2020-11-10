@@ -2,16 +2,16 @@ include ../config.mk
 
 LDFLAGS+=-lsporth
 
-SPORTH_LIB := gwion-sporth/libsporth.a
-ifeq ($(wilcard ${SPORTH_LIB}), )
-LDFLAGS += -L$(shell dirname ${SPORTH_LIB})
-CFLAGS += -Igwion-sporth/h
-endif
-
 SOUNDPIPE_LIB := ../Soundpipe/gwion-soundpipe/libsoundpipe.a
 ifeq ($(wilcard ${SOUNDPIPE_LIB}), )
 LDFLAGS += -L$(shell dirname ${SOUNDPIPE_LIB})
 CFLAGS += -I../Soundpipe/gwion-soundpipe/h
+endif
+
+SPORTH_LIB := gwion-sporth/libsporth.a
+ifeq ($(wilcard ${SPORTH_LIB}), )
+LDFLAGS += -L$(shell dirname ${SPORTH_LIB})
+CFLAGS += -Igwion-sporth/h
 endif
 
 all: soundpipe.checklib sporth.checklib ${NAME}.so
