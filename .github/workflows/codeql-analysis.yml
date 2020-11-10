@@ -38,13 +38,11 @@ jobs:
       with:
         # We must fetch at least the immediate parents so that if this is
         # a pull request then we can checkout the head.
-        repository: 'Gwion/Gwion'
         fetch-depth: 2
-        submodules: 'true'
 
     # the head of the pull request instead of the merge commit.
     # first get into plug directory
-    - run: cd plug; git checkout HEAD^2
+    - run: git checkout HEAD^2
       if: ${{ github.event_name == 'pull_request' }}
 
     # Initializes the CodeQL tools for scanning.
@@ -61,16 +59,13 @@ jobs:
     # 📚 https://git.io/JvXDl
 
     - name: Build Gwion
-      run: |
-        make
+      uses: ./.github/workflows/gwion
 
     - name: Build plug
-      run: |
-        cd plug
-        for plug in $(cat list.txt)
-        do make -C $plug
-        done
+      run: make
       env:
+        BASEDIR: ../Gwion
         AUTO_INSTALL_DEPS: 1
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
