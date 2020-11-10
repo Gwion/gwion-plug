@@ -14,13 +14,6 @@ AUTO_INSTALL_DEPS ?= 0
 
 NAME = $(shell basename `pwd`)
 
-# outdated
-ifeq ( $(shell (${GWION} -k 2>&1 | grep double)), 1)
-CFLAGS   += -DSPFLOAT=double
-else
-CFLAGS   += -DSPFLOAT=float
-endif
-
 %.checklib:
 	@echo "int main(){}" > tmp.c
 ifeq (${AUTO_INSTALL_DEPS}, 1)
