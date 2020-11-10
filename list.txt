@@ -1,5 +1,4 @@
 FileIO
-FMSynth
 K
 Lsys
 Machine
@@ -12,3 +11,4 @@ Sporth
 Std
 Tuple
 Vecx
+FMSynth
