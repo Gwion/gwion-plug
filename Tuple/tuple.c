@@ -253,6 +253,13 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
   return sym;
 }
 
+ANN static Exp decl_from_id(MemPool p, Symbol type, Symbol name, const loc_t pos) {
+  Type_Decl *td = new_type_decl(p, type, loc_cpy(p, pos));
+  const Var_Decl var = new_var_decl(p, name, NULL, loc_cpy(p, pos));
+  const Var_Decl_List vlist = new_var_decl_list(p, var, NULL);
+  return new_exp_decl(p, td, vlist, loc_cpy(p, pos));
+}
+
 ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   const Symbol sym = tuple_sym(env, v);
   const Type exists = nspc_lookup_type0(env->curr, sym);
@@ -267,7 +274,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
     const Type t = (Type)vector_at(v, i);
     const Symbol tsym = insert_symbol(t != (Type)1 ? t->name : "@Undefined");
     Exp decl = decl_from_id(env->gwion->mp, tsym, sym, pos);
-    const Stmt stmt = new_stmt_exp(env->gwion->mp, ae_stmt_exp, decl);
+    const Stmt stmt = new_stmt_exp(env->gwion->mp, ae_stmt_exp, decl, loc_cpy(env->gwion->mp, pos));
     const Stmt_List slist = new_stmt_list(env->gwion->mp, stmt, NULL);
     if(curr)
       curr->next = slist;
