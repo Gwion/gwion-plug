@@ -13,6 +13,7 @@ all: sndfile.checklib ${NAME}.so
 include ../config_post.mk
 
 get-sndfile:
+	cd ${current_dir}
 	git clone https://github.com/libsndfile/libsndfile
 	cd libsndfile
 	cmake -DBUILD_PROGRAMS=off -DBUILD_EXAMPLES=off -DBUILD_TESTING=off -DBUILD_REGTEST=off .
