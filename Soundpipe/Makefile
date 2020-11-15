@@ -20,4 +20,4 @@ include ../config_post.mk
 
 get-soundpipe:
 	git clone https://github.com/Gwion/gwion-soundpipe
-	${SNDFILE_CFLAGS}  ${MAKE} -C gwion-soundpipe
+	CFLAGS=${SNDFILE_CFLAGS}  ${MAKE} -C gwion-soundpipe
