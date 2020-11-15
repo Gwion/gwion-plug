@@ -1,7 +1,4 @@
-${NAME}.so: build_info ${OBJ}
-
-build_info:
-	$(info building ${NAME})
+${NAME}.so: ${OBJ}
 
 ifeq (${USE_LD}, 1)
 	${LD} $^ -o ${NAME}.so ${LDFLAGS}
