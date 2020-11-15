@@ -9,6 +9,7 @@ endif
 SNDFILE_LIB := ../Sndfile/libsndfile/libsndfile.a
 ifeq ($(wilcard ${SNDFILE_LIB}), )
 CFLAGS += -I../Sndfile/libsndfile/include
+SNDFILE_CFLAGS += -I../Sndfile/libsndfile/include
 endif
 
 LDFLAGS += -lsoundpipe
@@ -19,4 +20,4 @@ include ../config_post.mk
 
 get-soundpipe:
 	git clone https://github.com/Gwion/gwion-soundpipe
-	${MAKE} -C gwion-soundpipe
+	${SNDFILE_CFLAGS}  ${MAKE} -C gwion-soundpipe
