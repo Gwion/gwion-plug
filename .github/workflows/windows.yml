@@ -2,10 +2,6 @@ name: Windows
 
 on: [push, pull_request]
 
-env:
-  CFLAGS: -fsanitize=address -fno-omit-frame-pointer
-  LDFLAGS: -fsanitize=address -fno-omit-frame-pointer
-
 jobs:
   build:
     name: Windows ${{ matrix.double && 'double' || 'float'}}
