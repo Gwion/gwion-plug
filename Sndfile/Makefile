@@ -14,5 +14,5 @@ include ../config_post.mk
 
 get-sndfile:
 	git clone https://github.com/libsndfile/libsndfile
-	unset LDFLAGS
-	cd libsndfile && cmake -DBUILD_PROGRAMS=off -DBUILD_EXAMPLES=off -DBUILD_TESTING=off -DBUILD_REGTEST=off -DCMAKE_C_FLAGS=-fPIC . && ${MAKE}
+	cd libsndfile && cmake -DBUILD_PROGRAMS=off -DBUILD_EXAMPLES=off -DBUILD_TESTING=off -DBUILD_REGTEST=off .
+	# ${MAKE}
