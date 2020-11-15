@@ -8,7 +8,6 @@ endif
 
 SNDFILE_LIB := ../Sndfile/libsndfile/libsndfile.a
 ifeq ($(wilcard ${SNDFILE_LIB}), )
-LDFLAGS += -L$(shell dirname ${SNDFILE_LIB})
 CFLAGS += -I../Sndfile/libsndfile/include
 endif
 
