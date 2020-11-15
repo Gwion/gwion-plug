@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: make
       env:
-        BASEDIR: ../gwion
+        BASEDIR: ../Gwion
         USE_LTO: 1 
         AUTO_INSTALL_DEPS: 1
 
