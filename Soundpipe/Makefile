@@ -9,7 +9,7 @@ endif
 SNDFILE_LIB := ../Sndfile/libsndfile/libsndfile.a
 ifeq ($(wilcard ${SNDFILE_LIB}), )
 CFLAGS += -I../Sndfile/libsndfile/include
-SNDFILE_CFLAGS += -I../Sndfile/libsndfile/include
+SNDFILE_CFLAGS += -I../../Sndfile/libsndfile/include
 endif
 
 LDFLAGS += -lsoundpipe
