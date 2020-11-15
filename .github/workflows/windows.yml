@@ -7,7 +7,7 @@ jobs:
     name: Windows ${{ matrix.double && 'double' || 'float'}}
     runs-on: windows-latest
     env:
-			CC: gcc
+      CC: gcc
       USE_DOUBLE: ${{ matrix.double }}
       BUILD_ON_WINDOWS: 1
     strategy:
