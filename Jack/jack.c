@@ -22,9 +22,6 @@ struct JackInfo {
 static void gwion_shutdown(void *arg) {
   VM *vm = (VM *)arg;
   vm->bbq->is_running = 0;
-  struct JackInfo* info = (struct JackInfo*)vm->bbq->driver->data;
-  free(info->iport);
-  free(info->oport);
 }
 
 static void inner_cb(struct JackInfo* info, jack_default_audio_sample_t** in,
@@ -58,6 +55,7 @@ static int gwion_cb(jack_nframes_t nframes, void *arg) {
 
 static m_bool init_client(VM* vm, struct JackInfo* info) {
   jack_status_t status;
+  info->vm = vm;
   info->client = jack_client_open("Gwion", JackNullOption, &status, NULL);
   if(!info->client) {
     gw_err("jack_client_open() failed, status = 0x%2.0x\n", status);
@@ -65,7 +63,6 @@ static m_bool init_client(VM* vm, struct JackInfo* info) {
       gw_err("Unable to connect to JACK server\n");
     return GW_ERROR;
   }
-  info->vm = vm;
   jack_set_process_callback(info->client, gwion_cb, info);
   jack_on_shutdown(info->client, gwion_shutdown, vm);
   return GW_OK;
@@ -73,13 +70,12 @@ static m_bool init_client(VM* vm, struct JackInfo* info) {
 
 static m_bool set_chan(struct JackInfo* info, m_uint nchan, m_bool input) {
   char chan_name[50];
-  m_uint chan;
   jack_port_t** port = input ? info->iport : info->oport;
-  for(chan = 0; chan < nchan; chan++) {
+  for(m_uint chan = 0; chan < nchan; ++chan) {
     sprintf(chan_name, input ? "input_%ld" : "output_%ld", chan);
     if(!(port[chan] = jack_port_register(info->client, chan_name,
         JACK_DEFAULT_AUDIO_TYPE, input ?
-        JackPortIsInput : JackPortIsOutput , chan))) {
+        JackPortIsInput : JackPortIsOutput , 0))) {// 512 or 0?
       gw_err("no more JACK %s ports available\n", input ?
           "input" : "output");
       return GW_ERROR;
@@ -136,14 +132,15 @@ static void jack_run(VM* vm, Driver* di) {
     return;
   while(vm->bbq->is_running)
     usleep(10);
+  jack_deactivate(info->client);
+  jack_client_close(info->client);
 }
 
 static void jack_del(VM* vm __attribute__((unused)), Driver* di) {
   struct JackInfo* info = (struct JackInfo*)di->driver->data;
-  jack_deactivate(info->client);
-  jack_client_close(info->client);
-//  free(info->iport);
-//  free(info->oport);
+  free(info->iport);
+  free(info->oport);
+  xfree(info);
 }
 
 GWDRIVER(jack) {
