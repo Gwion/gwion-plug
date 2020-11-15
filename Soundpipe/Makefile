@@ -11,7 +11,7 @@ ifeq ($(wilcard ${SNDFILE_LIB}), )
 CFLAGS += -I../Sndfile/libsndfile/include
 endif
 
-LDFLAGS+=-lsoundpipe
+LDFLAGS += -lsoundpipe
 
 all: soundpipe.checklib ${NAME}.so
 
