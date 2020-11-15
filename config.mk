@@ -12,9 +12,6 @@ CFLAGS   += -I.. -g
 LDFLAGS   = -shared -fPIC
 AUTO_INSTALL_DEPS ?= 0
 
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-
 NAME = $(shell basename `pwd`)
 
 %.checklib:
