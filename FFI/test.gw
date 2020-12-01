@@ -1,0 +1,7 @@
+#require FFI
+
+FFI:[int](puts, pointer) @=> ref auto puts;
+<<< puts.call("test") >>>;
+
+FFIvar:[int](printf, pointer) @=> ref auto printf;
+<<< printf("test %i %i\n", 1 $ FFIBASE.int, 2 $ FFIBASE.int) >>>;
