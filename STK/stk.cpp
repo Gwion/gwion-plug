@@ -10,7 +10,6 @@ extern "C" { ANEW UGen new_UGen(MemPool p);}
 #include "Instrmnt.h"
 #include "Generator.h"
 #include "FM.h"
-#include "Envelope.h"
 #include "Filter.h"
 #include "Effect.h"
 #include "Function.h"
@@ -86,7 +85,6 @@ static Type t_Stk;
 static Type t_Instrmnt;
 static Type t_Generator;
 static Type t_FM;
-static Type t_Envelope;
 static Type t_Filter;
 static Type t_Effect;
 static Type t_Function;
@@ -426,93 +424,6 @@ static MFUN(gw_FM_controlChange) {
   int arg2 = (int)*(m_int*)MEM(0+SZ_INT);
   stk::StkFloat arg3 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT+SZ_INT);
   (arg1)->controlChange(arg2,arg3);
-}
-
-static TICK(Envelope_tick) {
-  stk::Envelope *s = (stk::Envelope*)u->module.gen.data;
-  u->out = s->tick();
-}
-
-static m_int o_Envelope_swig;
-#define GW_Envelope(a) *(stk::Envelope**)(a->data + o_Stk_swig)
-static CTOR(gw_Envelope_ctor) {
-  if(o->type_ref->xid == t_Envelope->xid)
-  GW_Envelope(o) = new stk::Envelope();
-  UGEN(o) = new_UGen(shred->info->mp);
-  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
-  ugen_gen(shred->info->vm->gwion, UGEN(o), Envelope_tick, GW_Envelope(o), 0);
-  vector_add(&shred->info->vm->ugen, (vtype)UGEN(o));
-}
-
-static DTOR(gw_Envelope_dtor) {
-  if(GW_Envelope(o)) {
-    delete (stk::Envelope*)GW_Envelope(o);
-    GW_Envelope(o) = NULL;
-  }
-}
-
-static INSTR(gw_Envelope_operator_e___) {
-  POP_REG(shred, +SZ_INT-(+SZ_INT));stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)REG(+SZ_INT-+SZ_INT)));
-  if(!*(M_Object*)MEM(0+SZ_INT-+SZ_INT+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
-  stk::Envelope * arg2 = (stk::Envelope *)GW_Envelope((*(M_Object*)REG(+SZ_INT-+SZ_INT+SZ_INT)));
-  stk::Envelope * result = (stk::Envelope *) &(arg1)->operator =((stk::Envelope const &)*arg2);
-  // we have to build the type
-  //M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"Ptr:[Envelope]");
-  *(void**)result = result;
-  *(void**)REG(-(+SZ_INT)) = result;
-}
-
-static MFUN(gw_Envelope_keyOn0) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
-  (arg1)->keyOn(arg2);
-}
-
-static MFUN(gw_Envelope_keyOn1) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  (arg1)->keyOn();
-}
-
-static MFUN(gw_Envelope_keyOff0) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
-  (arg1)->keyOff(arg2);
-}
-
-static MFUN(gw_Envelope_keyOff1) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  (arg1)->keyOff();
-}
-
-static MFUN(gw_Envelope_setRate) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
-  (arg1)->setRate(arg2);
-}
-
-static MFUN(gw_Envelope_setTime) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
-  (arg1)->setTime(arg2);
-}
-
-static MFUN(gw_Envelope_setTarget) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
-  (arg1)->setTarget(arg2);
-}
-
-static MFUN(gw_Envelope_setValue) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
-  (arg1)->setValue(arg2);
-}
-
-static MFUN(gw_Envelope_getState) {
-  stk::Envelope * arg1 = (stk::Envelope *)GW_Envelope((*(M_Object*)MEM(0)));
-  int result = (int)((stk::Envelope const *)arg1)->getState();
-  *(m_int*)RETURN = (m_int)result;
 }
 
 static m_int o_Filter_swig;
@@ -5610,37 +5521,6 @@ m_bool CPPIMPORT(Gwi gwi) {
   CHECK_BB(gwi_func_arg(gwi, "float", "arg3"))
   CHECK_BB(gwi_func_end(gwi, gw_FM_controlChange, ae_flag_none))
   CHECK_BB(gwi_class_end(gwi))// FM
-  
-  /*const Type*/ t_Envelope = gwi_class_ini(gwi, "Envelope", "Generator");
-  gwi_class_xtor(gwi, gw_Envelope_ctor, gw_Envelope_dtor);
-  CHECK_BB(gwi_oper_ini(gwi, (m_str)"stk.Envelope", (m_str)"stk.Envelope", (m_str)"Ptr:[stk.Envelope]"))
-  CHECK_BB(gwi_oper_end(gwi, (m_str)"=", gw_Envelope_operator_e___))
-  
-  CHECK_BB(gwi_func_ini(gwi, "void", "keyOn"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "arg2"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_keyOn0, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "void", "keyOn"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_keyOn1, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "void", "keyOff"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "arg2"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_keyOff0, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "void", "keyOff"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_keyOff1, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "void", "setRate"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "arg2"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_setRate, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "void", "setTime"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "arg2"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_setTime, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "void", "setTarget"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "arg2"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_setTarget, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "void", "setValue"))
-  CHECK_BB(gwi_func_arg(gwi, "float", "arg2"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_setValue, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "int", "getState"))
-  CHECK_BB(gwi_func_end(gwi, gw_Envelope_getState, ae_flag_none))
-  CHECK_BB(gwi_class_end(gwi))// Envelope
   
   /*const Type*/ t_Filter = gwi_class_ini(gwi, "Filter", "Stk");
   SET_FLAG(t_Filter, abstract);

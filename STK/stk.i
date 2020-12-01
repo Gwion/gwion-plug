@@ -79,7 +79,7 @@ gwi_typedef_end(gwi, ae_flag_none);
 %StkUGen(Instrmnt, 0, 1);
 %StkInit(Generator);
 %StkUGen(FM, 0, 1);
-%StkUGenVoid(Envelope, 0, 1);
+//%StkUGenVoid(Envelope, 0, 1);
 %StkInit(Filter);
 %StkInit(Effect);
 %StkInit(Function);
