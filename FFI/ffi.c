@@ -1,4 +1,3 @@
-#include <dlfcn.h>
 #include <ffi.h>
 #include <complex.h>
 #include "gwion_util.h"
@@ -187,8 +186,8 @@ static OP_CHECK(opck_ffi_ctor) {
   const Type exists = nspc_lookup_type0(ffi->nspc, func_sym);
   if(exists)
     return exists;
-  void *dl = dlopen(NULL, RTLD_LAZY | RTLD_GLOBAL);
-  void *dlfunc = dlsym(dl, func_name);
+  void *dl = DLOPEN(NULL, RTLD_LAZY | RTLD_GLOBAL);
+  void *dlfunc = DLSYM(dl, void*, func_name);
   if(!dlfunc)
     ERR_N(exp->pos, "can't open func '%s'", func_name);
 
