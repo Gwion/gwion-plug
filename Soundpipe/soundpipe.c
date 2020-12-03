@@ -7321,7 +7321,6 @@ GWMODINI(Soundpipe) {
 }
 
 GWMODEND(Soundpipe) {
-  if(self)
   sp_destroy((sp_data**)&self);
 }
 GWION_IMPORT(soundpipe) {
