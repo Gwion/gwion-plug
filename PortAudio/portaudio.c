@@ -36,7 +36,7 @@ static int callback(const void *inputBuffer, void *outputBuffer,
 }
 
 static DRVINI(portaudio_ini) {
-  struct PaInfo* info = (struct PaInfo*)xmalloc(sizeof(struct PaInfo*));
+  struct PaInfo* info = (struct PaInfo*)xmalloc(sizeof(struct PaInfo));
   di->driver->data = info;
   if(Pa_Initialize() != paNoError)
     return GW_ERROR;
