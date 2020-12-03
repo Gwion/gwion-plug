@@ -40,21 +40,21 @@ function declare_c_param(param, offset)
 end
 
 function declare_gw_param(param)
-  name = "_"..param.name
+  local pname = "_"..param.name
   if string.match(param.type, "int") then
-    print("     gwi_func_arg(gwi, \"int\", \""..name.."\");")
+    print("     gwi_func_arg(gwi, \"int\", \""..pname.."\");")
   elseif string.match(param.type, "SPFLOAT") then
-    print("     gwi_func_arg(gwi, \"float\", \""..name.."\");")
+    print("     gwi_func_arg(gwi, \"float\", \""..pname.."\");")
   elseif string.match(param.type, "char*") then
-    print("     gwi_func_arg(gwi, \"string\", \""..name.."\");")
+    print("     gwi_func_arg(gwi, \"string\", \""..pname.."\");")
   elseif string.match(param.type, "sp_ftbl%s%*%*") then
-    print("     gwi_func_arg(gwi, \"ftbl[]\", \""..name.."\");")
+    print("     gwi_func_arg(gwi, \"ftbl[]\", \""..pname.."\");")
   elseif string.match(param.type, "sp_ftbl%*%*") then
-    print("     gwi_func_arg(gwi, \"ftbl[]\", \""..name.."\");")
+    print("     gwi_func_arg(gwi, \"ftbl[]\", \""..pname.."\");")
   elseif string.match(param.type, "sp_ftbl%s%*") then
-    print("     gwi_func_arg(gwi, \"ftbl\", \""..name.."\");")
+    print("     gwi_func_arg(gwi, \"ftbl\", \""..pname.."\");")
   elseif string.match(param.type, "sp_ftbl%*") then
-    print("     gwi_func_arg(gwi, \"ftbl\", \""..name.."\");")
+    print("     gwi_func_arg(gwi, \"ftbl\", \""..pname.."\");")
   else print("unknown "..param.type)
     os.exit(1);
   end
@@ -411,29 +411,29 @@ for n in ipairs(a) do
     local tbl = object.params.optional
     if tbl then
       for _, v in pairs(tbl) do
+        local fname = "_"..v.name
         if string.match(v.type, "int") then
-          name = "_"..v.name
-          print("  gwi_func_ini(gwi, \"int\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"int\", \""..fname.."\");")
         elseif string.match(v.type, "SPFLOAT") then
-          print("  gwi_func_ini(gwi, \"float\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"float\", \""..fname.."\");")
         elseif string.match(v.type, "char") then
-          print("  gwi_func_ini(gwi, \"string\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"string\", \""..fname.."\");")
         elseif string.match(v.type, "sp_ftbl%s%*%*") then
-          print("  gwi_func_ini(gwi, \"ftbl[]\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"ftbl[]\", \""..fname.."\");")
         elseif string.match(v.type, "sp_ftbl%s%*") then
-          print("  gwi_func_ini(gwi, \"ftbl\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"ftbl\", \""..fname.."\");")
         end
         print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_get_"..v.name..", ae_flag_none))")
         if string.match(v.type, "int") then
-          print("  gwi_func_ini(gwi, \"int\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"int\", \""..fname.."\");")
         elseif string.match(v.type, "SPFLOAT") then
-          print("  gwi_func_ini(gwi, \"float\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"float\", \""..fname.."\");")
         elseif string.match(v.type, "char") then
-          print("  gwi_func_ini(gwi, \"string\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"string\", \""..fname.."\");")
         elseif string.match(v.type, "sp_ftbl%s%*%*") then
-          print("  gwi_func_ini(gwi, \"ftbl[]\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"ftbl[]\", \""..fname.."\");")
         elseif string.match(v.type, "sp_ftbl%s%*") then
-          print("  gwi_func_ini(gwi, \"ftbl\", \""..name.."\");")
+          print("  gwi_func_ini(gwi, \"ftbl\", \""..fname.."\");")
         end
         declare_gw_param(v)
         print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_set_"..v.name..", ae_flag_none))")
