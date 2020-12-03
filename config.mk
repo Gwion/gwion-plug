@@ -18,6 +18,10 @@ ifeq (${BUILD_ON_WINDOWS}, 1)
 CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -static
 endif
 
+ifeq ($(shell uname), Darwin)
+LDFLAGS += -undefined dynamic_lookup
+endif
+
 %.checklib:
 	@echo "int main(){}" > tmp.c
 ifeq (${AUTO_INSTALL_DEPS}, 1)
