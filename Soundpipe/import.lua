@@ -389,7 +389,8 @@ for n in ipairs(a) do
   local object = sptbl[mod_name]
   if not string.match(object.modtype, "gen") and not string.match(mod_name, "foo")then
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
-    print("  GWI_BB(gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"))")
+    print("  DECL_OB(const Type, t_"..mod_name..", = gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"))")
+    print("  SET_FLAG(t_"..mod_name..", final);")
     print("  gwi_class_xtor(gwi, "..mod_name.."_ctor, "..mod_name.."_dtor);")
     local nmandatory = 0
     local tbl = object.params.mandatory
@@ -411,7 +412,7 @@ for n in ipairs(a) do
     local tbl = object.params.optional
     if tbl then
       for _, v in pairs(tbl) do
-        local fname = "_"..v.name
+        local fname = v.name
         if string.match(v.type, "int") then
           print("  gwi_func_ini(gwi, \"int\", \""..fname.."\");")
         elseif string.match(v.type, "SPFLOAT") then

@@ -7391,336 +7391,358 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, ftbl_gen_xline, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Adsr", "UGen"))
+  DECL_OB(const Type, t_adsr, = gwi_class_ini(gwi, "Adsr", "UGen"))
+  SET_FLAG(t_adsr, final);
   gwi_class_xtor(gwi, adsr_ctor, adsr_dtor);
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, adsr_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, adsr_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, adsr_get_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, adsr_set_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_sus");
+  gwi_func_ini(gwi, "float", "sus");
   GWI_BB(gwi_func_end(gwi, adsr_get_sus, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_sus");
+  gwi_func_ini(gwi, "float", "sus");
      gwi_func_arg(gwi, "float", "_sus");
   GWI_BB(gwi_func_end(gwi, adsr_set_sus, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, adsr_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, adsr_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Allpass", "UGen"))
+  DECL_OB(const Type, t_allpass, = gwi_class_ini(gwi, "Allpass", "UGen"))
+  SET_FLAG(t_allpass, final);
   gwi_class_xtor(gwi, allpass_ctor, allpass_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_looptime");
   GWI_BB(gwi_func_end(gwi, allpass_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_revtime");
+  gwi_func_ini(gwi, "float", "revtime");
   GWI_BB(gwi_func_end(gwi, allpass_get_revtime, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_revtime");
+  gwi_func_ini(gwi, "float", "revtime");
      gwi_func_arg(gwi, "float", "_revtime");
   GWI_BB(gwi_func_end(gwi, allpass_set_revtime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Atone", "UGen"))
+  DECL_OB(const Type, t_atone, = gwi_class_ini(gwi, "Atone", "UGen"))
+  SET_FLAG(t_atone, final);
   gwi_class_xtor(gwi, atone_ctor, atone_dtor);
-  gwi_func_ini(gwi, "float", "_hp");
+  gwi_func_ini(gwi, "float", "hp");
   GWI_BB(gwi_func_end(gwi, atone_get_hp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hp");
+  gwi_func_ini(gwi, "float", "hp");
      gwi_func_arg(gwi, "float", "_hp");
   GWI_BB(gwi_func_end(gwi, atone_set_hp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Autowah", "UGen"))
+  DECL_OB(const Type, t_autowah, = gwi_class_ini(gwi, "Autowah", "UGen"))
+  SET_FLAG(t_autowah, final);
   gwi_class_xtor(gwi, autowah_ctor, autowah_dtor);
-  gwi_func_ini(gwi, "float", "_level");
+  gwi_func_ini(gwi, "float", "level");
   GWI_BB(gwi_func_end(gwi, autowah_get_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_level");
+  gwi_func_ini(gwi, "float", "level");
      gwi_func_arg(gwi, "float", "_level");
   GWI_BB(gwi_func_end(gwi, autowah_set_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wah");
+  gwi_func_ini(gwi, "float", "wah");
   GWI_BB(gwi_func_end(gwi, autowah_get_wah, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wah");
+  gwi_func_ini(gwi, "float", "wah");
      gwi_func_arg(gwi, "float", "_wah");
   GWI_BB(gwi_func_end(gwi, autowah_set_wah, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mix");
+  gwi_func_ini(gwi, "float", "mix");
   GWI_BB(gwi_func_end(gwi, autowah_get_mix, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mix");
+  gwi_func_ini(gwi, "float", "mix");
      gwi_func_arg(gwi, "float", "_mix");
   GWI_BB(gwi_func_end(gwi, autowah_set_mix, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Bal", "UGen"))
+  DECL_OB(const Type, t_bal, = gwi_class_ini(gwi, "Bal", "UGen"))
+  SET_FLAG(t_bal, final);
   gwi_class_xtor(gwi, bal_ctor, bal_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Bar", "UGen"))
+  DECL_OB(const Type, t_bar, = gwi_class_ini(gwi, "Bar", "UGen"))
+  SET_FLAG(t_bar, final);
   gwi_class_xtor(gwi, bar_ctor, bar_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_iK");
      gwi_func_arg(gwi, "float", "_ib");
   GWI_BB(gwi_func_end(gwi, bar_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bcL");
+  gwi_func_ini(gwi, "float", "bcL");
   GWI_BB(gwi_func_end(gwi, bar_get_bcL, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bcL");
+  gwi_func_ini(gwi, "float", "bcL");
      gwi_func_arg(gwi, "float", "_bcL");
   GWI_BB(gwi_func_end(gwi, bar_set_bcL, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bcR");
+  gwi_func_ini(gwi, "float", "bcR");
   GWI_BB(gwi_func_end(gwi, bar_get_bcR, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bcR");
+  gwi_func_ini(gwi, "float", "bcR");
      gwi_func_arg(gwi, "float", "_bcR");
   GWI_BB(gwi_func_end(gwi, bar_set_bcR, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_T30");
+  gwi_func_ini(gwi, "float", "T30");
   GWI_BB(gwi_func_end(gwi, bar_get_T30, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_T30");
+  gwi_func_ini(gwi, "float", "T30");
      gwi_func_arg(gwi, "float", "_T30");
   GWI_BB(gwi_func_end(gwi, bar_set_T30, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_scan");
+  gwi_func_ini(gwi, "float", "scan");
   GWI_BB(gwi_func_end(gwi, bar_get_scan, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_scan");
+  gwi_func_ini(gwi, "float", "scan");
      gwi_func_arg(gwi, "float", "_scan");
   GWI_BB(gwi_func_end(gwi, bar_set_scan, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pos");
+  gwi_func_ini(gwi, "float", "pos");
   GWI_BB(gwi_func_end(gwi, bar_get_pos, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pos");
+  gwi_func_ini(gwi, "float", "pos");
      gwi_func_arg(gwi, "float", "_pos");
   GWI_BB(gwi_func_end(gwi, bar_set_pos, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_vel");
+  gwi_func_ini(gwi, "float", "vel");
   GWI_BB(gwi_func_end(gwi, bar_get_vel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_vel");
+  gwi_func_ini(gwi, "float", "vel");
      gwi_func_arg(gwi, "float", "_vel");
   GWI_BB(gwi_func_end(gwi, bar_set_vel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wid");
+  gwi_func_ini(gwi, "float", "wid");
   GWI_BB(gwi_func_end(gwi, bar_get_wid, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wid");
+  gwi_func_ini(gwi, "float", "wid");
      gwi_func_arg(gwi, "float", "_wid");
   GWI_BB(gwi_func_end(gwi, bar_set_wid, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Biquad", "UGen"))
+  DECL_OB(const Type, t_biquad, = gwi_class_ini(gwi, "Biquad", "UGen"))
+  SET_FLAG(t_biquad, final);
   gwi_class_xtor(gwi, biquad_ctor, biquad_dtor);
-  gwi_func_ini(gwi, "float", "_b0");
+  gwi_func_ini(gwi, "float", "b0");
   GWI_BB(gwi_func_end(gwi, biquad_get_b0, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b0");
+  gwi_func_ini(gwi, "float", "b0");
      gwi_func_arg(gwi, "float", "_b0");
   GWI_BB(gwi_func_end(gwi, biquad_set_b0, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b1");
+  gwi_func_ini(gwi, "float", "b1");
   GWI_BB(gwi_func_end(gwi, biquad_get_b1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b1");
+  gwi_func_ini(gwi, "float", "b1");
      gwi_func_arg(gwi, "float", "_b1");
   GWI_BB(gwi_func_end(gwi, biquad_set_b1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b2");
+  gwi_func_ini(gwi, "float", "b2");
   GWI_BB(gwi_func_end(gwi, biquad_get_b2, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b2");
+  gwi_func_ini(gwi, "float", "b2");
      gwi_func_arg(gwi, "float", "_b2");
   GWI_BB(gwi_func_end(gwi, biquad_set_b2, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a0");
+  gwi_func_ini(gwi, "float", "a0");
   GWI_BB(gwi_func_end(gwi, biquad_get_a0, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a0");
+  gwi_func_ini(gwi, "float", "a0");
      gwi_func_arg(gwi, "float", "_a0");
   GWI_BB(gwi_func_end(gwi, biquad_set_a0, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a1");
+  gwi_func_ini(gwi, "float", "a1");
   GWI_BB(gwi_func_end(gwi, biquad_get_a1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a1");
+  gwi_func_ini(gwi, "float", "a1");
      gwi_func_arg(gwi, "float", "_a1");
   GWI_BB(gwi_func_end(gwi, biquad_set_a1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a2");
+  gwi_func_ini(gwi, "float", "a2");
   GWI_BB(gwi_func_end(gwi, biquad_get_a2, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a2");
+  gwi_func_ini(gwi, "float", "a2");
      gwi_func_arg(gwi, "float", "_a2");
   GWI_BB(gwi_func_end(gwi, biquad_set_a2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Biscale", "UGen"))
+  DECL_OB(const Type, t_biscale, = gwi_class_ini(gwi, "Biscale", "UGen"))
+  SET_FLAG(t_biscale, final);
   gwi_class_xtor(gwi, biscale_ctor, biscale_dtor);
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, biscale_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, biscale_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, biscale_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, biscale_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Bitcrush", "UGen"))
+  DECL_OB(const Type, t_bitcrush, = gwi_class_ini(gwi, "Bitcrush", "UGen"))
+  SET_FLAG(t_bitcrush, final);
   gwi_class_xtor(gwi, bitcrush_ctor, bitcrush_dtor);
-  gwi_func_ini(gwi, "float", "_bitdepth");
+  gwi_func_ini(gwi, "float", "bitdepth");
   GWI_BB(gwi_func_end(gwi, bitcrush_get_bitdepth, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bitdepth");
+  gwi_func_ini(gwi, "float", "bitdepth");
      gwi_func_arg(gwi, "float", "_bitdepth");
   GWI_BB(gwi_func_end(gwi, bitcrush_set_bitdepth, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_srate");
+  gwi_func_ini(gwi, "float", "srate");
   GWI_BB(gwi_func_end(gwi, bitcrush_get_srate, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_srate");
+  gwi_func_ini(gwi, "float", "srate");
      gwi_func_arg(gwi, "float", "_srate");
   GWI_BB(gwi_func_end(gwi, bitcrush_set_srate, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Blsaw", "UGen"))
+  DECL_OB(const Type, t_blsaw, = gwi_class_ini(gwi, "Blsaw", "UGen"))
+  SET_FLAG(t_blsaw, final);
   gwi_class_xtor(gwi, blsaw_ctor, blsaw_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, blsaw_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, blsaw_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, blsaw_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, blsaw_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Blsquare", "UGen"))
+  DECL_OB(const Type, t_blsquare, = gwi_class_ini(gwi, "Blsquare", "UGen"))
+  SET_FLAG(t_blsquare, final);
   gwi_class_xtor(gwi, blsquare_ctor, blsquare_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, blsquare_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, blsquare_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, blsquare_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, blsquare_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_width");
+  gwi_func_ini(gwi, "float", "width");
   GWI_BB(gwi_func_end(gwi, blsquare_get_width, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_width");
+  gwi_func_ini(gwi, "float", "width");
      gwi_func_arg(gwi, "float", "_width");
   GWI_BB(gwi_func_end(gwi, blsquare_set_width, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Bltriangle", "UGen"))
+  DECL_OB(const Type, t_bltriangle, = gwi_class_ini(gwi, "Bltriangle", "UGen"))
+  SET_FLAG(t_bltriangle, final);
   gwi_class_xtor(gwi, bltriangle_ctor, bltriangle_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, bltriangle_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, bltriangle_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, bltriangle_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, bltriangle_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Brown", "UGen"))
+  DECL_OB(const Type, t_brown, = gwi_class_ini(gwi, "Brown", "UGen"))
+  SET_FLAG(t_brown, final);
   gwi_class_xtor(gwi, brown_ctor, brown_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Butbp", "UGen"))
+  DECL_OB(const Type, t_butbp, = gwi_class_ini(gwi, "Butbp", "UGen"))
+  SET_FLAG(t_butbp, final);
   gwi_class_xtor(gwi, butbp_ctor, butbp_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, butbp_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, butbp_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, butbp_get_bw, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, butbp_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Butbr", "UGen"))
+  DECL_OB(const Type, t_butbr, = gwi_class_ini(gwi, "Butbr", "UGen"))
+  SET_FLAG(t_butbr, final);
   gwi_class_xtor(gwi, butbr_ctor, butbr_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, butbr_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, butbr_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, butbr_get_bw, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, butbr_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Buthp", "UGen"))
+  DECL_OB(const Type, t_buthp, = gwi_class_ini(gwi, "Buthp", "UGen"))
+  SET_FLAG(t_buthp, final);
   gwi_class_xtor(gwi, buthp_ctor, buthp_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, buthp_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, buthp_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Butlp", "UGen"))
+  DECL_OB(const Type, t_butlp, = gwi_class_ini(gwi, "Butlp", "UGen"))
+  SET_FLAG(t_butlp, final);
   gwi_class_xtor(gwi, butlp_ctor, butlp_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, butlp_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, butlp_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Clip", "UGen"))
+  DECL_OB(const Type, t_clip, = gwi_class_ini(gwi, "Clip", "UGen"))
+  SET_FLAG(t_clip, final);
   gwi_class_xtor(gwi, clip_ctor, clip_dtor);
-  gwi_func_ini(gwi, "float", "_lim");
+  gwi_func_ini(gwi, "float", "lim");
   GWI_BB(gwi_func_end(gwi, clip_get_lim, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lim");
+  gwi_func_ini(gwi, "float", "lim");
      gwi_func_arg(gwi, "float", "_lim");
   GWI_BB(gwi_func_end(gwi, clip_set_lim, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Clock", "UGen"))
+  DECL_OB(const Type, t_clock, = gwi_class_ini(gwi, "Clock", "UGen"))
+  SET_FLAG(t_clock, final);
   gwi_class_xtor(gwi, clock_ctor, clock_dtor);
-  gwi_func_ini(gwi, "float", "_bpm");
+  gwi_func_ini(gwi, "float", "bpm");
   GWI_BB(gwi_func_end(gwi, clock_get_bpm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bpm");
+  gwi_func_ini(gwi, "float", "bpm");
      gwi_func_arg(gwi, "float", "_bpm");
   GWI_BB(gwi_func_end(gwi, clock_set_bpm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_subdiv");
+  gwi_func_ini(gwi, "float", "subdiv");
   GWI_BB(gwi_func_end(gwi, clock_get_subdiv, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_subdiv");
+  gwi_func_ini(gwi, "float", "subdiv");
      gwi_func_arg(gwi, "float", "_subdiv");
   GWI_BB(gwi_func_end(gwi, clock_set_subdiv, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Comb", "UGen"))
+  DECL_OB(const Type, t_comb, = gwi_class_ini(gwi, "Comb", "UGen"))
+  SET_FLAG(t_comb, final);
   gwi_class_xtor(gwi, comb_ctor, comb_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_looptime");
   GWI_BB(gwi_func_end(gwi, comb_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_revtime");
+  gwi_func_ini(gwi, "float", "revtime");
   GWI_BB(gwi_func_end(gwi, comb_get_revtime, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_revtime");
+  gwi_func_ini(gwi, "float", "revtime");
      gwi_func_arg(gwi, "float", "_revtime");
   GWI_BB(gwi_func_end(gwi, comb_set_revtime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Compressor", "UGen"))
+  DECL_OB(const Type, t_compressor, = gwi_class_ini(gwi, "Compressor", "UGen"))
+  SET_FLAG(t_compressor, final);
   gwi_class_xtor(gwi, compressor_ctor, compressor_dtor);
-  gwi_func_ini(gwi, "float", "_ratio");
+  gwi_func_ini(gwi, "float", "ratio");
   GWI_BB(gwi_func_end(gwi, compressor_get_ratio, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_ratio");
+  gwi_func_ini(gwi, "float", "ratio");
      gwi_func_arg(gwi, "float", "_ratio");
   GWI_BB(gwi_func_end(gwi, compressor_set_ratio, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_thresh");
+  gwi_func_ini(gwi, "float", "thresh");
   GWI_BB(gwi_func_end(gwi, compressor_get_thresh, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_thresh");
+  gwi_func_ini(gwi, "float", "thresh");
      gwi_func_arg(gwi, "float", "_thresh");
   GWI_BB(gwi_func_end(gwi, compressor_set_thresh, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, compressor_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, compressor_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, compressor_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, compressor_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Conv", "UGen"))
+  DECL_OB(const Type, t_conv, = gwi_class_ini(gwi, "Conv", "UGen"))
+  SET_FLAG(t_conv, final);
   gwi_class_xtor(gwi, conv_ctor, conv_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
@@ -7728,221 +7750,235 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, conv_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Count", "UGen"))
+  DECL_OB(const Type, t_count, = gwi_class_ini(gwi, "Count", "UGen"))
+  SET_FLAG(t_count, final);
   gwi_class_xtor(gwi, count_ctor, count_dtor);
-  gwi_func_ini(gwi, "float", "_count");
+  gwi_func_ini(gwi, "float", "count");
   GWI_BB(gwi_func_end(gwi, count_get_count, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_count");
+  gwi_func_ini(gwi, "float", "count");
      gwi_func_arg(gwi, "float", "_count");
   GWI_BB(gwi_func_end(gwi, count_set_count, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mode");
+  gwi_func_ini(gwi, "float", "mode");
   GWI_BB(gwi_func_end(gwi, count_get_mode, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mode");
+  gwi_func_ini(gwi, "float", "mode");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, count_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Crossfade", "UGen"))
+  DECL_OB(const Type, t_crossfade, = gwi_class_ini(gwi, "Crossfade", "UGen"))
+  SET_FLAG(t_crossfade, final);
   gwi_class_xtor(gwi, crossfade_ctor, crossfade_dtor);
-  gwi_func_ini(gwi, "float", "_pos");
+  gwi_func_ini(gwi, "float", "pos");
   GWI_BB(gwi_func_end(gwi, crossfade_get_pos, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pos");
+  gwi_func_ini(gwi, "float", "pos");
      gwi_func_arg(gwi, "float", "_pos");
   GWI_BB(gwi_func_end(gwi, crossfade_set_pos, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Dcblock", "UGen"))
+  DECL_OB(const Type, t_dcblock, = gwi_class_ini(gwi, "Dcblock", "UGen"))
+  SET_FLAG(t_dcblock, final);
   gwi_class_xtor(gwi, dcblock_ctor, dcblock_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Delay", "UGen"))
+  DECL_OB(const Type, t_delay, = gwi_class_ini(gwi, "Delay", "UGen"))
+  SET_FLAG(t_delay, final);
   gwi_class_xtor(gwi, delay_ctor, delay_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, delay_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, delay_get_feedback, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, delay_set_feedback, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Diode", "UGen"))
+  DECL_OB(const Type, t_diode, = gwi_class_ini(gwi, "Diode", "UGen"))
+  SET_FLAG(t_diode, final);
   gwi_class_xtor(gwi, diode_ctor, diode_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, diode_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, diode_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, diode_get_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, diode_set_res, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Diskin", "UGen"))
+  DECL_OB(const Type, t_diskin, = gwi_class_ini(gwi, "Diskin", "UGen"))
+  SET_FLAG(t_diskin, final);
   gwi_class_xtor(gwi, diskin_ctor, diskin_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, diskin_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Dist", "UGen"))
+  DECL_OB(const Type, t_dist, = gwi_class_ini(gwi, "Dist", "UGen"))
+  SET_FLAG(t_dist, final);
   gwi_class_xtor(gwi, dist_ctor, dist_dtor);
-  gwi_func_ini(gwi, "float", "_pregain");
+  gwi_func_ini(gwi, "float", "pregain");
   GWI_BB(gwi_func_end(gwi, dist_get_pregain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pregain");
+  gwi_func_ini(gwi, "float", "pregain");
      gwi_func_arg(gwi, "float", "_pregain");
   GWI_BB(gwi_func_end(gwi, dist_set_pregain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_postgain");
+  gwi_func_ini(gwi, "float", "postgain");
   GWI_BB(gwi_func_end(gwi, dist_get_postgain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_postgain");
+  gwi_func_ini(gwi, "float", "postgain");
      gwi_func_arg(gwi, "float", "_postgain");
   GWI_BB(gwi_func_end(gwi, dist_set_postgain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_shape1");
+  gwi_func_ini(gwi, "float", "shape1");
   GWI_BB(gwi_func_end(gwi, dist_get_shape1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_shape1");
+  gwi_func_ini(gwi, "float", "shape1");
      gwi_func_arg(gwi, "float", "_shape1");
   GWI_BB(gwi_func_end(gwi, dist_set_shape1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_shape2");
+  gwi_func_ini(gwi, "float", "shape2");
   GWI_BB(gwi_func_end(gwi, dist_get_shape2, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_shape2");
+  gwi_func_ini(gwi, "float", "shape2");
      gwi_func_arg(gwi, "float", "_shape2");
   GWI_BB(gwi_func_end(gwi, dist_set_shape2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Dmetro", "UGen"))
+  DECL_OB(const Type, t_dmetro, = gwi_class_ini(gwi, "Dmetro", "UGen"))
+  SET_FLAG(t_dmetro, final);
   gwi_class_xtor(gwi, dmetro_ctor, dmetro_dtor);
-  gwi_func_ini(gwi, "float", "_time");
+  gwi_func_ini(gwi, "float", "time");
   GWI_BB(gwi_func_end(gwi, dmetro_get_time, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_time");
+  gwi_func_ini(gwi, "float", "time");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, dmetro_set_time, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Drip", "UGen"))
+  DECL_OB(const Type, t_drip, = gwi_class_ini(gwi, "Drip", "UGen"))
+  SET_FLAG(t_drip, final);
   gwi_class_xtor(gwi, drip_ctor, drip_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_dettack");
   GWI_BB(gwi_func_end(gwi, drip_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_num_tubes");
+  gwi_func_ini(gwi, "float", "num_tubes");
   GWI_BB(gwi_func_end(gwi, drip_get_num_tubes, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_num_tubes");
+  gwi_func_ini(gwi, "float", "num_tubes");
      gwi_func_arg(gwi, "float", "_num_tubes");
   GWI_BB(gwi_func_end(gwi, drip_set_num_tubes, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, drip_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, drip_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_damp");
+  gwi_func_ini(gwi, "float", "damp");
   GWI_BB(gwi_func_end(gwi, drip_get_damp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_damp");
+  gwi_func_ini(gwi, "float", "damp");
      gwi_func_arg(gwi, "float", "_damp");
   GWI_BB(gwi_func_end(gwi, drip_set_damp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_shake_max");
+  gwi_func_ini(gwi, "float", "shake_max");
   GWI_BB(gwi_func_end(gwi, drip_get_shake_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_shake_max");
+  gwi_func_ini(gwi, "float", "shake_max");
      gwi_func_arg(gwi, "float", "_shake_max");
   GWI_BB(gwi_func_end(gwi, drip_set_shake_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, drip_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, drip_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq1");
+  gwi_func_ini(gwi, "float", "freq1");
   GWI_BB(gwi_func_end(gwi, drip_get_freq1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq1");
+  gwi_func_ini(gwi, "float", "freq1");
      gwi_func_arg(gwi, "float", "_freq1");
   GWI_BB(gwi_func_end(gwi, drip_set_freq1, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq2");
+  gwi_func_ini(gwi, "float", "freq2");
   GWI_BB(gwi_func_end(gwi, drip_get_freq2, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq2");
+  gwi_func_ini(gwi, "float", "freq2");
      gwi_func_arg(gwi, "float", "_freq2");
   GWI_BB(gwi_func_end(gwi, drip_set_freq2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Dtrig", "UGen"))
+  DECL_OB(const Type, t_dtrig, = gwi_class_ini(gwi, "Dtrig", "UGen"))
+  SET_FLAG(t_dtrig, final);
   gwi_class_xtor(gwi, dtrig_ctor, dtrig_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
   GWI_BB(gwi_func_end(gwi, dtrig_init, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_loop");
+  gwi_func_ini(gwi, "int", "loop");
   GWI_BB(gwi_func_end(gwi, dtrig_get_loop, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_loop");
+  gwi_func_ini(gwi, "int", "loop");
      gwi_func_arg(gwi, "int", "_loop");
   GWI_BB(gwi_func_end(gwi, dtrig_set_loop, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_delay");
+  gwi_func_ini(gwi, "float", "delay");
   GWI_BB(gwi_func_end(gwi, dtrig_get_delay, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_delay");
+  gwi_func_ini(gwi, "float", "delay");
      gwi_func_arg(gwi, "float", "_delay");
   GWI_BB(gwi_func_end(gwi, dtrig_set_delay, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_scale");
+  gwi_func_ini(gwi, "float", "scale");
   GWI_BB(gwi_func_end(gwi, dtrig_get_scale, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_scale");
+  gwi_func_ini(gwi, "float", "scale");
      gwi_func_arg(gwi, "float", "_scale");
   GWI_BB(gwi_func_end(gwi, dtrig_set_scale, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Dust", "UGen"))
+  DECL_OB(const Type, t_dust, = gwi_class_ini(gwi, "Dust", "UGen"))
+  SET_FLAG(t_dust, final);
   gwi_class_xtor(gwi, dust_ctor, dust_dtor);
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, dust_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, dust_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_density");
+  gwi_func_ini(gwi, "float", "density");
   GWI_BB(gwi_func_end(gwi, dust_get_density, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_density");
+  gwi_func_ini(gwi, "float", "density");
      gwi_func_arg(gwi, "float", "_density");
   GWI_BB(gwi_func_end(gwi, dust_set_density, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_bipolar");
+  gwi_func_ini(gwi, "int", "bipolar");
   GWI_BB(gwi_func_end(gwi, dust_get_bipolar, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_bipolar");
+  gwi_func_ini(gwi, "int", "bipolar");
      gwi_func_arg(gwi, "int", "_bipolar");
   GWI_BB(gwi_func_end(gwi, dust_set_bipolar, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Eqfil", "UGen"))
+  DECL_OB(const Type, t_eqfil, = gwi_class_ini(gwi, "Eqfil", "UGen"))
+  SET_FLAG(t_eqfil, final);
   gwi_class_xtor(gwi, eqfil_ctor, eqfil_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, eqfil_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, eqfil_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, eqfil_get_bw, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, eqfil_set_bw, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_gain");
+  gwi_func_ini(gwi, "float", "gain");
   GWI_BB(gwi_func_end(gwi, eqfil_get_gain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_gain");
+  gwi_func_ini(gwi, "float", "gain");
      gwi_func_arg(gwi, "float", "_gain");
   GWI_BB(gwi_func_end(gwi, eqfil_set_gain, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Expon", "UGen"))
+  DECL_OB(const Type, t_expon, = gwi_class_ini(gwi, "Expon", "UGen"))
+  SET_FLAG(t_expon, final);
   gwi_class_xtor(gwi, expon_ctor, expon_dtor);
-  gwi_func_ini(gwi, "float", "_a");
+  gwi_func_ini(gwi, "float", "a");
   GWI_BB(gwi_func_end(gwi, expon_get_a, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a");
+  gwi_func_ini(gwi, "float", "a");
      gwi_func_arg(gwi, "float", "_a");
   GWI_BB(gwi_func_end(gwi, expon_set_a, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, expon_get_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, expon_set_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b");
+  gwi_func_ini(gwi, "float", "b");
   GWI_BB(gwi_func_end(gwi, expon_get_b, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b");
+  gwi_func_ini(gwi, "float", "b");
      gwi_func_arg(gwi, "float", "_b");
   GWI_BB(gwi_func_end(gwi, expon_set_b, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Fof", "UGen"))
+  DECL_OB(const Type, t_fof, = gwi_class_ini(gwi, "Fof", "UGen"))
+  SET_FLAG(t_fof, final);
   gwi_class_xtor(gwi, fof_ctor, fof_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_sine");
@@ -7950,68 +7986,70 @@ GWION_IMPORT(soundpipe) {
      gwi_func_arg(gwi, "int", "_iolaps");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, fof_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, fof_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, fof_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_fund");
+  gwi_func_ini(gwi, "float", "fund");
   GWI_BB(gwi_func_end(gwi, fof_get_fund, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_fund");
+  gwi_func_ini(gwi, "float", "fund");
      gwi_func_arg(gwi, "float", "_fund");
   GWI_BB(gwi_func_end(gwi, fof_set_fund, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_form");
+  gwi_func_ini(gwi, "float", "form");
   GWI_BB(gwi_func_end(gwi, fof_get_form, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_form");
+  gwi_func_ini(gwi, "float", "form");
      gwi_func_arg(gwi, "float", "_form");
   GWI_BB(gwi_func_end(gwi, fof_set_form, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_oct");
+  gwi_func_ini(gwi, "float", "oct");
   GWI_BB(gwi_func_end(gwi, fof_get_oct, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_oct");
+  gwi_func_ini(gwi, "float", "oct");
      gwi_func_arg(gwi, "float", "_oct");
   GWI_BB(gwi_func_end(gwi, fof_set_oct, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_band");
+  gwi_func_ini(gwi, "float", "band");
   GWI_BB(gwi_func_end(gwi, fof_get_band, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_band");
+  gwi_func_ini(gwi, "float", "band");
      gwi_func_arg(gwi, "float", "_band");
   GWI_BB(gwi_func_end(gwi, fof_set_band, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_ris");
+  gwi_func_ini(gwi, "float", "ris");
   GWI_BB(gwi_func_end(gwi, fof_get_ris, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_ris");
+  gwi_func_ini(gwi, "float", "ris");
      gwi_func_arg(gwi, "float", "_ris");
   GWI_BB(gwi_func_end(gwi, fof_set_ris, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, fof_get_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, fof_set_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, fof_get_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, fof_set_dur, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Fofilt", "UGen"))
+  DECL_OB(const Type, t_fofilt, = gwi_class_ini(gwi, "Fofilt", "UGen"))
+  SET_FLAG(t_fofilt, final);
   gwi_class_xtor(gwi, fofilt_ctor, fofilt_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, fofilt_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, fofilt_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, fofilt_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, fofilt_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, fofilt_get_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, fofilt_set_dec, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Fog", "UGen"))
+  DECL_OB(const Type, t_fog, = gwi_class_ini(gwi, "Fog", "UGen"))
+  SET_FLAG(t_fog, final);
   gwi_class_xtor(gwi, fog_ctor, fog_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_wav");
@@ -8019,417 +8057,441 @@ GWION_IMPORT(soundpipe) {
      gwi_func_arg(gwi, "int", "_iolaps");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, fog_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, fog_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, fog_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dens");
+  gwi_func_ini(gwi, "float", "dens");
   GWI_BB(gwi_func_end(gwi, fog_get_dens, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dens");
+  gwi_func_ini(gwi, "float", "dens");
      gwi_func_arg(gwi, "float", "_dens");
   GWI_BB(gwi_func_end(gwi, fog_set_dens, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_trans");
+  gwi_func_ini(gwi, "float", "trans");
   GWI_BB(gwi_func_end(gwi, fog_get_trans, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_trans");
+  gwi_func_ini(gwi, "float", "trans");
      gwi_func_arg(gwi, "float", "_trans");
   GWI_BB(gwi_func_end(gwi, fog_set_trans, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_spd");
+  gwi_func_ini(gwi, "float", "spd");
   GWI_BB(gwi_func_end(gwi, fog_get_spd, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_spd");
+  gwi_func_ini(gwi, "float", "spd");
      gwi_func_arg(gwi, "float", "_spd");
   GWI_BB(gwi_func_end(gwi, fog_set_spd, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_oct");
+  gwi_func_ini(gwi, "float", "oct");
   GWI_BB(gwi_func_end(gwi, fog_get_oct, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_oct");
+  gwi_func_ini(gwi, "float", "oct");
      gwi_func_arg(gwi, "float", "_oct");
   GWI_BB(gwi_func_end(gwi, fog_set_oct, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_band");
+  gwi_func_ini(gwi, "float", "band");
   GWI_BB(gwi_func_end(gwi, fog_get_band, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_band");
+  gwi_func_ini(gwi, "float", "band");
      gwi_func_arg(gwi, "float", "_band");
   GWI_BB(gwi_func_end(gwi, fog_set_band, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_ris");
+  gwi_func_ini(gwi, "float", "ris");
   GWI_BB(gwi_func_end(gwi, fog_get_ris, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_ris");
+  gwi_func_ini(gwi, "float", "ris");
      gwi_func_arg(gwi, "float", "_ris");
   GWI_BB(gwi_func_end(gwi, fog_set_ris, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, fog_get_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, fog_set_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, fog_get_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, fog_set_dur, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Fold", "UGen"))
+  DECL_OB(const Type, t_fold, = gwi_class_ini(gwi, "Fold", "UGen"))
+  SET_FLAG(t_fold, final);
   gwi_class_xtor(gwi, fold_ctor, fold_dtor);
-  gwi_func_ini(gwi, "float", "_incr");
+  gwi_func_ini(gwi, "float", "incr");
   GWI_BB(gwi_func_end(gwi, fold_get_incr, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_incr");
+  gwi_func_ini(gwi, "float", "incr");
      gwi_func_arg(gwi, "float", "_incr");
   GWI_BB(gwi_func_end(gwi, fold_set_incr, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Fosc", "UGen"))
+  DECL_OB(const Type, t_fosc, = gwi_class_ini(gwi, "Fosc", "UGen"))
+  SET_FLAG(t_fosc, final);
   gwi_class_xtor(gwi, fosc_ctor, fosc_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_tbl");
   GWI_BB(gwi_func_end(gwi, fosc_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, fosc_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, fosc_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, fosc_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, fosc_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_car");
+  gwi_func_ini(gwi, "float", "car");
   GWI_BB(gwi_func_end(gwi, fosc_get_car, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_car");
+  gwi_func_ini(gwi, "float", "car");
      gwi_func_arg(gwi, "float", "_car");
   GWI_BB(gwi_func_end(gwi, fosc_set_car, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mod");
+  gwi_func_ini(gwi, "float", "mod");
   GWI_BB(gwi_func_end(gwi, fosc_get_mod, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mod");
+  gwi_func_ini(gwi, "float", "mod");
      gwi_func_arg(gwi, "float", "_mod");
   GWI_BB(gwi_func_end(gwi, fosc_set_mod, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_indx");
+  gwi_func_ini(gwi, "float", "indx");
   GWI_BB(gwi_func_end(gwi, fosc_get_indx, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_indx");
+  gwi_func_ini(gwi, "float", "indx");
      gwi_func_arg(gwi, "float", "_indx");
   GWI_BB(gwi_func_end(gwi, fosc_set_indx, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Gbuzz", "UGen"))
+  DECL_OB(const Type, t_gbuzz, = gwi_class_ini(gwi, "Gbuzz", "UGen"))
+  SET_FLAG(t_gbuzz, final);
   gwi_class_xtor(gwi, gbuzz_ctor, gbuzz_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, gbuzz_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_nharm");
+  gwi_func_ini(gwi, "float", "nharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_nharm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_nharm");
+  gwi_func_ini(gwi, "float", "nharm");
      gwi_func_arg(gwi, "float", "_nharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_nharm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lharm");
+  gwi_func_ini(gwi, "float", "lharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_lharm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lharm");
+  gwi_func_ini(gwi, "float", "lharm");
      gwi_func_arg(gwi, "float", "_lharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_lharm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mul");
+  gwi_func_ini(gwi, "float", "mul");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_mul, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mul");
+  gwi_func_ini(gwi, "float", "mul");
      gwi_func_arg(gwi, "float", "_mul");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_mul, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Hilbert", "UGen"))
+  DECL_OB(const Type, t_hilbert, = gwi_class_ini(gwi, "Hilbert", "UGen"))
+  SET_FLAG(t_hilbert, final);
   gwi_class_xtor(gwi, hilbert_ctor, hilbert_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "In", "UGen"))
+  DECL_OB(const Type, t_in, = gwi_class_ini(gwi, "In", "UGen"))
+  SET_FLAG(t_in, final);
   gwi_class_xtor(gwi, in_ctor, in_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Incr", "UGen"))
+  DECL_OB(const Type, t_incr, = gwi_class_ini(gwi, "Incr", "UGen"))
+  SET_FLAG(t_incr, final);
   gwi_class_xtor(gwi, incr_ctor, incr_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_val");
   GWI_BB(gwi_func_end(gwi, incr_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_step");
+  gwi_func_ini(gwi, "float", "step");
   GWI_BB(gwi_func_end(gwi, incr_get_step, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_step");
+  gwi_func_ini(gwi, "float", "step");
      gwi_func_arg(gwi, "float", "_step");
   GWI_BB(gwi_func_end(gwi, incr_set_step, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, incr_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, incr_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, incr_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, incr_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Jcrev", "UGen"))
+  DECL_OB(const Type, t_jcrev, = gwi_class_ini(gwi, "Jcrev", "UGen"))
+  SET_FLAG(t_jcrev, final);
   gwi_class_xtor(gwi, jcrev_ctor, jcrev_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Jitter", "UGen"))
+  DECL_OB(const Type, t_jitter, = gwi_class_ini(gwi, "Jitter", "UGen"))
+  SET_FLAG(t_jitter, final);
   gwi_class_xtor(gwi, jitter_ctor, jitter_dtor);
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, jitter_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, jitter_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cpsMin");
+  gwi_func_ini(gwi, "float", "cpsMin");
   GWI_BB(gwi_func_end(gwi, jitter_get_cpsMin, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cpsMin");
+  gwi_func_ini(gwi, "float", "cpsMin");
      gwi_func_arg(gwi, "float", "_cpsMin");
   GWI_BB(gwi_func_end(gwi, jitter_set_cpsMin, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cpsMax");
+  gwi_func_ini(gwi, "float", "cpsMax");
   GWI_BB(gwi_func_end(gwi, jitter_get_cpsMax, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cpsMax");
+  gwi_func_ini(gwi, "float", "cpsMax");
      gwi_func_arg(gwi, "float", "_cpsMax");
   GWI_BB(gwi_func_end(gwi, jitter_set_cpsMax, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Line", "UGen"))
+  DECL_OB(const Type, t_line, = gwi_class_ini(gwi, "Line", "UGen"))
+  SET_FLAG(t_line, final);
   gwi_class_xtor(gwi, line_ctor, line_dtor);
-  gwi_func_ini(gwi, "float", "_a");
+  gwi_func_ini(gwi, "float", "a");
   GWI_BB(gwi_func_end(gwi, line_get_a, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_a");
+  gwi_func_ini(gwi, "float", "a");
      gwi_func_arg(gwi, "float", "_a");
   GWI_BB(gwi_func_end(gwi, line_set_a, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, line_get_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, line_set_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b");
+  gwi_func_ini(gwi, "float", "b");
   GWI_BB(gwi_func_end(gwi, line_get_b, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_b");
+  gwi_func_ini(gwi, "float", "b");
      gwi_func_arg(gwi, "float", "_b");
   GWI_BB(gwi_func_end(gwi, line_set_b, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Lpc", "UGen"))
+  DECL_OB(const Type, t_lpc, = gwi_class_ini(gwi, "Lpc", "UGen"))
+  SET_FLAG(t_lpc, final);
   gwi_class_xtor(gwi, lpc_ctor, lpc_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "int", "_framesize");
   GWI_BB(gwi_func_end(gwi, lpc_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Lpf18", "UGen"))
+  DECL_OB(const Type, t_lpf18, = gwi_class_ini(gwi, "Lpf18", "UGen"))
+  SET_FLAG(t_lpf18, final);
   gwi_class_xtor(gwi, lpf18_ctor, lpf18_dtor);
-  gwi_func_ini(gwi, "float", "_cutoff");
+  gwi_func_ini(gwi, "float", "cutoff");
   GWI_BB(gwi_func_end(gwi, lpf18_get_cutoff, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cutoff");
+  gwi_func_ini(gwi, "float", "cutoff");
      gwi_func_arg(gwi, "float", "_cutoff");
   GWI_BB(gwi_func_end(gwi, lpf18_set_cutoff, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, lpf18_get_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, lpf18_set_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dist");
+  gwi_func_ini(gwi, "float", "dist");
   GWI_BB(gwi_func_end(gwi, lpf18_get_dist, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dist");
+  gwi_func_ini(gwi, "float", "dist");
      gwi_func_arg(gwi, "float", "_dist");
   GWI_BB(gwi_func_end(gwi, lpf18_set_dist, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Maygate", "UGen"))
+  DECL_OB(const Type, t_maygate, = gwi_class_ini(gwi, "Maygate", "UGen"))
+  SET_FLAG(t_maygate, final);
   gwi_class_xtor(gwi, maygate_ctor, maygate_dtor);
-  gwi_func_ini(gwi, "float", "_prob");
+  gwi_func_ini(gwi, "float", "prob");
   GWI_BB(gwi_func_end(gwi, maygate_get_prob, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_prob");
+  gwi_func_ini(gwi, "float", "prob");
      gwi_func_arg(gwi, "float", "_prob");
   GWI_BB(gwi_func_end(gwi, maygate_set_prob, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_mode");
+  gwi_func_ini(gwi, "int", "mode");
   GWI_BB(gwi_func_end(gwi, maygate_get_mode, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_mode");
+  gwi_func_ini(gwi, "int", "mode");
      gwi_func_arg(gwi, "int", "_mode");
   GWI_BB(gwi_func_end(gwi, maygate_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Metro", "UGen"))
+  DECL_OB(const Type, t_metro, = gwi_class_ini(gwi, "Metro", "UGen"))
+  SET_FLAG(t_metro, final);
   gwi_class_xtor(gwi, metro_ctor, metro_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, metro_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, metro_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Mincer", "UGen"))
+  DECL_OB(const Type, t_mincer, = gwi_class_ini(gwi, "Mincer", "UGen"))
+  SET_FLAG(t_mincer, final);
   gwi_class_xtor(gwi, mincer_ctor, mincer_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
      gwi_func_arg(gwi, "int", "_winsize");
   GWI_BB(gwi_func_end(gwi, mincer_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_time");
+  gwi_func_ini(gwi, "float", "time");
   GWI_BB(gwi_func_end(gwi, mincer_get_time, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_time");
+  gwi_func_ini(gwi, "float", "time");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, mincer_set_time, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, mincer_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, mincer_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pitch");
+  gwi_func_ini(gwi, "float", "pitch");
   GWI_BB(gwi_func_end(gwi, mincer_get_pitch, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pitch");
+  gwi_func_ini(gwi, "float", "pitch");
      gwi_func_arg(gwi, "float", "_pitch");
   GWI_BB(gwi_func_end(gwi, mincer_set_pitch, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Mode", "UGen"))
+  DECL_OB(const Type, t_mode, = gwi_class_ini(gwi, "Mode", "UGen"))
+  SET_FLAG(t_mode, final);
   gwi_class_xtor(gwi, mode_ctor, mode_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, mode_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, mode_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_q");
+  gwi_func_ini(gwi, "float", "q");
   GWI_BB(gwi_func_end(gwi, mode_get_q, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_q");
+  gwi_func_ini(gwi, "float", "q");
      gwi_func_arg(gwi, "float", "_q");
   GWI_BB(gwi_func_end(gwi, mode_set_q, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Moogladder", "UGen"))
+  DECL_OB(const Type, t_moogladder, = gwi_class_ini(gwi, "Moogladder", "UGen"))
+  SET_FLAG(t_moogladder, final);
   gwi_class_xtor(gwi, moogladder_ctor, moogladder_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, moogladder_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, moogladder_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, moogladder_get_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, moogladder_set_res, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Noise", "UGen"))
+  DECL_OB(const Type, t_noise, = gwi_class_ini(gwi, "Noise", "UGen"))
+  SET_FLAG(t_noise, final);
   gwi_class_xtor(gwi, noise_ctor, noise_dtor);
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, noise_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, noise_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Nsmp", "UGen"))
+  DECL_OB(const Type, t_nsmp, = gwi_class_ini(gwi, "Nsmp", "UGen"))
+  SET_FLAG(t_nsmp, final);
   gwi_class_xtor(gwi, nsmp_ctor, nsmp_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
      gwi_func_arg(gwi, "int", "_sr");
      gwi_func_arg(gwi, "string", "_init");
   GWI_BB(gwi_func_end(gwi, nsmp_init, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_index");
+  gwi_func_ini(gwi, "int", "index");
   GWI_BB(gwi_func_end(gwi, nsmp_get_index, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_index");
+  gwi_func_ini(gwi, "int", "index");
      gwi_func_arg(gwi, "int", "_index");
   GWI_BB(gwi_func_end(gwi, nsmp_set_index, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Osc", "UGen"))
+  DECL_OB(const Type, t_osc, = gwi_class_ini(gwi, "Osc", "UGen"))
+  SET_FLAG(t_osc, final);
   gwi_class_xtor(gwi, osc_ctor, osc_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_tbl");
      gwi_func_arg(gwi, "float", "_phase");
   GWI_BB(gwi_func_end(gwi, osc_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, osc_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, osc_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, osc_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, osc_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Oscmorph", "UGen"))
+  DECL_OB(const Type, t_oscmorph, = gwi_class_ini(gwi, "Oscmorph", "UGen"))
+  SET_FLAG(t_oscmorph, final);
   gwi_class_xtor(gwi, oscmorph_ctor, oscmorph_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl[]", "_tbl");
      gwi_func_arg(gwi, "int", "_nft");
      gwi_func_arg(gwi, "float", "_phase");
   GWI_BB(gwi_func_end(gwi, oscmorph_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, oscmorph_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, oscmorph_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, oscmorph_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, oscmorph_set_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wtpos");
+  gwi_func_ini(gwi, "float", "wtpos");
   GWI_BB(gwi_func_end(gwi, oscmorph_get_wtpos, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wtpos");
+  gwi_func_ini(gwi, "float", "wtpos");
      gwi_func_arg(gwi, "float", "_wtpos");
   GWI_BB(gwi_func_end(gwi, oscmorph_set_wtpos, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Pan2", "UGen"))
+  DECL_OB(const Type, t_pan2, = gwi_class_ini(gwi, "Pan2", "UGen"))
+  SET_FLAG(t_pan2, final);
   gwi_class_xtor(gwi, pan2_ctor, pan2_dtor);
-  gwi_func_ini(gwi, "int", "_type");
+  gwi_func_ini(gwi, "int", "type");
   GWI_BB(gwi_func_end(gwi, pan2_get_type, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_type");
+  gwi_func_ini(gwi, "int", "type");
      gwi_func_arg(gwi, "int", "_type");
   GWI_BB(gwi_func_end(gwi, pan2_set_type, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pan");
+  gwi_func_ini(gwi, "float", "pan");
   GWI_BB(gwi_func_end(gwi, pan2_get_pan, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pan");
+  gwi_func_ini(gwi, "float", "pan");
      gwi_func_arg(gwi, "float", "_pan");
   GWI_BB(gwi_func_end(gwi, pan2_set_pan, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Panst", "UGen"))
+  DECL_OB(const Type, t_panst, = gwi_class_ini(gwi, "Panst", "UGen"))
+  SET_FLAG(t_panst, final);
   gwi_class_xtor(gwi, panst_ctor, panst_dtor);
-  gwi_func_ini(gwi, "int", "_type");
+  gwi_func_ini(gwi, "int", "type");
   GWI_BB(gwi_func_end(gwi, panst_get_type, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_type");
+  gwi_func_ini(gwi, "int", "type");
      gwi_func_arg(gwi, "int", "_type");
   GWI_BB(gwi_func_end(gwi, panst_set_type, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pan");
+  gwi_func_ini(gwi, "float", "pan");
   GWI_BB(gwi_func_end(gwi, panst_get_pan, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_pan");
+  gwi_func_ini(gwi, "float", "pan");
      gwi_func_arg(gwi, "float", "_pan");
   GWI_BB(gwi_func_end(gwi, panst_set_pan, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Pareq", "UGen"))
+  DECL_OB(const Type, t_pareq, = gwi_class_ini(gwi, "Pareq", "UGen"))
+  SET_FLAG(t_pareq, final);
   gwi_class_xtor(gwi, pareq_ctor, pareq_dtor);
-  gwi_func_ini(gwi, "float", "_fc");
+  gwi_func_ini(gwi, "float", "fc");
   GWI_BB(gwi_func_end(gwi, pareq_get_fc, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_fc");
+  gwi_func_ini(gwi, "float", "fc");
      gwi_func_arg(gwi, "float", "_fc");
   GWI_BB(gwi_func_end(gwi, pareq_set_fc, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_v");
+  gwi_func_ini(gwi, "float", "v");
   GWI_BB(gwi_func_end(gwi, pareq_get_v, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_v");
+  gwi_func_ini(gwi, "float", "v");
      gwi_func_arg(gwi, "float", "_v");
   GWI_BB(gwi_func_end(gwi, pareq_set_v, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_q");
+  gwi_func_ini(gwi, "float", "q");
   GWI_BB(gwi_func_end(gwi, pareq_get_q, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_q");
+  gwi_func_ini(gwi, "float", "q");
      gwi_func_arg(gwi, "float", "_q");
   GWI_BB(gwi_func_end(gwi, pareq_set_q, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mode");
+  gwi_func_ini(gwi, "float", "mode");
   GWI_BB(gwi_func_end(gwi, pareq_get_mode, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mode");
+  gwi_func_ini(gwi, "float", "mode");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, pareq_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Paulstretch", "UGen"))
+  DECL_OB(const Type, t_paulstretch, = gwi_class_ini(gwi, "Paulstretch", "UGen"))
+  SET_FLAG(t_paulstretch, final);
   gwi_class_xtor(gwi, paulstretch_ctor, paulstretch_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
@@ -8438,110 +8500,116 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, paulstretch_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Pdhalf", "UGen"))
+  DECL_OB(const Type, t_pdhalf, = gwi_class_ini(gwi, "Pdhalf", "UGen"))
+  SET_FLAG(t_pdhalf, final);
   gwi_class_xtor(gwi, pdhalf_ctor, pdhalf_dtor);
-  gwi_func_ini(gwi, "float", "_amount");
+  gwi_func_ini(gwi, "float", "amount");
   GWI_BB(gwi_func_end(gwi, pdhalf_get_amount, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amount");
+  gwi_func_ini(gwi, "float", "amount");
      gwi_func_arg(gwi, "float", "_amount");
   GWI_BB(gwi_func_end(gwi, pdhalf_set_amount, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Peaklim", "UGen"))
+  DECL_OB(const Type, t_peaklim, = gwi_class_ini(gwi, "Peaklim", "UGen"))
+  SET_FLAG(t_peaklim, final);
   gwi_class_xtor(gwi, peaklim_ctor, peaklim_dtor);
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, peaklim_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, peaklim_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, peaklim_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, peaklim_set_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_thresh");
+  gwi_func_ini(gwi, "float", "thresh");
   GWI_BB(gwi_func_end(gwi, peaklim_get_thresh, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_thresh");
+  gwi_func_ini(gwi, "float", "thresh");
      gwi_func_arg(gwi, "float", "_thresh");
   GWI_BB(gwi_func_end(gwi, peaklim_set_thresh, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Phaser", "UGen"))
+  DECL_OB(const Type, t_phaser, = gwi_class_ini(gwi, "Phaser", "UGen"))
+  SET_FLAG(t_phaser, final);
   gwi_class_xtor(gwi, phaser_ctor, phaser_dtor);
-  gwi_func_ini(gwi, "float", "_MaxNotch1Freq");
+  gwi_func_ini(gwi, "float", "MaxNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_get_MaxNotch1Freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_MaxNotch1Freq");
+  gwi_func_ini(gwi, "float", "MaxNotch1Freq");
      gwi_func_arg(gwi, "float", "_MaxNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_set_MaxNotch1Freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_MinNotch1Freq");
+  gwi_func_ini(gwi, "float", "MinNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_get_MinNotch1Freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_MinNotch1Freq");
+  gwi_func_ini(gwi, "float", "MinNotch1Freq");
      gwi_func_arg(gwi, "float", "_MinNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_set_MinNotch1Freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_Notch_width");
+  gwi_func_ini(gwi, "float", "Notch_width");
   GWI_BB(gwi_func_end(gwi, phaser_get_Notch_width, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_Notch_width");
+  gwi_func_ini(gwi, "float", "Notch_width");
      gwi_func_arg(gwi, "float", "_Notch_width");
   GWI_BB(gwi_func_end(gwi, phaser_set_Notch_width, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_NotchFreq");
+  gwi_func_ini(gwi, "float", "NotchFreq");
   GWI_BB(gwi_func_end(gwi, phaser_get_NotchFreq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_NotchFreq");
+  gwi_func_ini(gwi, "float", "NotchFreq");
      gwi_func_arg(gwi, "float", "_NotchFreq");
   GWI_BB(gwi_func_end(gwi, phaser_set_NotchFreq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_VibratoMode");
+  gwi_func_ini(gwi, "float", "VibratoMode");
   GWI_BB(gwi_func_end(gwi, phaser_get_VibratoMode, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_VibratoMode");
+  gwi_func_ini(gwi, "float", "VibratoMode");
      gwi_func_arg(gwi, "float", "_VibratoMode");
   GWI_BB(gwi_func_end(gwi, phaser_set_VibratoMode, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_depth");
+  gwi_func_ini(gwi, "float", "depth");
   GWI_BB(gwi_func_end(gwi, phaser_get_depth, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_depth");
+  gwi_func_ini(gwi, "float", "depth");
      gwi_func_arg(gwi, "float", "_depth");
   GWI_BB(gwi_func_end(gwi, phaser_set_depth, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback_gain");
+  gwi_func_ini(gwi, "float", "feedback_gain");
   GWI_BB(gwi_func_end(gwi, phaser_get_feedback_gain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback_gain");
+  gwi_func_ini(gwi, "float", "feedback_gain");
      gwi_func_arg(gwi, "float", "_feedback_gain");
   GWI_BB(gwi_func_end(gwi, phaser_set_feedback_gain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_invert");
+  gwi_func_ini(gwi, "float", "invert");
   GWI_BB(gwi_func_end(gwi, phaser_get_invert, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_invert");
+  gwi_func_ini(gwi, "float", "invert");
      gwi_func_arg(gwi, "float", "_invert");
   GWI_BB(gwi_func_end(gwi, phaser_set_invert, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_level");
+  gwi_func_ini(gwi, "float", "level");
   GWI_BB(gwi_func_end(gwi, phaser_get_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_level");
+  gwi_func_ini(gwi, "float", "level");
      gwi_func_arg(gwi, "float", "_level");
   GWI_BB(gwi_func_end(gwi, phaser_set_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lfobpm");
+  gwi_func_ini(gwi, "float", "lfobpm");
   GWI_BB(gwi_func_end(gwi, phaser_get_lfobpm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lfobpm");
+  gwi_func_ini(gwi, "float", "lfobpm");
      gwi_func_arg(gwi, "float", "_lfobpm");
   GWI_BB(gwi_func_end(gwi, phaser_set_lfobpm, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Phasor", "UGen"))
+  DECL_OB(const Type, t_phasor, = gwi_class_ini(gwi, "Phasor", "UGen"))
+  SET_FLAG(t_phasor, final);
   gwi_class_xtor(gwi, phasor_ctor, phasor_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, phasor_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, phasor_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, phasor_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Pinknoise", "UGen"))
+  DECL_OB(const Type, t_pinknoise, = gwi_class_ini(gwi, "Pinknoise", "UGen"))
+  SET_FLAG(t_pinknoise, final);
   gwi_class_xtor(gwi, pinknoise_ctor, pinknoise_dtor);
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, pinknoise_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, pinknoise_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Pitchamdf", "UGen"))
+  DECL_OB(const Type, t_pitchamdf, = gwi_class_ini(gwi, "Pitchamdf", "UGen"))
+  SET_FLAG(t_pitchamdf, final);
   gwi_class_xtor(gwi, pitchamdf_ctor, pitchamdf_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_min");
@@ -8549,98 +8617,105 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pitchamdf_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Pluck", "UGen"))
+  DECL_OB(const Type, t_pluck, = gwi_class_ini(gwi, "Pluck", "UGen"))
+  SET_FLAG(t_pluck, final);
   gwi_class_xtor(gwi, pluck_ctor, pluck_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_ifreq");
   GWI_BB(gwi_func_end(gwi, pluck_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, pluck_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, pluck_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, pluck_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, pluck_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Port", "UGen"))
+  DECL_OB(const Type, t_port, = gwi_class_ini(gwi, "Port", "UGen"))
+  SET_FLAG(t_port, final);
   gwi_class_xtor(gwi, port_ctor, port_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_htime");
   GWI_BB(gwi_func_end(gwi, port_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_htime");
+  gwi_func_ini(gwi, "float", "htime");
   GWI_BB(gwi_func_end(gwi, port_get_htime, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_htime");
+  gwi_func_ini(gwi, "float", "htime");
      gwi_func_arg(gwi, "float", "_htime");
   GWI_BB(gwi_func_end(gwi, port_set_htime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Posc3", "UGen"))
+  DECL_OB(const Type, t_posc3, = gwi_class_ini(gwi, "Posc3", "UGen"))
+  SET_FLAG(t_posc3, final);
   gwi_class_xtor(gwi, posc3_ctor, posc3_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_tbl");
   GWI_BB(gwi_func_end(gwi, posc3_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, posc3_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, posc3_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, posc3_get_amp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_amp");
+  gwi_func_ini(gwi, "float", "amp");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, posc3_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Progress", "UGen"))
+  DECL_OB(const Type, t_progress, = gwi_class_ini(gwi, "Progress", "UGen"))
+  SET_FLAG(t_progress, final);
   gwi_class_xtor(gwi, progress_ctor, progress_dtor);
-  gwi_func_ini(gwi, "int", "_nbars");
+  gwi_func_ini(gwi, "int", "nbars");
   GWI_BB(gwi_func_end(gwi, progress_get_nbars, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_nbars");
+  gwi_func_ini(gwi, "int", "nbars");
      gwi_func_arg(gwi, "int", "_nbars");
   GWI_BB(gwi_func_end(gwi, progress_set_nbars, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_skip");
+  gwi_func_ini(gwi, "int", "skip");
   GWI_BB(gwi_func_end(gwi, progress_get_skip, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_skip");
+  gwi_func_ini(gwi, "int", "skip");
      gwi_func_arg(gwi, "int", "_skip");
   GWI_BB(gwi_func_end(gwi, progress_set_skip, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Prop", "UGen"))
+  DECL_OB(const Type, t_prop, = gwi_class_ini(gwi, "Prop", "UGen"))
+  SET_FLAG(t_prop, final);
   gwi_class_xtor(gwi, prop_ctor, prop_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "string", "_str");
   GWI_BB(gwi_func_end(gwi, prop_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bpm");
+  gwi_func_ini(gwi, "float", "bpm");
   GWI_BB(gwi_func_end(gwi, prop_get_bpm, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bpm");
+  gwi_func_ini(gwi, "float", "bpm");
      gwi_func_arg(gwi, "float", "_bpm");
   GWI_BB(gwi_func_end(gwi, prop_set_bpm, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Pshift", "UGen"))
+  DECL_OB(const Type, t_pshift, = gwi_class_ini(gwi, "Pshift", "UGen"))
+  SET_FLAG(t_pshift, final);
   gwi_class_xtor(gwi, pshift_ctor, pshift_dtor);
-  gwi_func_ini(gwi, "float", "_shift");
+  gwi_func_ini(gwi, "float", "shift");
   GWI_BB(gwi_func_end(gwi, pshift_get_shift, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_shift");
+  gwi_func_ini(gwi, "float", "shift");
      gwi_func_arg(gwi, "float", "_shift");
   GWI_BB(gwi_func_end(gwi, pshift_set_shift, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_window");
+  gwi_func_ini(gwi, "float", "window");
   GWI_BB(gwi_func_end(gwi, pshift_get_window, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_window");
+  gwi_func_ini(gwi, "float", "window");
      gwi_func_arg(gwi, "float", "_window");
   GWI_BB(gwi_func_end(gwi, pshift_set_window, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_xfade");
+  gwi_func_ini(gwi, "float", "xfade");
   GWI_BB(gwi_func_end(gwi, pshift_get_xfade, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_xfade");
+  gwi_func_ini(gwi, "float", "xfade");
      gwi_func_arg(gwi, "float", "_xfade");
   GWI_BB(gwi_func_end(gwi, pshift_set_xfade, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Ptrack", "UGen"))
+  DECL_OB(const Type, t_ptrack, = gwi_class_ini(gwi, "Ptrack", "UGen"))
+  SET_FLAG(t_ptrack, final);
   gwi_class_xtor(gwi, ptrack_ctor, ptrack_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "int", "_ihopsize");
@@ -8648,621 +8723,665 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, ptrack_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Randh", "UGen"))
+  DECL_OB(const Type, t_randh, = gwi_class_ini(gwi, "Randh", "UGen"))
+  SET_FLAG(t_randh, final);
   gwi_class_xtor(gwi, randh_ctor, randh_dtor);
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, randh_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, randh_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, randh_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, randh_set_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, randh_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, randh_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Randi", "UGen"))
+  DECL_OB(const Type, t_randi, = gwi_class_ini(gwi, "Randi", "UGen"))
+  SET_FLAG(t_randi, final);
   gwi_class_xtor(gwi, randi_ctor, randi_dtor);
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, randi_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, randi_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, randi_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, randi_set_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cps");
+  gwi_func_ini(gwi, "float", "cps");
   GWI_BB(gwi_func_end(gwi, randi_get_cps, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cps");
+  gwi_func_ini(gwi, "float", "cps");
      gwi_func_arg(gwi, "float", "_cps");
   GWI_BB(gwi_func_end(gwi, randi_set_cps, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mode");
+  gwi_func_ini(gwi, "float", "mode");
   GWI_BB(gwi_func_end(gwi, randi_get_mode, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mode");
+  gwi_func_ini(gwi, "float", "mode");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, randi_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Random", "UGen"))
+  DECL_OB(const Type, t_random, = gwi_class_ini(gwi, "Random", "UGen"))
+  SET_FLAG(t_random, final);
   gwi_class_xtor(gwi, random_ctor, random_dtor);
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, random_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, random_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, random_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, random_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Reson", "UGen"))
+  DECL_OB(const Type, t_reson, = gwi_class_ini(gwi, "Reson", "UGen"))
+  SET_FLAG(t_reson, final);
   gwi_class_xtor(gwi, reson_ctor, reson_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, reson_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, reson_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, reson_get_bw, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bw");
+  gwi_func_ini(gwi, "float", "bw");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, reson_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Reverse", "UGen"))
+  DECL_OB(const Type, t_reverse, = gwi_class_ini(gwi, "Reverse", "UGen"))
+  SET_FLAG(t_reverse, final);
   gwi_class_xtor(gwi, reverse_ctor, reverse_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_delay");
   GWI_BB(gwi_func_end(gwi, reverse_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Revsc", "UGen"))
+  DECL_OB(const Type, t_revsc, = gwi_class_ini(gwi, "Revsc", "UGen"))
+  SET_FLAG(t_revsc, final);
   gwi_class_xtor(gwi, revsc_ctor, revsc_dtor);
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, revsc_get_feedback, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, revsc_set_feedback, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lpfreq");
+  gwi_func_ini(gwi, "float", "lpfreq");
   GWI_BB(gwi_func_end(gwi, revsc_get_lpfreq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lpfreq");
+  gwi_func_ini(gwi, "float", "lpfreq");
      gwi_func_arg(gwi, "float", "_lpfreq");
   GWI_BB(gwi_func_end(gwi, revsc_set_lpfreq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Rms", "UGen"))
+  DECL_OB(const Type, t_rms, = gwi_class_ini(gwi, "Rms", "UGen"))
+  SET_FLAG(t_rms, final);
   gwi_class_xtor(gwi, rms_ctor, rms_dtor);
-  gwi_func_ini(gwi, "float", "_ihp");
+  gwi_func_ini(gwi, "float", "ihp");
   GWI_BB(gwi_func_end(gwi, rms_get_ihp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_ihp");
+  gwi_func_ini(gwi, "float", "ihp");
      gwi_func_arg(gwi, "float", "_ihp");
   GWI_BB(gwi_func_end(gwi, rms_set_ihp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Rpt", "UGen"))
+  DECL_OB(const Type, t_rpt, = gwi_class_ini(gwi, "Rpt", "UGen"))
+  SET_FLAG(t_rpt, final);
   gwi_class_xtor(gwi, rpt_ctor, rpt_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_maxdur");
   GWI_BB(gwi_func_end(gwi, rpt_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Rspline", "UGen"))
+  DECL_OB(const Type, t_rspline, = gwi_class_ini(gwi, "Rspline", "UGen"))
+  SET_FLAG(t_rspline, final);
   gwi_class_xtor(gwi, rspline_ctor, rspline_dtor);
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, rspline_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, rspline_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, rspline_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, rspline_set_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cps_min");
+  gwi_func_ini(gwi, "float", "cps_min");
   GWI_BB(gwi_func_end(gwi, rspline_get_cps_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cps_min");
+  gwi_func_ini(gwi, "float", "cps_min");
      gwi_func_arg(gwi, "float", "_cps_min");
   GWI_BB(gwi_func_end(gwi, rspline_set_cps_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cps_max");
+  gwi_func_ini(gwi, "float", "cps_max");
   GWI_BB(gwi_func_end(gwi, rspline_get_cps_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cps_max");
+  gwi_func_ini(gwi, "float", "cps_max");
      gwi_func_arg(gwi, "float", "_cps_max");
   GWI_BB(gwi_func_end(gwi, rspline_set_cps_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Samphold", "UGen"))
+  DECL_OB(const Type, t_samphold, = gwi_class_ini(gwi, "Samphold", "UGen"))
+  SET_FLAG(t_samphold, final);
   gwi_class_xtor(gwi, samphold_ctor, samphold_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Saturator", "UGen"))
+  DECL_OB(const Type, t_saturator, = gwi_class_ini(gwi, "Saturator", "UGen"))
+  SET_FLAG(t_saturator, final);
   gwi_class_xtor(gwi, saturator_ctor, saturator_dtor);
-  gwi_func_ini(gwi, "float", "_drive");
+  gwi_func_ini(gwi, "float", "drive");
   GWI_BB(gwi_func_end(gwi, saturator_get_drive, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_drive");
+  gwi_func_ini(gwi, "float", "drive");
      gwi_func_arg(gwi, "float", "_drive");
   GWI_BB(gwi_func_end(gwi, saturator_set_drive, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dcoffset");
+  gwi_func_ini(gwi, "float", "dcoffset");
   GWI_BB(gwi_func_end(gwi, saturator_get_dcoffset, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dcoffset");
+  gwi_func_ini(gwi, "float", "dcoffset");
      gwi_func_arg(gwi, "float", "_dcoffset");
   GWI_BB(gwi_func_end(gwi, saturator_set_dcoffset, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Scale", "UGen"))
+  DECL_OB(const Type, t_scale, = gwi_class_ini(gwi, "Scale", "UGen"))
+  SET_FLAG(t_scale, final);
   gwi_class_xtor(gwi, scale_ctor, scale_dtor);
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, scale_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, scale_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, scale_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, scale_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Sdelay", "UGen"))
+  DECL_OB(const Type, t_sdelay, = gwi_class_ini(gwi, "Sdelay", "UGen"))
+  SET_FLAG(t_sdelay, final);
   gwi_class_xtor(gwi, sdelay_ctor, sdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_size");
   GWI_BB(gwi_func_end(gwi, sdelay_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Slice", "UGen"))
+  DECL_OB(const Type, t_slice, = gwi_class_ini(gwi, "Slice", "UGen"))
+  SET_FLAG(t_slice, final);
   gwi_class_xtor(gwi, slice_ctor, slice_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_vals");
      gwi_func_arg(gwi, "ftbl", "_buf");
   GWI_BB(gwi_func_end(gwi, slice_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_id");
+  gwi_func_ini(gwi, "float", "id");
   GWI_BB(gwi_func_end(gwi, slice_get_id, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_id");
+  gwi_func_ini(gwi, "float", "id");
      gwi_func_arg(gwi, "float", "_id");
   GWI_BB(gwi_func_end(gwi, slice_set_id, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Smoothdelay", "UGen"))
+  DECL_OB(const Type, t_smoothdelay, = gwi_class_ini(gwi, "Smoothdelay", "UGen"))
+  SET_FLAG(t_smoothdelay, final);
   gwi_class_xtor(gwi, smoothdelay_ctor, smoothdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_maxdel");
      gwi_func_arg(gwi, "int", "_interp");
   GWI_BB(gwi_func_end(gwi, smoothdelay_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, smoothdelay_get_feedback, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, smoothdelay_set_feedback, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_del");
+  gwi_func_ini(gwi, "float", "del");
   GWI_BB(gwi_func_end(gwi, smoothdelay_get_del, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_del");
+  gwi_func_ini(gwi, "float", "del");
      gwi_func_arg(gwi, "float", "_del");
   GWI_BB(gwi_func_end(gwi, smoothdelay_set_del, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Spa", "UGen"))
+  DECL_OB(const Type, t_spa, = gwi_class_ini(gwi, "Spa", "UGen"))
+  SET_FLAG(t_spa, final);
   gwi_class_xtor(gwi, spa_ctor, spa_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, spa_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Sparec", "UGen"))
+  DECL_OB(const Type, t_sparec, = gwi_class_ini(gwi, "Sparec", "UGen"))
+  SET_FLAG(t_sparec, final);
   gwi_class_xtor(gwi, sparec_ctor, sparec_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, sparec_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Streson", "UGen"))
+  DECL_OB(const Type, t_streson, = gwi_class_ini(gwi, "Streson", "UGen"))
+  SET_FLAG(t_streson, final);
   gwi_class_xtor(gwi, streson_ctor, streson_dtor);
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, streson_get_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_freq");
+  gwi_func_ini(gwi, "float", "freq");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, streson_set_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_fdbgain");
+  gwi_func_ini(gwi, "float", "fdbgain");
   GWI_BB(gwi_func_end(gwi, streson_get_fdbgain, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_fdbgain");
+  gwi_func_ini(gwi, "float", "fdbgain");
      gwi_func_arg(gwi, "float", "_fdbgain");
   GWI_BB(gwi_func_end(gwi, streson_set_fdbgain, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Switch", "UGen"))
+  DECL_OB(const Type, t_switch, = gwi_class_ini(gwi, "Switch", "UGen"))
+  SET_FLAG(t_switch, final);
   gwi_class_xtor(gwi, switch_ctor, switch_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tabread", "UGen"))
+  DECL_OB(const Type, t_tabread, = gwi_class_ini(gwi, "Tabread", "UGen"))
+  SET_FLAG(t_tabread, final);
   gwi_class_xtor(gwi, tabread_ctor, tabread_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, tabread_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_index");
+  gwi_func_ini(gwi, "float", "index");
   GWI_BB(gwi_func_end(gwi, tabread_get_index, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_index");
+  gwi_func_ini(gwi, "float", "index");
      gwi_func_arg(gwi, "float", "_index");
   GWI_BB(gwi_func_end(gwi, tabread_set_index, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_offset");
+  gwi_func_ini(gwi, "float", "offset");
   GWI_BB(gwi_func_end(gwi, tabread_get_offset, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_offset");
+  gwi_func_ini(gwi, "float", "offset");
      gwi_func_arg(gwi, "float", "_offset");
   GWI_BB(gwi_func_end(gwi, tabread_set_offset, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wrap");
+  gwi_func_ini(gwi, "float", "wrap");
   GWI_BB(gwi_func_end(gwi, tabread_get_wrap, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_wrap");
+  gwi_func_ini(gwi, "float", "wrap");
      gwi_func_arg(gwi, "float", "_wrap");
   GWI_BB(gwi_func_end(gwi, tabread_set_wrap, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tadsr", "UGen"))
+  DECL_OB(const Type, t_tadsr, = gwi_class_ini(gwi, "Tadsr", "UGen"))
+  SET_FLAG(t_tadsr, final);
   gwi_class_xtor(gwi, tadsr_ctor, tadsr_dtor);
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tadsr_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tadsr_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, tadsr_get_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dec");
+  gwi_func_ini(gwi, "float", "dec");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, tadsr_set_dec, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_sus");
+  gwi_func_ini(gwi, "float", "sus");
   GWI_BB(gwi_func_end(gwi, tadsr_get_sus, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_sus");
+  gwi_func_ini(gwi, "float", "sus");
      gwi_func_arg(gwi, "float", "_sus");
   GWI_BB(gwi_func_end(gwi, tadsr_set_sus, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tadsr_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tadsr_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Talkbox", "UGen"))
+  DECL_OB(const Type, t_talkbox, = gwi_class_ini(gwi, "Talkbox", "UGen"))
+  SET_FLAG(t_talkbox, final);
   gwi_class_xtor(gwi, talkbox_ctor, talkbox_dtor);
-  gwi_func_ini(gwi, "float", "_quality");
+  gwi_func_ini(gwi, "float", "quality");
   GWI_BB(gwi_func_end(gwi, talkbox_get_quality, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_quality");
+  gwi_func_ini(gwi, "float", "quality");
      gwi_func_arg(gwi, "float", "_quality");
   GWI_BB(gwi_func_end(gwi, talkbox_set_quality, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tblrec", "UGen"))
+  DECL_OB(const Type, t_tblrec, = gwi_class_ini(gwi, "Tblrec", "UGen"))
+  SET_FLAG(t_tblrec, final);
   gwi_class_xtor(gwi, tblrec_ctor, tblrec_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_bar");
   GWI_BB(gwi_func_end(gwi, tblrec_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tbvcf", "UGen"))
+  DECL_OB(const Type, t_tbvcf, = gwi_class_ini(gwi, "Tbvcf", "UGen"))
+  SET_FLAG(t_tbvcf, final);
   gwi_class_xtor(gwi, tbvcf_ctor, tbvcf_dtor);
-  gwi_func_ini(gwi, "float", "_fco");
+  gwi_func_ini(gwi, "float", "fco");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_fco, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_fco");
+  gwi_func_ini(gwi, "float", "fco");
      gwi_func_arg(gwi, "float", "_fco");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_fco, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dist");
+  gwi_func_ini(gwi, "float", "dist");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_dist, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dist");
+  gwi_func_ini(gwi, "float", "dist");
      gwi_func_arg(gwi, "float", "_dist");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_dist, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_asym");
+  gwi_func_ini(gwi, "float", "asym");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_asym, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_asym");
+  gwi_func_ini(gwi, "float", "asym");
      gwi_func_arg(gwi, "float", "_asym");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_asym, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tdiv", "UGen"))
+  DECL_OB(const Type, t_tdiv, = gwi_class_ini(gwi, "Tdiv", "UGen"))
+  SET_FLAG(t_tdiv, final);
   gwi_class_xtor(gwi, tdiv_ctor, tdiv_dtor);
-  gwi_func_ini(gwi, "float", "_num");
+  gwi_func_ini(gwi, "float", "num");
   GWI_BB(gwi_func_end(gwi, tdiv_get_num, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_num");
+  gwi_func_ini(gwi, "float", "num");
      gwi_func_arg(gwi, "float", "_num");
   GWI_BB(gwi_func_end(gwi, tdiv_set_num, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_offset");
+  gwi_func_ini(gwi, "float", "offset");
   GWI_BB(gwi_func_end(gwi, tdiv_get_offset, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_offset");
+  gwi_func_ini(gwi, "float", "offset");
      gwi_func_arg(gwi, "float", "_offset");
   GWI_BB(gwi_func_end(gwi, tdiv_set_offset, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tenv", "UGen"))
+  DECL_OB(const Type, t_tenv, = gwi_class_ini(gwi, "Tenv", "UGen"))
+  SET_FLAG(t_tenv, final);
   gwi_class_xtor(gwi, tenv_ctor, tenv_dtor);
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tenv_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tenv_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hold");
+  gwi_func_ini(gwi, "float", "hold");
   GWI_BB(gwi_func_end(gwi, tenv_get_hold, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hold");
+  gwi_func_ini(gwi, "float", "hold");
      gwi_func_arg(gwi, "float", "_hold");
   GWI_BB(gwi_func_end(gwi, tenv_set_hold, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tenv_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tenv_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tenv2", "UGen"))
+  DECL_OB(const Type, t_tenv2, = gwi_class_ini(gwi, "Tenv2", "UGen"))
+  SET_FLAG(t_tenv2, final);
   gwi_class_xtor(gwi, tenv2_ctor, tenv2_dtor);
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tenv2_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tenv2_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tenv2_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tenv2_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tenvx", "UGen"))
+  DECL_OB(const Type, t_tenvx, = gwi_class_ini(gwi, "Tenvx", "UGen"))
+  SET_FLAG(t_tenvx, final);
   gwi_class_xtor(gwi, tenvx_ctor, tenvx_dtor);
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tenvx_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tenvx_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hold");
+  gwi_func_ini(gwi, "float", "hold");
   GWI_BB(gwi_func_end(gwi, tenvx_get_hold, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hold");
+  gwi_func_ini(gwi, "float", "hold");
      gwi_func_arg(gwi, "float", "_hold");
   GWI_BB(gwi_func_end(gwi, tenvx_set_hold, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tenvx_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tenvx_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tgate", "UGen"))
+  DECL_OB(const Type, t_tgate, = gwi_class_ini(gwi, "Tgate", "UGen"))
+  SET_FLAG(t_tgate, final);
   gwi_class_xtor(gwi, tgate_ctor, tgate_dtor);
-  gwi_func_ini(gwi, "float", "_time");
+  gwi_func_ini(gwi, "float", "time");
   GWI_BB(gwi_func_end(gwi, tgate_get_time, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_time");
+  gwi_func_ini(gwi, "float", "time");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, tgate_set_time, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Thresh", "UGen"))
+  DECL_OB(const Type, t_thresh, = gwi_class_ini(gwi, "Thresh", "UGen"))
+  SET_FLAG(t_thresh, final);
   gwi_class_xtor(gwi, thresh_ctor, thresh_dtor);
-  gwi_func_ini(gwi, "float", "_thresh");
+  gwi_func_ini(gwi, "float", "thresh");
   GWI_BB(gwi_func_end(gwi, thresh_get_thresh, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_thresh");
+  gwi_func_ini(gwi, "float", "thresh");
      gwi_func_arg(gwi, "float", "_thresh");
   GWI_BB(gwi_func_end(gwi, thresh_set_thresh, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_mode");
+  gwi_func_ini(gwi, "int", "mode");
   GWI_BB(gwi_func_end(gwi, thresh_get_mode, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_mode");
+  gwi_func_ini(gwi, "int", "mode");
      gwi_func_arg(gwi, "int", "_mode");
   GWI_BB(gwi_func_end(gwi, thresh_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Timer", "UGen"))
+  DECL_OB(const Type, t_timer, = gwi_class_ini(gwi, "Timer", "UGen"))
+  SET_FLAG(t_timer, final);
   gwi_class_xtor(gwi, timer_ctor, timer_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tin", "UGen"))
+  DECL_OB(const Type, t_tin, = gwi_class_ini(gwi, "Tin", "UGen"))
+  SET_FLAG(t_tin, final);
   gwi_class_xtor(gwi, tin_ctor, tin_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tone", "UGen"))
+  DECL_OB(const Type, t_tone, = gwi_class_ini(gwi, "Tone", "UGen"))
+  SET_FLAG(t_tone, final);
   gwi_class_xtor(gwi, tone_ctor, tone_dtor);
-  gwi_func_ini(gwi, "float", "_hp");
+  gwi_func_ini(gwi, "float", "hp");
   GWI_BB(gwi_func_end(gwi, tone_get_hp, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hp");
+  gwi_func_ini(gwi, "float", "hp");
      gwi_func_arg(gwi, "float", "_hp");
   GWI_BB(gwi_func_end(gwi, tone_set_hp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Trand", "UGen"))
+  DECL_OB(const Type, t_trand, = gwi_class_ini(gwi, "Trand", "UGen"))
+  SET_FLAG(t_trand, final);
   gwi_class_xtor(gwi, trand_ctor, trand_dtor);
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, trand_get_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_min");
+  gwi_func_ini(gwi, "float", "min");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, trand_set_min, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, trand_get_max, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_max");
+  gwi_func_ini(gwi, "float", "max");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, trand_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tseg", "UGen"))
+  DECL_OB(const Type, t_tseg, = gwi_class_ini(gwi, "Tseg", "UGen"))
+  SET_FLAG(t_tseg, final);
   gwi_class_xtor(gwi, tseg_ctor, tseg_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_ibeg");
   GWI_BB(gwi_func_end(gwi, tseg_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_end");
+  gwi_func_ini(gwi, "float", "end");
   GWI_BB(gwi_func_end(gwi, tseg_get_end, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_end");
+  gwi_func_ini(gwi, "float", "end");
      gwi_func_arg(gwi, "float", "_end");
   GWI_BB(gwi_func_end(gwi, tseg_set_end, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, tseg_get_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_dur");
+  gwi_func_ini(gwi, "float", "dur");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, tseg_set_dur, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_type");
+  gwi_func_ini(gwi, "float", "type");
   GWI_BB(gwi_func_end(gwi, tseg_get_type, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_type");
+  gwi_func_ini(gwi, "float", "type");
      gwi_func_arg(gwi, "float", "_type");
   GWI_BB(gwi_func_end(gwi, tseg_set_type, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Tseq", "UGen"))
+  DECL_OB(const Type, t_tseq, = gwi_class_ini(gwi, "Tseq", "UGen"))
+  SET_FLAG(t_tseq, final);
   gwi_class_xtor(gwi, tseq_ctor, tseq_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "ftbl", "_ft");
   GWI_BB(gwi_func_end(gwi, tseq_init, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_shuf");
+  gwi_func_ini(gwi, "int", "shuf");
   GWI_BB(gwi_func_end(gwi, tseq_get_shuf, ae_flag_none))
-  gwi_func_ini(gwi, "int", "_shuf");
+  gwi_func_ini(gwi, "int", "shuf");
      gwi_func_arg(gwi, "int", "_shuf");
   GWI_BB(gwi_func_end(gwi, tseq_set_shuf, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Vdelay", "UGen"))
+  DECL_OB(const Type, t_vdelay, = gwi_class_ini(gwi, "Vdelay", "UGen"))
+  SET_FLAG(t_vdelay, final);
   gwi_class_xtor(gwi, vdelay_ctor, vdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_maxdel");
   GWI_BB(gwi_func_end(gwi, vdelay_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_del");
+  gwi_func_ini(gwi, "float", "del");
   GWI_BB(gwi_func_end(gwi, vdelay_get_del, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_del");
+  gwi_func_ini(gwi, "float", "del");
      gwi_func_arg(gwi, "float", "_del");
   GWI_BB(gwi_func_end(gwi, vdelay_set_del, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, vdelay_get_feedback, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_feedback");
+  gwi_func_ini(gwi, "float", "feedback");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, vdelay_set_feedback, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Voc", "UGen"))
+  DECL_OB(const Type, t_voc, = gwi_class_ini(gwi, "Voc", "UGen"))
+  SET_FLAG(t_voc, final);
   gwi_class_xtor(gwi, voc_ctor, voc_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Vocoder", "UGen"))
+  DECL_OB(const Type, t_vocoder, = gwi_class_ini(gwi, "Vocoder", "UGen"))
+  SET_FLAG(t_vocoder, final);
   gwi_class_xtor(gwi, vocoder_ctor, vocoder_dtor);
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, vocoder_get_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_atk");
+  gwi_func_ini(gwi, "float", "atk");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, vocoder_set_atk, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, vocoder_get_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rel");
+  gwi_func_ini(gwi, "float", "rel");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, vocoder_set_rel, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bwratio");
+  gwi_func_ini(gwi, "float", "bwratio");
   GWI_BB(gwi_func_end(gwi, vocoder_get_bwratio, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_bwratio");
+  gwi_func_ini(gwi, "float", "bwratio");
      gwi_func_arg(gwi, "float", "_bwratio");
   GWI_BB(gwi_func_end(gwi, vocoder_set_bwratio, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Waveset", "UGen"))
+  DECL_OB(const Type, t_waveset, = gwi_class_ini(gwi, "Waveset", "UGen"))
+  SET_FLAG(t_waveset, final);
   gwi_class_xtor(gwi, waveset_ctor, waveset_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "float", "_ilen");
   GWI_BB(gwi_func_end(gwi, waveset_init, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rep");
+  gwi_func_ini(gwi, "float", "rep");
   GWI_BB(gwi_func_end(gwi, waveset_get_rep, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rep");
+  gwi_func_ini(gwi, "float", "rep");
      gwi_func_arg(gwi, "float", "_rep");
   GWI_BB(gwi_func_end(gwi, waveset_set_rep, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Wavin", "UGen"))
+  DECL_OB(const Type, t_wavin, = gwi_class_ini(gwi, "Wavin", "UGen"))
+  SET_FLAG(t_wavin, final);
   gwi_class_xtor(gwi, wavin_ctor, wavin_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, wavin_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Wavout", "UGen"))
+  DECL_OB(const Type, t_wavout, = gwi_class_ini(gwi, "Wavout", "UGen"))
+  SET_FLAG(t_wavout, final);
   gwi_class_xtor(gwi, wavout_ctor, wavout_dtor);
   gwi_func_ini(gwi, "void", "init");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, wavout_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Wpkorg35", "UGen"))
+  DECL_OB(const Type, t_wpkorg35, = gwi_class_ini(gwi, "Wpkorg35", "UGen"))
+  SET_FLAG(t_wpkorg35, final);
   gwi_class_xtor(gwi, wpkorg35_ctor, wpkorg35_dtor);
-  gwi_func_ini(gwi, "float", "_cutoff");
+  gwi_func_ini(gwi, "float", "cutoff");
   GWI_BB(gwi_func_end(gwi, wpkorg35_get_cutoff, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_cutoff");
+  gwi_func_ini(gwi, "float", "cutoff");
      gwi_func_arg(gwi, "float", "_cutoff");
   GWI_BB(gwi_func_end(gwi, wpkorg35_set_cutoff, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, wpkorg35_get_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_res");
+  gwi_func_ini(gwi, "float", "res");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, wpkorg35_set_res, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_saturation");
+  gwi_func_ini(gwi, "float", "saturation");
   GWI_BB(gwi_func_end(gwi, wpkorg35_get_saturation, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_saturation");
+  gwi_func_ini(gwi, "float", "saturation");
      gwi_func_arg(gwi, "float", "_saturation");
   GWI_BB(gwi_func_end(gwi, wpkorg35_set_saturation, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "Zitarev", "UGen"))
+  DECL_OB(const Type, t_zitarev, = gwi_class_ini(gwi, "Zitarev", "UGen"))
+  SET_FLAG(t_zitarev, final);
   gwi_class_xtor(gwi, zitarev_ctor, zitarev_dtor);
-  gwi_func_ini(gwi, "float", "_in_delay");
+  gwi_func_ini(gwi, "float", "in_delay");
   GWI_BB(gwi_func_end(gwi, zitarev_get_in_delay, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_in_delay");
+  gwi_func_ini(gwi, "float", "in_delay");
      gwi_func_arg(gwi, "float", "_in_delay");
   GWI_BB(gwi_func_end(gwi, zitarev_set_in_delay, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lf_x");
+  gwi_func_ini(gwi, "float", "lf_x");
   GWI_BB(gwi_func_end(gwi, zitarev_get_lf_x, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_lf_x");
+  gwi_func_ini(gwi, "float", "lf_x");
      gwi_func_arg(gwi, "float", "_lf_x");
   GWI_BB(gwi_func_end(gwi, zitarev_set_lf_x, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rt60_low");
+  gwi_func_ini(gwi, "float", "rt60_low");
   GWI_BB(gwi_func_end(gwi, zitarev_get_rt60_low, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rt60_low");
+  gwi_func_ini(gwi, "float", "rt60_low");
      gwi_func_arg(gwi, "float", "_rt60_low");
   GWI_BB(gwi_func_end(gwi, zitarev_set_rt60_low, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rt60_mid");
+  gwi_func_ini(gwi, "float", "rt60_mid");
   GWI_BB(gwi_func_end(gwi, zitarev_get_rt60_mid, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_rt60_mid");
+  gwi_func_ini(gwi, "float", "rt60_mid");
      gwi_func_arg(gwi, "float", "_rt60_mid");
   GWI_BB(gwi_func_end(gwi, zitarev_set_rt60_mid, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hf_damping");
+  gwi_func_ini(gwi, "float", "hf_damping");
   GWI_BB(gwi_func_end(gwi, zitarev_get_hf_damping, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_hf_damping");
+  gwi_func_ini(gwi, "float", "hf_damping");
      gwi_func_arg(gwi, "float", "_hf_damping");
   GWI_BB(gwi_func_end(gwi, zitarev_set_hf_damping, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq1_freq");
+  gwi_func_ini(gwi, "float", "eq1_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq1_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq1_freq");
+  gwi_func_ini(gwi, "float", "eq1_freq");
      gwi_func_arg(gwi, "float", "_eq1_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq1_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq1_level");
+  gwi_func_ini(gwi, "float", "eq1_level");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq1_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq1_level");
+  gwi_func_ini(gwi, "float", "eq1_level");
      gwi_func_arg(gwi, "float", "_eq1_level");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq1_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq2_freq");
+  gwi_func_ini(gwi, "float", "eq2_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq2_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq2_freq");
+  gwi_func_ini(gwi, "float", "eq2_freq");
      gwi_func_arg(gwi, "float", "_eq2_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq2_freq, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq2_level");
+  gwi_func_ini(gwi, "float", "eq2_level");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq2_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_eq2_level");
+  gwi_func_ini(gwi, "float", "eq2_level");
      gwi_func_arg(gwi, "float", "_eq2_level");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq2_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mix");
+  gwi_func_ini(gwi, "float", "mix");
   GWI_BB(gwi_func_end(gwi, zitarev_get_mix, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_mix");
+  gwi_func_ini(gwi, "float", "mix");
      gwi_func_arg(gwi, "float", "_mix");
   GWI_BB(gwi_func_end(gwi, zitarev_set_mix, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_level");
+  gwi_func_ini(gwi, "float", "level");
   GWI_BB(gwi_func_end(gwi, zitarev_get_level, ae_flag_none))
-  gwi_func_ini(gwi, "float", "_level");
+  gwi_func_ini(gwi, "float", "level");
      gwi_func_arg(gwi, "float", "_level");
   GWI_BB(gwi_func_end(gwi, zitarev_set_level, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
