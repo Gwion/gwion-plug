@@ -113,6 +113,26 @@ math2(max)
   gwi_func_arg(gwi, "float", "value2");          \
   GWI_BB(gwi_func_end(gwi, math_##func , ae_flag_static))    \
 
+static INSTR(op_ffpower) {
+  POP_REG(shred, SZ_FLOAT);
+  *(m_float*)REG(-SZ_FLOAT) = pow(*(m_float*)REG(-SZ_FLOAT), *(m_float*)REG(0));
+}
+
+static INSTR(op_fipower) {
+  POP_REG(shred, SZ_INT);
+  *(m_float*)REG(-SZ_FLOAT) = pow(*(m_float*)REG(-SZ_FLOAT), (m_float)*(m_int*)REG(0));
+}
+
+static INSTR(op_iipower) {
+  POP_REG(shred, SZ_INT);
+  *(m_int*)REG(-SZ_INT) = (m_int)pow((m_float)*(m_int*)REG(-SZ_INT), (m_float)*(m_int*)REG(0));
+}
+
+static INSTR(op_ifpower) {
+  POP_REG(shred, SZ_FLOAT + SZ_INT - SZ_FLOAT);
+  *(m_float*)REG(-SZ_FLOAT) = pow((m_float)*(m_int*)REG(SZ_FLOAT - SZ_INT), *(m_float*)REG(SZ_INT-SZ_FLOAT));
+}
+
 GWION_IMPORT(math) {
   GWI_BB(gwi_struct_ini(gwi, "Math"))
 
@@ -168,5 +188,18 @@ GWION_IMPORT(math) {
   decl_math2("min",       min)
   decl_math2("max",       max)
   GWI_BB(gwi_class_end(gwi))
+
+  GWI_BB(gwi_oper_ini(gwi, "float", "float", "float"))
+  GWI_BB(gwi_oper_end(gwi, "**", op_ffpower))
+
+  GWI_BB(gwi_oper_ini(gwi, "int", "float", "float"))
+  GWI_BB(gwi_oper_end(gwi, "**", op_ifpower))
+
+  GWI_BB(gwi_oper_ini(gwi, "float", "int", "float"))
+  GWI_BB(gwi_oper_end(gwi, "**", op_fipower))
+
+  GWI_BB(gwi_oper_ini(gwi, "int", "int", "int"))
+  GWI_BB(gwi_oper_end(gwi, "**", op_iipower))
+
   return GW_OK;
 }
