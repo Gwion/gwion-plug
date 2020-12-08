@@ -109,6 +109,16 @@ static SFUN(std_setenv) {
   *(m_uint*)RETURN = setenv(key, val, 1);
 }
 
+static SFUN(std_atoi) {
+  GETSTRING(key, 0)
+  *(m_int*)RETURN = atoi(key);
+}
+
+static SFUN(std_atof) {
+  GETSTRING(key, 0)
+  *(m_float*)RETURN = (m_float)atof(key);
+}
+
 #define pow10(a) pow(10.0, (a) / 20.0)
 #define std(name, func)\
 static SFUN(std_##name) {\
@@ -155,6 +165,14 @@ GWION_IMPORT(std) {
   gwi_func_arg(gwi, "string", "key");
   gwi_func_arg(gwi, "string", "value");
   GWI_BB(gwi_func_end(gwi, std_setenv, ae_flag_static))
+
+  gwi_func_ini(gwi, "int", "atoi");
+  gwi_func_arg(gwi, "string", "key");
+  GWI_BB(gwi_func_end(gwi, std_atoi, ae_flag_static))
+
+  gwi_func_ini(gwi, "float", "atof");
+  gwi_func_arg(gwi, "string", "key");
+  GWI_BB(gwi_func_end(gwi, std_atof, ae_flag_static))
 
   import_stdx(system , int,    string)
   import_stdx(getenv , string, string)
