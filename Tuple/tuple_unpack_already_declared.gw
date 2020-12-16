@@ -1,4 +1,6 @@
 #! [contains] already been defined in the same scope
 #require Tuple
 var int i;
-Tuple(12) @=> Unpack(i);
+Tuple(12) @=> Unpack(a);
+<<< a >>>;
+#!Tuple(12) @=> Unpack(i);

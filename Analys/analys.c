@@ -473,7 +473,7 @@ static m_bool import_ana(Gwi gwi) {
   o_ana_ana = gwi_item_end(gwi, ae_flag_none, NULL);
   GWI_BB(o_ana_ana)
   gwi_item_ini(gwi,"FFT", "@fft");
-  o_ana_fft = gwi_item_end(gwi,  ae_flag_ref, NULL);
+  o_ana_fft = gwi_item_end(gwi,  ae_flag_late, NULL);
   GWI_BB(o_ana_fft)
   gwi_item_ini(gwi, "@internal", "@fn");
   o_ana_fn = gwi_item_end(gwi, ae_flag_none, NULL);

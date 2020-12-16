@@ -20,7 +20,6 @@ function declare_c_param(param, offset)
     print("      M_Object "..param.name.."_ftl_obj;")
     print("      m_vector_get(ARRAY("..param.name.."_ptr), "..param.name.."_iter, &"..param.name.."_ftl_obj);")
     print("      "..param.name.."["..param.name.."_iter] = FTBL("..param.name.."_ftl_obj);\n  }")
---    print("  REM_REF("..param.name.."_ptr->type_ref);")
     print("  release("..param.name.."_ptr, shred);")
   elseif string.match(param.type, "&sp_ftbl%s*") then
     print("  M_Object "..param.name.."_obj = *(M_Object*)(shred->mem + gw_offset);")
@@ -357,9 +356,7 @@ print("  ugen_ini(gwi->gwion, UGEN(o), 1, 1);")
 print("  ugen_gen(gwi->gwion, UGEN(o), sp_tick, sp, 0);")
 print("  vector_add(&vm->ugen, (vtype)UGEN(o));")
 print("  gwi_item_ini(gwi, \"UGen\", \"@soundpipe main ugen\");")
-print("  gwi_item_end(gwi, ae_flag_ref | ae_flag_const, o);")
-
---print("printf(\"==%p==\\n\", vector_front(&vm->ugen));")
+print("  gwi_item_end(gwi, ae_flag_late | ae_flag_const, o);")
 
 print("  ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));")
 print("  GWI_BB(gwi_class_ini(gwi, \"ftbl\", NULL))")

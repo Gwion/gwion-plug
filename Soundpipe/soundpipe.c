@@ -7338,7 +7338,7 @@ GWION_IMPORT(soundpipe) {
   ugen_gen(gwi->gwion, UGEN(o), sp_tick, sp, 0);
   vector_add(&vm->ugen, (vtype)UGEN(o));
   gwi_item_ini(gwi, "UGen", "@soundpipe main ugen");
-  gwi_item_end(gwi, ae_flag_ref | ae_flag_const, o);
+  gwi_item_end(gwi, ae_flag_const, o);
   ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));
   GWI_BB(gwi_class_ini(gwi, "ftbl", NULL))
   gwi_class_xtor(gwi, NULL, ftbl_dtor);

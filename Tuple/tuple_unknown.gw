@@ -1,3 +1,3 @@
 #require Tuple
-ref Tuple:[int, strong] a;
-ref Tuple:[int, string] a;
+late Tuple:[int, strong] a;
+#!late Tuple:[int, string] a;

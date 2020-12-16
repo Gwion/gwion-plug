@@ -563,7 +563,7 @@ static TICK(ADSR_tick) {
 static m_int o_ADSR_swig;
 #define GW_ADSR(a) *(stk::ADSR**)(a->data + o_Stk_swig)
 static CTOR(gw_ADSR_ctor) {
-  if(o->type_ref->xid == t_ADSR->xid)
+  if(o->type_ref == t_ADSR)
   GW_ADSR(o) = new stk::ADSR();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -676,7 +676,7 @@ static SFUN(gw_TARGET_THRESHOLD_get) {
 static m_int o_Asymp_swig;
 #define GW_Asymp(a) *(stk::Asymp**)(a->data + o_Stk_swig)
 static CTOR(gw_Asymp_ctor) {
-  if(o->type_ref->xid == t_Asymp->xid)
+  if(o->type_ref == t_Asymp)
   GW_Asymp(o) = new stk::Asymp();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -750,7 +750,7 @@ static SFUN(gw_MAX_BANDED_MODES_get) {
 static m_int o_BandedWG_swig;
 #define GW_BandedWG(a) *(stk::BandedWG**)(a->data + o_Stk_swig)
 static CTOR(gw_BandedWG_ctor) {
-  if(o->type_ref->xid == t_BandedWG->xid)
+  if(o->type_ref == t_BandedWG)
   GW_BandedWG(o) = new stk::BandedWG();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -835,7 +835,7 @@ static TICK(BiQuad_tick) {
 static m_int o_BiQuad_swig;
 #define GW_BiQuad(a) *(stk::BiQuad**)(a->data + o_Stk_swig)
 static CTOR(gw_BiQuad_ctor) {
-  if(o->type_ref->xid == t_BiQuad->xid)
+  if(o->type_ref == t_BiQuad)
   GW_BiQuad(o) = new stk::BiQuad();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -959,7 +959,7 @@ static SFUN(gw_Blit_ctor0) {
 }
 
 static CTOR(gw_Blit_ctor1) {
-  if(o->type_ref->xid == t_Blit->xid)
+  if(o->type_ref == t_Blit)
   GW_Blit(o) = new stk::Blit();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1028,7 +1028,7 @@ static SFUN(gw_BlitSaw_ctor0) {
 }
 
 static CTOR(gw_BlitSaw_ctor1) {
-  if(o->type_ref->xid == t_BlitSaw->xid)
+  if(o->type_ref == t_BlitSaw)
   GW_BlitSaw(o) = new stk::BlitSaw();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1085,7 +1085,7 @@ static SFUN(gw_BlitSquare_ctor0) {
 }
 
 static CTOR(gw_BlitSquare_ctor1) {
-  if(o->type_ref->xid == t_BlitSquare->xid)
+  if(o->type_ref == t_BlitSquare)
   GW_BlitSquare(o) = new stk::BlitSquare();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1142,7 +1142,7 @@ static TICK(BeeThree_tick) {
 static m_int o_BeeThree_swig;
 #define GW_BeeThree(a) *(stk::BeeThree**)(a->data + o_Stk_swig)
 static CTOR(gw_BeeThree_ctor) {
-  if(o->type_ref->xid == t_BeeThree->xid)
+  if(o->type_ref == t_BeeThree)
   GW_BeeThree(o) = new stk::BeeThree();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1172,7 +1172,7 @@ static TICK(BlowBotl_tick) {
 static m_int o_BlowBotl_swig;
 #define GW_BlowBotl(a) *(stk::BlowBotl**)(a->data + o_Stk_swig)
 static CTOR(gw_BlowBotl_ctor) {
-  if(o->type_ref->xid == t_BlowBotl->xid)
+  if(o->type_ref == t_BlowBotl)
   GW_BlowBotl(o) = new stk::BlowBotl();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1333,7 +1333,7 @@ static SFUN(gw_Bowed_ctor0) {
 }
 
 static CTOR(gw_Bowed_ctor1) {
-  if(o->type_ref->xid == t_Bowed->xid)
+  if(o->type_ref == t_Bowed)
   GW_Bowed(o) = new stk::Bowed();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1406,7 +1406,7 @@ static TICK(BowTable_tick) {
 static m_int o_BowTable_swig;
 #define GW_BowTable(a) *(stk::BowTable**)(a->data + o_Stk_swig)
 static CTOR(gw_BowTable_ctor) {
-  if(o->type_ref->xid == t_BowTable->xid)
+  if(o->type_ref == t_BowTable)
   GW_BowTable(o) = new stk::BowTable();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1465,7 +1465,7 @@ static SFUN(gw_Brass_ctor0) {
 }
 
 static CTOR(gw_Brass_ctor1) {
-  if(o->type_ref->xid == t_Brass->xid)
+  if(o->type_ref == t_Brass)
   GW_Brass(o) = new stk::Brass();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1550,7 +1550,7 @@ static SFUN(gw_Chorus_ctor0) {
 }
 
 static CTOR(gw_Chorus_ctor1) {
-  if(o->type_ref->xid == t_Chorus->xid)
+  if(o->type_ref == t_Chorus)
   GW_Chorus(o) = new stk::Chorus();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1602,7 +1602,7 @@ static SFUN(gw_Clarinet_ctor0) {
 }
 
 static CTOR(gw_Clarinet_ctor1) {
-  if(o->type_ref->xid == t_Clarinet->xid)
+  if(o->type_ref == t_Clarinet)
   GW_Clarinet(o) = new stk::Clarinet();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -1669,7 +1669,7 @@ static TICK(Cubic_tick) {
 static m_int o_Cubic_swig;
 #define GW_Cubic(a) *(stk::Cubic**)(a->data + o_Stk_swig)
 static CTOR(gw_Cubic_ctor) {
-  if(o->type_ref->xid == t_Cubic->xid)
+  if(o->type_ref == t_Cubic)
   GW_Cubic(o) = new stk::Cubic();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1753,7 +1753,7 @@ static SFUN(gw_Delay_ctor1) {
 }
 
 static CTOR(gw_Delay_ctor2) {
-  if(o->type_ref->xid == t_Delay->xid)
+  if(o->type_ref == t_Delay)
   GW_Delay(o) = new stk::Delay();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1871,7 +1871,7 @@ static SFUN(gw_DelayA_ctor1) {
 }
 
 static CTOR(gw_DelayA_ctor2) {
-  if(o->type_ref->xid == t_DelayA->xid)
+  if(o->type_ref == t_DelayA)
   GW_DelayA(o) = new stk::DelayA();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -1976,7 +1976,7 @@ static SFUN(gw_DelayL_ctor1) {
 }
 
 static CTOR(gw_DelayL_ctor2) {
-  if(o->type_ref->xid == t_DelayL->xid)
+  if(o->type_ref == t_DelayL)
   GW_DelayL(o) = new stk::DelayL();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -2059,7 +2059,7 @@ static SFUN(gw_DRUM_POLYPHONY_get) {
 static m_int o_Drummer_swig;
 #define GW_Drummer(a) *(stk::Drummer**)(a->data + o_Stk_swig)
 static CTOR(gw_Drummer_ctor) {
-  if(o->type_ref->xid == t_Drummer->xid)
+  if(o->type_ref == t_Drummer)
   GW_Drummer(o) = new stk::Drummer();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2109,7 +2109,7 @@ static SFUN(gw_Echo_ctor0) {
 }
 
 static CTOR(gw_Echo_ctor1) {
-  if(o->type_ref->xid == t_Echo->xid)
+  if(o->type_ref == t_Echo)
   GW_Echo(o) = new stk::Echo();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -2241,7 +2241,7 @@ static TICK(FMVoices_tick) {
 static m_int o_FMVoices_swig;
 #define GW_FMVoices(a) *(stk::FMVoices**)(a->data + o_Stk_swig)
 static CTOR(gw_FMVoices_ctor) {
-  if(o->type_ref->xid == t_FMVoices->xid)
+  if(o->type_ref == t_FMVoices)
   GW_FMVoices(o) = new stk::FMVoices();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2284,7 +2284,7 @@ static TICK(FormSwep_tick) {
 static m_int o_FormSwep_swig;
 #define GW_FormSwep(a) *(stk::FormSwep**)(a->data + o_Stk_swig)
 static CTOR(gw_FormSwep_ctor) {
-  if(o->type_ref->xid == t_FormSwep->xid)
+  if(o->type_ref == t_FormSwep)
   GW_FormSwep(o) = new stk::FormSwep();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2367,7 +2367,7 @@ static TICK(FreeVerb_tick) {
 static m_int o_FreeVerb_swig;
 #define GW_FreeVerb(a) *(stk::FreeVerb**)(a->data + o_Stk_swig)
 static CTOR(gw_FreeVerb_ctor) {
-  if(o->type_ref->xid == t_FreeVerb->xid)
+  if(o->type_ref == t_FreeVerb)
   GW_FreeVerb(o) = new stk::FreeVerb();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2449,7 +2449,7 @@ static TICK(Granulate_tick) {
 static m_int o_Granulate_swig;
 #define GW_Granulate(a) *(stk::Granulate**)(a->data + o_Stk_swig)
 static CTOR(gw_Granulate_ctor0) {
-  if(o->type_ref->xid == t_Granulate->xid)
+  if(o->type_ref == t_Granulate)
   GW_Granulate(o) = new stk::Granulate();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2620,7 +2620,7 @@ static SFUN(gw_Guitar_ctor1) {
 }
 
 static CTOR(gw_Guitar_ctor2) {
-  if(o->type_ref->xid == t_Guitar->xid)
+  if(o->type_ref == t_Guitar)
   GW_Guitar(o) = new stk::Guitar();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2743,7 +2743,7 @@ static TICK(HevyMetl_tick) {
 static m_int o_HevyMetl_swig;
 #define GW_HevyMetl(a) *(stk::HevyMetl**)(a->data + o_Stk_swig)
 static CTOR(gw_HevyMetl_ctor) {
-  if(o->type_ref->xid == t_HevyMetl->xid)
+  if(o->type_ref == t_HevyMetl)
   GW_HevyMetl(o) = new stk::HevyMetl();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2785,7 +2785,7 @@ static SFUN(gw_JCRev_ctor0) {
 }
 
 static CTOR(gw_JCRev_ctor1) {
-  if(o->type_ref->xid == t_JCRev->xid)
+  if(o->type_ref == t_JCRev)
   GW_JCRev(o) = new stk::JCRev();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -2819,7 +2819,7 @@ static TICK(JetTable_tick) {
 static m_int o_JetTable_swig;
 #define GW_JetTable(a) *(stk::JetTable**)(a->data + o_Stk_swig)
 static CTOR(gw_JetTable_ctor) {
-  if(o->type_ref->xid == t_JetTable->xid)
+  if(o->type_ref == t_JetTable)
   GW_JetTable(o) = new stk::JetTable();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -2867,7 +2867,7 @@ static SFUN(gw_LentPitShift_ctor1) {
 }
 
 static CTOR(gw_LentPitShift_ctor2) {
-  if(o->type_ref->xid == t_LentPitShift->xid)
+  if(o->type_ref == t_LentPitShift)
   GW_LentPitShift(o) = new stk::LentPitShift();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3181,7 +3181,7 @@ static TICK(ModalBar_tick) {
 static m_int o_ModalBar_swig;
 #define GW_ModalBar(a) *(stk::ModalBar**)(a->data + o_Stk_swig)
 static CTOR(gw_ModalBar_ctor) {
-  if(o->type_ref->xid == t_ModalBar->xid)
+  if(o->type_ref == t_ModalBar)
   GW_ModalBar(o) = new stk::ModalBar();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3235,7 +3235,7 @@ static TICK(Modulate_tick) {
 static m_int o_Modulate_swig;
 #define GW_Modulate(a) *(stk::Modulate**)(a->data + o_Stk_swig)
 static CTOR(gw_Modulate_ctor) {
-  if(o->type_ref->xid == t_Modulate->xid)
+  if(o->type_ref == t_Modulate)
   GW_Modulate(o) = new stk::Modulate();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3287,7 +3287,7 @@ static TICK(Moog_tick) {
 static m_int o_Moog_swig;
 #define GW_Moog(a) *(stk::Moog**)(a->data + o_Stk_swig)
 static CTOR(gw_Moog_ctor) {
-  if(o->type_ref->xid == t_Moog->xid)
+  if(o->type_ref == t_Moog)
   GW_Moog(o) = new stk::Moog();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3354,7 +3354,7 @@ static SFUN(gw_Noise_ctor0) {
 }
 
 static CTOR(gw_Noise_ctor1) {
-  if(o->type_ref->xid == t_Noise->xid)
+  if(o->type_ref == t_Noise)
   GW_Noise(o) = new stk::Noise();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3400,7 +3400,7 @@ static SFUN(gw_NRev_ctor0) {
 }
 
 static CTOR(gw_NRev_ctor1) {
-  if(o->type_ref->xid == t_NRev->xid)
+  if(o->type_ref == t_NRev)
   GW_NRev(o) = new stk::NRev();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3446,7 +3446,7 @@ static SFUN(gw_OnePole_ctor0) {
 }
 
 static CTOR(gw_OnePole_ctor1) {
-  if(o->type_ref->xid == t_OnePole->xid)
+  if(o->type_ref == t_OnePole)
   GW_OnePole(o) = new stk::OnePole();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3514,7 +3514,7 @@ static SFUN(gw_OneZero_ctor0) {
 }
 
 static CTOR(gw_OneZero_ctor1) {
-  if(o->type_ref->xid == t_OneZero->xid)
+  if(o->type_ref == t_OneZero)
   GW_OneZero(o) = new stk::OneZero();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3570,7 +3570,7 @@ static TICK(PercFlut_tick) {
 static m_int o_PercFlut_swig;
 #define GW_PercFlut(a) *(stk::PercFlut**)(a->data + o_Stk_swig)
 static CTOR(gw_PercFlut_ctor) {
-  if(o->type_ref->xid == t_PercFlut->xid)
+  if(o->type_ref == t_PercFlut)
   GW_PercFlut(o) = new stk::PercFlut();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3601,7 +3601,7 @@ static MFUN(gw_PercFlut_noteOn) {
 static m_int o_Phonemes_swig;
 #define GW_Phonemes(a) *(stk::Phonemes**)(a->data + o_Stk_swig)
 static CTOR(gw_Phonemes_ctor) {
-  if(o->type_ref->xid == t_Phonemes->xid)
+  if(o->type_ref == t_Phonemes)
   GW_Phonemes(o) = new stk::Phonemes();
 }
 
@@ -3664,7 +3664,7 @@ static SFUN(gw_maxDelay_get) {
 static m_int o_PitShift_swig;
 #define GW_PitShift(a) *(stk::PitShift**)(a->data + o_Stk_swig)
 static CTOR(gw_PitShift_ctor) {
-  if(o->type_ref->xid == t_PitShift->xid)
+  if(o->type_ref == t_PitShift)
   GW_PitShift(o) = new stk::PitShift();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3710,7 +3710,7 @@ static SFUN(gw_Plucked_ctor0) {
 }
 
 static CTOR(gw_Plucked_ctor1) {
-  if(o->type_ref->xid == t_Plucked->xid)
+  if(o->type_ref == t_Plucked)
   GW_Plucked(o) = new stk::Plucked();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -3763,7 +3763,7 @@ static TICK(PoleZero_tick) {
 static m_int o_PoleZero_swig;
 #define GW_PoleZero(a) *(stk::PoleZero**)(a->data + o_Stk_swig)
 static CTOR(gw_PoleZero_ctor) {
-  if(o->type_ref->xid == t_PoleZero->xid)
+  if(o->type_ref == t_PoleZero)
   GW_PoleZero(o) = new stk::PoleZero();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3850,7 +3850,7 @@ static SFUN(gw_PRCRev_ctor0) {
 }
 
 static CTOR(gw_PRCRev_ctor1) {
-  if(o->type_ref->xid == t_PRCRev->xid)
+  if(o->type_ref == t_PRCRev)
   GW_PRCRev(o) = new stk::PRCRev();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3884,7 +3884,7 @@ static TICK(Recorder_tick) {
 static m_int o_Recorder_swig;
 #define GW_Recorder(a) *(stk::Recorder**)(a->data + o_Stk_swig)
 static CTOR(gw_Recorder_ctor) {
-  if(o->type_ref->xid == t_Recorder->xid)
+  if(o->type_ref == t_Recorder)
   GW_Recorder(o) = new stk::Recorder();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -3987,7 +3987,7 @@ static TICK(ReedTable_tick) {
 static m_int o_ReedTable_swig;
 #define GW_ReedTable(a) *(stk::ReedTable**)(a->data + o_Stk_swig)
 static CTOR(gw_ReedTable_ctor) {
-  if(o->type_ref->xid == t_ReedTable->xid)
+  if(o->type_ref == t_ReedTable)
   GW_ReedTable(o) = new stk::ReedTable();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4022,7 +4022,7 @@ static TICK(Resonate_tick) {
 static m_int o_Resonate_swig;
 #define GW_Resonate(a) *(stk::Resonate**)(a->data + o_Stk_swig)
 static CTOR(gw_Resonate_ctor) {
-  if(o->type_ref->xid == t_Resonate->xid)
+  if(o->type_ref == t_Resonate)
   GW_Resonate(o) = new stk::Resonate();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -4094,7 +4094,7 @@ static TICK(Rhodey_tick) {
 static m_int o_Rhodey_swig;
 #define GW_Rhodey(a) *(stk::Rhodey**)(a->data + o_Stk_swig)
 static CTOR(gw_Rhodey_ctor) {
-  if(o->type_ref->xid == t_Rhodey->xid)
+  if(o->type_ref == t_Rhodey)
   GW_Rhodey(o) = new stk::Rhodey();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4218,7 +4218,7 @@ static SFUN(gw_Shakers_ctor0) {
 }
 
 static CTOR(gw_Shakers_ctor1) {
-  if(o->type_ref->xid == t_Shakers->xid)
+  if(o->type_ref == t_Shakers)
   GW_Shakers(o) = new stk::Shakers();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4271,7 +4271,7 @@ static TICK(Simple_tick) {
 static m_int o_Simple_swig;
 #define GW_Simple(a) *(stk::Simple**)(a->data + o_Stk_swig)
 static CTOR(gw_Simple_ctor) {
-  if(o->type_ref->xid == t_Simple->xid)
+  if(o->type_ref == t_Simple)
   GW_Simple(o) = new stk::Simple();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4335,7 +4335,7 @@ static SFUN(gw_TABLE_SIZE_get) {
 static m_int o_SineWave_swig;
 #define GW_SineWave(a) *(stk::SineWave**)(a->data + o_Stk_swig)
 static CTOR(gw_SineWave_ctor) {
-  if(o->type_ref->xid == t_SineWave->xid)
+  if(o->type_ref == t_SineWave)
   GW_SineWave(o) = new stk::SineWave();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4516,7 +4516,7 @@ static SFUN(gw_Sitar_ctor0) {
 }
 
 static CTOR(gw_Sitar_ctor1) {
-  if(o->type_ref->xid == t_Sitar->xid)
+  if(o->type_ref == t_Sitar)
   GW_Sitar(o) = new stk::Sitar();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4594,7 +4594,7 @@ static SFUN(gw_Vector3D_ctor2) {
 }
 
 static CTOR(gw_Vector3D_ctor3) {
-  if(o->type_ref->xid == t_Vector3D->xid)
+  if(o->type_ref == t_Vector3D)
   GW_Vector3D(o) = new stk::Vector3D();
 }
 
@@ -4675,7 +4675,7 @@ static SFUN(gw_StifKarp_ctor0) {
 }
 
 static CTOR(gw_StifKarp_ctor1) {
-  if(o->type_ref->xid == t_StifKarp->xid)
+  if(o->type_ref == t_StifKarp)
   GW_StifKarp(o) = new stk::StifKarp();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4753,7 +4753,7 @@ static TICK(TubeBell_tick) {
 static m_int o_TubeBell_swig;
 #define GW_TubeBell(a) *(stk::TubeBell**)(a->data + o_Stk_swig)
 static CTOR(gw_TubeBell_ctor) {
-  if(o->type_ref->xid == t_TubeBell->xid)
+  if(o->type_ref == t_TubeBell)
   GW_TubeBell(o) = new stk::TubeBell();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4795,7 +4795,7 @@ static SFUN(gw_Twang_ctor0) {
 }
 
 static CTOR(gw_Twang_ctor1) {
-  if(o->type_ref->xid == t_Twang->xid)
+  if(o->type_ref == t_Twang)
   GW_Twang(o) = new stk::Twang();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -4861,7 +4861,7 @@ static TICK(TwoPole_tick) {
 static m_int o_TwoPole_swig;
 #define GW_TwoPole(a) *(stk::TwoPole**)(a->data + o_Stk_swig)
 static CTOR(gw_TwoPole_ctor) {
-  if(o->type_ref->xid == t_TwoPole->xid)
+  if(o->type_ref == t_TwoPole)
   GW_TwoPole(o) = new stk::TwoPole();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -4945,7 +4945,7 @@ static TICK(TwoZero_tick) {
 static m_int o_TwoZero_swig;
 #define GW_TwoZero(a) *(stk::TwoZero**)(a->data + o_Stk_swig)
 static CTOR(gw_TwoZero_ctor) {
-  if(o->type_ref->xid == t_TwoZero->xid)
+  if(o->type_ref == t_TwoZero)
   GW_TwoZero(o) = new stk::TwoZero();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
@@ -5033,7 +5033,7 @@ static SFUN(gw_Voicer_ctor0) {
 }
 
 static CTOR(gw_Voicer_ctor1) {
-  if(o->type_ref->xid == t_Voicer->xid)
+  if(o->type_ref == t_Voicer)
   GW_Voicer(o) = new stk::Voicer();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5194,7 +5194,7 @@ static TICK(VoicForm_tick) {
 static m_int o_VoicForm_swig;
 #define GW_VoicForm(a) *(stk::VoicForm**)(a->data + o_Stk_swig)
 static CTOR(gw_VoicForm_ctor) {
-  if(o->type_ref->xid == t_VoicForm->xid)
+  if(o->type_ref == t_VoicForm)
   GW_VoicForm(o) = new stk::VoicForm();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5292,7 +5292,7 @@ static TICK(Whistle_tick) {
 static m_int o_Whistle_swig;
 #define GW_Whistle(a) *(stk::Whistle**)(a->data + o_Stk_swig)
 static CTOR(gw_Whistle_ctor) {
-  if(o->type_ref->xid == t_Whistle->xid)
+  if(o->type_ref == t_Whistle)
   GW_Whistle(o) = new stk::Whistle();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);
@@ -5359,7 +5359,7 @@ static TICK(Wurley_tick) {
 static m_int o_Wurley_swig;
 #define GW_Wurley(a) *(stk::Wurley**)(a->data + o_Stk_swig)
 static CTOR(gw_Wurley_ctor) {
-  if(o->type_ref->xid == t_Wurley->xid)
+  if(o->type_ref == t_Wurley)
   GW_Wurley(o) = new stk::Wurley();
   UGEN(o) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 1);

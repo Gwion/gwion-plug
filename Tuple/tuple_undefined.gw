@@ -1,4 +1,4 @@
 #! [contains] tuple subscripts is undefined
 #require Tuple
-ref Tuple:[string, _] t;
+var Tuple:[string, _] t;
 t[1];

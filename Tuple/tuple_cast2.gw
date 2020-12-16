@@ -1,5 +1,5 @@
 #require Tuple
-ref Tuple:[int,int] a;
+var Tuple:[int,int] a;
 
 <<< a >>>;
 <<< a $ Tuple:[int] >>>;

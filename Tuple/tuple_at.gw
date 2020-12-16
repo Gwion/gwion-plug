@@ -1,5 +1,5 @@
 #require Tuple
-<<< Tuple("Tom", 6) @=>  ref Tuple:[string, int] tup >>>;
+<<< Tuple("Tom", 6) @=> var Tuple:[string, int] tup >>>;
 <<< typeof(tup) >>>;
 <<< tup >>>;
 <<< tup[0] >>>;

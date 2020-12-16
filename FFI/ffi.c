@@ -120,7 +120,7 @@ static OP_CHECK(ctor_as_call) {
   dot->base = func;
   dot->xid = insert_symbol(env->gwion->st, "call");
   ++*mut;
-  return check_exp_call1(env, call) ?: env->gwion->type[et_null];
+  return check_exp_call1(env, call) ?: env->gwion->type[et_error];
 }
 
 static inline m_bool _traverse_ffi(const Env env, const Class_Def cdef) {
@@ -149,17 +149,18 @@ static inline Type check_ffi_types(const Env env, const Type ffi, const Exp_Call
 }
 
 static OP_CHECK(ffi_var_cast) {
-  Exp_Call *call = (Exp_Call*)data;
+  Exp exp = (Exp)data;
+  Exp_Call *call = &exp->d.exp_call;
   CHECK_ON(check_exp(env, call->args))
   struct loc_t_ loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE.@CFFI", &loc);
-  Exp exp = call->args->next;
-  while(exp) {
-    if(isa(exp->info->type, ffi) < 0) {
-      exp_self(call)->info->type = env->gwion->type[et_null];
-      ERR_N(exp->pos, "FFI variadic arguments must be of FFI type");
+  Exp arg = call->args->next;
+  while(arg) {
+    if(isa(arg->info->type, ffi) < 0) {
+//      exp->info->type = env->gwion->type[et_error];
+      ERR_N(arg->pos, "FFI variadic arguments must be of FFI type");
     }
-    exp = exp->next;
+    arg = arg->next;
   }
   return NULL;
 }
@@ -187,7 +188,11 @@ static OP_CHECK(opck_ffi_ctor) {
   if(exists)
     return exists;
   void *dl = DLOPEN(NULL, RTLD_LAZY | RTLD_GLOBAL);
-  void *dlfunc = DLSYM(dl, void*, func_name);
+#ifndef BUILD_ON_WINDOWS
+  void* dlfunc = dlsym(dl, func_name);
+#else
+  void* dlfunc = GetProcAddress(dl, func_name);
+#endif
   if(!dlfunc)
     ERR_N(exp->pos, "can't open func '%s'", func_name);
 
@@ -201,7 +206,7 @@ static OP_CHECK(opck_ffi_ctor) {
       ERR_N(exp->pos, "Argument is not a FFI type");
     char name[64];
     sprintf(name, "FFIBASE.%s", actual->name);
-    Type_Decl *td = str2decl(env->gwion, name, loc_cpy(mp, exp->pos));
+    Type_Decl *td = str2td(env->gwion, name, loc_cpy(mp, exp->pos));
 
     Var_Decl var = new_var_decl(mp, NULL, NULL, loc_cpy(mp, exp->pos));
     Arg_List tmp = new_arg_list(mp, td, var, NULL);
@@ -214,7 +219,7 @@ static OP_CHECK(opck_ffi_ctor) {
   }
   char _ret_name[64];
   sprintf(_ret_name, "FFIBASE.%s", ret_type->name);
-  Type_Decl *td = str2decl(env->gwion, _ret_name, call->func->pos);
+  Type_Decl *td = str2td(env->gwion, _ret_name, call->func->pos);
   Func_Base *fb = new_func_base(mp, td, insert_symbol(env->gwion->st, "call"), base, ae_flag_none);
   if(variadic)
     set_fbflag(fb, fbflag_variadic);
@@ -232,7 +237,7 @@ static OP_CHECK(opck_ffi_ctor) {
 }
   char ext_name[64];
   sprintf(ext_name, "FFI:[FFIBASE.%s]", ret_type->name);
-  Type_Decl *const ext = str2decl(env->gwion, ext_name, call->func->pos);
+  Type_Decl *const ext = str2td(env->gwion, ext_name, call->func->pos);
   const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, func_sym, ext, body, loc_cpy(env->gwion->mp, call->func->pos));
   CHECK_BN(traverse_ffi(env, ffi, cdef))
   const Type t = cdef->base.type;
@@ -290,7 +295,7 @@ static OP_EMIT(opem_ffi_ctor) {
   const Type t = exp_self(call)->info->type;
   const Instr instr = emit_add_instr(emit, FFICtor);
   instr->m_val = (m_uint)t;
-  return instr;
+  return GW_OK;
 }
 
 #define FFI_GACK(name, type, fmt)   \
@@ -343,7 +348,6 @@ FFI_FUNC(pointer, void*, void*, SZ_INT, "%p")
   gwi_gack(gwi, t_##name, gack_ffi_##name);
 
 static OP_CHECK(opck2ffi) {
-exit(3);
   struct Implicit* imp = (struct Implicit*)data;
   return imp->e->info->cast_to = imp->t;
 }
