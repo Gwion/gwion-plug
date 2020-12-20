@@ -164,10 +164,10 @@ static m_bool tuple_match(const Env env, const Type lhs, const Type rhs) {
 
 static OP_CHECK(opck_at_object_tuple) {
   const Exp_Binary *bin = (Exp_Binary*)data;
-  CHECK_NN(opck_rassign(env, data, mut))
-  CHECK_BN(tuple_match(env, bin->lhs->info->type, bin->rhs->info->type))
+  CHECK_NN(opck_rassign(env, data))
+  CHECK_BN(tuple_match(env, bin->lhs->type, bin->rhs->type))
   exp_setvar(bin->rhs, 1);
-  return bin->rhs->info->type;
+  return bin->rhs->type;
 }
 
 static INSTR(TupleAt) {
@@ -181,25 +181,25 @@ static INSTR(TupleAt) {
 static OP_EMIT(opem_at_object_tuple) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   const Instr instr = emit_add_instr(emit, TupleAt);
-  instr->m_val = (m_uint)bin->rhs->info->type;
+  instr->m_val = (m_uint)bin->rhs->type;
   return GW_OK;
 }
 
 static OP_CHECK(opck_at_tuple_object) {
   const Exp_Binary *bin = (Exp_Binary*)data;
-  CHECK_NN(opck_rassign(env, data, mut))
-  if(!bin->rhs->info->type->info->tuple)
-    return bin->rhs->info->type;
-  CHECK_BN(tuple_match(env, bin->rhs->info->type, bin->lhs->info->type))
+  CHECK_NN(opck_rassign(env, data))
+  if(!bin->rhs->type->info->tuple)
+    return bin->rhs->type;
+  CHECK_BN(tuple_match(env, bin->rhs->type, bin->lhs->type))
   exp_setvar(bin->rhs, 1);
   set_decl_ref(bin->rhs);
-  return bin->rhs->info->type;
+  return bin->rhs->type;
 }
 
 static OP_CHECK(opck_cast_tuple_object) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, cast->exp->info->type, exp_self(cast)->info->type))
-  return exp_self(cast)->info->type;
+  CHECK_BN(tuple_match(env, cast->exp->type, exp_self(cast)->type))
+  return exp_self(cast)->type;
 }
 
 static INSTR(Tuple2Object) {
@@ -215,20 +215,20 @@ static INSTR(Tuple2Object) {
 static OP_EMIT(opem_cast_tuple_object) {
   const Exp_Cast* exp = (Exp_Cast*)data;
   const Instr instr = emit_add_instr(emit, Tuple2Object);
-  instr->m_val = (m_uint)exp_self(exp)->info->type;
+  instr->m_val = (m_uint)exp_self(exp)->type;
   instr->m_val2 = SZ_INT;
   return GW_OK;
 }
 
 static OP_CHECK(opck_cast_tuple) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, exp_self(cast)->info->type, cast->exp->info->type))
-  return exp_self(cast)->info->type;
+  CHECK_BN(tuple_match(env, exp_self(cast)->type, cast->exp->type))
+  return exp_self(cast)->type;
 }
 
 static OP_CHECK(opck_impl_tuple) {
   struct Implicit *imp = (struct Implicit*)data;
-  CHECK_BN(tuple_match(env, imp->e->info->type, imp->t))
+  CHECK_BN(tuple_match(env, imp->e->type, imp->t))
   return imp->t;
 }
 
@@ -250,7 +250,7 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
     const Type t = (Type)vector_at(v, i);
     if(t != (Type)1) {
       struct loc_t_ pos = {};
-      const m_str str = type2str(env->gwion, t, &pos);
+      const m_str str = type2str(env->gwion, t, pos);
       text_add(&text, str);
       free_mstr(env->gwion->mp, str);
     } else
@@ -267,11 +267,11 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
 ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t pos) {
   Type_Decl *td = type != (Type)1 ?
       type2td(gwion, type, pos) :
-      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), loc_cpy(gwion->mp, pos));
+      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
   td->flag -= ae_flag_late;
-  const Var_Decl var = new_var_decl(gwion->mp, name, NULL, loc_cpy(gwion->mp, pos));
+  const Var_Decl var = new_var_decl(gwion->mp, name, NULL, pos);
   const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
-  return new_exp_decl(gwion->mp, td, vlist, loc_cpy(gwion->mp, pos));
+  return new_exp_decl(gwion->mp, td, vlist, pos);
 }
 
 ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
@@ -287,7 +287,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
     const Type t = (Type)vector_at(v, i);
 //    const Symbol tsym = insert_symbol(t != (Type)1 ? t->name : "@Undefined");
     Exp decl = decl_from_id(env->gwion, t, sym, pos);
-    const Stmt stmt = new_stmt_exp(env->gwion->mp, ae_stmt_exp, decl, loc_cpy(env->gwion->mp, pos));
+    const Stmt stmt = new_stmt_exp(env->gwion->mp, ae_stmt_exp, decl, pos);
     const Stmt_List slist = new_stmt_list(env->gwion->mp, stmt, NULL);
     if(curr)
       curr->next = slist;
@@ -297,9 +297,9 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   }
   Section * section = new_section_stmt_list(env->gwion->mp, base);
   Ast body = new_ast(env->gwion->mp, section, NULL);
-  Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), loc_cpy(env->gwion->mp, pos));
+  Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), pos);
   Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none,
-        sym, td, body, loc_cpy(env->gwion->mp, pos));
+        sym, td, body, pos);
   SET_FLAG(cdef, abstract | ae_flag_final);
   CHECK_BO(scan0_class_def(env, cdef))
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
@@ -338,7 +338,7 @@ static OP_CHECK(opck_tuple_ctor) {
   struct Vector_ v;
   vector_init(&v);
   Exp e = exp;
-  do vector_add(&v, (m_uint)e->info->type);
+  do vector_add(&v, (m_uint)e->type);
   while((e = e->next));
   const Type ret = tuple_type(env, &v, exp_self(call)->pos);
   vector_release(&v);
@@ -348,7 +348,7 @@ static OP_CHECK(opck_tuple_ctor) {
 static OP_EMIT(opem_tuple_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
   const Instr instr = emit_add_instr(emit, TupleCtor);
-  instr->m_val = (m_uint)exp_self(call)->info->type;
+  instr->m_val = (m_uint)exp_self(call)->type;
   return GW_OK;
 }
 
@@ -364,22 +364,22 @@ static OP_CHECK(unpack_ck) {
     if(e->d.prim.d.var != skip) {
       const Symbol var = e->d.prim.d.var;
       memset(&e->d, 0, sizeof(union exp_data));
-      e->info->type = env->gwion->type[et_auto];
+      e->type = env->gwion->type[et_auto];
       e->d.exp_decl.type = env->gwion->type[et_auto];
       e->exp_type = ae_exp_decl;
-//      e->d.exp_decl.td = new_type_decl(env->gwion->mp, new_id_list(env->gwion->mp, decl, loc_cpy(env->gwion->mp, e->pos)));
-      e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, loc_cpy(env->gwion->mp, e->pos));
+//      e->d.exp_decl.td = new_type_decl(env->gwion->mp, new_id_list(env->gwion->mp, decl, e->pos));
+      e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, e->pos);
       e->d.exp_decl.list = new_var_decl_list(env->gwion->mp,
-        new_var_decl(env->gwion->mp, var, NULL, loc_cpy(env->gwion->mp, e->pos)), NULL);
+        new_var_decl(env->gwion->mp, var, NULL, e->pos), NULL);
 //      e->d.exp_decl.list->self->value = v;
     } else {
       e->d.prim.prim_type = ae_prim_nil;
-      e->info->type = env->gwion->type[et_undefined];
+      e->type = env->gwion->type[et_undefined];
     }
     e = e->next;
   }
   exp_setmeta(exp_self(call), 0);
-  return call->func->info->type->info->base_type;
+  return call->func->type->info->base_type;
 }
 
 static OP_EMIT(unpack_em) {
@@ -405,18 +405,18 @@ static OP_CHECK(opck_at_unpack) {
   int i = 0;
   while(e) {
     if(e->exp_type == ae_exp_decl) {
-      DECL_OO(const Type, t, = (Type)VPTR(&bin->lhs->info->type->info->tuple->types, i))
+      DECL_OO(const Type, t, = (Type)VPTR(&bin->lhs->type->info->tuple->types, i))
       struct Vector_ v; // hoist?
       vector_init(&v);
       parents(env, t, &v);
 //      ID_List id = e->d.exp_decl.td->xid;
 //      id->xid = (Symbol)vector_front(&v);
 //      for(m_uint i = 1; i < vector_size(&v); ++i)
-//        id = (id->next = new_id_list(env->gwion->mp, (Symbol)vector_at(&v, i), loc_cpy(env->gwion->mp, e->pos)));
+//        id = (id->next = new_id_list(env->gwion->mp, (Symbol)vector_at(&v, i), e->pos));
       Type_Decl *td = e->d.exp_decl.td;
       td->xid = (Symbol)vector_front(&v);
       for(m_uint i = 1; i < vector_size(&v); ++i)
-        td = (td->next = new_type_decl(env->gwion->mp, (Symbol)vector_at(&v, i), loc_cpy(env->gwion->mp, e->pos)));
+        td = (td->next = new_type_decl(env->gwion->mp, (Symbol)vector_at(&v, i), e->pos));
       vector_release(&v);
       const Exp next = e->next;
       e->d.exp_decl.type = NULL;
@@ -429,7 +429,7 @@ static OP_CHECK(opck_at_unpack) {
     ++i;
     e = e->next;
   }
-  return bin->lhs->info->type;
+  return bin->lhs->type;
 }
 
 static OP_EMIT(opem_at_unpack) {
@@ -438,12 +438,12 @@ static OP_EMIT(opem_at_unpack) {
     const Type t_undef = emit->gwion->type[et_undefined];
     Exp e = bin->rhs->d.exp_call.args;
     m_uint sz = 0;
-    do if(e->info->type != t_undef)
-      sz += e->info->type->size;
+    do if(e->type != t_undef)
+      sz += e->type->size;
     while((e = e->next));
     const Instr pop = emit_add_instr(emit, RegPop);
     pop->m_val = sz;
-    const Vector v = &bin->lhs->info->type->info->tuple->types;
+    const Vector v = &bin->lhs->type->info->tuple->types;
     struct TupleEmit te = { .e=bin->rhs->d.exp_call.args, .v=v };
     emit_unpack_instr(emit, &te);
     const Instr pop2 = emit_add_instr(emit, RegPop);
@@ -467,7 +467,7 @@ static ANN Type scan_tuple(const Env env, const Type_Decl *td) {
       return env->gwion->type[et_error];
     }
   } while((tl = tl->next));
-  const Type ret = tuple_type(env, &v, td_pos(td));
+  const Type ret = tuple_type(env, &v, td->pos);
   vector_release(&v);
   return ret;
 }

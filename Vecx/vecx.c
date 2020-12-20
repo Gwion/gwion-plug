@@ -389,19 +389,19 @@ OP_CHECK(opck_vecx_ctor) {
     last = e;
     e = e->next;
   }
-  const Type t = call->func->info->type->info->base_type;
+  const Type t = call->func->type->info->base_type;
   if(i > t->size) {
     env_err(env, last->pos, "extraneous component of %s value", t->name);
     return NULL;
   }
   if(!call->args) {
-    call->args = last = new_prim_float(env->gwion->mp, 0.0, loc_cpy(env->gwion->mp, call->func->pos));
-    last->info->type = t_float;
+    call->args = last = new_prim_float(env->gwion->mp, 0.0, call->func->pos);
+    last->type = t_float;
     i += SZ_FLOAT;
   }
   while(i < t->size) {
-    last = (last->next = new_prim_float(env->gwion->mp, 0.0, loc_cpy(env->gwion->mp, last->pos)));
-    last->info->type = t_float;
+    last = (last->next = new_prim_float(env->gwion->mp, 0.0, last->pos));
+    last->type = t_float;
     i += SZ_FLOAT;
   }
   return t;
