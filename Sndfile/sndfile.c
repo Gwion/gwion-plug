@@ -20,7 +20,11 @@ DRVINI(sndfile_ini) {
   char tmp[strlen(FILENAME) + 5];
   SF_INFO info = { .samplerate= di->si->sr, .channels=di->si->out,
     .frames=BUFSIZE*2, .format=(SF_FORMAT_WAV | SF_FORMAT_PCM_24) };
-  sprintf(tmp, "%s.wav", FILENAME);
+  char *arg = strchr(di->si->arg, '=');
+  if(arg)
+    sprintf(tmp, "%s.wav", arg+1);
+  else
+    sprintf(tmp, "%s.wav", FILENAME);
   di->driver->data = sf_open(tmp, SFM_WRITE, &info);
   return GW_OK;
 }
@@ -49,4 +53,3 @@ GWDRIVER(sndfile) {
   d->run = sndfile_run;
   d->del = sndfile_del;
 }
-
