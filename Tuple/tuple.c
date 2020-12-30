@@ -441,13 +441,13 @@ static OP_EMIT(opem_at_unpack) {
     do if(e->type != t_undef)
       sz += e->type->size;
     while((e = e->next));
-    const Instr pop = emit_add_instr(emit, RegPop);
-    pop->m_val = sz;
+    const Instr pop = emit_add_instr(emit, RegMove);
+    pop->m_val = -sz;
     const Vector v = &bin->lhs->type->info->tuple->types;
     struct TupleEmit te = { .e=bin->rhs->d.exp_call.args, .v=v };
     emit_unpack_instr(emit, &te);
-    const Instr pop2 = emit_add_instr(emit, RegPop);
-    pop2->m_val = SZ_INT;
+    const Instr pop2 = emit_add_instr(emit, RegMove);
+    pop2->m_val = -SZ_INT;
 
   }
   return GW_OK;
