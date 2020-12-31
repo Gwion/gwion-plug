@@ -97,10 +97,7 @@ static MFUN(load) {
   const UGen u = UGEN(o);
   struct sr_data* sr = (struct sr_data*)u->module.gen.data;
   const M_Object obj = *(M_Object*)MEM(SZ_INT);
-  if(!obj)
-    Except(shred, "NullPtrException");
   *(m_int*)RETURN = tinysr_load_model(sr->ctx, STRING(obj));
-  _release(obj, shred);
   sr->ini = 1;
 }
 

@@ -434,7 +434,8 @@ static MFUN(ana_set_fft) {
   Fft* fft;
   M_Object obj = *(M_Object*)(o->data + o_ana_fft);
   Ana* ana = *(Ana**)(o->data + o_ana_ana);
-  if(obj) release(obj, shred);
+  if(obj)
+    release(obj, shred);
   obj = *(M_Object*)MEM(SZ_INT);
   if(!obj) {
     ana->size = 0;
@@ -448,6 +449,7 @@ static MFUN(ana_set_fft) {
     release(obj, shred);
     return;
   }
+  ++obj->ref;
   ana->size = fft->fft->fftsize;
   ana->fval = fft->frq->s;
   *(M_Object*)RETURN = *(M_Object*)(o->data + o_ana_fft) = obj;

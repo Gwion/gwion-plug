@@ -140,19 +140,16 @@ static MFUN(osc_send) {
 static INSTR(oscsend_add_int) {
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('i', REG(0)));
-  release(**(M_Object**)REG(0), shred);
 }
 
 static INSTR(oscsend_add_float) {
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('d', REG(0)));
-  release(**(M_Object**)REG(0), shred);
 }
 
 static INSTR(oscsend_add_string) {
   POP_REG(shred, SZ_INT);
   vector_add(ARGS((**(M_Object**)REG(0))), (vtype)new_Arg('s', REG(0)));
-  release(**(M_Object**)REG(0), shred);
 }
 
 static void osc_error_handler(int num, const char *msg, const char *where)

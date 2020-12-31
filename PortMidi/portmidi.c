@@ -129,6 +129,7 @@ static MFUN(midiout_open)
   ID(o) = *(m_uint*)MEM(SZ_INT);
   MidiInfo* info = get(shred->info->vm, ID(o));
   vector_add(info->client, (vtype)o);
+  ++o->ref;
   if(!info->stream)
     Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
   STREAM(o) = info->stream;
@@ -159,7 +160,6 @@ static void* pm_recv(void* data)
     {
       Pm_Read(info->stream, &event, 1);
       for(i = 0; i < vector_size(info->client); i++)
-      {
         M_Object o = (M_Object)vector_at(info->client, i);
         pthread_mutex_lock(&info->mutex);
         vector_add(MSG(o), (vtype)(m_uint)event.message);

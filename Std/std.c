@@ -68,7 +68,6 @@ static double dbtorms(double f) {
   if(!a##_obj)                                   \
     Except(shred, "NullPtrException");           \
   const m_str a = STRING(a##_obj);               \
-  release(a##_obj, shred);
 
 static SFUN(std_system) {
   GETSTRING(str, 0);

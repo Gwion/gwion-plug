@@ -32,8 +32,6 @@ static INSTR(name##_to_file) {\
   POP_REG(shred, SZ_INT)                                      \
   const type lhs = *(type*)REG(-offset);                      \
   const M_Object o = *(M_Object*)REG(0);                      \
-  if(!o) Except(shred, "NullPtrException")                    \
-  _release(o, shred);                                         \
   if(!IO_FILE(o)) Except(shred, "EmptyFileException")         \
   fprintf(IO_FILE(o), format, __VA_ARGS__);                   \
   pop;                                                        \
@@ -43,9 +41,9 @@ describe_2file(int, m_int, SZ_INT,, "%" INT_F "", lhs)
 describe_2file(float, m_float, SZ_FLOAT,
  PUSH_REG(shred, SZ_INT - SZ_FLOAT), "%f", lhs)
 describe_2file(string, M_Object, SZ_INT,
-  release(lhs, shred), "%s", lhs ? STRING(lhs) : NULL)
+  , "%s", lhs ? STRING(lhs) : NULL)
 describe_2file(object, M_Object, SZ_INT,
-  release(lhs, shred), "%p", (void*)lhs)
+  , "%p", (void*)lhs)
 describe_2file(complex, m_complex, SZ_COMPLEX,
   PUSH_REG(shred, SZ_INT - SZ_COMPLEX), "#(%f, %f)", creal(lhs), cimag(lhs))
 describe_2file(polar, m_complex, SZ_COMPLEX,
@@ -61,7 +59,6 @@ static INSTR(file_to_int) {
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   if(!o)
     Except(shred, "EmptyFileException");
-  _release(o, shred);
   if(IO_FILE(o)) {
     if(fscanf(IO_FILE(o), "%"INT_F, ret) < 0)
       Except(shred, "FileReadException");
@@ -76,7 +73,6 @@ static INSTR(file_to_float) {
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   if(!o)
     Except(shred, "EmptyFileException");
-  _release(o, shred);
   if(IO_FILE(o)) {
     if(fscanf(IO_FILE(o), "%f", &ret) < 0)
       Except(shred, "FileReadException");                                     // LCOV_EXCL_LINE
@@ -101,8 +97,6 @@ static INSTR(file_to_string) {
     STRING(s) = s_name(insert_symbol(shred->info->vm->gwion->st, c));
     *(M_Object*)REG(- SZ_INT) = s;
   }
-  _release(o, shred);
-  _release(s, shred);
 }
 
 static MFUN(file_nl) {
@@ -116,8 +110,6 @@ static MFUN(file_open) {
     Except(shred, "invalid arguments to FileIO.open()");
   const m_str filename = STRING(rhs);
   const m_str mode = STRING(lhs);
-  release(rhs, shred);
-  release(lhs, shred);
   if(IO_FILE(o)) {
     fclose(IO_FILE(o));
     IO_FILE(o) = NULL;
@@ -144,7 +136,6 @@ static SFUN(file_remove) {
   const M_Object obj = *(M_Object*)MEM(0);
   if(!obj)
     return;
-  _release(obj, shred);
   *(m_uint*)RETURN = remove(STRING(*(M_Object*)MEM(0)));
 }
 
@@ -154,7 +145,6 @@ static SFUN(file_list) {
   if(!obj)
     return;
   const m_str str = STRING(obj);
-  _release(obj, shred);
   if(!str)
     return;
   const m_int n = scandir(str, &namelist, NULL, alphasort);

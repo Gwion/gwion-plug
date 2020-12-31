@@ -1203,6 +1203,8 @@ typedef struct {
   sp_data* sp;
   sp_conv* osc;
   m_bool is_init;
+  M_Object ft_obj;
+
 } GW_conv;
 
 static TICK(conv_tick) {
@@ -1228,6 +1230,8 @@ static DTOR(conv_dtor) {
   GW_conv* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->ft_obj, shred);
+
     sp_conv_destroy(&ug->osc);
   }
   xfree(ug);
@@ -1238,16 +1242,19 @@ static MFUN(conv_init) {
   GW_conv* ug = (GW_conv*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_conv_destroy(&ug->osc);
+    release(ug->ft_obj, shred);
     ug->osc = NULL;
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   gw_offset +=SZ_INT;
   m_float iPartLen = *(m_float*)(shred->mem + gw_offset);
   if(sp_conv_create(&ug->osc) == SP_NOT_OK || sp_conv_init(ug->sp, ug->osc, ft, iPartLen) == SP_NOT_OK) {
+    release(ft_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->ft_obj = ft_obj;
   ug->is_init = 1;
 }
 
@@ -1518,7 +1525,6 @@ static MFUN(diskin_init) {
   }
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
-  release(filename_obj, shred);
   if(sp_diskin_create(&ug->osc) == SP_NOT_OK || sp_diskin_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
@@ -1773,6 +1779,8 @@ typedef struct {
   sp_data* sp;
   sp_dtrig* osc;
   m_bool is_init;
+  M_Object ft_obj;
+
 } GW_dtrig;
 
 static TICK(dtrig_tick) {
@@ -1798,6 +1806,8 @@ static DTOR(dtrig_dtor) {
   GW_dtrig* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->ft_obj, shred);
+
     sp_dtrig_destroy(&ug->osc);
   }
   xfree(ug);
@@ -1808,14 +1818,17 @@ static MFUN(dtrig_init) {
   GW_dtrig* ug = (GW_dtrig*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_dtrig_destroy(&ug->osc);
+    release(ug->ft_obj, shred);
     ug->osc = NULL;
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   if(sp_dtrig_create(&ug->osc) == SP_NOT_OK || sp_dtrig_init(ug->sp, ug->osc, ft) == SP_NOT_OK) {
+    release(ft_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->ft_obj = ft_obj;
   ug->is_init = 1;
 }
 
@@ -2045,6 +2058,10 @@ typedef struct {
   sp_data* sp;
   sp_fof* osc;
   m_bool is_init;
+  M_Object sine_obj;
+
+  M_Object win_obj;
+
 } GW_fof;
 
 static TICK(fof_tick) {
@@ -2070,6 +2087,10 @@ static DTOR(fof_dtor) {
   GW_fof* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->sine_obj, shred);
+
+    release(ug->win_obj, shred);
+
     sp_fof_destroy(&ug->osc);
   }
   xfree(ug);
@@ -2080,22 +2101,28 @@ static MFUN(fof_init) {
   GW_fof* ug = (GW_fof*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_fof_destroy(&ug->osc);
+    release(ug->sine_obj, shred);
+    release(ug->win_obj, shred);
     ug->osc = NULL;
   }
   const M_Object sine_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* sine = FTBL(sine_obj);
-  release(sine_obj, shred);
+  ++sine_obj->ref;
   gw_offset +=SZ_INT;
   const M_Object win_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* win = FTBL(win_obj);
-  release(win_obj, shred);
+  ++win_obj->ref;
   gw_offset +=SZ_INT;
   m_int iolaps = *(m_int*)(shred->mem + gw_offset);
   gw_offset +=SZ_INT;
   m_float iphs = *(m_float*)(shred->mem + gw_offset);
   if(sp_fof_create(&ug->osc) == SP_NOT_OK || sp_fof_init(ug->sp, ug->osc, sine, win, iolaps, iphs) == SP_NOT_OK) {
+    release(sine_obj, shred); // LCOV_EXCL_LINE
+    release(win_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->sine_obj = sine_obj;
+  ug->win_obj = win_obj;
   ug->is_init = 1;
 }
 
@@ -2261,6 +2288,10 @@ typedef struct {
   sp_data* sp;
   sp_fog* osc;
   m_bool is_init;
+  M_Object wav_obj;
+
+  M_Object win_obj;
+
 } GW_fog;
 
 static TICK(fog_tick) {
@@ -2286,6 +2317,10 @@ static DTOR(fog_dtor) {
   GW_fog* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->wav_obj, shred);
+
+    release(ug->win_obj, shred);
+
     sp_fog_destroy(&ug->osc);
   }
   xfree(ug);
@@ -2296,22 +2331,28 @@ static MFUN(fog_init) {
   GW_fog* ug = (GW_fog*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_fog_destroy(&ug->osc);
+    release(ug->wav_obj, shred);
+    release(ug->win_obj, shred);
     ug->osc = NULL;
   }
   const M_Object wav_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* wav = FTBL(wav_obj);
-  release(wav_obj, shred);
+  ++wav_obj->ref;
   gw_offset +=SZ_INT;
   const M_Object win_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* win = FTBL(win_obj);
-  release(win_obj, shred);
+  ++win_obj->ref;
   gw_offset +=SZ_INT;
   m_int iolaps = *(m_int*)(shred->mem + gw_offset);
   gw_offset +=SZ_INT;
   m_float iphs = *(m_float*)(shred->mem + gw_offset);
   if(sp_fog_create(&ug->osc) == SP_NOT_OK || sp_fog_init(ug->sp, ug->osc, wav, win, iolaps, iphs) == SP_NOT_OK) {
+    release(wav_obj, shred); // LCOV_EXCL_LINE
+    release(win_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->wav_obj = wav_obj;
+  ug->win_obj = win_obj;
   ug->is_init = 1;
 }
 
@@ -2465,6 +2506,8 @@ typedef struct {
   sp_data* sp;
   sp_fosc* osc;
   m_bool is_init;
+  M_Object tbl_obj;
+
 } GW_fosc;
 
 static TICK(fosc_tick) {
@@ -2490,6 +2533,8 @@ static DTOR(fosc_dtor) {
   GW_fosc* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->tbl_obj, shred);
+
     sp_fosc_destroy(&ug->osc);
   }
   xfree(ug);
@@ -2500,14 +2545,17 @@ static MFUN(fosc_init) {
   GW_fosc* ug = (GW_fosc*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_fosc_destroy(&ug->osc);
+    release(ug->tbl_obj, shred);
     ug->osc = NULL;
   }
   const M_Object tbl_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* tbl = FTBL(tbl_obj);
-  release(tbl_obj, shred);
+  ++tbl_obj->ref;
   if(sp_fosc_create(&ug->osc) == SP_NOT_OK || sp_fosc_init(ug->sp, ug->osc, tbl) == SP_NOT_OK) {
+    release(tbl_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->tbl_obj = tbl_obj;
   ug->is_init = 1;
 }
 
@@ -2575,6 +2623,8 @@ typedef struct {
   sp_data* sp;
   sp_gbuzz* osc;
   m_bool is_init;
+  M_Object ft_obj;
+
 } GW_gbuzz;
 
 static TICK(gbuzz_tick) {
@@ -2600,6 +2650,8 @@ static DTOR(gbuzz_dtor) {
   GW_gbuzz* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->ft_obj, shred);
+
     sp_gbuzz_destroy(&ug->osc);
   }
   xfree(ug);
@@ -2610,16 +2662,19 @@ static MFUN(gbuzz_init) {
   GW_gbuzz* ug = (GW_gbuzz*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_gbuzz_destroy(&ug->osc);
+    release(ug->ft_obj, shred);
     ug->osc = NULL;
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   gw_offset +=SZ_INT;
   m_float iphs = *(m_float*)(shred->mem + gw_offset);
   if(sp_gbuzz_create(&ug->osc) == SP_NOT_OK || sp_gbuzz_init(ug->sp, ug->osc, ft, iphs) == SP_NOT_OK) {
+    release(ft_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->ft_obj = ft_obj;
   ug->is_init = 1;
 }
 
@@ -2691,7 +2746,6 @@ static MFUN(ftbl_gen_composite) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   M_Object argstring_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str argstring = STRING(argstring_obj);
-  release(argstring_obj, shred);
   CHECK_SIZE(size);
   sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
@@ -2707,7 +2761,6 @@ static MFUN(ftbl_gen_file) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
-  release(filename_obj, shred);
   CHECK_SIZE(size);
   sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
@@ -2739,7 +2792,6 @@ static MFUN(ftbl_gen_line) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   M_Object argstring_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str argstring = STRING(argstring_obj);
-  release(argstring_obj, shred);
   CHECK_SIZE(size);
   sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
@@ -2755,7 +2807,7 @@ static MFUN(ftbl_gen_padsynth) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   const M_Object amps_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* amps = FTBL(amps_obj);
-  release(amps_obj, shred);
+  ++amps_obj->ref;
   gw_offset +=SZ_INT;
   m_float f = *(m_float*)(shred->mem + gw_offset);
   gw_offset +=SZ_FLOAT;
@@ -2775,7 +2827,6 @@ static MFUN(ftbl_gen_rand) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   M_Object argstring_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str argstring = STRING(argstring_obj);
-  release(argstring_obj, shred);
   CHECK_SIZE(size);
   sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
@@ -2791,7 +2842,6 @@ static MFUN(ftbl_gen_scrambler) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   M_Object dest_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl** dest = &FTBL(dest_obj);
-  release(dest_obj, shred);
   CHECK_SIZE(size);
   sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
@@ -2819,7 +2869,6 @@ static MFUN(ftbl_gen_sinesum) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   M_Object argstring_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str argstring = STRING(argstring_obj);
-  release(argstring_obj, shred);
   CHECK_SIZE(size);
   sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
@@ -2847,7 +2896,6 @@ static MFUN(ftbl_gen_xline) {
   m_int size = *(m_int*)(shred->mem + SZ_INT);
   M_Object argstring_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str argstring = STRING(argstring_obj);
-  release(argstring_obj, shred);
   CHECK_SIZE(size);
   sp_data *sp = get_module(shred->info->vm->gwion, "Soundpipe");
   sp_ftbl_create(sp, &ftbl, size);
@@ -3343,6 +3391,8 @@ typedef struct {
   sp_data* sp;
   sp_mincer* osc;
   m_bool is_init;
+  M_Object ft_obj;
+
 } GW_mincer;
 
 static TICK(mincer_tick) {
@@ -3368,6 +3418,8 @@ static DTOR(mincer_dtor) {
   GW_mincer* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->ft_obj, shred);
+
     sp_mincer_destroy(&ug->osc);
   }
   xfree(ug);
@@ -3378,16 +3430,19 @@ static MFUN(mincer_init) {
   GW_mincer* ug = (GW_mincer*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_mincer_destroy(&ug->osc);
+    release(ug->ft_obj, shred);
     ug->osc = NULL;
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   gw_offset +=SZ_INT;
   m_int winsize = *(m_int*)(shred->mem + gw_offset);
   if(sp_mincer_create(&ug->osc) == SP_NOT_OK || sp_mincer_init(ug->sp, ug->osc, ft, winsize) == SP_NOT_OK) {
+    release(ft_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->ft_obj = ft_obj;
   ug->is_init = 1;
 }
 
@@ -3608,13 +3663,12 @@ static MFUN(nsmp_init) {
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   gw_offset +=SZ_INT;
   m_int sr = *(m_int*)(shred->mem + gw_offset);
   gw_offset +=SZ_INT;
   M_Object init_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str init = STRING(init_obj);
-  release(init_obj, shred);
   if(sp_nsmp_create(&ug->osc) == SP_NOT_OK || sp_nsmp_init(ug->sp, ug->osc, ft, sr, init) == SP_NOT_OK) {
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
@@ -3637,6 +3691,8 @@ typedef struct {
   sp_data* sp;
   sp_osc* osc;
   m_bool is_init;
+  M_Object tbl_obj;
+
 } GW_osc;
 
 static TICK(osc_tick) {
@@ -3662,6 +3718,8 @@ static DTOR(osc_dtor) {
   GW_osc* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->tbl_obj, shred);
+
     sp_osc_destroy(&ug->osc);
   }
   xfree(ug);
@@ -3672,16 +3730,19 @@ static MFUN(osc_init) {
   GW_osc* ug = (GW_osc*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_osc_destroy(&ug->osc);
+    release(ug->tbl_obj, shred);
     ug->osc = NULL;
   }
   const M_Object tbl_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* tbl = FTBL(tbl_obj);
-  release(tbl_obj, shred);
+  ++tbl_obj->ref;
   gw_offset +=SZ_INT;
   m_float phase = *(m_float*)(shred->mem + gw_offset);
   if(sp_osc_create(&ug->osc) == SP_NOT_OK || sp_osc_init(ug->sp, ug->osc, tbl, phase) == SP_NOT_OK) {
+    release(tbl_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->tbl_obj = tbl_obj;
   ug->is_init = 1;
 }
 
@@ -3715,6 +3776,8 @@ typedef struct {
   m_bool is_init;
   sp_ftbl** tbl;
 
+  M_Object tbl_ptr;
+
 } GW_oscmorph;
 
 static TICK(oscmorph_tick) {
@@ -3742,6 +3805,8 @@ static DTOR(oscmorph_dtor) {
 
     xfree(ug->osc->tbl);
 
+    release(ug->tbl_ptr, shred);
+
     sp_oscmorph_destroy(&ug->osc);
   }
   xfree(ug);
@@ -3753,6 +3818,7 @@ static MFUN(oscmorph_init) {
   if(ug->osc) {
     sp_oscmorph_destroy(&ug->osc);
     xfree(ug->tbl);
+    release(ug->tbl_ptr, shred);
     ug->osc = NULL;
   }
   M_Object tbl_ptr = *(M_Object*)(shred->mem + gw_offset);
@@ -3763,16 +3829,18 @@ static MFUN(oscmorph_init) {
       m_vector_get(ARRAY(tbl_ptr), tbl_iter, &tbl_ftl_obj);
       tbl[tbl_iter] = FTBL(tbl_ftl_obj);
   }
-  release(tbl_ptr, shred);
+  ++tbl_ptr->ref;
   gw_offset +=SZ_INT;
   m_int nft = *(m_int*)(shred->mem + gw_offset);
   gw_offset +=SZ_INT;
   m_float phase = *(m_float*)(shred->mem + gw_offset);
   if(sp_oscmorph_create(&ug->osc) == SP_NOT_OK || sp_oscmorph_init(ug->sp, ug->osc, tbl, nft, phase) == SP_NOT_OK) {
     xfree(tbl); // LCOV_EXCL_LINE
+    release(tbl_ptr, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl = tbl;
+  ug->tbl_ptr = tbl_ptr;
   ug->is_init = 1;
 }
 
@@ -3990,6 +4058,8 @@ typedef struct {
   sp_data* sp;
   sp_paulstretch* osc;
   m_bool is_init;
+  M_Object ft_obj;
+
 } GW_paulstretch;
 
 static TICK(paulstretch_tick) {
@@ -4015,6 +4085,8 @@ static DTOR(paulstretch_dtor) {
   GW_paulstretch* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->ft_obj, shred);
+
     sp_paulstretch_destroy(&ug->osc);
   }
   xfree(ug);
@@ -4025,18 +4097,21 @@ static MFUN(paulstretch_init) {
   GW_paulstretch* ug = (GW_paulstretch*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_paulstretch_destroy(&ug->osc);
+    release(ug->ft_obj, shred);
     ug->osc = NULL;
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   gw_offset +=SZ_INT;
   m_float windowsize = *(m_float*)(shred->mem + gw_offset);
   gw_offset +=SZ_FLOAT;
   m_float stretch = *(m_float*)(shred->mem + gw_offset);
   if(sp_paulstretch_create(&ug->osc) == SP_NOT_OK || sp_paulstretch_init(ug->sp, ug->osc, ft, windowsize, stretch) == SP_NOT_OK) {
+    release(ft_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->ft_obj = ft_obj;
   ug->is_init = 1;
 }
 
@@ -4570,6 +4645,8 @@ typedef struct {
   sp_data* sp;
   sp_posc3* osc;
   m_bool is_init;
+  M_Object tbl_obj;
+
 } GW_posc3;
 
 static TICK(posc3_tick) {
@@ -4595,6 +4672,8 @@ static DTOR(posc3_dtor) {
   GW_posc3* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->tbl_obj, shred);
+
     sp_posc3_destroy(&ug->osc);
   }
   xfree(ug);
@@ -4605,14 +4684,17 @@ static MFUN(posc3_init) {
   GW_posc3* ug = (GW_posc3*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_posc3_destroy(&ug->osc);
+    release(ug->tbl_obj, shred);
     ug->osc = NULL;
   }
   const M_Object tbl_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* tbl = FTBL(tbl_obj);
-  release(tbl_obj, shred);
+  ++tbl_obj->ref;
   if(sp_posc3_create(&ug->osc) == SP_NOT_OK || sp_posc3_init(ug->sp, ug->osc, tbl) == SP_NOT_OK) {
+    release(tbl_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->tbl_obj = tbl_obj;
   ug->is_init = 1;
 }
 
@@ -4733,7 +4815,6 @@ static MFUN(prop_init) {
   }
   M_Object str_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str str = STRING(str_obj);
-  release(str_obj, shred);
   if(sp_prop_create(&ug->osc) == SP_NOT_OK || sp_prop_init(ug->sp, ug->osc, str) == SP_NOT_OK) {
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
@@ -5536,6 +5617,10 @@ typedef struct {
   sp_data* sp;
   sp_slice* osc;
   m_bool is_init;
+  M_Object vals_obj;
+
+  M_Object buf_obj;
+
 } GW_slice;
 
 static TICK(slice_tick) {
@@ -5561,6 +5646,10 @@ static DTOR(slice_dtor) {
   GW_slice* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->vals_obj, shred);
+
+    release(ug->buf_obj, shred);
+
     sp_slice_destroy(&ug->osc);
   }
   xfree(ug);
@@ -5571,18 +5660,24 @@ static MFUN(slice_init) {
   GW_slice* ug = (GW_slice*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_slice_destroy(&ug->osc);
+    release(ug->vals_obj, shred);
+    release(ug->buf_obj, shred);
     ug->osc = NULL;
   }
   const M_Object vals_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* vals = FTBL(vals_obj);
-  release(vals_obj, shred);
+  ++vals_obj->ref;
   gw_offset +=SZ_INT;
   const M_Object buf_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* buf = FTBL(buf_obj);
-  release(buf_obj, shred);
+  ++buf_obj->ref;
   if(sp_slice_create(&ug->osc) == SP_NOT_OK || sp_slice_init(ug->sp, ug->osc, vals, buf) == SP_NOT_OK) {
+    release(vals_obj, shred); // LCOV_EXCL_LINE
+    release(buf_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->vals_obj = vals_obj;
+  ug->buf_obj = buf_obj;
   ug->is_init = 1;
 }
 
@@ -5715,7 +5810,6 @@ static MFUN(spa_init) {
   }
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
-  release(filename_obj, shred);
   if(sp_spa_create(&ug->osc) == SP_NOT_OK || sp_spa_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
@@ -5765,7 +5859,6 @@ static MFUN(sparec_init) {
   }
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
-  release(filename_obj, shred);
   if(sp_sparec_create(&ug->osc) == SP_NOT_OK || sp_sparec_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
@@ -5852,6 +5945,8 @@ typedef struct {
   sp_data* sp;
   sp_tabread* osc;
   m_bool is_init;
+  M_Object ft_obj;
+
 } GW_tabread;
 
 static TICK(tabread_tick) {
@@ -5877,6 +5972,8 @@ static DTOR(tabread_dtor) {
   GW_tabread* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->ft_obj, shred);
+
     sp_tabread_destroy(&ug->osc);
   }
   xfree(ug);
@@ -5887,16 +5984,19 @@ static MFUN(tabread_init) {
   GW_tabread* ug = (GW_tabread*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_tabread_destroy(&ug->osc);
+    release(ug->ft_obj, shred);
     ug->osc = NULL;
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   gw_offset +=SZ_INT;
   m_float mode = *(m_float*)(shred->mem + gw_offset);
   if(sp_tabread_create(&ug->osc) == SP_NOT_OK || sp_tabread_init(ug->sp, ug->osc, ft, mode) == SP_NOT_OK) {
+    release(ft_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->ft_obj = ft_obj;
   ug->is_init = 1;
 }
 
@@ -6052,6 +6152,8 @@ typedef struct {
   sp_data* sp;
   sp_tblrec* osc;
   m_bool is_init;
+  M_Object bar_obj;
+
 } GW_tblrec;
 
 static TICK(tblrec_tick) {
@@ -6077,6 +6179,8 @@ static DTOR(tblrec_dtor) {
   GW_tblrec* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->bar_obj, shred);
+
     sp_tblrec_destroy(&ug->osc);
   }
   xfree(ug);
@@ -6087,14 +6191,17 @@ static MFUN(tblrec_init) {
   GW_tblrec* ug = (GW_tblrec*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_tblrec_destroy(&ug->osc);
+    release(ug->bar_obj, shred);
     ug->osc = NULL;
   }
   const M_Object bar_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* bar = FTBL(bar_obj);
-  release(bar_obj, shred);
+  ++bar_obj->ref;
   if(sp_tblrec_create(&ug->osc) == SP_NOT_OK || sp_tblrec_init(ug->sp, ug->osc, bar) == SP_NOT_OK) {
+    release(bar_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->bar_obj = bar_obj;
   ug->is_init = 1;
 }
 
@@ -6712,6 +6819,8 @@ typedef struct {
   sp_data* sp;
   sp_tseq* osc;
   m_bool is_init;
+  M_Object ft_obj;
+
 } GW_tseq;
 
 static TICK(tseq_tick) {
@@ -6737,6 +6846,8 @@ static DTOR(tseq_dtor) {
   GW_tseq* ug = UGEN(o)->module.gen.data;
   if(ug->is_init) {
 
+    release(ug->ft_obj, shred);
+
     sp_tseq_destroy(&ug->osc);
   }
   xfree(ug);
@@ -6747,14 +6858,17 @@ static MFUN(tseq_init) {
   GW_tseq* ug = (GW_tseq*)UGEN(o)->module.gen.data;
   if(ug->osc) {
     sp_tseq_destroy(&ug->osc);
+    release(ug->ft_obj, shred);
     ug->osc = NULL;
   }
   const M_Object ft_obj = *(M_Object*)(shred->mem + gw_offset);
   sp_ftbl* ft = FTBL(ft_obj);
-  release(ft_obj, shred);
+  ++ft_obj->ref;
   if(sp_tseq_create(&ug->osc) == SP_NOT_OK || sp_tseq_init(ug->sp, ug->osc, ft) == SP_NOT_OK) {
+    release(ft_obj, shred); // LCOV_EXCL_LINE
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
+  ug->ft_obj = ft_obj;
   ug->is_init = 1;
 }
 
@@ -7033,7 +7147,6 @@ static MFUN(wavin_init) {
   }
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
-  release(filename_obj, shred);
   if(sp_wavin_create(&ug->osc) == SP_NOT_OK || sp_wavin_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
@@ -7083,7 +7196,6 @@ static MFUN(wavout_init) {
   }
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
-  release(filename_obj, shred);
   if(sp_wavout_create(&ug->osc) == SP_NOT_OK || sp_wavout_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
     Except(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
@@ -7338,7 +7450,7 @@ GWION_IMPORT(soundpipe) {
   ugen_gen(gwi->gwion, UGEN(o), sp_tick, sp, 0);
   vector_add(&vm->ugen, (vtype)UGEN(o));
   gwi_item_ini(gwi, "UGen", "@soundpipe main ugen");
-  gwi_item_end(gwi, ae_flag_const, o);
+  gwi_item_end(gwi, ae_flag_late | ae_flag_const, o);
   ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));
   GWI_BB(gwi_class_ini(gwi, "ftbl", NULL))
   gwi_class_xtor(gwi, NULL, ftbl_dtor);

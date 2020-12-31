@@ -25,7 +25,6 @@ static SFUN(machine_add) {
   if(!obj)
     return;
   const m_str str = STRING(obj);
-  _release(obj, shred);
   if(!str)
     return;
   *(m_uint*)RETURN = compile_filename(shred->info->vm->gwion, str);
@@ -35,7 +34,6 @@ static SFUN(machine_check) {
   *(m_uint*)RETURN = -1;
   const M_Object code_obj = *(M_Object*)MEM(0);
   const m_str line = code_obj ? STRING(code_obj) : NULL;
-  release(code_obj, shred);
   if(!line)return;
   struct Vector_ v;
   vector_init(&v);
@@ -49,7 +47,6 @@ static SFUN(machine_compile) {
   *(m_uint*)RETURN = -1;
   const M_Object code_obj = *(M_Object*)MEM(0);
   const m_str line = code_obj ? STRING(code_obj) : NULL;
-  release(code_obj, shred);
   if(!line)return;
   *(m_uint*)RETURN = compile_string(shred->info->vm->gwion, "Machine.compile", line);
 }
@@ -77,7 +74,6 @@ static SFUN(machine_pass) {
   }
   *(m_uint*)RETURN = pass_set(shred->info->vm->gwion, &v);
   vector_release(&v);
-  release(array_obj, shred);
 }
 
 GWION_IMPORT(machine) {

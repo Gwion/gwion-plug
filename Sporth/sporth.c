@@ -152,7 +152,6 @@ static MFUN(sporth_parse_string)
   }
   free(str);
   *(M_Object*)RETURN = *(M_Object*)MEM(SZ_INT);
-  release(*(M_Object*)RETURN, shred);
 }
 
 static MFUN(sporth_parse_file) {
@@ -171,7 +170,6 @@ static MFUN(sporth_parse_file) {
     plumber_close_file(&data->pd);
     free(str);
     *(M_Object*)RETURN = *(M_Object*)MEM(SZ_INT);
-    release(*(M_Object*)RETURN, shred);
   }
 }
 

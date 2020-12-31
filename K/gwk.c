@@ -58,9 +58,6 @@ static SFUN(gw_knn) {
   matrix_release(data);
   matrix_release(inst);
   free(ret);
-  release(data_obj, shred);
-  release(labl_obj, shred);
-  release(inst_obj, shred);
 }
 
 static SFUN(gw_kmeans) {
@@ -83,8 +80,6 @@ static SFUN(gw_kmeans) {
   matrix_release(data);
   matrix_release(cent);
   free(ret);
-  release(data_obj, shred);
-  release(cent_obj, shred);
 }
 
 static SFUN(gw_kmeans_refine) {
@@ -108,7 +103,6 @@ static SFUN(gw_kmeans_refine) {
     m_vector_set(ARRAY(ret_obj), i, (char*)&obj);
     vector_add(&shred->gc, (vtype)obj);
   }
-  release(data_obj, shred);
   matrix_release(ret);
   matrix_release(data);
 }

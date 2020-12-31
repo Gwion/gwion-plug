@@ -11,7 +11,6 @@ function declare_c_param(param, offset)
   elseif string.match(param.type, "char%s*") then
     print("  M_Object "..param.name.."_obj = *(M_Object*)(shred->mem + gw_offset);")
     print("  m_str "..param.name.." = STRING("..param.name.."_obj);")
-    print("  release("..param.name.."_obj, shred);")
   elseif string.match(param.type, "sp_ftbl%s%*%*") then
     print("  M_Object "..param.name.."_ptr = *(M_Object*)(shred->mem + gw_offset);")
     print("  m_uint "..param.name.."_iter;")
@@ -20,15 +19,14 @@ function declare_c_param(param, offset)
     print("      M_Object "..param.name.."_ftl_obj;")
     print("      m_vector_get(ARRAY("..param.name.."_ptr), "..param.name.."_iter, &"..param.name.."_ftl_obj);")
     print("      "..param.name.."["..param.name.."_iter] = FTBL("..param.name.."_ftl_obj);\n  }")
-    print("  release("..param.name.."_ptr, shred);")
+    print("  ++"..param.name.."_ptr->ref;")
   elseif string.match(param.type, "&sp_ftbl%s*") then
     print("  M_Object "..param.name.."_obj = *(M_Object*)(shred->mem + gw_offset);")
     print("  sp_ftbl** "..param.name.." = &FTBL("..param.name.."_obj);")
-    print("  release("..param.name.."_obj, shred);")
   elseif string.match(param.type, "sp_ftbl%s*") then
     print("  const M_Object "..param.name.."_obj = *(M_Object*)(shred->mem + gw_offset);")
     print("  sp_ftbl* "..param.name.." = FTBL("..param.name.."_obj);")
-    print("  release("..param.name.."_obj, shred);")
+    print("  ++"..param.name.."_obj->ref;")
   else
     print("unknown type:", param.type, ".")
     os.exit(1)
@@ -113,6 +111,10 @@ function print_mod_func(name, mod)
       for _, v in pairs(tbl) do
         if string.match(v.type, "sp_ftbl%s%*%*") then
           print("  sp_ftbl** "..v.name..";\n")
+          print("  M_Object "..v.name.."_ptr;\n")
+        else if string.match(v.type, "sp_ftbl%s%*") then
+          print("  M_Object "..v.name.."_obj;\n")
+          end
         end
       end
     end
@@ -170,6 +172,10 @@ function print_mod_func(name, mod)
       for _, v in pairs(arg) do
         if string.match(v.type, "sp_ftbl%s%*%*") then
           print("    xfree(ug->osc->"..v.name..");\n")
+          print("    release(ug->"..v.name.."_ptr, shred);\n")
+        else if string.match(v.type, "sp_ftbl%s%*") then
+          print("    release(ug->"..v.name.."_obj, shred);\n")
+          end
         end
       end
       print("    sp_"..name.."_destroy(&ug->osc);\n  }")
@@ -194,6 +200,10 @@ end
       for _, v in pairs(tbl) do
         if string.match(v.type, "sp_ftbl%s%*%*") then
           print("    xfree(ug->"..v.name..");")
+          print("    release(ug->"..v.name.."_ptr, shred);")
+        else if string.match(v.type, "sp_ftbl%s%*") then
+          print("    release(ug->"..v.name.."_obj, shred);")
+          end
         end
       end
     end
@@ -215,6 +225,10 @@ end
       for _, v in pairs(tbl) do
         if string.match(v.type, "sp_ftbl%s%*%*") then
           print("    xfree("..v.name.."); // LCOV_EXCL_LINE")
+          print("    release("..v.name.."_ptr, shred); // LCOV_EXCL_LINE")
+        else if string.match(v.type, "sp_ftbl%s%*") then
+          print("    release("..v.name.."_obj, shred); // LCOV_EXCL_LINE")
+          end
         end
       end
     end
@@ -224,6 +238,10 @@ end
       for _, v in pairs(tbl) do
         if string.match(v.type, "sp_ftbl%s%*%*") then
           print("  ug->"..v.name.." = "..v.name..";")
+          print("  ug->"..v.name.."_ptr = "..v.name.."_ptr;")
+        else if string.match(v.type, "sp_ftbl%s%*") then
+          print("  ug->"..v.name.."_obj = "..v.name.."_obj;")
+          end
         end
       end
     end

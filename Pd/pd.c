@@ -36,8 +36,6 @@ static MFUN(gwpd_open) {
   M_Object f_obj = *(M_Object*)MEM(SZ_INT);
   M_Object d_obj = *(M_Object*)MEM(SZ_INT*2);
   PDFILE(o) = libpd_openfile(STRING(f_obj), STRING(d_obj));
-  release(f_obj, shred);
-  release(d_obj, shred);
 }
 
 static MFUN(gwpd_close) {
