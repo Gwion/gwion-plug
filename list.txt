@@ -1,9 +1,7 @@
-FileIO
 K
 Lsys
 Machine
 Math
-Repl
 Sndfile
 Soundpipe
 Analys
