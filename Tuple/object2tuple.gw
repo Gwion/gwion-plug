@@ -4,7 +4,6 @@ class Person {
   45 => var int age;
 }
 
-#!late Tuple:[string,int] test;<<<typeof(test)>>>;
-var Person p @=> var Tuple:[string,int] t;
+var Person p @=> late Tuple:[string,int] t;
 #!<<<t[0]>>>;
 #!<<<t[1]>>>;

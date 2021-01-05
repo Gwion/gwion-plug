@@ -1,11 +1,23 @@
-#require Nucklear
+#require Nuklear
+#require Modules
 
-<<<var NkPanel panel>>>;
-<<<var NkLayout layout>>>;
-"test" => layout.name;
-<<<var NkSlider slider>>>;
-"test" => slider.name;
-spork { while(true) { slider => now; }};
+var NkPanel panel;
+
+var NkLayout layout;
+"test" @=> layout.name;
+
+var NkSlider slider;
+"test" @=> slider.name;
+
+220 => const auto base_freq;
+var SinOsc s => dac;
+spork {
+  do {
+    base_freq + slider.val * base_freq => s.freq;
+    slider => now;
+  } while(true);
+};
+
 var NkButton b;
-"Hit me to Quit!" => b.name;
+"Hit me to Quit!" @=> b.name;
 b => now;

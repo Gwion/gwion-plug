@@ -319,8 +319,8 @@ print('#include <stdlib.h>\
 #include "vm.h"\
 #include "err_msg.h"\
 #include "instr.h"\
-#include "object.h"\
 #include "gwion.h"\
+#include "object.h"\
 #include "operator.h"\
 #include "import.h"\
 #include "ugen.h"\

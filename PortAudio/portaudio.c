@@ -3,6 +3,7 @@
 #include "gwion_ast.h"
 #include "gwion_env.h"
 #include "vm.h"
+#include "gwion.h"
 #include "object.h"
 #include "ugen.h"
 #include "driver.h"

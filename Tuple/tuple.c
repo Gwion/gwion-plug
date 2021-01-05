@@ -3,10 +3,10 @@
 #include "gwion_env.h"
 #include "vm.h"
 #include "instr.h"
-#include "object.h"
 #include "emit.h"
 #include "vm.h"
 #include "gwion.h"
+#include "object.h"
 #include "operator.h"
 #include "import.h"
 #include "gwi.h"
@@ -347,6 +347,14 @@ static OP_CHECK(opck_tuple_ctor) {
 
 static OP_EMIT(opem_tuple_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
+  const Exp exp = call->args;
+  m_int sz = -call->func->type->nspc->info->offset;
+  while(exp) {
+    const Type t = exp->cast_to ?: exp->type;
+    if(isa(t, emit->gwion->type[et_compound]) > 0)
+      (void)emit_compound_addref(emit, t, sz, 0);
+    sz += exp->type->size;
+  }
   const Instr instr = emit_add_instr(emit, TupleCtor);
   instr->m_val = (m_uint)exp_self(call)->type;
   return GW_OK;
@@ -512,8 +520,7 @@ GWION_IMPORT(tuple) {
 
   GWI_BB(gwi_oper_ini(gwi, "Object", TUPLE_NAME, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_at_object_tuple))
-//  GWI_BB(gwi_oper_emi(gwi, opem_at_object_tuple))
-  GWI_BB(gwi_oper_end(gwi, "@=>", ObjectAssign))
+  GWI_BB(gwi_oper_end(gwi, "@=>", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_cast_tuple))
   GWI_BB(gwi_oper_end(gwi, "$", NoOp))
   GWI_BB(gwi_oper_add(gwi, opck_impl_tuple))

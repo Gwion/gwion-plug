@@ -11,8 +11,8 @@
 #include "gwion_env.h"
 #include "vm.h"
 #include "instr.h"
-#include "object.h"
 #include "gwion.h"
+#include "object.h"
 #include "plug.h"
 #include "operator.h"
 #include "import.h"
@@ -159,7 +159,7 @@ static void* pm_recv(void* data)
     while(Pm_Poll(info->stream) == 1)
     {
       Pm_Read(info->stream, &event, 1);
-      for(i = 0; i < vector_size(info->client); i++)
+      for(i = 0; i < vector_size(info->client); i++) {
         M_Object o = (M_Object)vector_at(info->client, i);
         pthread_mutex_lock(&info->mutex);
         vector_add(MSG(o), (vtype)(m_uint)event.message);
