@@ -130,13 +130,13 @@ GWION_IMPORT(tinysr) {
   gwi_class_xtor(gwi, tinysr_ctor, tinysr_dtor);
 
   GWI_BB(gwi_item_ini(gwi, "Event", "ev"))
-  GWI_BB((o_tinysr_ev = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_tinysr_ev = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "index"))
-  GWI_BB((o_tinysr_idx = gwi_item_end(gwi, ae_flag_const , NULL)))
+  GWI_BB((o_tinysr_idx = gwi_item_end(gwi, ae_flag_const , num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "float", "score"))
-  GWI_BB((o_tinysr_score = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_tinysr_score = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_func_ini(gwi, "int", "load"))
   GWI_BB(gwi_func_arg(gwi, "string", "file"))

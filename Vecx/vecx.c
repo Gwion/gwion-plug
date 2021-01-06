@@ -162,16 +162,16 @@ ANN static m_bool import_complex(const Gwi gwi) {
   const Type t_complex = gwi_struct_ini(gwi, "complex");
   GWI_BB(gwi_gack(gwi, t_complex, gack_complex))
 	gwi_item_ini(gwi, "float", "re");
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, NULL))
+  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
 	gwi_item_ini(gwi, "float", "im");
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, NULL))
+  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
   GWI_BB(gwi_class_end(gwi))
   const Type t_polar   = gwi_struct_ini(gwi, "polar");
   GWI_BB(gwi_gack(gwi, t_polar, gack_polar))
   GWI_BB(gwi_item_ini(gwi, "float", "mod"))
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, NULL))
+  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
   GWI_BB(gwi_item_ini(gwi, "float", "phase"))
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, NULL))
+  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "complex", NULL))
@@ -361,11 +361,11 @@ static INSTR(Vec3RAssign) {
 
 static void vecx_base(const Gwi gwi) {
 	gwi_item_ini(gwi, "float", "x");
-  gwi_item_end(gwi, ae_flag_none, NULL);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
 	gwi_item_ini(gwi, "float", "y");
-  gwi_item_end(gwi, ae_flag_none, NULL);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
 	gwi_item_ini(gwi, "float", "z");
-  gwi_item_end(gwi, ae_flag_none, NULL);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
 }
 
 static GACK(gack_vec3) {
@@ -569,7 +569,7 @@ ANN static m_bool import_vec4(const Gwi gwi) {
   GWI_BB(gwi_gack(gwi, t_vec4, gack_vec4))
   vecx_base(gwi);
 	gwi_item_ini(gwi, "float", "w");
-  gwi_item_end(gwi, ae_flag_none, NULL);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "void", "set");
   gwi_func_arg(gwi, "float", "x");
   gwi_func_arg(gwi, "float", "y");

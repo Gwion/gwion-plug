@@ -563,19 +563,19 @@ static MFUN(uinput_write) {
 GWION_IMPORT(evdev) {
   GWI_BB(gwi_class_ini(gwi, "EvdevEv", NULL))
   GWI_BB(gwi_item_ini(gwi, "int", "type"))
-  GWI_BB((o_evdevev_type  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdevev_type  = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "code"))
-  GWI_BB((o_evdevev_code  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdevev_code  = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "value"))
-  GWI_BB((o_evdevev_value  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdevev_value  = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "sec"))
-  GWI_BB((o_evdevev_sec  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdevev_sec  = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "usec"))
-  GWI_BB((o_evdevev_usec  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdevev_usec  = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_func_ini(gwi, "int", "is_type"))
   GWI_BB(gwi_func_arg(gwi, "int", "type"))
@@ -591,9 +591,9 @@ GWION_IMPORT(evdev) {
   GWI_BB(gwi_class_ini(gwi, "AbsInfo", NULL))
   gwi_class_xtor(gwi, absinfo_ctor, absinfo_dtor);
   GWI_BB(gwi_item_ini(gwi, "@internal", "@info"))
-  GWI_BB((o_absinfo = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_absinfo = gwi_item_end(gwi, ae_flag_const, num, 0)))
   GWI_BB(gwi_item_ini(gwi, "int", "const"))
-  GWI_BB((o_absinfo_const = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_absinfo_const = gwi_item_end(gwi, ae_flag_const, num, 0)))
   import_absinfo(value)
   import_absinfo(minimum)
   import_absinfo(maximum)
@@ -606,13 +606,13 @@ GWION_IMPORT(evdev) {
   gwi_class_xtor(gwi, evdev_base_ctor, evdev_dtor);
 
   GWI_BB(gwi_item_ini(gwi, "@internal", "@info"))
-  GWI_BB((o_evdev_info = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdev_info = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "repeat_delay"))
-  GWI_BB((o_evdev_delay  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdev_delay  = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "repeat_period"))
-  GWI_BB((o_evdev_period  = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_evdev_period  = gwi_item_end(gwi, ae_flag_const, num, 0)))
 
   GWI_BB(gwi_func_ini(gwi, "int", "index"))
   GWI_BB(gwi_func_arg(gwi, "int", "i"))
@@ -726,7 +726,7 @@ GWION_IMPORT(evdev) {
   GWI_BB(gwi_class_ini(gwi, "Uinput", NULL))
   gwi_class_xtor(gwi, NULL, uinput_dtor);
   GWI_BB(gwi_item_ini(gwi, "@internal", "@uinput"))
-  GWI_BB((o_uinput = gwi_item_end(gwi, ae_flag_const, NULL)))
+  GWI_BB((o_uinput = gwi_item_end(gwi, ae_flag_const, num, 0)))
   GWI_BB(gwi_func_ini(gwi, "int", "create"))
   GWI_BB(gwi_func_arg(gwi, "Evdev", "ev"))
   GWI_BB(gwi_func_end(gwi, uinput_create, ae_flag_none))

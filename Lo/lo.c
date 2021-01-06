@@ -384,14 +384,14 @@ GWION_IMPORT(lo) {
   SET_FLAG(t_lo, abstract);
   gwi_class_xtor(gwi, lo_ctor, lo_dtor);
   gwi_item_ini(gwi, "@internal", "@args");
-  o_lo_args = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_lo_args = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_lo_args)
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_class_ini(gwi, "OscOut", "Lo"))
   gwi_class_xtor(gwi, NULL, loout_dtor);
   gwi_item_ini(gwi, "@internal", "@addr");
-  o_lo_addr = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_lo_addr = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_lo_addr)
   gwi_func_ini(gwi, "int", "addr");
     gwi_func_arg(gwi, "string", "host");
@@ -405,16 +405,16 @@ GWION_IMPORT(lo) {
   GWI_BB(gwi_class_ini(gwi, "OscIn", "Lo"))
   gwi_class_xtor(gwi, loin_ctor, NULL);
   gwi_item_ini(gwi, "@internal", "@serv");
-  o_lo_serv = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_lo_serv = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_lo_serv)
   gwi_item_ini(gwi, "@internal", "@meth");
-  o_lo_meth = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_lo_meth = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_lo_meth)
   gwi_item_ini(gwi, "@internal", "@curr");
-  o_lo_curr = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_lo_curr = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_lo_curr)
   gwi_item_ini(gwi, "@internal", "@mutex");
-  o_lo_mutex = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_lo_mutex = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_lo_mutex)
   gwi_func_ini(gwi, "int", "add");
     gwi_func_arg(gwi, "string", "path");

@@ -374,7 +374,7 @@ print("  ugen_ini(gwi->gwion, UGEN(o), 1, 1);")
 print("  ugen_gen(gwi->gwion, UGEN(o), sp_tick, sp, 0);")
 print("  vector_add(&vm->ugen, (vtype)UGEN(o));")
 print("  gwi_item_ini(gwi, \"UGen\", \"@soundpipe main ugen\");")
-print("  gwi_item_end(gwi, ae_flag_late | ae_flag_const, o);")
+print("  gwi_item_end(gwi, ae_flag_late | ae_flag_const, obj, o);")
 
 print("  ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));")
 print("  GWI_BB(gwi_class_ini(gwi, \"ftbl\", NULL))")

@@ -1045,20 +1045,20 @@ MFUN(set_cascade_num_candidate_groups) {
 GWION_IMPORT(fann) {
   GWI_BB(gwi_class_ini(gwi, "FANN_connect", NULL))
   gwi_item_ini(gwi,"int",  "from");
-  o_fann_from = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fann_from = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fann_from)
   gwi_item_ini(gwi,"int",  "to");
-  o_fann_to = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fann_to = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fann_to)
   gwi_item_ini(gwi,"int",  "weight");
-  o_fann_weight = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fann_weight = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fann_weight)
   GWI_BB(gwi_class_end(gwi))
 
   // this is for error handling
   GWI_BB(gwi_class_ini(gwi, "FANN_base", NULL))
   gwi_item_ini(gwi, "@internal", "@data");
-  o_fann_error = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fann_error = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fann_error)
   gwi_func_ini(gwi, "void", "log");
     gwi_func_arg(gwi, "FileIO", "f");

@@ -170,7 +170,7 @@ GWION_IMPORT(fileio) {
 
   // import vars
   gwi_item_ini(gwi, "@internal", "@file");
-  o_fileio_file = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fileio_file = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fileio_file)
 
   // import funcs
@@ -243,11 +243,11 @@ GWION_IMPORT(fileio) {
   IO_FILE(gw_cerr) = stderr;
   EV_SHREDS(gw_cerr) = new_vector(gwi->gwion->mp);
   gwi_item_ini(gwi, "FileIO", "cin");
-  gwi_item_end(gwi, ae_flag_const, gw_cin);
+  gwi_item_end(gwi, ae_flag_const, obj, gw_cin);
   gwi_item_ini(gwi, "FileIO", "cout");
-  gwi_item_end(gwi, ae_flag_const, gw_cout);
+  gwi_item_end(gwi, ae_flag_const, obj, gw_cout);
   gwi_item_ini(gwi, "FileIO", "cerr");
-  gwi_item_end(gwi, ae_flag_const, gw_cerr);
+  gwi_item_end(gwi, ae_flag_const, obj, gw_cerr);
   return GW_OK;
 }
 

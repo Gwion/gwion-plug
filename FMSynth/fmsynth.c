@@ -164,107 +164,107 @@ GWION_IMPORT(fmsynth) {
   GWI_BB(gwi_class_ini(gwi, "FMSynth", "UGen"))
   gwi_class_xtor(gwi, ctor, dtor);
   gwi_item_ini(gwi,"int", "&synth");
-  o_fmsynth_data = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fmsynth_data = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fmsynth_data)
   gwi_item_ini(gwi,"string", "name");
-  o_fmsynth_name = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fmsynth_name = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fmsynth_name)
   gwi_item_ini(gwi,"string", "author");
-  o_fmsynth_author = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fmsynth_author = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fmsynth_author)
 
   // params
   gwi_item_ini(gwi,"int", "AMP");
-  o_amp = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_AMP);
+  o_amp = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_AMP);
   GWI_BB(o_pan)
   gwi_item_ini(gwi,"int", "PAN");
-  o_pan = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_PAN);
+  o_pan = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_PAN);
   GWI_BB(o_pan)
 
   gwi_item_ini(gwi,"int", "FREQ_MOD");
-  o_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_FREQ_MOD);
+  o_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_FREQ_MOD);
   GWI_BB(o_freq_offset)
   gwi_item_ini(gwi,"int", "FREQ_OFFSET");
-  o_freq_offset = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_FREQ_OFFSET);
+  o_freq_offset = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_FREQ_OFFSET);
   GWI_BB(o_freq_mod)
   gwi_item_ini(gwi,"int", "TARGET0");
-  o_target0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_ENVELOPE_TARGET0);
+  o_target0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_ENVELOPE_TARGET0);
   GWI_BB(o_target0)
   gwi_item_ini(gwi,"int", "TARGET1");
-  o_target1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_ENVELOPE_TARGET1);
+  o_target1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_ENVELOPE_TARGET1);
   GWI_BB(o_target1)
   gwi_item_ini(gwi,"int", "TARGET2");
-  o_target2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_ENVELOPE_TARGET2);
+  o_target2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_ENVELOPE_TARGET2);
   GWI_BB(o_target2)
   gwi_item_ini(gwi,"int", "DELAY0");
-  o_delay0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_DELAY0);
+  o_delay0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_DELAY0);
   GWI_BB(o_delay0)
   gwi_item_ini(gwi,"int", "DELAY1");
-  o_delay1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_DELAY1);
+  o_delay1 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_DELAY1);
   GWI_BB(o_delay0)
   gwi_item_ini(gwi,"int", "DELAY2");
-  o_delay2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_DELAY2);
+  o_delay2 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_DELAY2);
   GWI_BB(o_delay2)
   gwi_item_ini(gwi,"int", "RELEASE");
-  o_rel = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_RELEASE_TIME);
+  o_rel = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_RELEASE_TIME);
   GWI_BB(o_rel)
   gwi_item_ini(gwi,"int", "MID_POINT");
-  o_mid_point = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_KEYBOARD_SCALING_MID_POINT);
+  o_mid_point = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_KEYBOARD_SCALING_MID_POINT);
   GWI_BB(o_mid_point)
   gwi_item_ini(gwi,"int", "LOW_FACTOR");
-  o_low_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_KEYBOARD_SCALING_LOW_FACTOR);
+  o_low_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_KEYBOARD_SCALING_LOW_FACTOR);
   GWI_BB(o_low_fact)
   gwi_item_ini(gwi,"int", "HIGH_FACTOR");
-  o_high_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_KEYBOARD_SCALING_HIGH_FACTOR);
+  o_high_fact = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_KEYBOARD_SCALING_HIGH_FACTOR);
   GWI_BB(o_high_fact)
   gwi_item_ini(gwi,"int", "VELO_SENS");
-  o_velo_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_VELOCITY_SENSITIVITY);
+  o_velo_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_VELOCITY_SENSITIVITY);
   GWI_BB(o_velo_sens)
   gwi_item_ini(gwi,"int", "WHEEL_SENS");
-  o_wheel_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_MOD_WHEEL_SENSITIVITY);
+  o_wheel_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_MOD_WHEEL_SENSITIVITY);
   GWI_BB(o_wheel_sens)
   gwi_item_ini(gwi,"int", "LFO_AMP_SENS");
-  o_lfo_amp_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_LFO_AMP_SENSITIVITY);
+  o_lfo_amp_sens = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_LFO_AMP_SENSITIVITY);
   GWI_BB(o_lfo_amp_sens)
   gwi_item_ini(gwi,"int", "LFO_FREQ_MOD");
-  o_lfo_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_LFO_FREQ_MOD_DEPTH);
+  o_lfo_freq_mod = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_LFO_FREQ_MOD_DEPTH);
   GWI_BB(o_lfo_freq_mod)
   gwi_item_ini(gwi,"int", "ENABLE");
-  o_enable = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_ENABLE);
+  o_enable = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_ENABLE);
   GWI_BB(o_enable)
   gwi_item_ini(gwi,"int", "CARRIERS");
-  o_carriers = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_CARRIERS);
+  o_carriers = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_CARRIERS);
   GWI_BB(o_carriers)
   gwi_item_ini(gwi,"int", "CARRIER0");
-  o_carrier0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_PARAM_MOD_TO_CARRIERS0);
+  o_carrier0 = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_PARAM_MOD_TO_CARRIERS0);
   GWI_BB(o_carrier0)
 
   // global
   gwi_item_ini(gwi,"int", "GVOL");
-  o_g_vol    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_GLOBAL_PARAM_VOLUME);
+  o_g_vol    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_GLOBAL_PARAM_VOLUME);
   GWI_BB(o_g_vol)
 
   gwi_item_ini(gwi,"int", "GLFO");
-  o_g_lfo    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_GLOBAL_PARAM_LFO_FREQ);
+  o_g_lfo    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_GLOBAL_PARAM_LFO_FREQ);
   GWI_BB(o_g_lfo)
   // status
   gwi_item_ini(gwi,"int", "OK");
-  o_ok    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_STATUS_OK);
+  o_ok    = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_STATUS_OK);
   GWI_BB(o_ok)
   gwi_item_ini(gwi,"int", "BUSY");
-  o_busy   = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_STATUS_BUSY);
+  o_busy   = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_STATUS_BUSY);
   GWI_BB(o_busy)
   gwi_item_ini(gwi,"int", "SMALL");
-  o_small  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_STATUS_BUFFER_TOO_SMALL);
+  o_small  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_STATUS_BUFFER_TOO_SMALL);
   GWI_BB(o_small)
   gwi_item_ini(gwi,"int", "NONUL");
-  o_nonul  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_STATUS_NO_NUL_TERMINATE);
+  o_nonul  = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_STATUS_NO_NUL_TERMINATE);
   GWI_BB(o_nonul)
   gwi_item_ini(gwi,"int", "FORMAT");
-  o_format = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_STATUS_INVALID_FORMAT);
+  o_format = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_STATUS_INVALID_FORMAT);
   GWI_BB(o_format)
   gwi_item_ini(gwi,"int", "UNKNOWN");
-  o_unknown = gwi_item_end(gwi, ae_flag_static | ae_flag_const, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
+  o_unknown = gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
   GWI_BB(o_unknown)
  
   gwi_func_ini(gwi, "void", "init");

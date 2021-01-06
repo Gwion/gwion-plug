@@ -213,24 +213,24 @@ GWION_IMPORT(portmidi) {
   SET_FLAG(t_portmidi, abstract);
   gwi_class_xtor(gwi, pm_ctor, pm_dtor);
   gwi_item_ini(gwi, "@internal", "@dummy");
-   gwi_item_end(gwi, ae_flag_none, NULL);
+   gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi, "@internal", "@stream");
-  o_pm_stream = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_pm_stream = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_pm_stream)
   gwi_item_ini(gwi,"int",  "id");
-  o_pm_id = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_pm_id = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_pm_id)
   gwi_item_ini(gwi,"int",  "status");
-  o_pm_status  = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_pm_status  = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_pm_status)
   gwi_item_ini(gwi,"int",  "data1");
-  o_pm_data1 = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_pm_data1 = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_pm_data1)
   gwi_item_ini(gwi,"int",  "data2");
-  o_pm_data2 = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_pm_data2 = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_pm_data2)
   gwi_item_ini(gwi, "@internal", "@msg");
-  o_pm_msg = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_pm_msg = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_pm_msg)
   gwi_func_ini(gwi, "string", "name");
   GWI_BB(gwi_func_end(gwi, pm_name, ae_flag_none))

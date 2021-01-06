@@ -472,13 +472,13 @@ static m_bool import_ana(Gwi gwi) {
   GWI_BB(gwi_class_ini(gwi, "ANA", NULL))
   gwi_class_xtor(gwi, ana_ctor, ana_dtor);
   gwi_item_ini(gwi, "@internal", "@_fft");
-  o_ana_ana = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_ana_ana = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_ana_ana)
   gwi_item_ini(gwi,"FFT", "@fft");
-  o_ana_fft = gwi_item_end(gwi,  ae_flag_late, NULL);
+  o_ana_fft = gwi_item_end(gwi,  ae_flag_late, num, 0);
   GWI_BB(o_ana_fft)
   gwi_item_ini(gwi, "@internal", "@fn");
-  o_ana_fn = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_ana_fn = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_ana_fn)
   gwi_func_ini(gwi, "float", "compute");
   GWI_BB(gwi_func_end(gwi, ana_compute, ae_flag_none))
@@ -680,7 +680,7 @@ static m_bool import_fc(Gwi gwi) {
   GWI_BB(gwi_class_ini(gwi, "FC", NULL))
   gwi_class_xtor(gwi, fc_ctor, fc_dtor);
   gwi_item_ini(gwi, "@internal", "@vector");
-  o_fc_vector = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_fc_vector = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fc_vector)
   gwi_func_ini(gwi, "float[]", "compute");
   GWI_BB(gwi_func_end(gwi, fc_compute, ae_flag_none))
