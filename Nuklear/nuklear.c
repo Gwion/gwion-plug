@@ -806,34 +806,20 @@ GWION_IMPORT(Nuklear) {
   gwi_item_ini(gwi, "int",  "flag");
   o_nk_flags = gwi_item_end(gwi, ae_flag_none, NULL);
   GWI_BB(o_nk_flags)
-  m_uint * border  = (m_uint*)xmalloc(SZ_INT);
-  *border  = NK_WINDOW_BORDER;
   gwi_item_ini(gwi,"int", "BORDER");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, border);
-  m_uint * movable = (m_uint*)xmalloc(SZ_INT);
-  *movable = NK_WINDOW_MOVABLE;
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_WINDOW_BORDER);
   gwi_item_ini(gwi,"int", "MOVABLE");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, movable);
-  m_uint *scalable = (m_uint*)xmalloc(SZ_INT);
-  *scalable = NK_WINDOW_SCALABLE;
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_WINDOW_MOVABLE);
   gwi_item_ini(gwi,"int", "SCALABLE");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, scalable);
-  m_uint * closable = (m_uint*)xmalloc(SZ_INT);
-  *closable = NK_WINDOW_CLOSABLE;
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_WINDOW_SCALABLE);
   gwi_item_ini(gwi,"int", "CLOSABLE");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, closable);
-  m_uint * minimizable = (m_uint*)xmalloc(SZ_INT);
-  *minimizable = NK_WINDOW_MINIMIZABLE;
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_WINDOW_CLOSABLE);
   gwi_item_ini(gwi,"int", "MINIMIZABLE");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, minimizable);
-  m_uint * title = (m_uint*)xmalloc(SZ_INT);
-  *title = NK_WINDOW_TITLE;
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_WINDOW_MINIMIZABLE);
   gwi_item_ini(gwi,"int", "TITLE");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, title);
-  m_uint * menu = (m_uint*)xmalloc(SZ_INT);;
-  *menu = NK_PANEL_MENU;
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_WINDOW_TITLE);
   gwi_item_ini(gwi,"int", "MENU");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, menu);
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_PANEL_MENU);
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_class_ini(gwi, "NkCombo", "NkRow"))
@@ -870,28 +856,19 @@ GWION_IMPORT(Nuklear) {
   GWI_BB(o_nk_state)
   GWI_BB(gwi_class_end(gwi))
 
-
-  m_uint * simple = (m_uint*)xmalloc(SZ_INT);
-  m_uint * field  = (m_uint*)xmalloc(SZ_INT);
-  m_uint * box    = (m_uint*)xmalloc(SZ_INT);
-  m_uint * editor = (m_uint*)xmalloc(SZ_INT);
-  * simple = NK_EDIT_SIMPLE;
-  * field  = NK_EDIT_FIELD;
-  * box    = NK_EDIT_BOX;
-  * editor = NK_EDIT_EDITOR;
   GWI_BB(gwi_class_ini(gwi, "NkString", "NkRow"))
   gwi_class_xtor(gwi, nkstring_ctor, NULL);
   gwi_item_ini(gwi,"int", "type");
   o_nk_edit_type= gwi_item_end(gwi, ae_flag_none, NULL);
   GWI_BB(o_nk_edit_type)
   gwi_item_ini(gwi,"int", "SIMPLE");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, simple);
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_EDIT_SIMPLE);
   gwi_item_ini(gwi,"int", "FIELD");
-  gwi_item_end(gwi,  ae_flag_static | ae_flag_const, field);
+  gwi_item_end(gwi,  ae_flag_static | ae_flag_const, (m_uint)NK_EDIT_FIELD);
   gwi_item_ini(gwi,"int", "BOX");
-  gwi_item_end(gwi,    ae_flag_static | ae_flag_const, box);
+  gwi_item_end(gwi,    ae_flag_static | ae_flag_const, (m_uint)NK_EDIT_BOX);
   gwi_item_ini(gwi,"int", "EDITOR");
-  gwi_item_end(gwi, ae_flag_static | ae_flag_const, editor);
+  gwi_item_end(gwi, ae_flag_static | ae_flag_const, (m_uint)NK_EDIT_EDITOR);
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_class_ini(gwi, "NkIval", "NkWidget"))

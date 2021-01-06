@@ -166,7 +166,7 @@ GWION_IMPORT(linuxsampler) {
   GWI_BB(gwi_class_ini(gwi, "LinuxSampler", "UGen"))
   gwi_class_xtor(gwi, linuxsampler_ctor, linuxsampler_dtor);
 	gwi_item_ini(gwi,(m_str)"int", (m_str)"@sampler");
-  o_ls_data = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_ls_data = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "void", "load");
     gwi_func_arg(gwi, "string", "filename");
   GWI_BB(gwi_func_end(gwi, (f_xfun)linuxsampler_load, ae_flag_none))

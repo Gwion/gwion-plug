@@ -5397,7 +5397,7 @@ m_bool CPPIMPORT(Gwi gwi) {
   /*const Type*/ t_Stk = gwi_class_ini(gwi, "Stk", "UGen");
   SET_FLAG(t_Stk, abstract);
   CHECK_BB(gwi_item_ini(gwi, "@internal", "@Swig_Stk_Object"))
-  CHECK_BB((o_Stk_swig = gwi_item_end(gwi, ae_flag_none, NULL)))
+  CHECK_BB((o_Stk_swig = gwi_item_end(gwi, ae_flag_none, num, 0)))
   
   CHECK_BB(gwi_func_ini(gwi, "int", "STK_SINT8"))
   CHECK_BB(gwi_func_end(gwi, gw_Stk_STK_SINT8_get, ae_flag_static))
@@ -5442,9 +5442,10 @@ m_bool CPPIMPORT(Gwi gwi) {
   CHECK_BB(gwi_func_ini(gwi, "float", "SRATE"))
   CHECK_BB(gwi_func_end(gwi, gw_SRATE_get, ae_flag_static))
   CHECK_BB(gwi_func_ini(gwi, "int", "RT_BUFFER_SIZE"))
-  CHECK_BB(gwi_func_end(gwi, gw_RT_BUFFER_SIZE_get, ae_flag_static))const M_Object RAWWAVE_PATH_value = new_string2(gwi->gwion, NULL, s_name(insert_symbol(gwi->gwion->st, (m_str)"../../rawwaves/")));
+  CHECK_BB(gwi_func_end(gwi, gw_RT_BUFFER_SIZE_get, ae_flag_static))
   CHECK_BB(gwi_item_ini(gwi, "string", "RAWWAVE_PATH"))
-  CHECK_BB(gwi_item_end(gwi, ae_flag_const | ae_flag_static,  (const m_uint*)RAWWAVE_PATH_value))
+  const M_Object rawpath = new_string2(gwi->gwion, NULL, s_name(insert_symbol(gwi->gwion->st, (m_str)"../../rawwaves/")));
+  CHECK_BB(gwi_item_end(gwi, ae_flag_const | ae_flag_static, obj, rawpath))
   CHECK_BB(gwi_func_ini(gwi, "float", "PI"))
   CHECK_BB(gwi_func_end(gwi, gw_PI_get, ae_flag_static))
   CHECK_BB(gwi_func_ini(gwi, "float", "TWO_PI"))

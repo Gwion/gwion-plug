@@ -35,29 +35,29 @@ MFUN(midifile_write);
 GWION_IMPORT(portsmf) {
   GWI_BB(gwi_class_ini(gwi, "MidiFileEv", "Event"))
 	gwi_item_ini(gwi,"int", "type");
-  o_midiev_type = gwi_item_end(gwi,   ae_flag_const, NULL);
+  o_midiev_type = gwi_item_end(gwi, ae_flag_const, num, 0);
   GWI_BB(o_midiev_type);
 	gwi_item_ini(gwi,"float", "pitch");
-  o_midiev_pitch = gwi_item_end(gwi, ae_flag_const, NULL);
+  o_midiev_pitch = gwi_item_end(gwi, ae_flag_const, num, 0);
   GWI_BB(o_midiev_pitch);
 	gwi_item_ini(gwi,"float", "loud");
-  o_midiev_loud  = gwi_item_end(gwi,  ae_flag_const, NULL);
+  o_midiev_loud  = gwi_item_end(gwi,  ae_flag_const, num, 0);
   GWI_BB(o_midiev_loud);
 	gwi_item_ini(gwi,"float", "start");
-  o_midiev_start = gwi_item_end(gwi, ae_flag_const, NULL);
+  o_midiev_start = gwi_item_end(gwi, ae_flag_const, num, 0);
   GWI_BB(o_midiev_start);
 	gwi_item_ini(gwi,"float", "end");
-  o_midiev_end   = gwi_item_end(gwi,   ae_flag_const, NULL);
+  o_midiev_end   = gwi_item_end(gwi,   ae_flag_const, num, 0);
   GWI_BB(o_midiev_start);
 	gwi_item_ini(gwi,"float", "dur");
-  o_midiev_dur   = gwi_item_end(gwi,   ae_flag_const, NULL);
+  o_midiev_dur   = gwi_item_end(gwi,   ae_flag_const, num, 0);
   GWI_BB(o_midiev_dur);
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_class_ini(gwi, "MidiFile", NULL))
   gwi_class_xtor(gwi, ctor, dtor);
 	gwi_item_ini(gwi,"int", "@seq");
-  o_midifile_seq = gwi_item_end(gwi, ae_flag_none, NULL);
+  o_midifile_seq = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_midifile_seq);
   gwi_func_ini(gwi, "void", "open");
     gwi_func_arg(gwi, "string", "filename");
