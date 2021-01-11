@@ -1,0 +1,7 @@
+#require File:[txt]
+
+<<< File:[txt]("txt.txt", "w") @=> var auto file >>>;
+
+file << 1 << ":" << 2;
+#!file.read() @=> late string str;
+#!<<< str >>>;

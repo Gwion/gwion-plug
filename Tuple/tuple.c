@@ -509,7 +509,7 @@ GWION_IMPORT(tuple) {
   const Type t_tuple = gwi_mk_type(gwi, TUPLE_NAME, SZ_INT, "Object");
   gwi_add_type(gwi, t_tuple);
   SET_FLAG(t_tuple, abstract);
-  set_tflag(t_tuple, tflag_ntmpl | tflag_tmpl);
+  set_tflag(t_tuple, tflag_tmpl);
   GWI_BB(gwi_oper_ini(gwi, NULL, TUPLE_NAME, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_tuple_ctor))
   GWI_BB(gwi_oper_emi(gwi, opem_tuple_ctor))

@@ -267,16 +267,16 @@ ANN static void* repl_process(void* data) {
 }
 
 GWMODINI(repl) {
-  shreduler_set_loop(gwion->vm->shreduler, 1);
+//  shreduler_set_loop(gwion->vm->shreduler, 1);
   pthread_create(&repl_thread, NULL, repl_process, gwion->vm);
-#ifndef __linux__
-  pthread_detach(repl_thread);
-#endif
+//#ifndef __linux__
+//  pthread_detach(repl_thread);
+//#endif
 }
 
 GWMODEND(repl) {
-#ifdef __linux__
-  pthread_join(repl_thread, NULL);
-#endif
+//#ifdef __linux__
+//  pthread_join(repl_thread, NULL);
+//#endif
 }
 

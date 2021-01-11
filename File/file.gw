@@ -1,0 +1,4 @@
+#require File
+#!var File f;
+#!var File:[bin,mp3] f;
+var File:[mp3] f;

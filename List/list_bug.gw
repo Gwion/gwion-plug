@@ -1,0 +1,10 @@
+#require List
+
+#!var List:[int] l;
+#!<<<l >>>;
+#!<<< l[1] >>>;
+
+#!<<< List:[int](1) @=> var List:[int]list >>>;
+<<< List:[int](1) @=> var auto list >>>;
+#!<<< List:[int](1) >>>;
+#!<<< list[0] >>>;

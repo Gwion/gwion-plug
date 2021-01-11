@@ -398,7 +398,6 @@ GWION_IMPORT(FFI) {
 
   DECL_OB(const Type, t_ffivar, = gwi_class_ini(gwi, "FFIvar:[A]", "FFIBASE"))
   GWI_BB(gwi_class_end(gwi))
-  set_tflag(t_ffivar, tflag_ntmpl);
 
   FFI_OPER(int, int)
   FFI_OPER(int, uint)

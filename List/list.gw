@@ -1,0 +1,19 @@
+#require List
+
+#!var List:[float] l;
+#!<<<l >>>;
+#!<<< l[0] >>>;
+
+#!<<< List:[int](4,2,3) @=> var List:[float]flist >>>;
+
+<<< List:[int](4,2,3) @=> var List:[int]list >>>;
+#!<<< list >>>;
+#!<<< list.next >>>;
+#!<<< List:[int](1) @=> var auto list >>>;
+#!<<< List:[int](1) >>>;
+<<< list[1] >>>;
+<<< 19 >> list >>>;
+<<< list[0] >>>;
+<<< list << 20 >>>;
+<<< list[0].val >>>;
+<<< list[1].val >>>;

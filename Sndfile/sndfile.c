@@ -17,7 +17,7 @@
 #define FILENAME "gwion"
 
 DRVINI(sndfile_ini) {
-  char tmp[strlen(FILENAME) + 5];
+  char tmp[128];
   SF_INFO info = { .samplerate= di->si->sr, .channels=di->si->out,
     .frames=BUFSIZE*2, .format=(SF_FORMAT_WAV | SF_FORMAT_PCM_24) };
   char *arg = strchr(di->si->arg, '=');
