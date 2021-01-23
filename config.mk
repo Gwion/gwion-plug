@@ -16,6 +16,10 @@ NAME = $(shell basename `pwd`)
 
 ifeq (${BUILD_ON_WINDOWS}, 1)
 CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -static
+LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
+LDFLAGS += -L${BASEDIR} -lgwion
+LDLAGS += ${BASEDIR}/libgwion.dll.a
+#LDLAGS += ../../libgwion.a
 endif
 
 ifeq ($(shell uname), Darwin)
