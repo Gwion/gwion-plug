@@ -14,13 +14,6 @@
 #include "k.h"
 // TODO: thread
 
-struct M_Vector_ {
-  char*  ptr;   // data
-  m_uint len;   // number of elements * size
-  m_uint size;  // size of objects
-  m_uint depth;
-};
-
 static m_float** gw2c(M_Vector vec, m_uint* x, m_uint* y) {
   m_uint i, j;
   *x = m_vector_size(vec);

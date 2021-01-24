@@ -198,7 +198,7 @@ static OP_CHECK(opck_ffi_ctor) {
   const Type cffi = nspc_lookup_type0(ffi->nspc, insert_symbol(env->gwion->st, "@CFFI"));
   while(exp) {
     const Type actual = actual_type(env->gwion, exp->type);
-    if(isa(exp->type, env->gwion->type[et_class]) < 0 ||
+    if(is_class(env->gwion, exp->type) < 0 ||
         isa(actual, cffi) < 0)
       ERR_N(exp->pos, "Argument is not a FFI type");
     char name[64];

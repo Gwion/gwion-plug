@@ -153,7 +153,7 @@ static inline void matcher_release(struct Matcher *m) {
 }
 
 static m_bool tuple_match(const Env env, const Type lhs, const Type rhs) {
-  struct Matcher m = { .undef= env->gwion->type[et_undefined] };
+  struct Matcher m = { .undef= env->gwion->type[et_auto] };
   matcher_init(&m);
   get(&m.l, lhs);
   get(&m.r, rhs);
@@ -267,7 +267,7 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
 ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t pos) {
   Type_Decl *td = type != (Type)1 ?
       type2td(gwion, type, pos) :
-      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
+      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Auto"), pos);
   td->flag -= ae_flag_late;
   const Var_Decl var = new_var_decl(gwion->mp, name, NULL, pos);
   const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
@@ -322,7 +322,7 @@ static OP_CHECK(opck_tuple) {
   if(!v || idx >= vector_size(v))
     ERR_O(exp->pos, _("tuple subscripts too big"))
   const Type type = (Type)vector_at(v, idx);
-  if(type == env->gwion->type[et_undefined])
+  if(type == env->gwion->type[et_auto])
     ERR_O(exp->pos, _("tuple subscripts is undefined at index %"UINT_F), idx)
   if(!exp->next)
     return type;
@@ -382,12 +382,12 @@ static OP_CHECK(unpack_ck) {
 //      e->d.exp_decl.list->self->value = v;
     } else {
       e->d.prim.prim_type = ae_prim_nil;
-      e->type = env->gwion->type[et_undefined];
+      e->type = env->gwion->type[et_auto];
     }
     e = e->next;
   }
   exp_setmeta(exp_self(call), 0);
-  return call->func->type->info->base_type;
+  return _class_base(call->func->type);
 }
 
 static OP_EMIT(unpack_em) {
@@ -443,7 +443,7 @@ static OP_CHECK(opck_at_unpack) {
 static OP_EMIT(opem_at_unpack) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   if(bin->rhs->d.exp_call.args) {
-    const Type t_undef = emit->gwion->type[et_undefined];
+    const Type t_undef = emit->gwion->type[et_auto];
     Exp e = bin->rhs->d.exp_call.args;
     m_uint sz = 0;
     do if(e->type != t_undef)

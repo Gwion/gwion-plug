@@ -19,7 +19,11 @@ CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -sta
 LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
 LDFLAGS += -L${BASEDIR} -lgwion
 LDLAGS += ${BASEDIR}/libgwion.dll.a
-#LDLAGS += ../../libgwion.a
+LDFLAGS += -L${BASEDIR}/ast -lgwion-ast
+LDLAGS += ${BASEDIR}/libgwion-ast.dll.a
+LDFLAGS += -L${BASEDIR}/util -lgwion-util
+LDLAGS += ${BASEDIR}/libgwion-util.dll.a
+LDLAGS += ../../libgwion.a
 endif
 
 ifeq ($(shell uname), Darwin)

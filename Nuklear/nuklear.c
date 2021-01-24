@@ -385,17 +385,11 @@ static void button_execute(M_Object o, struct nk_context* ctx)
 {
   if(*(m_uint*)(o->data + o_nk_button_color))
   {
-printf("%p %i %p\n", EV_SHREDS(o), vector_size(EV_SHREDS(o)), *(M_Object*)(o->data + o_nk_button_color));
   M_Object color = *(M_Object*)(o->data + o_nk_button_color);
-printf("%i %i %i %i\n", R(color), G(color), B(color), A(color));
-struct nk_color c = COLOR(color);
-if(nk_button_color(ctx, COLOR(color)))
-/*      exit(2);*/
+  struct nk_color c = COLOR(color);
+  if(nk_button_color(ctx, COLOR(color)))
       broadcast(o);
-
-}
-  else if(NAME(o))
-  {
+  } else if(NAME(o)) {
       if(nk_button_label(ctx, NAME(o)))
         broadcast(o);
   }

@@ -389,7 +389,7 @@ OP_CHECK(opck_vecx_ctor) {
     last = e;
     e = e->next;
   }
-  const Type t = call->func->type->info->base_type;
+  const Type t = _class_base(call->func->type);
   if(i > t->size) {
     env_err(env, last->pos, "extraneous component of %s value", t->name);
     return NULL;

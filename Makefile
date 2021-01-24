@@ -1,3 +1,7 @@
+ifeq (,$(wildcard list.txt.orig))
+$(shell cp list.txt.orig list.txt)
+endif
+
 DIR=$(wildcard */)
 
 list:

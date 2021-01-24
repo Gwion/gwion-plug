@@ -7,6 +7,7 @@
 #include "object.h"
 #include "operator.h"
 #include "import.h"
+#include "traverse.h"
 #include "gwi.h"
 
 typedef Type (*filemodule)(const Gwion);

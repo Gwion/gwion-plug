@@ -235,13 +235,13 @@ GWION_IMPORT(fileio) {
 
   const M_Object gw_cin = new_object(gwi->gwion->mp, NULL, t_cin);
   IO_FILE(gw_cin) = stdin;
-  EV_SHREDS(gw_cin) = new_vector(gwi->gwion->mp);
+  vector_init(&EV_SHREDS(gw_cin));
   const M_Object gw_cout = new_object(gwi->gwion->mp, NULL, t_cout);
   IO_FILE(gw_cout) = stdout;
-  EV_SHREDS(gw_cout) = new_vector(gwi->gwion->mp);
+  vector_init(&EV_SHREDS(gw_cout));
   const M_Object gw_cerr = new_object(gwi->gwion->mp, NULL, t_cerr);
   IO_FILE(gw_cerr) = stderr;
-  EV_SHREDS(gw_cerr) = new_vector(gwi->gwion->mp);
+  vector_init(&EV_SHREDS(gw_cerr));
   gwi_item_ini(gwi, "FileIO", "cin");
   gwi_item_end(gwi, ae_flag_const, obj, gw_cin);
   gwi_item_ini(gwi, "FileIO", "cout");

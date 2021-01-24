@@ -166,8 +166,67 @@ static OP_EMIT(opem_list_append_back) {
   return GW_OK;
 }
 
+static OP_CHECK(opck_list_slice) {
+  Exp_Binary *bin = (Exp_Binary*)data;
+  return bin->lhs->type;
+}
+
+static OP_EMIT(opem_list_slice) {
+/*
+  M_Object tmp = o;
+  m_int i = 0;
+  for(m_uint i = 0; i < idx; ++i) {
+    if(!(tmp = *(M_Object*)(tmp->data + t->size))) {
+      *(m_uint*)RETURN = 0;
+      return;
+    }
+*/
+}
+
+static MFUN(list_size) {
+  m_uint i = 1;
+  M_Object tmp = o;
+  const Type t = (Type)vector_front(&o->type_ref->info->tuple->contains);
+  const size_t sz = t->size;
+  while((tmp = *(M_Object*)(tmp->data + sz)))
+    i++;
+  *(m_uint*)RETURN = i;
+}
+
+static MFUN(list_remove_at) {
+  const m_int idx = *(m_int*)MEM(SZ_INT);
+  const Type t = (Type)vector_front(&o->type_ref->info->tuple->contains);
+  if(idx > 0) {
+    M_Object tmp = o;
+    m_int i = 0;
+    for(m_uint i = 0; i < idx; ++i) {
+      if(!(tmp = *(M_Object*)(tmp->data + t->size))) {
+        *(m_uint*)RETURN = 0;
+        return;
+      }
+    }
+    const M_Object remove = *(M_Object*)(tmp->data + t->size);
+    if(remove) {
+      const M_Object next = *(M_Object*)(remove->data + t->size);
+      *(M_Object*)(tmp->data + t->size) = next;
+    }
+    release(remove, shred);
+    *(m_uint*)RETURN = 1;
+  } else
+  *(m_uint*)RETURN = 0;
+}
+
+static MFUN(list_insert) {
+exit(3);
+}
+
 GWION_IMPORT(List) {
   DECL_OB(const Type, t_blist, = gwi_class_ini(gwi, "@List", "Object"))
+  CHECK_BB(gwi_func_ini(gwi, "bool", "removeAt"))
+  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
+  CHECK_BB(gwi_func_end(gwi, list_remove_at, ae_flag_none))
+  CHECK_BB(gwi_func_ini(gwi, "int", "size"))
+  CHECK_BB(gwi_func_end(gwi, list_size, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
   DECL_OB(const Type, t_list, = gwi_class_ini(gwi, "List:[T]", "@List"))
@@ -176,6 +235,12 @@ GWION_IMPORT(List) {
     CHECK_BB((o_list_val_data = gwi_item_end(gwi, ae_flag_none, num, 0)))
     GWI_BB(gwi_item_ini(gwi, "List:[T]", "@next"))
     CHECK_BB((o_list_next_data = gwi_item_end(gwi, ae_flag_late, num, 0)))
+
+  GWI_BB(gwi_func_ini(gwi, "bool", "insert"))
+  GWI_BB(gwi_func_arg(gwi, "T", "data"))
+  GWI_BB(gwi_func_arg(gwi, "int", "index"))
+  GWI_BB(gwi_func_end(gwi, list_insert, ae_flag_none))
+
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, "int", "@List", NULL))
@@ -197,6 +262,11 @@ GWION_IMPORT(List) {
   GWI_BB(gwi_oper_add(gwi, opck_list_append_back))
   GWI_BB(gwi_oper_emi(gwi, opem_list_append_back))
   GWI_BB(gwi_oper_end(gwi, "<<", NULL))
+
+  GWI_BB(gwi_oper_ini(gwi, "int", "@List", NULL))
+  GWI_BB(gwi_oper_add(gwi, opck_list_slice))
+  GWI_BB(gwi_oper_emi(gwi, opem_list_slice))
+  GWI_BB(gwi_oper_end(gwi, "@slice", NULL))
 
   return GW_OK;
 }
