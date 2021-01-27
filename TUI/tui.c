@@ -18,6 +18,7 @@
 
 #include "buffer.h"
 #include "window.h"
+#include "widgets/row.h"
 #include "screen.h"
 
 #define FPS_30 33333
@@ -99,7 +100,7 @@ static DTOR(win_dtor) {
   --meta->running;
   win->widgets = (TUIWidgets){ 0, 0, NULL };
   vector_rem(&meta->windows, (m_uint)win);
-  const struct Vector_ v = *(struct Vector_*)(o->data + SZ_INT);
+  struct Vector_ v = *(struct Vector_*)(o->data + SZ_INT);
   for(m_uint i = 0; i < vector_size(&v); ++i)
     _release((M_Object)vector_at(&v, i), shred);
   vector_release(&v);
@@ -179,17 +180,17 @@ static CTOR(ButtonCtor) {
   button->user_data = o;
 }
 
-#define WIDGET_SET_INT(type, name)          \
-static MFUN(type##_##name##_set) {          \
-  TUIWidget w = WIDGET(o);                 \
-  TUI##type *a = (TUI##type*)(w.user_data); \
-  a->name = *(m_int*)MEM(SZ_INT);           \
+#define WIDGET_SET_INT(type, ctype, name)    \
+static MFUN(type##_##name##_set) {           \
+  TUIWidget w = WIDGET(o);                   \
+  TUI##type *a = (TUI##type*)(w.user_data);  \
+  a->name = (ctype)*(m_int*)MEM(SZ_INT);     \
 }
-#define WIDGET_GET_INT(type, name)          \
-static MFUN(type##_##name##_get) {          \
-  TUIWidget w = WIDGET(o);                 \
-  TUI##type *a = (TUI##type*)(w.user_data); \
-  *(m_int*)RETURN = (m_int)a->name;         \
+#define WIDGET_GET_INT(type, name)           \
+static MFUN(type##_##name##_get) {           \
+  TUIWidget w = WIDGET(o);                   \
+  TUI##type *a = (TUI##type*)(w.user_data);  \
+  *(m_int*)RETURN = (m_int)a->name;          \
 }
 
 #define WIDGET_SET_FLOAT(type, name)          \
@@ -244,9 +245,9 @@ static MFUN(TYPE##_##name##_get) {                               \
     m_vector_set(ARRAY(*(M_Object*)RETURN), i, mstrdup(gwion->mp, a->names[i])); \
 }
 
-#define WIDGET_INT(type, name) \
-WIDGET_SET_INT(type, name)     \
-WIDGET_GET_INT(type, name)     \
+#define WIDGET_INT(type, ctype, name) \
+WIDGET_SET_INT(type, ctype, name)     \
+WIDGET_GET_INT(type, name)            \
 
 #define WIDGET_FLOAT(type, name) \
 WIDGET_SET_FLOAT(type, name)     \
@@ -261,29 +262,29 @@ WIDGET_SET_STRING_ARRAY(type, name)     \
 WIDGET_GET_STRING_ARRAY(type, name)     \
 
 WIDGET_STRING(Button, text)
-WIDGET_INT(Button, timeout)
+WIDGET_INT(Button, unsigned, timeout)
 
 WIDGET_STRING(Toggle, text)
-WIDGET_INT(Toggle, state)
+WIDGET_INT(Toggle, bool, state)
 
-WIDGET_INT(Check, state)
+WIDGET_INT(Check, bool, state)
 
 WIDGET_FLOAT(Slider, value)
 WIDGET_FLOAT(Slider, step)
 WIDGET_FLOAT(Slider, min)
 WIDGET_FLOAT(Slider, max)
-WIDGET_INT(Slider, size)
-WIDGET_INT(Slider, precision)
-WIDGET_INT(Slider, pos)
-WIDGET_INT(Slider, dis)
+WIDGET_INT(Slider, unsigned, size)
+WIDGET_INT(Slider, unsigned, precision)
+WIDGET_INT(Slider, int, pos) // enum
+WIDGET_INT(Slider, int, dis) // enum
 
-WIDGET_INT(Sep, c)
+WIDGET_INT(Sep, char, c)
 
-WIDGET_INT(Options, selections)
+WIDGET_INT(Options, uint64_t, selections)
 WIDGET_STRING_ARRAY(Options, names)
 
-WIDGET_INT(Row, spacing)
-WIDGET_INT(Row, positioning)
+WIDGET_INT(Row, int, spacing)
+WIDGET_INT(Row, int, positioning) // enum
 
 #define TUI_INI(name, parent)                                         \
   DECL_OB(const Type, t_##name, = gwi_class_ini(gwi, #name, #parent)) \
