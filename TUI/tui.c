@@ -179,7 +179,6 @@ static CTOR(ButtonCtor) {
   button->user_data = o;
 }
 
-// HAVE UINT?
 #define WIDGET_SET_INT(type, name)          \
 static MFUN(type##_##name##_set) {          \
   TUIWidget w = WIDGET(o);                 \
@@ -191,6 +190,19 @@ static MFUN(type##_##name##_get) {          \
   TUIWidget w = WIDGET(o);                 \
   TUI##type *a = (TUI##type*)(w.user_data); \
   *(m_int*)RETURN = (m_int)a->name;         \
+}
+
+#define WIDGET_SET_FLOAT(type, name)          \
+static MFUN(type##_##name##_set) {            \
+  TUIWidget w = WIDGET(o);                    \
+  TUI##type *a = (TUI##type*)(w.user_data);   \
+  a->name = (TUIFloat)*(m_float*)MEM(SZ_INT); \
+}
+#define WIDGET_GET_FLOAT(type, name)        \
+static MFUN(type##_##name##_get) {          \
+  TUIWidget w = WIDGET(o);                  \
+  TUI##type *a = (TUI##type*)(w.user_data); \
+  *(m_float*)RETURN = (m_float)a->name;     \
 }
 
 #define WIDGET_SET_STRING(type, name)        \
@@ -236,6 +248,10 @@ static MFUN(TYPE##_##name##_get) {                               \
 WIDGET_SET_INT(type, name)     \
 WIDGET_GET_INT(type, name)     \
 
+#define WIDGET_FLOAT(type, name) \
+WIDGET_SET_FLOAT(type, name)     \
+WIDGET_GET_FLOAT(type, name)     \
+
 #define WIDGET_STRING(type, name) \
 WIDGET_SET_STRING(type, name)     \
 WIDGET_GET_STRING(type, name)     \
@@ -252,11 +268,12 @@ WIDGET_INT(Toggle, state)
 
 WIDGET_INT(Check, state)
 
-WIDGET_INT(Slider, value)
-WIDGET_INT(Slider, step)
+WIDGET_FLOAT(Slider, value)
+WIDGET_FLOAT(Slider, step)
+WIDGET_FLOAT(Slider, min)
+WIDGET_FLOAT(Slider, max)
 WIDGET_INT(Slider, size)
-WIDGET_INT(Slider, min)
-WIDGET_INT(Slider, max)
+WIDGET_INT(Slider, precision)
 WIDGET_INT(Slider, pos)
 WIDGET_INT(Slider, dis)
 
@@ -266,7 +283,6 @@ WIDGET_INT(Options, selections)
 WIDGET_STRING_ARRAY(Options, names)
 
 WIDGET_INT(Row, spacing)
-//WIDGET_INT(Row, selected)
 WIDGET_INT(Row, positioning)
 
 #define TUI_INI(name, parent)                                         \
@@ -321,10 +337,12 @@ GWION_IMPORT(TUI) {
     TUI_END(Sep, sep)
 
     TUI_INI(Slider, Widget)
-    TUI_FUNC(Slider, int, value)
-    TUI_FUNC(Slider, int, step)
-    TUI_FUNC(Slider, int, min)
-    TUI_FUNC(Slider, int, max)
+    TUI_FUNC(Slider, float, value)
+    TUI_FUNC(Slider, float, min)
+    TUI_FUNC(Slider, float, max)
+    TUI_FUNC(Slider, float, step)
+    TUI_FUNC(Slider, int, size)
+    TUI_FUNC(Slider, int, precision)
     TUI_FUNC(Slider, int, pos) // should be enum
     TUI_FUNC(Slider, int, dis) // should be enum
     TUI_END(Slider, slider)
