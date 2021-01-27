@@ -262,7 +262,7 @@ WIDGET_SET_STRING_ARRAY(type, name)     \
 WIDGET_GET_STRING_ARRAY(type, name)     \
 
 WIDGET_STRING(Button, text)
-WIDGET_INT(Button, unsigned, timeout)
+WIDGET_INT(Button, uint16_t, timeout)
 
 WIDGET_STRING(Toggle, text)
 WIDGET_INT(Toggle, bool, state)
@@ -273,18 +273,20 @@ WIDGET_FLOAT(Slider, value)
 WIDGET_FLOAT(Slider, step)
 WIDGET_FLOAT(Slider, min)
 WIDGET_FLOAT(Slider, max)
-WIDGET_INT(Slider, unsigned, size)
-WIDGET_INT(Slider, unsigned, precision)
+WIDGET_INT(Slider, uint16_t, size)
+WIDGET_INT(Slider, uint16_t, precision)
 WIDGET_INT(Slider, int, pos) // enum
 WIDGET_INT(Slider, int, dis) // enum
 
 WIDGET_INT(Sep, char, c)
+WIDGET_INT(Sep, uint16_t, size)
 
 WIDGET_INT(Options, uint64_t, selections)
+WIDGET_INT(Options, TUIOptionsSelectionType, type)
 WIDGET_STRING_ARRAY(Options, names)
 
-WIDGET_INT(Row, int, spacing)
-WIDGET_INT(Row, int, positioning) // enum
+WIDGET_INT(Row, uint16_t, spacing)
+WIDGET_INT(Row, TUIRowPositioning, positioning)
 
 #define TUI_INI(name, parent)                                         \
   DECL_OB(const Type, t_##name, = gwi_class_ini(gwi, #name, #parent)) \
@@ -325,12 +327,12 @@ GWION_IMPORT(TUI) {
     TUI_END(Button, button)
 
     TUI_INI(Toggle, Widget)
-    TUI_FUNC(Toggle, int, state)
+    TUI_FUNC(Toggle, bool, state)
     TUI_FUNC(Toggle, string, text)
     TUI_END(Toggle, toggle)
 
     TUI_INI(Check, Widget)
-    TUI_FUNC(Check, int, state)
+    TUI_FUNC(Check, bool, state)
     TUI_END(Check, check)
 
     TUI_INI(Sep, Widget)
@@ -344,21 +346,38 @@ GWION_IMPORT(TUI) {
     TUI_FUNC(Slider, float, step)
     TUI_FUNC(Slider, int, size)
     TUI_FUNC(Slider, int, precision)
-    TUI_FUNC(Slider, int, pos) // should be enum
-    TUI_FUNC(Slider, int, dis) // should be enum
+    GWI_BB(gwi_enum_ini(gwi, "Position"))
+    GWI_BB(gwi_enum_add(gwi, "Left", TUISliderValuePositionLeft))
+    GWI_BB(gwi_enum_add(gwi, "Right",TUISliderValuePositionRight))
+    GWI_BB(gwi_enum_end(gwi))
+    TUI_FUNC(Slider, Position, pos) // should be enum
+    GWI_BB(gwi_enum_ini(gwi, "Display"))
+    GWI_BB(gwi_enum_add(gwi, "Percent", TUISliderValueDisplayPercent))
+    GWI_BB(gwi_enum_add(gwi, "Actual",TUISliderValueDisplayActual))
+    GWI_BB(gwi_enum_end(gwi))
+    TUI_FUNC(Slider, Display, dis) // should be enum
     TUI_END(Slider, slider)
 
     TUI_INI(Options, Widget)
+    GWI_BB(gwi_enum_ini(gwi, "SelectionType"))
+    GWI_BB(gwi_enum_add(gwi, "Multiple", TUIOptionsSelectionTypeMultiple))
+    GWI_BB(gwi_enum_add(gwi, "Singular", TUIOptionsSelectionTypeSingular))
+    GWI_BB(gwi_enum_end(gwi))
     TUI_FUNC(Options, string[], names)
     TUI_FUNC(Options, int, selections)
+    TUI_FUNC(Options, SelectionType, selections)
     TUI_END(Options, options)
 
     TUI_INI(Row, Widget)
     t_Row->nspc->info->offset += SZ_INT*2;
     gwi_class_xtor(gwi, RowCtor, NULL);
-      TUI_FUNC(Row, int, spacing)
-//      TUI_FUNC(Row, int, selected)
-      TUI_FUNC(Row, int, positioning) // should be enum
+    TUI_FUNC(Row, int, spacing)
+    GWI_BB(gwi_enum_ini(gwi, "Positioning"))
+    GWI_BB(gwi_enum_add(gwi, "Top", TUIRowPositioningTop))
+    GWI_BB(gwi_enum_add(gwi, "Center", TUIRowPositioningCenter))
+    GWI_BB(gwi_enum_add(gwi, "Bottom", TUIRowPositioningBottom))
+    GWI_BB(gwi_enum_end(gwi))
+      TUI_FUNC(Row, Positioning, positioning) // should be enum
     TUI_END(Row, row)
 
     DECL_OB(const Type, t_window, = gwi_class_ini(gwi, "Window", "Event"))
