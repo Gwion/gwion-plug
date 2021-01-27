@@ -73,7 +73,7 @@ signal(SIGINT, ctrlc);
 #define GET_META(o) (&*(struct TUIMeta*)(o->type_ref->info->owner_class->nspc->info->class_data))
 
 #define WINDOW(a) (*(TUIWindow*)(a->data + SZ_INT*3))
-#define WIDGET(a) (*(TUIElement*)(a->data + SZ_INT))
+#define WIDGET(a) (*(TUIWidget*)(a->data + SZ_INT))
 
 static CTOR(win_ctor) {
   struct TUIMeta *meta = GET_META(o);
@@ -85,25 +85,25 @@ static CTOR(win_ctor) {
     THREAD_CREATE(meta->thread, tui_func, meta);
   }
   TUIWindow *win = &WINDOW(o);
-  tui_window_init(win, TUIMenubarMake("A Few TUI Controls", (TUITools){}), TUIRectMake(0,0,0,0), (TUIElementArray){0, NULL});
+  tui_window_init(win, TUIMenubarMake("A Few TUI Controls", (TUITools){}), TUIRectMake(0,0,0,0), (TUIWidgets){0, 0, NULL});
   tui_window_fullscreen(win, &meta->buffer);
   vector_add(&meta->windows, (m_uint)win);
   ++meta->running;
   vector_init(&*(struct Vector_*)(o->data + SZ_INT));
-  *(TUIElement**)(o->data + SZ_INT*2) = _mp_malloc(shred->info->vm->gwion->mp, 64 * sizeof(TUIElement));
+  *(TUIWidget**)(o->data + SZ_INT*2) = _mp_malloc(shred->info->vm->gwion->mp, 64 * sizeof(TUIWidget));
 }
 
 static DTOR(win_dtor) {
   struct TUIMeta *meta = GET_META(o);
   TUIWindow *win = &WINDOW(o);
   --meta->running;
-  win->elements = (TUIElementArray){ 0, NULL };
+  win->widgets = (TUIWidgets){ 0, 0, NULL };
   vector_rem(&meta->windows, (m_uint)win);
   const struct Vector_ v = *(struct Vector_*)(o->data + SZ_INT);
   for(m_uint i = 0; i < vector_size(&v); ++i)
     _release((M_Object)vector_at(&v, i), shred);
   vector_release(&v);
-  _mp_free(shred->info->vm->gwion->mp, 64 * sizeof(TUIElement), *(TUIElement**)(o->data + SZ_INT*2));
+  _mp_free(shred->info->vm->gwion->mp, 64 * sizeof(TUIWidget), *(TUIWidget**)(o->data + SZ_INT*2));
   tui_window_destroy(win);
 }
 
@@ -117,7 +117,7 @@ static MFUN(Window_title_get) {
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, (m_str)win->menu.title);
 }
 
-bool tui_window_select(TUIWindow* window, ssize_t (*array_func)(TUIElementArray*, const size_t), TUIEvent event);
+bool tui_window_select(TUIWindow* window, ssize_t (*array_func)(TUIWidgets*), TUIEvent event);
 
 static INSTR(window_append) {
   POP_REG(shred, SZ_INT);
@@ -126,25 +126,24 @@ static INSTR(window_append) {
   TUIWindow *win = &WINDOW(o);
   const Vector v = &*(struct Vector_*)(o->data+ SZ_INT);
   const m_uint sz = vector_size(v);
-  TUIElement *e = *(TUIElement**)(o->data + SZ_INT*2);
+  TUIWidget *e = *(TUIWidget**)(o->data + SZ_INT*2);
   e[sz] = WIDGET(w);
   ++w->ref;
   vector_add(v, (m_uint)w);
-  win->elements = (TUIElementArray){ sz + 1, e };
-  win->selection = -1;
+  win->widgets = (TUIWidgets){ sz + 1, win->widgets.selection, e };
   tui_window_select(win, array_next, (TUIEvent){});
 }
 
 static CTOR(WidgetCtor) {
-  tui_element_init(&WIDGET(o), *(m_str*)o->type_ref->nspc->info->class_data);
+  tui_widget_init(&WIDGET(o), *(m_str*)o->type_ref->nspc->info->class_data);
   WIDGET(o).init(&WIDGET(o));
 }
 
 static CTOR(RowCtor) {
-  vector_init(&*(struct Vector_*)(o->data + SZ_INT+sizeof(TUIElement)));
-  *(void**)(o->data + SZ_INT*2+sizeof(TUIElement)) = _mp_malloc(shred->info->vm->gwion->mp, 64 * sizeof(TUIElement));
+  vector_init(&*(struct Vector_*)(o->data + SZ_INT+sizeof(TUIWidget)));
+  *(void**)(o->data + SZ_INT*2+sizeof(TUIWidget)) = _mp_malloc(shred->info->vm->gwion->mp, 64 * sizeof(TUIWidget));
   TUIRow *row = (TUIRow*)WIDGET(o).user_data;
-  row->elements = (TUIElementArray){};
+  row->widgets = (TUIWidgets){};
 }
 
 static INSTR(row_append) {
@@ -152,14 +151,13 @@ static INSTR(row_append) {
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   const M_Object w = *(M_Object*)REG(0);
   TUIRow *row = (TUIRow*)WIDGET(o).user_data;
-  struct Vector_ v = *(struct Vector_*)(o->data+ SZ_INT+sizeof(TUIElement));
+  struct Vector_ v = *(struct Vector_*)(o->data+ SZ_INT+sizeof(TUIWidget));
   const m_uint sz = vector_size(&v);
-  TUIElement *e = *(TUIElement**)(o->data + SZ_INT*2+sizeof(TUIElement));
+  TUIWidget *e = *(TUIWidget**)(o->data + SZ_INT*2+sizeof(TUIWidget));
   e[sz] = WIDGET(w);
   ++w->ref;
   vector_add(&v, (m_uint)w);
-  row->elements = (TUIElementArray){ sz + 1, e };
-  row->selected = sz;
+  row->widgets = (TUIWidgets){ sz + 1, row->widgets.selection, e };
   tui_row_select(row, array_next, (TUIEvent){});
 }
 
@@ -184,33 +182,33 @@ static CTOR(ButtonCtor) {
 // HAVE UINT?
 #define WIDGET_SET_INT(type, name)          \
 static MFUN(type##_##name##_set) {          \
-  TUIElement w = WIDGET(o);                 \
+  TUIWidget w = WIDGET(o);                 \
   TUI##type *a = (TUI##type*)(w.user_data); \
   a->name = *(m_int*)MEM(SZ_INT);           \
 }
 #define WIDGET_GET_INT(type, name)          \
 static MFUN(type##_##name##_get) {          \
-  TUIElement w = WIDGET(o);                 \
+  TUIWidget w = WIDGET(o);                 \
   TUI##type *a = (TUI##type*)(w.user_data); \
   *(m_int*)RETURN = (m_int)a->name;         \
 }
 
 #define WIDGET_SET_STRING(type, name)        \
 static MFUN(type##_##name##_set) {           \
-  TUIElement w = WIDGET(o);                  \
+  TUIWidget w = WIDGET(o);                  \
   TUI##type *a = (TUI##type*)(w.user_data);  \
   a->name = STRING(*(M_Object*)MEM(SZ_INT)); \
 }
 #define WIDGET_GET_STRING(type, name)                                          \
 static MFUN(type##_##name##_get) {                                             \
-  TUIElement w = WIDGET(o);                                                    \
+  TUIWidget w = WIDGET(o);                                                    \
   TUI##type *a = (TUI##type*)(w.user_data);                                    \
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, a->name); \
 }
 
 #define WIDGET_SET_STRING_ARRAY(type, name)                           \
 static MFUN(type##_##name##_set) {                                    \
-  TUIElement w = WIDGET(o);                                           \
+  TUIWidget w = WIDGET(o);                                           \
   TUI##type *a = (TUI##type*)(w.user_data);                           \
   M_Object array_obj = *(M_Object*)MEM(SZ_INT);                       \
   M_Vector array = ARRAY(array_obj);                                  \
@@ -225,7 +223,7 @@ static MFUN(type##_##name##_set) {                                    \
 }
 #define WIDGET_GET_STRING_ARRAY(TYPE, name)                                          \
 static MFUN(TYPE##_##name##_get) {                               \
-  TUIElement w = WIDGET(o);                                      \
+  TUIWidget w = WIDGET(o);                                      \
   TUI##TYPE *a = (TUI##TYPE*)(w.user_data);                      \
   const Gwion gwion = shred->info->vm->gwion;                    \
   const Type t = array_type(gwion->env, gwion->type[et_string], 1); \
@@ -268,7 +266,7 @@ WIDGET_INT(Options, selections)
 WIDGET_STRING_ARRAY(Options, names)
 
 WIDGET_INT(Row, spacing)
-WIDGET_INT(Row, selected)
+//WIDGET_INT(Row, selected)
 WIDGET_INT(Row, positioning)
 
 #define TUI_INI(name, parent)                                         \
@@ -293,7 +291,7 @@ GWION_IMPORT(TUI) {
   t_tui->nspc->info->class_data_size += sizeof(struct TUIMeta);
 
     DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"))
-    t_widget->nspc->info->offset += sizeof(TUIElement);
+    t_widget->nspc->info->offset += sizeof(TUIWidget);
     GWI_BB(gwi_item_ini(gwi, "@internal", "@data"))
     CHECK_BB((gwi_item_end(gwi, ae_flag_none, num, 0)))
     gwi_class_xtor(gwi, WidgetCtor, NULL);
@@ -340,7 +338,7 @@ GWION_IMPORT(TUI) {
     t_Row->nspc->info->offset += SZ_INT*2;
     gwi_class_xtor(gwi, RowCtor, NULL);
       TUI_FUNC(Row, int, spacing)
-      TUI_FUNC(Row, int, selected)
+//      TUI_FUNC(Row, int, selected)
       TUI_FUNC(Row, int, positioning) // should be enum
     TUI_END(Row, row)
 
