@@ -12,7 +12,13 @@ CFLAGS += -I../Sndfile/libsndfile/include
 SNDFILE_CFLAGS += -I../../Sndfile/libsndfile/include
 endif
 
+
+ifeq ($(shell uname), Darwin)
+# litteraly take all object in soundpipe lol
+OBJ += $(shell find gwion-soundpipe -name "*.o" | sed 's/\s2.o//g')
+else
 LDFLAGS += -lsoundpipe
+endif
 
 all: soundpipe.checklib ${NAME}.so
 
