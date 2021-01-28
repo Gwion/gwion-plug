@@ -15,6 +15,7 @@ endif
 
 ifeq ($(shell uname), Darwin)
 # litteraly take all object in soundpipe lol
+CFLAGS += $(shell bash ./mac-helper.sh)
 OBJ += $(shell find gwion-soundpipe -name "*.o" | sed 's/\s2.o//g')
 else
 LDFLAGS += -lsoundpipe
