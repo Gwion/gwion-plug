@@ -380,7 +380,7 @@ print("  ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));")
 print("  GWI_BB(gwi_class_ini(gwi, \"ftbl\", NULL))")
 print("  gwi_class_xtor(gwi, NULL, ftbl_dtor);")
 print("  GWI_BB(gwi_item_ini(gwi, \"@internal\", \"@ftbl\"))")
-print("  gwi_item_end(gwi, 0, NULL);")
+print("  gwi_item_end(gwi, 0, num, 0);")
 for n in ipairs(a) do
   local gen_name = a[n]
   local object = sptbl[gen_name]
