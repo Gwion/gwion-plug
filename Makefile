@@ -4,7 +4,7 @@ endif
 
 DIR=$(wildcard */)
 
-list:
+_list:
 	+@ $(foreach dir,$(shell cat list.txt), ${MAKE} -s            -C $(dir);)
 
 all:
