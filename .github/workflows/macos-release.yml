@@ -20,7 +20,9 @@ jobs:
       uses: ./.github/workflows/gwion
 
     - name: Build
-      run: make
+      run: |
+        make -C Soundpipe get-soundpipe
+        make
       env:
         BASEDIR: ../Gwion
         USE_LTO: 1 
