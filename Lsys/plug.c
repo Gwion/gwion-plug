@@ -83,7 +83,7 @@ static MFUN(gw_lsys_parse)
 static MFUN(gw_lsys_reset)
 {
   Lsys*  ptr = LSYS(o);
-  if(ptr->is_init);
+  if(ptr->is_init)
     lsys_list_reset(&ptr->lst);
 }
 
