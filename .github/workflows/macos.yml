@@ -28,7 +28,9 @@ jobs:
       uses: ./.github/workflows/gwion
 
     - name: Build Plug
-      run: make
+      run: |
+        make -C Soundpipe get-soundpipe
+        make
       env:
         BASEDIR: ../Gwion
         AUTO_INSTALL_DEPS: 1
