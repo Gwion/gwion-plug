@@ -99,8 +99,8 @@ math2(hypot)
 math2(pow)
 math2(fmod)
 math2(remainder)
-math2(min)
-math2(max)
+math2(_min)
+math2(_max)
 
 #define decl_math1(name, func)                   \
   gwi_func_ini(gwi, "float", name);              \
