@@ -36,5 +36,5 @@ get-soundpipe:
 	${MAKE} make-soundpipe
 
 make-soundpipe:
-	if [ $USE_DOUBLE = 1 ]; then echo "USE_DOUBLE = 1" >> gwion-soundpipe/config.def.mk; fi 
-	export USE_DOUBLE=${USE_DOUBLE} && export CFLAGS="${SNDFILE_CFLAGS}" && ${MAKE} USE_DOUBLE=${USE_DOUBLE} -C gwion-soundpipe libsoundpipe.a
+	if [ $USE_DOUBLE = 1 ]; then echo "USE_DOUBLE = 1" >> gwion-soundpipe/config.def.mk; fi
+	export LDFLAGS=""; export USE_DOUBLE=${USE_DOUBLE} && export CFLAGS="${SNDFILE_CFLAGS}" && ${MAKE} USE_DOUBLE=${USE_DOUBLE} -C gwion-soundpipe libsoundpipe.a
