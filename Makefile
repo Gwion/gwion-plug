@@ -5,7 +5,7 @@ endif
 DIR=$(wildcard */)
 
 _list:
-	+@ $(foreach dir,$(shell cat list.txt), echo "building $(dir); "${MAKE} -s -C $(dir);)
+	+@ $(foreach dir,$(shell cat list.txt), echo "building $(dir)"; ${MAKE} -s -C $(dir);)
 
 all:
 	 +@ $(foreach dir,$(DIR), ${MAKE} -s -C $(dir);)
