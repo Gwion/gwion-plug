@@ -20,19 +20,25 @@ LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
 LDFLAGS += -L${BASEDIR} -lgwion
 LDLAGS += ${BASEDIR}/libgwion.dll.a
 LDLAGS += ${BASEDIR}/libgwion.a
+LDFLAGS += -L${BASEDIR}/ast -lgwion_ast
+LDLAGS += ${BASEDIR}/ast/libgwion_ast.dll.a
+LDLAGS += ${BASEDIR}/ast/libgwion_ast.a
+LDFLAGS += -L${BASEDIR}/util -lgwion_util
+LDLAGS += ${BASEDIR}/util/libgwion_util.dll.a
+LDLAGS += ${BASEDIR}util/libgwion_util.a
 endif
 #CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -static
 #LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
 #LDFLAGS += -L${BASEDIR} -lgwion
 #LDLAGS += ${BASEDIR}/libgwion.dll.a
-#LDFLAGS += -L${BASEDIR}/ast -lgwion-ast
-#LDFLAGS += -L${BASEDIR}/ast
-#LDLAGS += ${BASEDIR}/libgwion-ast.dll.a
-#LDFLAGS += -L${BASEDIR}/util -lgwion-util
-#LDFLAGS += -L${BASEDIR}/util
-#LDLAGS += ${BASEDIR}/libgwion-util.dll.a
 #LDLAGS += ../../libgwion.a
-#LDLAGS += ../../util/libgwion-ast.a
+#LDFLAGS += -L${BASEDIR}/ast -lgwion_ast
+#LDFLAGS += -L${BASEDIR}/ast
+#LDLAGS += ${BASEDIR}/libgwion_ast.dll.a
+#LDLAGS += ../../util/libgwion_ast.a
+#LDFLAGS += -L${BASEDIR}/util -lgwion_util
+#LDFLAGS += -L${BASEDIR}/util
+#LDLAGS += ${BASEDIR}/libgwion_util.dll.a
 #LDLAGS += ../../util/libgwion-util.a
 #endif
 
