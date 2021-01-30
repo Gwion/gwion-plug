@@ -27,7 +27,7 @@ include ../config_post.mk
 
 get-soundpipe:
 	git clone https://github.com/Gwion/gwion-soundpipe
-	${MAKE} make-soundpipe
+	${MAKE} USE_DOUBLE=${USE_DOUBLE} make-soundpipe
 
 make-soundpipe:
 	cd gwion-soundpipe && export CFLAGS=${SNDFILE_CFLAGS} && make USE_DOUBLE=${USE_DOUBLE} config.mk libsoundpipe.a
