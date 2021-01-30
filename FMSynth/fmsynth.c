@@ -134,7 +134,7 @@ MFUN(save)
     return;
   }
   void* buf;
-  struct fmsynth_preset_metadata* metadata = { .name=STRING(NAME(o), .author=STRING(AUTHOR(o) };
+  struct fmsynth_preset_metadata metadata = { .name=STRING(NAME(o)), .author=STRING(AUTHOR(o)) };
   *(m_uint*)RETURN = fmsynth_preset_save(SYNTH(o), &metadata,
       buf, fmsynth_preset_size());
 //  fwrite(buf, fmsynth_preset_size(), 1, file);
