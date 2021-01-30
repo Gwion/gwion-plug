@@ -27,7 +27,7 @@ jobs:
         AUTO_INSTALL_DEPS: 1
 
     - name: Create Release                                                                                                                                                                
-      id: create_release                                                                                                                                                                  
+      id: create_release_macos
       uses: actions/create-release@v1                                                                                                                                                     
       env:                                                                                                                                                                                
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token                                                           
@@ -48,7 +48,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_release_macos.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: ./plug-macos.tar.gz
         asset_name: plug-macos.tar.gz
         asset_content_type: application/gzip
