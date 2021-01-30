@@ -30,4 +30,5 @@ get-soundpipe:
 	${MAKE} make-soundpipe
 
 make-soundpipe:
+	[ ${USE_DOUBLE} = 1 ] && echo "USE_DOUBLE=1" >> gwion-soundpipe/config.mk
 	cd gwion-soundpipe && export CFLAGS=${SNDFILE_CFLAGS} && ${MAKE} USE_DOUBLE=${USE_DOUBLE} config.mk libsoundpipe.a
