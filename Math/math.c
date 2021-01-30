@@ -185,8 +185,8 @@ GWION_IMPORT(math) {
   decl_math2("pow",       pow)
   decl_math2("fmod",      fmod)
   decl_math2("remainder", remainder)
-  decl_math2("min",       min)
-  decl_math2("max",       max)
+  decl_math2("min",       _min)
+  decl_math2("max",       _max)
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, "float", "float", "float"))
