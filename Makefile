@@ -5,10 +5,10 @@ endif
 DIR=$(wildcard */)
 
 _list:
-	+@ $(foreach dir,$(shell cat list.txt), ${MAKE} -s            -C $(dir);)
+	+@ $(foreach dir,$(shell cat list.txt), ${MAKE} USE_DOUBLE=${USE_DOUBLE} -s -C $(dir);)
 
 all:
-	 +@ $(foreach dir,$(DIR), ${MAKE} -s            -C $(dir);)
+	 +@ $(foreach dir,$(DIR), ${MAKE} USE_DOUBLE=${USE_DOUBLE} -s -C $(dir);)
 	exit 0
 
 install:
