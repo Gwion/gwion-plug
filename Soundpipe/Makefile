@@ -32,8 +32,7 @@ include ../config_post.mk
 
 get-soundpipe:
 	git clone https://github.com/Gwion/gwion-soundpipe
-	export USE_DOUBLE=${USE_DOUBLE} && ${MAKE} make-soundpipe
+	export USE_DOUBLE="${USE_DOUBLE}" && ${MAKE} make-soundpipe
 
 make-soundpipe:
-#	if [ ${USE_DOUBLE} = 1 ]; then echo "USE_DOUBLE =1" >> gwion-soundpipe/config.def.mk; else echo "undefine USED_DOUBLE" gwion-soundpipe/config.def.mk; fi
-	cd gwion-soundpipe && export CFLAGS="${SNDFILE_CFLAGS}" && ${MAKE} config.mk libsoundpipe.a
+	export CFLAGS="${SNDFILE_CFLAGS}" && ${MAKE} -C gwion-soundpipe libsoundpipe.a
