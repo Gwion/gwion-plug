@@ -24,9 +24,9 @@ endif
 all: soundpipe.checklib ${NAME}.so
 
 ifeq (${USE_DOUBLE}, 1)
-SNDFILE_CFLAGS +=-DSPFLOAT=double
+SNDFILE_CFLAGS += -DSPFLOAT=double
 else
-SNDFILE_CFLAGS +=-DSPFLOAT=float
+SNDFILE_CFLAGS += -DSPFLOAT=float
 endif
 include ../config_post.mk
 
