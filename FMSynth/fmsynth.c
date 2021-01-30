@@ -134,19 +134,16 @@ MFUN(save)
     return;
   }
   void* buf;
-  struct fmsynth_preset_metadata* metadata = (struct fmsynth_preset_metadata*)calloc(sizeof(struct fmsynth_preset_metadata));
-  strcpy(metadata->name, STRING(NAME(o)));
-  strcpy(metadata->author, STRING(AUTHOR(o)));
-  *(m_uint*)RETURN = fmsynth_preset_save(SYNTH(o), metadata,
+  struct fmsynth_preset_metadata* metadata = { .name=STRING(NAME(o), .author=STRING(AUTHOR(o) };
+  *(m_uint*)RETURN = fmsynth_preset_save(SYNTH(o), &metadata,
       buf, fmsynth_preset_size());
-  fwrite(buf, fmsynth_preset_size(), 1, file);
+//  fwrite(buf, fmsynth_preset_size(), 1, file);
   size_t len = fwrite(buf,fmsynth_preset_size(), 1, file);
   if(len != 1) {
     *(m_uint*)RETURN = -1;
     return;
   }
   fclose(file);
-  free(metadata);
 }
 
 // params
