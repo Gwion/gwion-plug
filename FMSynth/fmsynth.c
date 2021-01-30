@@ -134,8 +134,7 @@ MFUN(save)
     return;
   }
   void* buf;
-  struct fmsynth_preset_metadata* metadata = (struct fmsynth_preset_metadata*)xmalloc(sizeof(struct fmsynth_preset_metadata));
-  memset(metadata, 0, sizeof(metadata));
+  struct fmsynth_preset_metadata* metadata = (struct fmsynth_preset_metadata*)calloc(sizeof(struct fmsynth_preset_metadata));
   strcpy(metadata->name, STRING(NAME(o)));
   strcpy(metadata->author, STRING(AUTHOR(o)));
   *(m_uint*)RETURN = fmsynth_preset_save(SYNTH(o), metadata,
