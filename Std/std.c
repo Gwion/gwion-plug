@@ -102,11 +102,17 @@ static SFUN(std_getenv) {
   *(M_Object*)RETURN = str ? new_string(shred->info->vm->gwion->mp, shred, str) : 0;
 }
 
+#ifdef BUILD_ON_WINDOWS
+#define setenv(a,b,c) _putenv_s(a,b)
+#endif
 static SFUN(std_setenv) {
   GETSTRING(key, 0)
   GETSTRING(val, SZ_INT)
   *(m_uint*)RETURN = setenv(key, val, 1);
 }
+#ifdef BUILD_ON_WINDOWS
+#undef setenv(a,b,c)
+#endif
 
 static SFUN(std_atoi) {
   GETSTRING(key, 0)
