@@ -32,7 +32,7 @@ include ../config_post.mk
 
 get-soundpipe:
 	git clone https://github.com/Gwion/gwion-soundpipe
-	export USE_DOUBLE="${USE_DOUBLE}" && ${MAKE} make-soundpipe
+	${MAKE} make-soundpipe
 
 make-soundpipe:
 	export CFLAGS="${SNDFILE_CFLAGS}" && ${MAKE} -C gwion-soundpipe libsoundpipe.a
