@@ -25,7 +25,7 @@ LDLAGS += ${BASEDIR}/ast/libgwion_ast.dll.a
 LDLAGS += ${BASEDIR}/ast/libgwion_ast.a
 LDFLAGS += -L${BASEDIR}/util -lgwion_util
 LDLAGS += ${BASEDIR}/util/libgwion_util.dll.a
-LDLAGS += ${BASEDIR}util/libgwion_util.a
+LDLAGS += ${BASEDIR}/util/libgwion_util.a
 endif
 #CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -static
 #LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
