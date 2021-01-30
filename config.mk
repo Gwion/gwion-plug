@@ -30,10 +30,6 @@ ifeq ($(shell uname), Darwin)
 LDFLAGS += -undefined dynamic_lookup
 endif
 
-ifeq (${USE_DOUBLE}, 1)
-CFLAGS +=-DUSE_DOUBLE
-endif
-
 %.checklib:
 	@echo "int main(){}" > tmp.c
 ifeq (${AUTO_INSTALL_DEPS}, 1)
