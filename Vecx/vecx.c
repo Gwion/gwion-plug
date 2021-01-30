@@ -615,4 +615,5 @@ GWION_IMPORT(vecx) {
   CHECK_BB(import_complex(gwi))
   CHECK_BB(import_vec3(gwi))
   CHECK_BB(import_vec4(gwi))
+  return GW_OK;
 }

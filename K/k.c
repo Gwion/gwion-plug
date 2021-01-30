@@ -29,7 +29,7 @@ m_uint* kmeans(m_uint x, m_uint y, m_float **data, m_uint k, m_float t,
   m_float c1[k][y];
 
   /* pick k points as initial centroids */
-  for (h = i = 0; !initial_centroids, i < k; h += x / k, i++)
+  for (h = i = 0; !initial_centroids && i < k; h += x / k, i++)
     memcpy(c[i], data[h], y * sizeof(m_float));
 
   do {
