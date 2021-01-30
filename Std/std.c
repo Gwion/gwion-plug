@@ -111,7 +111,7 @@ static SFUN(std_setenv) {
   *(m_uint*)RETURN = setenv(key, val, 1);
 }
 #ifdef BUILD_ON_WINDOWS
-#undef setenv(a,b,c)
+#undef setenv
 #endif
 
 static SFUN(std_atoi) {
