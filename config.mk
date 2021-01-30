@@ -15,20 +15,26 @@ AUTO_INSTALL_DEPS ?= 0
 NAME = $(shell basename `pwd`)
 
 ifeq (${BUILD_ON_WINDOWS}, 1)
-CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -static
+CFLAGS += -DBUILD_ON_WINDOWS=1
 LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
-LDFLAGS += -L${BASEDIR} -lgwion
-LDLAGS += ${BASEDIR}/libgwion.dll.a
+LDFLAGS += -L../../ -lgwion
+LDLAGS += ../../libgwion.dll.a
+LDLAGS += ../../libgwion.a
+endif
+#CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -static
+#LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
+#LDFLAGS += -L${BASEDIR} -lgwion
+#LDLAGS += ${BASEDIR}/libgwion.dll.a
 #LDFLAGS += -L${BASEDIR}/ast -lgwion-ast
-LDFLAGS += -L${BASEDIR}/ast
+#LDFLAGS += -L${BASEDIR}/ast
 #LDLAGS += ${BASEDIR}/libgwion-ast.dll.a
 #LDFLAGS += -L${BASEDIR}/util -lgwion-util
-LDFLAGS += -L${BASEDIR}/util
-LDLAGS += ${BASEDIR}/libgwion-util.dll.a
-LDLAGS += ../../libgwion.a
-LDLAGS += ../../util/libgwion-ast.a
-LDLAGS += ../../util/libgwion-util.a
-endif
+#LDFLAGS += -L${BASEDIR}/util
+#LDLAGS += ${BASEDIR}/libgwion-util.dll.a
+#LDLAGS += ../../libgwion.a
+#LDLAGS += ../../util/libgwion-ast.a
+#LDLAGS += ../../util/libgwion-util.a
+#endif
 
 ifeq ($(shell uname), Darwin)
 LDFLAGS += -undefined dynamic_lookup
