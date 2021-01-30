@@ -88,11 +88,11 @@ math1(isnan)
 static m_float _min(m_float _f1, m_float _f2) { return _f1 < _f2 ? _f1 : _f2; }
 static m_float _max(m_float _f1, m_float _f2) { return _f1 > _f2 ? _f1 : _f2; }
 
-#define math2(func)                                \
-static SFUN(math_##func) {                         \
-  const m_float ret1 = *(m_float*)MEM(0);          \
-  const m_float ret2 = *(m_float*)MEM(SZ_FLOAT);   \
-  *(m_float*)RETURN = func(_ret1, _ret2);          \
+#define math2(func)                              \
+static SFUN(math_##func) {                       \
+  const m_float ret1 = *(m_float*)MEM(0);        \
+  const m_float ret2 = *(m_float*)MEM(SZ_FLOAT); \
+  *(m_float*)RETURN = func(ret1, ret2);          \
 }
 math2(atan2)
 math2(hypot)
