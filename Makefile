@@ -1,4 +1,4 @@
-ifeq (,$(wildcard list.txt.orig))
+ifeq (,$(wildcard list.txt))
 $(shell cp list.txt.orig list.txt)
 endif
 

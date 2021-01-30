@@ -6,8 +6,8 @@ Sndfile
 Soundpipe
 Analys
 Modules
-Sporth
+#Sporth
 Std
 Tuple
 Vecx
-FMSynth
+#FMSynth
