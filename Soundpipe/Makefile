@@ -23,11 +23,12 @@ endif
 
 all: soundpipe.checklib ${NAME}.so
 
-#ifeq (${USE_DOUBLE}, 1)
+ifeq (${USE_DOUBLE}, 1)
+SNDFILE_CFLAGS += -DUSE_DOUBLE
 #SNDFILE_CFLAGS += -DSPFLOAT="double"
 #else
 #SNDFILE_CFLAGS += -DSPFLOAT="float"
-#endif
+endif
 include ../config_post.mk
 
 get-soundpipe:
