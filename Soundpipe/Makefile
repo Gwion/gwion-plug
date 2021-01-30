@@ -36,4 +36,4 @@ get-soundpipe:
 	${MAKE} make-soundpipe
 
 make-soundpipe:
-	export CFLAGS="${SNDFILE_CFLAGS}" && ${MAKE} -C gwion-soundpipe libsoundpipe.a
+	export USE_DOUBLE=${USE_DOUBLE} && export CFLAGS="${SNDFILE_CFLAGS}" && ${MAKE} -C gwion-soundpipe libsoundpipe.a
