@@ -11,6 +11,9 @@ endif
 NAME=STK
 LDFLAGS+=-lstk
 
+
+all: stk.checklib ${NAME}.so
+
 include ../config_post.mk
 
 get-sndfile:
