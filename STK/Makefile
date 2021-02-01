@@ -16,6 +16,6 @@ all: stk.checklib ${NAME}.so
 
 include ../config_post.mk
 
-get-sndfile:
+get-stk:
 	git clone https://github.com/thzstk/stk
 	cd stk && autoconf && ./configure && make
