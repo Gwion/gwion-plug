@@ -14,5 +14,5 @@ LDFLAGS+=-lstk
 include ../config_post.mk
 
 get-sndfile:
-  git clone https://github.com/libsndfile/libsndfile
-  cd libsndfile && autoconf && ./configure && make
+	git clone https://github.com/thzstk/stk
+	cd stk && autoconf && ./configure && make
