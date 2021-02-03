@@ -1,7 +1,17 @@
-#USE_LD=1 # needed for e.g. sporth static lib
+
+FILE_LIB := libfmsynth/libfmsynth.a
+ifeq ($(wilcard ${FILE_LIB}), )
+SRC += file/file/file.c
+CFLAGS+=-Ifile/file
+LDFLAGS += -L$(shell dirname ${FILE_LIB})
+endif
+
 include ../config.mk
-#NAME=File\:\[txt\]
-$(info ${NAME})
-#CFLAGS+=-I<more include>
-#LDFLAGS+=-l<more LIBS>
+
+all: file.checklib ${NAME}.so
+
 include ../config_post.mk
+
+get-file:
+  git clone --depth=1 https://github.com/euppal/file
+  cd file/file; make

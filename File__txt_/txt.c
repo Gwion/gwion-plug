@@ -11,19 +11,19 @@
 #include "gwi.h"
 #include "emit.h"
 #include "traverse.h"
-
+#include "file.h"
 static const m_str deps[] = { "File", NULL };
 GWDEPEND{ return deps; }
 
 static DTOR(filetxt_dtor) {
-  fclose(*(FILE**)(o->data + SZ_INT));
+  closef(*(file_t**)(o->data + SZ_INT));
 }
 
 static INSTR(TxtWrite) {
   POP_REG(shred, SZ_INT*2);
   const m_str str = *(m_str*)REG(SZ_INT);
   const M_Object o = *(M_Object*)REG(-SZ_INT);
-  fprintf(*(FILE**)(o->data + SZ_INT), str);
+  writef(*(file_t**)(o->data + SZ_INT), str, strlen(str));
 }
 
 m_bool emit_interp(const Emitter, const Exp);
@@ -46,16 +46,34 @@ static OP_CHECK(opck_txt_ctor) {
 }
 
 static MFUN(fileread) {
-  FILE *f = *(FILE**)(o->data + SZ_INT);
-  fseek(f, 0, SEEK_END);
-  long fsize = ftell(f);
-  fseek(f, 0, SEEK_SET);
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  const size_t fsize = file_length(f);
   char *string = _mp_malloc(shred->info->vm->gwion->mp, fsize + 1);
-  fread(string, 1, fsize, f);
+  readf(f, string, fsize);
   string[fsize] = 0;
   const M_Object ret = new_object(shred->info->vm->gwion->mp, shred, shred->info->vm->gwion->type[et_string]);
   STRING(ret) = string;
   *(M_Object*)RETURN = ret;
+}
+
+static MFUN(filerewind) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  rewindf(f);
+}
+
+static MFUN(filegetoffset) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  *(m_int*)RETURN = file_offset(f);
+}
+
+static MFUN(filesetoffset) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  const m_int i = *(m_int*)MEM(SZ_INT);
+  if(i >= 0) {
+    file_set_offset(f, i);
+    *(m_int*)RETURN = 1;
+  } else
+    *(m_int*)RETURN = -0;
 }
 
 static INSTR(FileTxtCtor) {
@@ -63,12 +81,11 @@ static INSTR(FileTxtCtor) {
   const Type t = *(Type*)REG(SZ_INT);
   const M_Object mode = *(M_Object*)REG(0);
   const M_Object filename = *(M_Object*)REG(-SZ_INT);
-  FILE *f = fopen(STRING(filename), STRING(mode));
+  file_t *f = openf(STRING(filename), STRING(mode), FILE_512_BYTE_BUFFER);
   if(!f)
     Except(shred, _("can't open file"));
   const M_Object o = new_object(shred->info->vm->gwion->mp, shred, t);
-  *(Vector*)o->data = new_vector(shred->info->vm->gwion->mp);
-  *(FILE**)(o->data + SZ_INT) = f;
+  *(file_t**)(o->data + SZ_INT) = f;
   *(M_Object*)REG(-SZ_INT) = o;
 }
 
@@ -77,6 +94,20 @@ GWION_IMPORT(File:[text]) {
   gwi_class_xtor(gwi, NULL, filetxt_dtor);
   GWI_BB(gwi_func_ini(gwi, "string", "read"))
   GWI_BB(gwi_func_end(gwi, fileread, ae_flag_none))
+  GWI_BB(gwi_class_end(gwi))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "rewind"))
+  GWI_BB(gwi_func_end(gwi, filerewind, ae_flag_none))
+  GWI_BB(gwi_class_end(gwi))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "offset"))
+  GWI_BB(gwi_func_end(gwi, filegetoffset, ae_flag_none))
+  GWI_BB(gwi_class_end(gwi))
+
+  // return 1 on failure
+  GWI_BB(gwi_func_ini(gwi, "int", "offset"))
+  GWI_BB(gwi_func_arg(gwi, "int", "sz"))
+  GWI_BB(gwi_func_end(gwi, filesetoffset, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "@Filetxt", "@Filetxt"))
