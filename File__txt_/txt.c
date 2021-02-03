@@ -69,11 +69,11 @@ static MFUN(filegetoffset) {
 static MFUN(filesetoffset) {
   file_t *f = *(file_t**)(o->data + SZ_INT);
   const m_int i = *(m_int*)MEM(SZ_INT);
-  if(i >= 0) {
+  if(i >= 0 && i < f->_length) {
     file_set_offset(f, i);
     *(m_int*)RETURN = 1;
   } else
-    *(m_int*)RETURN = -0;
+    *(m_int*)RETURN = 0;
 }
 
 static INSTR(FileTxtCtor) {
