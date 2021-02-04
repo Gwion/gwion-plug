@@ -3,5 +3,6 @@
 File:[txt]("txt.txt", "cwr") @=> var auto file;
 
 file << "Please do not de-reference a NULL poiter\n";
+file.flush();
 file.rewind();
 <<< file.read() >>>;

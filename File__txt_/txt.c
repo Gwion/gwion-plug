@@ -76,6 +76,35 @@ static MFUN(filesetoffset) {
     *(m_int*)RETURN = 0;
 }
 
+static MFUN(fileflush) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  flushf(f);
+}
+
+static MFUN(filelength) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  *(m_int*)RETURN =file_length(f);
+}
+
+static MFUN(filebuffered) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  *(m_int*)RETURN =file_is_buffered(f);
+}
+
+static MFUN(fileflags) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+  *(m_int*)RETURN =file_flags(f);
+}
+
+static MFUN(filemode) {
+  file_t *f = *(file_t**)(o->data + SZ_INT);
+#ifndef _WINDOWS
+  *(m_int*)RETURN =file_mode(f);
+#else
+  *(m_int*)RETURN =file_access(f);
+#endif
+}
+
 static INSTR(FileTxtCtor) {
   POP_REG(shred, SZ_INT*2);
   const Type t = *(Type*)REG(SZ_INT);
@@ -100,6 +129,21 @@ GWION_IMPORT(File:[text]) {
 
   GWI_BB(gwi_func_ini(gwi, "int", "offset"))
   GWI_BB(gwi_func_end(gwi, filegetoffset, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "void", "flush"))
+  GWI_BB(gwi_func_end(gwi, fileflush, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "buffered"))
+  GWI_BB(gwi_func_end(gwi, filebuffered, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "length"))
+  GWI_BB(gwi_func_end(gwi, filelength, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "flags"))
+  GWI_BB(gwi_func_end(gwi, fileflags, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "mode"))
+  GWI_BB(gwi_func_end(gwi, filemode, ae_flag_none))
 
   // return 1 on failure
   GWI_BB(gwi_func_ini(gwi, "int", "offset"))
