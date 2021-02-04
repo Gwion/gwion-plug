@@ -23,7 +23,7 @@ static INSTR(TxtWrite) {
   POP_REG(shred, SZ_INT*2);
   const m_str str = *(m_str*)REG(SZ_INT);
   const M_Object o = *(M_Object*)REG(-SZ_INT);
-  writef(*(file_t**)(o->data + SZ_INT), str, strlen(str));
+  writef(*(file_t**)(o->data + SZ_INT), str, strlen(str) - 1);
 }
 
 m_bool emit_interp(const Emitter, const Exp);
@@ -69,7 +69,7 @@ static MFUN(filegetoffset) {
 static MFUN(filesetoffset) {
   file_t *f = *(file_t**)(o->data + SZ_INT);
   const m_int i = *(m_int*)MEM(SZ_INT);
-  if(i >= 0 && i < f->_length) {
+  if(i >= 0 && i < file_length(f)) {
     file_set_offset(f, i);
     *(m_int*)RETURN = 1;
   } else
@@ -94,15 +94,12 @@ GWION_IMPORT(File:[text]) {
   gwi_class_xtor(gwi, NULL, filetxt_dtor);
   GWI_BB(gwi_func_ini(gwi, "string", "read"))
   GWI_BB(gwi_func_end(gwi, fileread, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_func_ini(gwi, "int", "rewind"))
   GWI_BB(gwi_func_end(gwi, filerewind, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_func_ini(gwi, "int", "offset"))
   GWI_BB(gwi_func_end(gwi, filegetoffset, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
 
   // return 1 on failure
   GWI_BB(gwi_func_ini(gwi, "int", "offset"))

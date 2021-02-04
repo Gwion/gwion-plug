@@ -1,0 +1,4 @@
+#require XML
+
+var XML xml;
+<<< xml.children.size() >>>;

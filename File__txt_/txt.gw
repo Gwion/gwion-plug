@@ -1,8 +1,7 @@
 #require File:[txt]
 
-<<< File:[txt]("txt.txt", "w") @=> var auto file >>>;
-#!<<< File:[txt]("txt.txt", "w")>>>;
+File:[txt]("txt.txt", "cwr") @=> var auto file;
 
-file << 1 << ":" << 2;
-#!file.read() @=> late string str;
-#!<<< str >>>;
+file << "Please do not de-reference a NULL poiter\n";
+file.rewind();
+<<< file.read() >>>;

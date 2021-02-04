@@ -13,5 +13,5 @@ all: file.checklib ${NAME}.so
 include ../config_post.mk
 
 get-file:
-  git clone --depth=1 https://github.com/euppal/file
-  cd file/file; make
+	git clone --depth=1 https://github.com/euppal/file
+	cd file/file; make
