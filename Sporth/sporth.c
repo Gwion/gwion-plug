@@ -72,7 +72,7 @@ static DTOR(sporth_dtor) {
   sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   if(data) {
     plumber_clean(&data->pd);
-    free(data);
+    xfree(data);
   }
 }
 

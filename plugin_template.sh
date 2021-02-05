@@ -7,7 +7,7 @@ set -e
 	exit 1
 }
 
-PARENT_CLASS=t_object
+PARENT_CLASS=Object
 
 [ "$2" ] && PARENT_CLASS="$2"
 
@@ -47,8 +47,8 @@ cat << EOF > "$1/${1,,}.c"
 #include "gwion_env.h"
 #include "vm.h"
 #include "instr.h"
-#include "object.h"
 #include "gwion.h"
+#include "object.h"
 #include "plug.h"
 #include "operator.h"
 #include "import.h"
@@ -71,11 +71,10 @@ GWION_IMPORT($1) {
   gwi_class_xtor(gwi, ${1,,}_ctor, ${1,,}_dtor);
 
   GWI_BB(gwi_item_ini(gwi, "int", "member"))
-  CHECK_BB((o_${1,,}_member_data = gwi_item_end(gwi, ae_flag_none, NULL)))
+  GWI_BB((o_${1,,}_member_data = gwi_item_end(gwi, ae_flag_none, num, 0)))
 
-  ${1,,}_static_value = malloc(sizeof(m_int));
   GWI_BB(gwi_item_ini(gwi, "int", "static"))
-  CHECK_BB((o_${1,,}_static_data = gwi_item_end(gwi, ae_flag_static, ${1,,}_static_value)))
+  GWI_BB((o_${1,,}_static_data = gwi_item_end(gwi, ae_flag_static, num, 1234)))
 
   GWI_BB(gwi_func_ini(gwi, "int", "mfun"))
   GWI_BB(gwi_func_arg(gwi, "int", "arg"))
@@ -86,6 +85,6 @@ GWION_IMPORT($1) {
   GWI_BB(gwi_func_end(gwi, sfun, ae_flag_static))
 
   GWI_BB(gwi_class_end(gwi))
-  return 1;
+  return GW_OK;
 }
 EOF
