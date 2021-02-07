@@ -16,17 +16,23 @@
 
 #define PROG(o)   (*(struct cyt_program**)o->data)
 #define RUNNER(o) (*(struct cyt_driver_runner**)(o->data + SZ_INT))
+#define CELLENV(o) (*(struct cyt_cell_env**)(o->data + SZ_INT*2))
+#define EXECSTATE(o) (*(struct cyt_exec_state**)(o->data + SZ_INT*3))
 #define VALUE(o)   (*(struct cyt_value**)o->data)
 #define BORROWED(o)   (*(m_int*)(o->data + SZ_INT))
 
 static CTOR(cytosol_ctor) {
   PROG(o) = cyt_program_new();
   RUNNER(o) = cyt_driver_runner_new();
+  CELLENV(o) = cyt_cellenv_new();
+  EXECSTATE(o) = cyt_exec_state_new();
 }
 
 static DTOR(cytosol_dtor) {
   cyt_program_destroy(PROG(o));
   cyt_driver_runner_destroy(RUNNER(o));
+  cyt_cellenv_destroy(CELLENV(o));
+  cyt_exec_state_destroy(EXECSTATE(o));
 }
 
 static m_int o_cytosol_member_data;
@@ -41,6 +47,19 @@ static MFUN(file_from_string) {
 
 static MFUN(cytosol_compile) {
   cyt_driver_runner_compile(RUNNER(o), PROG(o));
+}
+
+static MFUN(cytosol_add_record) {
+  struct cyt_record_id out_id;
+  const M_Object name = *(M_Object*)MEM(SZ_INT);
+  const m_int quantity = *(m_int*)MEM(SZ_INT*2);
+  if(quantity < 0)
+    Except(shred, "Negative quantity requested");
+  if(!cyt_program_record_by_name(PROG(o), STRING(name), &out_id))
+    Except(shred, "Invalid record Creation");
+  const M_Object fields = *(M_Object*)MEM(SZ_INT*3);
+  const M_Vector array = ARRAY(fields);
+  cyt_cellenv_add_record(CELLENV(o), quantity, out_id, m_vector_size(array), (const struct cyt_value * const*)ARRAY_PTR(array));
 }
 
 static DTOR(value_dtor) {
@@ -117,13 +136,11 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_item_ini(gwi, "@internal", "runner"))
   GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 0))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "add_string"))
-  GWI_BB(gwi_func_arg(gwi, "string", "name"))
-  GWI_BB(gwi_func_arg(gwi, "string", "source"))
-  GWI_BB(gwi_func_end(gwi, file_from_string, ae_flag_none))
+  GWI_BB(gwi_item_ini(gwi, "@internal", "cell_env"))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 0))
 
-  GWI_BB(gwi_func_ini(gwi, "bool", "compile"))
-  GWI_BB(gwi_func_end(gwi, cytosol_compile, ae_flag_none))
+  GWI_BB(gwi_item_ini(gwi, "@internal", "exec_state"))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 0))
 
     DECL_OB(const Type, t_value, = gwi_class_ini(gwi, "Value", "Object"))
     gwi_class_xtor(gwi, NULL, value_dtor);
@@ -134,6 +151,20 @@ GWION_IMPORT(Cytosol) {
     GWI_BB(gwi_class_end(gwi))
     SET_FLAG(t_value, abstract);
 
+  GWI_BB(gwi_func_ini(gwi, "void", "add_string"))
+  GWI_BB(gwi_func_arg(gwi, "string", "name"))
+  GWI_BB(gwi_func_arg(gwi, "string", "source"))
+  GWI_BB(gwi_func_end(gwi, file_from_string, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "bool", "compile"))
+  GWI_BB(gwi_func_end(gwi, cytosol_compile, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "void", "add_record"))
+  GWI_BB(gwi_func_arg(gwi, "string", "name"))
+  GWI_BB(gwi_func_arg(gwi, "int", "quantity"))
+  GWI_BB(gwi_func_arg(gwi, "Value[]", "fields"))
+  GWI_BB(gwi_func_end(gwi, cytosol_add_record, ae_flag_none))
+
     DECL_OB(const Type, t_int, = gwi_class_ini(gwi, "Int", "Value"))
     gwi_class_xtor(gwi, Int_ctor, NULL);
     GWI_BB(gwi_class_end(gwi))
@@ -143,6 +174,7 @@ GWION_IMPORT(Cytosol) {
     GWI_BB(gwi_class_end(gwi))
 
     DECL_OB(const Type, t_record, = gwi_class_ini(gwi, "Record", "Value"))
+//    GWI_BB(gwi_func_arg(gwi, "Value[]", "fields"))
     gwi_class_xtor(gwi, Record_ctor, NULL);
 
 //    GWI_BB(gwi_func_ini(gwi, "Option:[Value]", "field"))
