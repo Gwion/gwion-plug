@@ -73,6 +73,24 @@ static INSTR(value2int) {
   *(m_int*)REG(-SZ_INT) = **(m_int**)REG(0) = i;
 }
 
+static INSTR(string2value) {
+  POP_REG(shred, SZ_INT);
+  const M_Object o = *(M_Object*)REG(0);
+  cyt_value_destroy(VALUE(o));
+  const M_Object str = *(M_Object*)REG(-SZ_INT);
+  VALUE(o) = cyt_value_new_string(STRING(str));
+}
+
+static INSTR(value2string) {
+  POP_REG(shred, SZ_INT);
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  const M_Object str = *(M_Object*)REG(-SZ_INT);
+  const char* data;
+  size_t outlen;
+  cyt_value_get_string(VALUE(o), &data, &outlen);
+  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->vm->gwion->mp, shred, (const m_str)data);
+}
+
 GWION_IMPORT(Cytosol) {
   DECL_OB(const Type, t_cytosol, = gwi_class_ini(gwi, "Cytosol", "Object"))
   gwi_class_xtor(gwi, cytosol_ctor, cytosol_dtor);
@@ -102,11 +120,11 @@ GWION_IMPORT(Cytosol) {
     gwi_class_xtor(gwi, Int_ctor, NULL);
     GWI_BB(gwi_class_end(gwi))
 
-/*
     DECL_OB(const Type, t_string, = gwi_class_ini(gwi, "String", "Value"))
     gwi_class_xtor(gwi, String_ctor, NULL);
     GWI_BB(gwi_class_end(gwi))
 
+/*
     DECL_OB(const Type, t_record, = gwi_class_ini(gwi, "Record", "Value"))
     gwi_class_xtor(gwi, Record_ctor, NULL);
     GWI_BB(gwi_func_ini(gwi, "Option:[Value]", "field"))
@@ -131,6 +149,12 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Int", "int", "int"))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
   GWI_BB(gwi_oper_end(gwi, "=>", value2int))
+
+  GWI_BB(gwi_oper_ini(gwi, "string", "Cytosol.Int", "string"))
+  GWI_BB(gwi_oper_end(gwi, "@=>", string2value))
+
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Int", "string", "string"))
+  GWI_BB(gwi_oper_end(gwi, "=>", value2string))
 
   return GW_OK;
 }
