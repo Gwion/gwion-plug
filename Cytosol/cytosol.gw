@@ -1,0 +1,22 @@
+#require Cytosol
+
+var Cytosol cytosol;
+cytosol.add_string("test",
+"record Start\n"
+"record StartInhibitor\n"
+
+"gene [Start, 0 StartInhibitor]\n"
+"{\n"
+"    express StartInhibitor\n"
+"    express A\n"
+"}\n"
+
+"record A\n"
+"record InhibitA\n"
+
+"gene [A, 0 InhibitA]\n"
+"{\n"
+"    express InhibitA\n"
+"}");
+
+cytosol.compile();
