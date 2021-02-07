@@ -11,7 +11,6 @@
 #include "ugen.h"
 #include "array.h"
 
-
 #include "cytosol.h"
 
 #define PROG(o)   (*(struct cyt_program**)o->data)
@@ -60,6 +59,19 @@ static MFUN(cytosol_add_record) {
   const M_Object fields = *(M_Object*)MEM(SZ_INT*3);
   const M_Vector array = ARRAY(fields);
   cyt_cellenv_add_record(CELLENV(o), quantity, out_id, m_vector_size(array), (const struct cyt_value * const*)ARRAY_PTR(array));
+}
+
+static MFUN(cytosol_run) {
+  const m_int bound = *(m_int*)MEM(SZ_INT);
+  if(bound < 0)
+    Except(shred, "Negative iteration requested");
+   cyt_driver_runner_run(
+    RUNNER(o), PROG(o), EXECSTATE(o), CELLENV(o), bound);
+}
+
+static MFUN(cytosol_run_single) {
+  *(m_int*)RETURN = !cyt_driver_runner_run_single_iteration(
+    RUNNER(o), PROG(o), EXECSTATE(o), CELLENV(o));
 }
 
 static DTOR(value_dtor) {
@@ -111,20 +123,30 @@ static INSTR(value2string) {
   cyt_value_get_string(VALUE(o), &data, &outlen);
   *(M_Object*)REG(-SZ_INT) = new_string(shred->info->vm->gwion->mp, shred, (const m_str)data);
 }
-/*
+
+
+static inline m_str cytosol_type(const Gwion gwion, const struct cyt_value *value) {
+  enum cyt_value_type type = cyt_value_get_type(value);
+  return type == CYT_VALUE_TYPE_INTEGER ?
+     "Cytosol.Int" :  type == CYT_VALUE_TYPE_STRING ?
+     "Cytosol.String" : "Cytosol.Record";
+}
+
 static MFUN(record_get_field) {
   const M_Object record = *(M_Object*)MEM(0);
   const size_t index = *(m_uint*)MEM(SZ_INT); // taking arg as uint, cytosol will error by itself anyway
-  struct cyt_value *out_value;
+  const struct cyt_value *out_value;
+  if(!cyt_value_get_record_field(VALUE(record), index, &out_value))
+    Except(shred, "invalid field index requested");
+  const m_str type = cytosol_type(shred->info->vm->gwion, out_value);
+  *(M_Object*)RETURN = new_object_str(shred->info->vm->gwion, shred, type);
 }
-*/
 
 static MFUN(record_add_field) {
   const M_Object new_field = *(M_Object*)MEM(SZ_INT); // taking arg as uint, cytosol will error by itself anyway
   cyt_value_record_add_field(VALUE(o), VALUE(new_field));
   BORROWED(new_field) = 1;
 }
-
 
 GWION_IMPORT(Cytosol) {
   DECL_OB(const Type, t_cytosol, = gwi_class_ini(gwi, "Cytosol", "Object"))
@@ -156,6 +178,14 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_func_arg(gwi, "string", "source"))
   GWI_BB(gwi_func_end(gwi, file_from_string, ae_flag_none))
 
+  // add enum?
+  GWI_BB(gwi_func_ini(gwi, "void", "run"))
+  GWI_BB(gwi_func_arg(gwi, "int", "bound"))
+  GWI_BB(gwi_func_end(gwi, cytosol_run, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "bool", "run_single"))
+  GWI_BB(gwi_func_end(gwi, cytosol_run_single, ae_flag_none))
+
   GWI_BB(gwi_func_ini(gwi, "bool", "compile"))
   GWI_BB(gwi_func_end(gwi, cytosol_compile, ae_flag_none))
 
@@ -177,9 +207,9 @@ GWION_IMPORT(Cytosol) {
 //    GWI_BB(gwi_func_arg(gwi, "Value[]", "fields"))
     gwi_class_xtor(gwi, Record_ctor, NULL);
 
-//    GWI_BB(gwi_func_ini(gwi, "Option:[Value]", "field"))
-//    GWI_BB(gwi_func_arg(gwi, "int", "index"))
-//    GWI_BB(gwi_func_end(gwi, record_get_field, ae_flag_none))
+    GWI_BB(gwi_func_ini(gwi, "Value", "field"))
+    GWI_BB(gwi_func_arg(gwi, "int", "index"))
+    GWI_BB(gwi_func_end(gwi, record_get_field, ae_flag_none))
 
     GWI_BB(gwi_func_ini(gwi, "bool", "field"))
     GWI_BB(gwi_func_arg(gwi, "Value", "new_field"))
@@ -195,17 +225,17 @@ GWION_IMPORT(Cytosol) {
 
   // define operators at global scope
   GWI_BB(gwi_oper_ini(gwi, "int", "Cytosol.Int", "int"))
-  GWI_BB(gwi_oper_end(gwi, "=>", int2value))
+  GWI_BB(gwi_oper_end(gwi, "@=>", int2value))
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Int", "int", "int"))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "=>", value2int))
+  GWI_BB(gwi_oper_end(gwi, "@=>", value2int))
 
-  GWI_BB(gwi_oper_ini(gwi, "string", "Cytosol.Int", "string"))
+  GWI_BB(gwi_oper_ini(gwi, "string", "Cytosol.String", "string"))
   GWI_BB(gwi_oper_end(gwi, "@=>", string2value))
 
-  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Int", "string", "string"))
-  GWI_BB(gwi_oper_end(gwi, "=>", value2string))
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol.String", "string", "string"))
+  GWI_BB(gwi_oper_end(gwi, "@=>", value2string))
 
   return GW_OK;
 }
