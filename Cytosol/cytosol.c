@@ -44,6 +44,11 @@ static MFUN(file_from_string) {
     STRING(*(M_Object*)MEM(SZ_INT*2)));
 }
 
+static MFUN(file_from_path) {
+  cyt_driver_runner_add_file_from_path(RUNNER(o),
+    STRING(*(M_Object*)MEM(SZ_INT)));
+}
+
 static MFUN(cytosol_compile) {
   cyt_driver_runner_compile(RUNNER(o), PROG(o));
 }
@@ -177,6 +182,10 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_func_arg(gwi, "string", "name"))
   GWI_BB(gwi_func_arg(gwi, "string", "source"))
   GWI_BB(gwi_func_end(gwi, file_from_string, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "void", "add_path"))
+  GWI_BB(gwi_func_arg(gwi, "string", "path"))
+  GWI_BB(gwi_func_end(gwi, file_from_path, ae_flag_none))
 
   // add enum?
   GWI_BB(gwi_func_ini(gwi, "void", "run"))

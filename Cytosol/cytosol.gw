@@ -20,3 +20,4 @@ cytosol.add_string("test",
 "}");
 
 cytosol.compile();
+cytosol.run(10);
