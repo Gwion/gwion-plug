@@ -182,10 +182,11 @@ static void cytosol_fun(void* data, size_t n, const struct cyt_value*const *valu
   vmcode_addref(closure->code);
   const VM_Shred shred = new_vm_shred(closure->shred->info->vm->gwion->mp, closure->code);
   shred->base = closure->shred->base;
-  const Type base = str2type(closure->shred->info->vm->gwion, "Cytosol.Value[]", (loc_t){});
+  const Type base = str2type(closure->shred->info->vm->gwion, "Cytosol.Value", (loc_t){});
   const Type t = array_type(closure->shred->info->vm->gwion->env, base, 1);
-  const M_Object array = new_object(closure->shred->info->vm->gwion->mp, closure->shred, t);
+  const M_Object array = new_object(closure->shred->info->vm->gwion->mp, shred, t);
   M_Vector vec = ARRAY(array) = new_m_vector(closure->shred->info->vm->gwion->mp, SZ_INT, n);
+
   for(m_uint i = 0; i < n; i++) {
     const m_str type_name = cytosol_type(closure->shred->info->vm->gwion, values[i]);
     struct cyt_value* const value = cytosol_cpy(values[i]);
@@ -193,8 +194,10 @@ static void cytosol_fun(void* data, size_t n, const struct cyt_value*const *valu
     VALUE(obj) = value; // beware type
     m_vector_set(vec, i, &obj); // beware type
   }
-  *(M_Object*)shred->mem = array;
+
+printf("array %p %lu\n", array, m_vector_size(vec));
   vm_add_shred(closure->shred->info->vm, shred);
+  *(M_Object*)shred->mem = array;
   shredule(closure->shred->tick->shreduler, closure->shred, 0);
 }
 

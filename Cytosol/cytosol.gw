@@ -4,6 +4,8 @@
 
 fun void test(Cytosol.Value values[]) {
    <<< "Print 123: ${i} (checking file global values in callback)" >>>;
+   <<< values >>>;
+   <<< values.size() >>>;
   foreach(v : values)
     <<< (v $ Cytosol.String) @=> var string s >>>;
 }
@@ -13,5 +15,3 @@ cytosol.set_fun("test", test);
 cytosol.add_path("test.cyt");
 cytosol.compile();
 cytosol.run(1);
-me.yield();
-second => now;
