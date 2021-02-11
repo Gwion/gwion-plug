@@ -22,32 +22,6 @@
 #define VALUE(o)   (*(struct cyt_value**)o->data)
 #define BORROWED(o)   (*(m_int*)(o->data + SZ_INT))
 
-/*
-static void cytosol_print_line(void* data, size_t n, const struct cyt_value*const *values) {
-  for(size_t i = 0; i < n; i++) {
-    const cyt_value_type type = cyt_value_get_type(values[i]);
-    switch(type) {
-      case CYT_VALUE_TYPE_INTEGER: {
-        ptrdiff_t integer;
-        cyt_value_get_integer(values[i], &integer);
-        printf("%li ", integer);
-        break;
-      }
-      case CYT_VALUE_TYPE_STRING: {
-        const char *str;
-        size_t len;
-        cyt_value_get_string(values[i], &str, &len);
-        printf("%s ", str);
-        break;
-      }
-      case CYT_VALUE_TYPE_RECORD:
-        printf("%p ", values[i]);
-        break;
-    }
-  }
-  printf("\n");
-}
-*/
 struct CytosolClosure_ {
   VM_Shred shred;
   VM_Code  code;
@@ -58,8 +32,6 @@ static CTOR(cytosol_ctor) {
   RUNNER(o) = cyt_driver_runner_new();
   CELLENV(o) = cyt_cellenv_new();
   EXECSTATE(o) = cyt_exec_state_new();
-/*  cyt_exec_state_set_extern_function(EXECSTATE(o),
-    "test", cytosol_print_line, shred->info->vm->gwion);*/
   vector_init(&FUNCVEC(o));
 }
 
@@ -194,8 +166,6 @@ static void cytosol_fun(void* data, size_t n, const struct cyt_value*const *valu
     VALUE(obj) = value; // beware type
     m_vector_set(vec, i, &obj); // beware type
   }
-
-printf("array %p %lu\n", array, m_vector_size(vec));
   vm_add_shred(closure->shred->info->vm, shred);
   *(M_Object*)shred->mem = array;
   shredule(closure->shred->tick->shreduler, closure->shred, 0);
