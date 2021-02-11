@@ -1,0 +1,13 @@
+#require TUI
+
+"<window name=\"A Few TUI Controls\">"
+    "<slider min=0 max=10 step=1 show=\"percent\" action=\"\"></slider>"
+    "<toggle text=\"Toggle me\" state=0 action=\"\"></toggle>"
+    "<check state=0 action=\"\"></toggle>"
+    "<label text=\"I'm a label\"></label>"
+    "<button text=\"Click me\" action=\"\"></button>"
+    "<options items=\"Debug|Release|Experimental\" select=0 action=\"\"></options>"
+"</window>" @=> const string xml;
+<<< xml >>>;
+
+xml => TUI.parse;

@@ -1,0 +1,18 @@
+#require TUI
+#require Modules
+
+var SinOsc s => dac;
+
+var TUI.Slider slider;
+
+fun void test(TUI.Slider slider) {
+  slider.value() * 20 + 200 => s.freq;
+}
+
+slider.callback(258, test);
+slider.callback(259, test);
+slider.callback('\n', test);
+var TUI.Window win;
+win<< slider;
+while(true)
+  second => now;

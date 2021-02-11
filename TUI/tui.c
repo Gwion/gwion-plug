@@ -18,8 +18,11 @@
 
 #include "buffer.h"
 #include "window.h"
+#include "windows.h"
 #include "widgets/row.h"
 #include "screen.h"
+
+#include "../xml/parser.h"
 
 #define FPS_30 33333
 #define FPS_60 16667
@@ -30,8 +33,9 @@
 
 struct TUIMeta {
   TUIBuffer buffer;
+  TUIWindows wstack;
   THREAD_TYPE thread;
-  struct Vector_ windows;
+//  struct Vector_ windows;
   TUIConfig old_config;
   MemPool mp;
   volatile bool running;
@@ -51,44 +55,37 @@ signal(SIGINT, ctrlc);
 
   TUIEvent event = {};
   while (meta->running && grun) {
-    for(m_uint i = 0; i < vector_size(&meta->windows); ++i)
-      tui_window_draw(&meta->buffer, (TUIWindow*)vector_at(&meta->windows, i));
-
+    for(short i = 0; i < meta->wstack.count; i++)
+      tui_window_draw(&meta->buffer, &meta->wstack.windows[i]);
     tui_buffer_draw(&meta->buffer);
     usleep(FPS - CONV_MTOU(timeout_msecs));
     if (tui_screen_input(&event, timeout_msecs)) {
-        tui_window_receive_primitive_event((TUIWindow*)vector_front(&meta->windows), event);
+        tui_window_receive_primitive_event(&meta->wstack.windows[meta->wstack.current], event);
     }
     tui_screen_update();
   }
-  vector_release(&meta->windows);
   tui_screen_deconfigure(&meta->old_config);
   tui_buffer_destroy(&meta->buffer);
-
-  // for some reason the terminal is messed up at this point
-  system("tput reset");
-
   return NULL;
 }
 
 #define GET_META(o) (&*(struct TUIMeta*)(o->type_ref->info->owner_class->nspc->info->class_data))
 
-#define WINDOW(a) (*(TUIWindow*)(a->data + SZ_INT*3))
+#define WINDOW(a) (*(TUIWindow**)(a->data + SZ_INT*3))
 #define WIDGET(a) (*(TUIWidget*)(a->data + SZ_INT))
 
 static CTOR(win_ctor) {
   struct TUIMeta *meta = GET_META(o);
+  meta->wstack.count++;
+  TUIWindow *win = WINDOW(o) = &meta->wstack.windows[0];
   if(!meta->running) {
     meta->mp = shred->info->vm->gwion->mp;
     if(tui_screen_configure(&meta->buffer, &meta->old_config) == EXIT_FAILURE)
       exit(3);//TODO
-    vector_init(&meta->windows);
     THREAD_CREATE(meta->thread, tui_func, meta);
   }
-  TUIWindow *win = &WINDOW(o);
   tui_window_init(win, TUIMenubarMake("A Few TUI Controls", (TUITools){}), TUIRectMake(0,0,0,0), (TUIWidgets){0, 0, NULL});
   tui_window_fullscreen(win, &meta->buffer);
-  vector_add(&meta->windows, (m_uint)win);
   ++meta->running;
   vector_init(&*(struct Vector_*)(o->data + SZ_INT));
   *(TUIWidget**)(o->data + SZ_INT*2) = _mp_malloc(shred->info->vm->gwion->mp, 64 * sizeof(TUIWidget));
@@ -96,10 +93,12 @@ static CTOR(win_ctor) {
 
 static DTOR(win_dtor) {
   struct TUIMeta *meta = GET_META(o);
-  TUIWindow *win = &WINDOW(o);
-  --meta->running;
+  TUIWindow *win = WINDOW(o);
+  if(!--meta->running) {
+    pthread_cancel(meta->thread);
+    pthread_detach(meta->thread);
+  }
   win->widgets = (TUIWidgets){ 0, 0, NULL };
-  vector_rem(&meta->windows, (m_uint)win);
   struct Vector_ v = *(struct Vector_*)(o->data + SZ_INT);
   for(m_uint i = 0; i < vector_size(&v); ++i)
     _release((M_Object)vector_at(&v, i), shred);
@@ -109,12 +108,12 @@ static DTOR(win_dtor) {
 }
 
 static MFUN(Window_title_set) {
-  TUIWindow *win = &WINDOW(o);
+  TUIWindow *win = WINDOW(o);
   win->menu.title = STRING(*(M_Object*)MEM(SZ_INT));
 }
 
 static MFUN(Window_title_get) {
-  TUIWindow *win = &WINDOW(o);
+  TUIWindow *win = WINDOW(o);
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, (m_str)win->menu.title);
 }
 
@@ -124,7 +123,7 @@ static INSTR(window_append) {
   POP_REG(shred, SZ_INT);
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   const M_Object w = *(M_Object*)REG(0);
-  TUIWindow *win = &WINDOW(o);
+  TUIWindow *win = WINDOW(o);
   const Vector v = &*(struct Vector_*)(o->data+ SZ_INT);
   const m_uint sz = vector_size(v);
   TUIWidget *e = *(TUIWidget**)(o->data + SZ_INT*2);
@@ -170,14 +169,33 @@ static MFUN(Label_text_get) {                                             \
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, WIDGET(o).user_data); \
 }
 
-ANN static void button_clicked(TUIButton *button) {
-  broadcast((M_Object)button->user_data);
+struct TUIClosure_ {
+  M_Object o;
+  VM_Shred shred;
+  VM_Code code;
+};
+
+ANN static void widget_cb(void* data, TUIEvent event) {
+  struct TUIClosure_ *closure = data;
+  const VM_Shred shred = new_vm_shred(closure->shred->info->vm->gwion->mp, closure->code);
+  vmcode_addref(closure->code);
+  shred->base = closure->shred->base;
+  *(M_Object*)shred->mem = closure->o;
+  vm_add_shred(closure->shred->info->vm, shred);
 }
 
-static CTOR(ButtonCtor) {
-  TUIButton *button = (TUIButton*)WIDGET(o).user_data;
-  button->clicked = button_clicked;
-  button->user_data = o;
+// C defined func won't work atm
+static MFUN(WidgetCallback) {
+  struct TUIClosure_ *closure = mp_malloc(shred->info->vm->gwion->mp, TUIClosure);
+  const m_int key = *(m_int*)MEM(SZ_INT);
+  const VM_Code code = *(VM_Code*)MEM(SZ_INT*2);
+  closure->shred = shred;
+  closure->code = vmcode_callback(shred->info->vm->gwion->mp, code);
+  closure->o = o;
+  if(!WIDGET(o).callbacks)
+    WIDGET(o).callbacks = tui_alloc(sizeof(TUIWidgetCallback));
+  WIDGET(o).callbacks->func[key] = widget_cb;
+  WIDGET(o).callbacks->user_data = closure;
 }
 
 #define WIDGET_SET_INT(type, ctype, name)    \
@@ -288,6 +306,17 @@ WIDGET_STRING_ARRAY(Options, names)
 WIDGET_INT(Row, uint16_t, spacing)
 WIDGET_INT(Row, TUIRowPositioning, positioning)
 
+static void ElementStarted(const char* name, XMLAttribute *attr, int length) {
+  printf("start %s %p %i\n", name, attr, length);
+}
+static void ElementEnded(const char* name) {}
+
+static MFUN(tui_xml_parse) {
+  const m_str data = STRING(*(M_Object*)MEM(0));
+  puts(data);
+  xml_parse(data, ElementStarted, ElementEnded);
+}
+
 #define TUI_INI(name, parent)                                         \
   DECL_OB(const Type, t_##name, = gwi_class_ini(gwi, #name, #parent)) \
   GWI_BB(gwi_item_ini(gwi, "@internal", "@class name"))               \
@@ -310,10 +339,17 @@ GWION_IMPORT(TUI) {
   t_tui->nspc->info->class_data_size += sizeof(struct TUIMeta);
 
     DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"))
+
+    GWI_BB(gwi_fptr_ini(gwi, "void", "FunType"))
+    GWI_BB(gwi_func_arg(gwi, "TUI.Widget", "widget"))
+    GWI_BB(gwi_fptr_end(gwi, ae_flag_global))
+
     t_widget->nspc->info->offset += sizeof(TUIWidget);
-    GWI_BB(gwi_item_ini(gwi, "@internal", "@data"))
-    CHECK_BB((gwi_item_end(gwi, ae_flag_none, num, 0)))
     gwi_class_xtor(gwi, WidgetCtor, NULL);
+    GWI_BB(gwi_func_ini(gwi, "void", "callback"))
+    GWI_BB(gwi_func_arg(gwi, "int", "key"))
+    GWI_BB(gwi_func_arg(gwi, "FunType", "func"))
+    GWI_BB(gwi_func_end(gwi, WidgetCallback, ae_flag_none))
     GWI_BB(gwi_class_end(gwi))
 
     TUI_INI(Label, Widget)
@@ -321,7 +357,6 @@ GWION_IMPORT(TUI) {
     TUI_END(Label, label)
 
     TUI_INI(Button, Widget)
-      gwi_class_xtor(gwi, ButtonCtor, NULL);
     TUI_FUNC(Button, string, text)
     TUI_FUNC(Button, int, timeout)
     TUI_END(Button, button)
@@ -381,10 +416,14 @@ GWION_IMPORT(TUI) {
     TUI_END(Row, row)
 
     DECL_OB(const Type, t_window, = gwi_class_ini(gwi, "Window", "Event"))
-    t_window->nspc->info->offset += SZ_INT*2 + sizeof(TUIWindow);
+    t_window->nspc->info->offset += SZ_INT*3;
     TUI_FUNC(Window, string, title)
     gwi_class_xtor(gwi, win_ctor, win_dtor);
     GWI_BB(gwi_class_end(gwi))
+
+  GWI_BB(gwi_func_ini(gwi, "void", "parse"))
+  GWI_BB(gwi_func_arg(gwi, "string", "data"))
+  GWI_BB(gwi_func_end(gwi, tui_xml_parse, ae_flag_static))
 
   GWI_BB(gwi_class_end(gwi))
 

@@ -1,0 +1,21 @@
+#require TUI
+
+var TUI.Window win;
+"Hello TUI" => win.title;
+
+var Event end;
+var int count;
+var TUI.Button exit;
+
+fun void _exit(TUI.Button w) {
+  "jlj" => w.text;
+  if(++count == 2)
+    end.signal();
+}
+
+"Click me" => exit.text;
+exit.callback('\n', _exit);
+
+win << exit;
+
+end => now;
