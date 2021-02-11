@@ -169,8 +169,8 @@ ANN static struct cyt_value* cytosol_cpy(const struct cyt_value *value) {
       const struct cyt_value *v;
       size_t index = 0;
       while(cyt_value_get_record_field(value, index++, &v)) {
-        struct cyt_value *field = cytosol_cpy(v);
-        cyt_value_record_add_field(ret, field);
+//        struct cyt_value *field = cytosol_cpy(v);
+        cyt_value_record_add_field(ret, (struct cyt_value *)v);
       }
       return ret;
     }
@@ -271,7 +271,8 @@ static MFUN(record_get_field) {
   if(!cyt_value_get_record_field(VALUE(record), index, &out_value))
     Except(shred, "invalid field index requested");
   const m_str type = cytosol_type(shred->info->vm->gwion, out_value);
-  *(M_Object*)RETURN = new_object_str(shred->info->vm->gwion, shred, type);
+  const M_Object ret = *(M_Object*)RETURN = new_object_str(shred->info->vm->gwion, shred, type);
+  VALUE(ret) = (struct cyt_value *)out_value;
 }
 
 static MFUN(record_add_field) {
