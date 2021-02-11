@@ -101,17 +101,6 @@ static MFUN(cytosol_count) {
     *(m_int*)RETURN = 0;
 }
 
-static VM_Code mk_callback(MemPool mp, VM_Code base) {
-  char name[strlen(base->name) + 11];
-  sprintf(name, "%s(callback)", base->name);
-  const Instr instr = (Instr)vector_back(base->instr);
-  instr->opcode = eEOC;
-  VM_Code code = new_vmcode(mp, base->instr, base->stack_depth, base->builtin, name);
-  code->callback = 1;
-  instr->opcode = eFuncReturn;
-  return code;
-}
-
 ANN static inline m_str cytosol_type(const Gwion gwion, const struct cyt_value *value) {
   const enum cyt_value_type type = cyt_value_get_type(value);
   return type == CYT_VALUE_TYPE_INTEGER ?
@@ -177,7 +166,7 @@ static MFUN(cytosol_set_fun) {
   const M_Object name = *(M_Object*)MEM(SZ_INT);
   const VM_Code code = *(VM_Code*)MEM(SZ_INT*2);
   closure->shred = shred;
-  closure->code = mk_callback(shred->info->vm->gwion->mp, code);
+  closure->code = vmcode_callback(shred->info->vm->gwion->mp, code);
   ++closure->shred->info->me->ref;
   vector_add(&FUNCVEC(o), (m_uint)closure);
   cyt_exec_state_set_extern_function(EXECSTATE(o),
