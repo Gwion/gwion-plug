@@ -1,0 +1,6 @@
+extern test(name: string)
+
+gene []
+{
+    call test(name: "hello there")
+}

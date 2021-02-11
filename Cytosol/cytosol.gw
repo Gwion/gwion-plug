@@ -1,6 +1,17 @@
 #require Cytosol
 
+123 => const int i;
+
+fun void test(Cytosol.Value values[]) {
+   <<< "Print 123: ${i} (checking file global values in callback)" >>>;
+  foreach(v : values)
+    <<< (v $ Cytosol.String) @=> var string s >>>;
+}
+
 var Cytosol cytosol;
-cytosol.add_path("cascade.cyt");
+cytosol.set_fun("test", test);
+cytosol.add_path("test.cyt");
 cytosol.compile();
-cytosol.run(10);
+cytosol.run(1);
+me.yield();
+second => now;

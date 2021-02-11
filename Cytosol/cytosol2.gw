@@ -1,6 +1,0 @@
-#require Cytosol
-
-var Cytosol cytosol;
-cytosol.add_path("cascade.cyt");
-cytosol.compile();
-cytosol.run(10);
