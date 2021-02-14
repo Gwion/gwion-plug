@@ -108,6 +108,10 @@ ANN static inline m_str cytosol_type(const Gwion gwion, const struct cyt_value *
      "Cytosol.String" : "Cytosol.Record";
 }
 
+static MFUN(cytosol_value_type) {
+  *(enum cyt_value_type*)RETURN = cyt_value_get_type(VALUE(o));
+}
+
 ANN static struct cyt_value* cytosol_cpy(const struct cyt_value *value) {
   const enum cyt_value_type type = cyt_value_get_type(value);
   switch(type) {
@@ -262,13 +266,14 @@ static INSTR(RecordCast) {
 }
 
 GWION_IMPORT(Cytosol) {
-//  GWI_BB(gwi_fptr_ini(gwi, "void", "@CytosolFunType:[T]"))
-//  GWI_BB(gwi_func_arg(gwi, "T", "values"))
-//  GWI_BB(gwi_fptr_end(gwi, ae_flag_none))
-
   DECL_OB(const Type, t_cytosol, = gwi_class_ini(gwi, "Cytosol", "Object"))
   gwi_class_xtor(gwi, cytosol_ctor, cytosol_dtor);
 
+  GWI_BB(gwi_enum_ini(gwi, "Type"))
+  GWI_BB(gwi_enum_add(gwi, "int_t", 0))
+  GWI_BB(gwi_enum_add(gwi, "string_t", 0))
+  GWI_BB(gwi_enum_add(gwi, "record_t", 0))
+  GWI_BB(gwi_enum_end(gwi))
   GWI_BB(gwi_item_ini(gwi, "@internal", "program"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
 
@@ -290,6 +295,8 @@ GWION_IMPORT(Cytosol) {
     GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
     GWI_BB(gwi_item_ini(gwi, "@internal", "@borrowed"))
     GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
+    GWI_BB(gwi_func_ini(gwi, "Cytosol.Type", "type"))
+    GWI_BB(gwi_func_end(gwi, cytosol_value_type, ae_flag_none))
     GWI_BB(gwi_class_end(gwi))
     SET_FLAG(t_value, abstract);
 
