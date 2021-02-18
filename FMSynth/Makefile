@@ -1,6 +1,6 @@
 include ../config.mk
 
-LDFLAGS+=-lfmsynth
+LDFLAGS+=-lfmsynth -lm
 
 FMSYNTH_LIB := libfmsynth/libfmsynth.a
 ifeq ($(wilcard ${FMSYNTH_LIB}), )

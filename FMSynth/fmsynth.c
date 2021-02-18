@@ -40,8 +40,8 @@ static TICK(fmsynth_tick) {
 }
 
 CTOR(ctor) {
-  NAME(o) = new_string(shred->info->vm->gwion->mp, NULL, "name");
-  AUTHOR(o) = new_string(shred->info->vm->gwion->mp, NULL, "author");
+  NAME(o) = new_string2(shred->info->vm->gwion, NULL, "name");
+  AUTHOR(o) = new_string2(shred->info->vm->gwion, NULL, "author");
   SYNTH(o) = fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
   ugen_gen(shred->info->vm->gwion, UGEN(o), fmsynth_tick, SYNTH(o), 0);
@@ -161,7 +161,7 @@ GWION_IMPORT(fmsynth) {
   Type t_fmsynth;
   GWI_BB(gwi_class_ini(gwi, "FMSynth", "UGen"))
   gwi_class_xtor(gwi, ctor, dtor);
-  gwi_item_ini(gwi,"int", "&synth");
+  gwi_item_ini(gwi,"@internal", "@synth");
   o_fmsynth_data = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fmsynth_data)
   gwi_item_ini(gwi,"string", "name");
