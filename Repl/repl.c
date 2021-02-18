@@ -109,6 +109,7 @@ close:
 struct Repl {
   Context ctx;
   VM_Shred shred;
+  m_bool is_loaded;
 };
 
 ANN static struct Repl* new_repl(MemPool p, const m_str name) {
@@ -149,8 +150,10 @@ ANN static struct Repl* repl_ctx(struct Repl* repl, const Vector v, const VM* vm
   }
   if(repl != r) {
     unload_context(repl->ctx, vm->gwion->env);
+    repl->is_loaded = 0;
     repl = r;
     load_context(repl->ctx, vm->gwion->env);
+    repl->is_loaded = 1;
   }
   chctx = 0;
   return repl;
@@ -223,6 +226,7 @@ ANN static struct Repl* repl_ini(const VM* vm, const Vector v) {
   vector_init(v);
   vector_add(v, (vtype)repl);
   load_context(repl->ctx, vm->gwion->env);
+  repl->is_loaded = 1;
   read_history(NULL);
   rl_bind_key('\n', _bind_cr);\
   rl_bind_key('\r', _bind_cr);\
@@ -237,7 +241,8 @@ ANN static struct Repl* repl_ini(const VM* vm, const Vector v) {
 }
 
 ANN static void repl_end(struct Repl* repl, VM* vm, const Vector v) {
-  unload_context(repl->ctx, vm->gwion->env);
+  if(!repl->is_loaded)
+    unload_context(repl->ctx, vm->gwion->env);
   for(m_uint i = vector_size(v) + 1; --i;)
     free_repl((struct Repl*)vector_at(v, i-1), vm);
   vector_release(v);

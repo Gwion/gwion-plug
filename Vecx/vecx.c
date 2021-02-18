@@ -119,12 +119,11 @@ polar_def2_r(Div, /, -)
 
 static GACK(gack_complex) {
   m_float *ptr = (m_float*)VALUE;
-printf("ptr %p\n", ptr);
   INTERP_PRINTF("complex(%.4f, %.4f)", *ptr, *(ptr + 1));
 }
 
 static GACK(gack_polar) {
-  m_float *ptr = *(m_float**)VALUE;
+  m_float *ptr = (m_float*)VALUE;
   INTERP_PRINTF("polar(%4f, %.4f*pi)", *ptr, *(ptr+1) / M_PI);
 }
 
@@ -158,6 +157,10 @@ static CTOR(ctor) {
 //  *(m_float*)(*(m_bit*)o + SZ_INT) = 12;
 }
 
+static OP_EMIT(opem_vecx_ctor) {
+  return GW_OK;
+}
+
 ANN static m_bool import_complex(const Gwi gwi) {
   const Type t_complex = gwi_struct_ini(gwi, "complex");
   GWI_BB(gwi_gack(gwi, t_complex, gack_complex))
@@ -176,9 +179,11 @@ ANN static m_bool import_complex(const Gwi gwi) {
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "complex", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
+  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
   GWI_BB(gwi_oper_end(gwi, "@ctor",   NULL))
   GWI_BB(gwi_oper_ini(gwi, NULL, "polar", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
+  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
   GWI_BB(gwi_oper_end(gwi, "@ctor",   NULL))
   GWI_BB(gwi_oper_ini(gwi, "complex", "complex", "bool"))
   GWI_BB(gwi_oper_end(gwi, "==",          complex_eq))
@@ -369,8 +374,7 @@ static void vecx_base(const Gwi gwi) {
 }
 
 static GACK(gack_vec3) {
-  m_float *ptr = *(m_float**)VALUE;
-//  INTERP_PRINTF("lol");
+  m_float *ptr = (m_float*)VALUE;
   INTERP_PRINTF("Vec3(%.4f, %.4f, %.4f)", *ptr, *(ptr + 1), *(ptr+2));
 }
 
@@ -450,6 +454,7 @@ gwi_class_xtor(gwi, ctor, NULL);
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "Vec3", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
+  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
   GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
 
   GWI_BB(gwi_oper_ini(gwi, "Vec3", "Vec3", "bool"))
@@ -587,6 +592,7 @@ ANN static m_bool import_vec4(const Gwi gwi) {
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "Vec4", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
+  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
   GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
 
   GWI_BB(gwi_oper_ini(gwi, "Vec4", "Vec4", "bool"))
