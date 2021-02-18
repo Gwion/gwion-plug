@@ -1,5 +1,5 @@
 #require FMSynth
-var FMSynth t => dac;
+var FMSynth t ~> dac;
 samp => now;
 <<<t.last()>>>;
 samp => now;

@@ -1,4 +1,4 @@
 #require WebSocket
 
-var SinOsc s => dac;
+var SinOsc s ~> dac;
 5::second => now;

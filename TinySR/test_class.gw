@@ -41,6 +41,6 @@ class Speech extends TinySR {
   }
 }
 
-adc => var Dcblock dc => var Speech sr => blackhole;
+adc ~> var Dcblock dc ~> var Speech sr ~> blackhole;
 model => sr.load;
 seuil => sr.loop;

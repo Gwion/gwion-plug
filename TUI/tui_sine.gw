@@ -1,7 +1,7 @@
 #require TUI
 #require Modules
 
-var SinOsc s => dac;
+var SinOsc s ~> dac;
 
 var TUI.Slider slider;
 

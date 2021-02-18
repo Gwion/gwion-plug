@@ -7,7 +7,7 @@
     "<label text=\"I'm a label\"></label>"
     "<button text=\"Click me\" action=\"\"></button>"
     "<options items=\"Debug|Release|Experimental\" select=0 action=\"\"></options>"
-"</window>" @=> const string xml;
+"</window>" => const string xml;
 <<< xml >>>;
 
 xml => TUI.parse;

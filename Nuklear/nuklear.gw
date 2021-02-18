@@ -4,13 +4,13 @@
 var NkPanel panel;
 
 var NkLayout layout;
-"test" @=> layout.name;
+"test" => layout.name;
 
 var NkSlider slider;
-"test" @=> slider.name;
+"test" => slider.name;
 
 220 => const auto base_freq;
-var SinOsc s => dac;
+var SinOsc s ~> dac;
 spork {
   do {
     base_freq + slider.val * base_freq => s.freq;
@@ -19,5 +19,5 @@ spork {
 };
 
 var NkButton b;
-"Hit me to Quit!" @=> b.name;
+"Hit me to Quit!" => b.name;
 b => now;

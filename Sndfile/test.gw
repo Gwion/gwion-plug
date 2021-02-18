@@ -1,5 +1,5 @@
 #require SndFile
 
-adc => dac;
+adc ~> dac;
 5::second => now;
 <<< now >>>;

@@ -4,12 +4,12 @@
 #!<<<l >>>;
 #!<<< l[0] >>>;
 
-#!<<< List:[int](4,2,3) @=> var List:[float]flist >>>;
+#!<<< List:[int](4,2,3) => var List:[float]flist >>>;
 
-<<< List:[int](4,2,3) @=> var List:[int]list >>>;
+<<< List:[int](4,2,3) => var List:[int]list >>>;
 #!<<< list >>>;
 #!<<< list.next >>>;
-#!<<< List:[int](1) @=> var auto list >>>;
+#!<<< List:[int](1) => var auto list >>>;
 #!<<< List:[int](1) >>>;
 #!<<< list[0] >>>;
 #!<<< 19 >> list >>>;

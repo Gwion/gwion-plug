@@ -1,8 +1,11 @@
 #require File:[txt]
 
-File:[txt]("txt.txt", "cwr") @=> var auto file;
+File:[txt]("txt.txt", "cwr") => var auto file;
 
-file << "Please do not de-reference a NULL poiter\n";
-file.flush();
-file.rewind();
+file << "Please do not de-reference a NULL pointer\n";
+
+<<< file.length() >>>;
+#!file.flush();
+
+#!file.rewind();
 <<< file.read() >>>;

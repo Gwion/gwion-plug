@@ -1,5 +1,5 @@
 #require Tuple
-<<< Tuple("Tom", 6) @=> var Tuple:[string, int] tup >>>;
+<<< Tuple("Tom", 6) => var Tuple:[string, int] tup >>>;
 <<< tup >>>;
 <<< tup[0] >>>;
 <<< tup[1] >>>;

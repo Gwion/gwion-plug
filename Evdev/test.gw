@@ -11,7 +11,7 @@ var AbsInfo abs;
 var Evdev dev;
 if(dev.index(12) < 0)
   me.exit();
-dev.get_absinfo(0) @=> var AbsInfo ev_abs;
+dev.get_absinfo(0) => var AbsInfo ev_abs;
 <<<ev_abs>>>;
 if(ev_abs) {
   <<<ev_abs>>>;
@@ -21,7 +21,7 @@ if(ev_abs) {
 <<<"here">>>;
 
 
-dev.name() @=> ref string s;
+dev.name() => ref string s;
 <<<s>>>;
 dev => now;
 var EvdevEv ev;

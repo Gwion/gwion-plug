@@ -1,8 +1,8 @@
 #require Analys
-var Noise n => var Tone t => var FFT fft => dac;
+var Noise n ~> var Tone t ~> var FFT fft ~> dac;
 
 20 => t.hp;
-var Metro m => fft;
+var Metro m ~> fft;
 second => now;
 fft.compute();
 1024 => fft.init;
@@ -41,8 +41,8 @@ fc.add(rms);
 fc.compute();
 fc.rem(rms);
 
-centroid => fc;
-centroid =< fc;
+centroid ~> fc;
+centroid ~< fc;
 
 fft => centroid.fft;
 fft => spread.fft;

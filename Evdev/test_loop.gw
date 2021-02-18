@@ -8,8 +8,8 @@ var Evdev dev;
 if(dev.index(4) < 0)
   me.exit();
 
-var SinOsc s => dac;
-s => var Jcrev rev => dac;
+var SinOsc s ~> dac;
+s ~> var Jcrev rev ~> dac;
 
 while(true) {
   dev => now;

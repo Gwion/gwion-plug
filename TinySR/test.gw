@@ -7,7 +7,7 @@ if(me.args())
   Std.atoi(me.arg(0)) => try;
 
 
-adc => var Dcblock dc => var TinySR sr => blackhole;
+adc ~> var Dcblock dc ~> var TinySR sr ~> blackhole;
 
 fun void load(string model) {
   model => sr.load => const int loaded;

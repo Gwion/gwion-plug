@@ -1,7 +1,7 @@
 #require LinuxSampler
 
 #! simple soundchain
-var LinuxSampler ls => dac;
+var LinuxSampler ls ~> dac;
 
 #! check args
 !me.args() ? "/usr/share/sounds/maestro/maestro_concert_grand_v2.gig" : me.arg(0) => ls.load;

@@ -81,6 +81,7 @@ static MFUN(cytosol_add_record) {
 
 static MFUN(cytosol_run) {
   const m_int bound = *(m_int*)MEM(SZ_INT);
+printf("%li\n", bound);
   if(bound < 0)
     Except(shred, "Negative iteration requested");
    cyt_driver_runner_run(
@@ -365,17 +366,17 @@ GWION_IMPORT(Cytosol) {
 
   // define operators at global scope
   GWI_BB(gwi_oper_ini(gwi, "int", "Cytosol.Int", "int"))
-  GWI_BB(gwi_oper_end(gwi, "@=>", int2value))
+  GWI_BB(gwi_oper_end(gwi, "=>", int2value))
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Int", "int", "int"))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "@=>", value2int))
+  GWI_BB(gwi_oper_end(gwi, "=>", value2int))
 
   GWI_BB(gwi_oper_ini(gwi, "string", "Cytosol.String", "string"))
-  GWI_BB(gwi_oper_end(gwi, "@=>", string2value))
+  GWI_BB(gwi_oper_end(gwi, "=>", string2value))
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.String", "string", "string"))
-  GWI_BB(gwi_oper_end(gwi, "@=>", value2string))
+  GWI_BB(gwi_oper_end(gwi, "=>", value2string))
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "Cytosol.Int", "Cytosol.Int"))
   GWI_BB(gwi_oper_end(gwi, "$", IntCast))

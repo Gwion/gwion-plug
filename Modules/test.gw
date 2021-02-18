@@ -1,5 +1,5 @@
 #require Modules
 
-var SinOsc s => dac;
+var SinOsc ~> dac;
 #!400 => s.freq;
 5::second => now;

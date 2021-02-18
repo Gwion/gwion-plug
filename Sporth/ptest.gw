@@ -3,14 +3,14 @@
 
 110 => const float bpm;
 (60.0 / bpm) :: second => const dur t;
-[0, 1, 5, 7, 8] @=> const int scale[];
+[0, 1, 5, 7, 8] => const int scale[];
 
 fun void loop_me(const int root) {
   var int stp;
   var int nbars;
   var int block;
 
-  var Sporth s => dac;
+  var Sporth s ~> dac;
   s.parse("0 p 0.01 port mtof 1 p 0.003 port 1 1 2 p 0.01 port fm 0.5 * dup dup 0.94 10000 revsc drop 0.1 * +");
 #!  s.p(1, 0.5);
   s.p(1, 0.2);

@@ -2,12 +2,12 @@
 
 "01|0:121|1:01|2:1" =>
 var string str;
-var Lsys lsys => dac;
+var Lsys lsys ~> dac;
 samp => now;
-var Dmetro m => blackhole;
+var Dmetro m ~> blackhole;
 m ~=> lsys;
 <<<lsys>>>;
-lsys => dac;
+lsys ~> dac;
 .2 => m.time;
 
 (5, str) => lsys.parse;

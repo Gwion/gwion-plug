@@ -7,7 +7,7 @@ fun void test(Cytosol.Value values[]) {
    <<< values >>>;
    <<< values.size() >>>;
   foreach(v : values)
-    <<< (v $ Cytosol.String) @=> var string s >>>;
+    <<< (v $ Cytosol.String) => var string s >>>;
 }
 
 var Cytosol cytosol;
