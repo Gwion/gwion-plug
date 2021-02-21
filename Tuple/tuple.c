@@ -152,20 +152,22 @@ static inline void matcher_release(struct Matcher *m) {
   vector_release(&m->r);
 }
 
-static m_bool tuple_match(const Env env, const Type lhs, const Type rhs) {
+static m_bool tuple_match(const Env env, const Type lhs, const Type rhs, const loc_t pos) {
   struct Matcher m = { .undef= env->gwion->type[et_auto] };
   matcher_init(&m);
   get(&m.l, lhs);
   get(&m.r, rhs);
   const m_bool ret = matcher_run(&m);
   matcher_release(&m);
-  return ret;
+  if(ret > 0)
+    return GW_OK;
+  ERR_B(pos, _("Tuple types '%s' and '%s' do not match"), lhs->name, rhs->name)
 }
 
 static OP_CHECK(opck_at_object_tuple) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   CHECK_NN(opck_rassign(env, data))
-  CHECK_BN(tuple_match(env, bin->lhs->type, bin->rhs->type))
+  CHECK_BN(tuple_match(env, bin->lhs->type, bin->rhs->type, exp_self(bin)->pos))
   exp_setvar(bin->rhs, 1);
   return bin->rhs->type;
 }
@@ -190,7 +192,7 @@ static OP_CHECK(opck_at_tuple_object) {
   CHECK_NN(opck_rassign(env, data))
   if(!bin->rhs->type->info->tuple)
     return bin->rhs->type;
-  CHECK_BN(tuple_match(env, bin->rhs->type, bin->lhs->type))
+  CHECK_BN(tuple_match(env, bin->rhs->type, bin->lhs->type, exp_self(bin)->pos))
   exp_setvar(bin->rhs, 1);
   set_decl_ref(bin->rhs);
   return bin->rhs->type;
@@ -198,7 +200,7 @@ static OP_CHECK(opck_at_tuple_object) {
 
 static OP_CHECK(opck_cast_tuple_object) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, cast->exp->type, exp_self(cast)->type))
+  CHECK_BN(tuple_match(env, exp_self(cast)->type, cast->exp->type, exp_self(cast)->pos))
   return exp_self(cast)->type;
 }
 
@@ -222,13 +224,13 @@ static OP_EMIT(opem_cast_tuple_object) {
 
 static OP_CHECK(opck_cast_tuple) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, exp_self(cast)->type, cast->exp->type))
+  CHECK_BN(tuple_match(env, cast->exp->type, exp_self(cast)->type, exp_self(cast)->pos))
   return exp_self(cast)->type;
 }
 
 static OP_CHECK(opck_impl_tuple) {
   struct Implicit *imp = (struct Implicit*)data;
-  CHECK_BN(tuple_match(env, imp->e->type, imp->t))
+  CHECK_BN(tuple_match(env, imp->e->type, imp->t, imp->e->pos))
   return imp->t;
 }
 
@@ -267,7 +269,8 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
 ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t pos) {
   Type_Decl *td = type != (Type)1 ?
       type2td(gwion, type, pos) :
-      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Auto"), pos);
+//      new_type_decl(gwion->mp, insert_symbol(gwion->st, "auto"), pos);
+      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
   td->flag -= ae_flag_late;
   const Var_Decl var = new_var_decl(gwion->mp, name, NULL, pos);
   const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
@@ -276,7 +279,7 @@ ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, con
 
 ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   const Symbol sym = tuple_sym(env, v);
-  const Type exists = nspc_lookup_type0(env->curr, sym);
+  const Type exists = nspc_lookup_type1(env->curr, sym);
   if(exists)
     return exists;
   Stmt_List base = NULL, curr = NULL;
@@ -304,7 +307,9 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   CHECK_BO(scan0_class_def(env, cdef))
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
 //  set_tflag(cdef->base.type, tflag_empty);
+//const m_uint scope = env_push(env, NULL, env->global_nspc);
   CHECK_BO(traverse_class_def(env, cdef))
+//env_pop(env, scope);
   return cdef->base.type;
 }
 
@@ -347,13 +352,14 @@ static OP_CHECK(opck_tuple_ctor) {
 
 static OP_EMIT(opem_tuple_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
-  const Exp exp = call->args;
-  m_int sz = -call->func->type->nspc->info->offset;
+  Exp exp = call->args;
+  m_int sz = -exp_self(call)->type->nspc->info->offset;
   while(exp) {
     const Type t = exp->cast_to ?: exp->type;
-    if(isa(t, emit->gwion->type[et_compound]) > 0)
-      (void)emit_compound_addref(emit, t, sz, 0);
+//    if(isa(t, emit->gwion->type[et_compound]) > 0)
+//      (void)emit_compound_addref(emit, t, sz, 0);
     sz += exp->type->size;
+    exp = exp->next;
   }
   const Instr instr = emit_add_instr(emit, TupleCtor);
   instr->m_val = (m_uint)exp_self(call)->type;
@@ -508,8 +514,11 @@ static OP_EMIT(opem_tuple_access) {
 GWION_IMPORT(tuple) {
   const Type t_tuple = gwi_mk_type(gwi, TUPLE_NAME, SZ_INT, "Object");
   gwi_add_type(gwi, t_tuple);
+  const Type t_undef = gwi_mk_type(gwi, "@Undefined", SZ_INT, NULL);
+  gwi_add_type(gwi, t_undef);
   SET_FLAG(t_tuple, abstract);
   set_tflag(t_tuple, tflag_tmpl);
+  set_tflag(t_tuple, tflag_ntmpl);
   GWI_BB(gwi_oper_ini(gwi, NULL, TUPLE_NAME, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_tuple_ctor))
   GWI_BB(gwi_oper_emi(gwi, opem_tuple_ctor))
