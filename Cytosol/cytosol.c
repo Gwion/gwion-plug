@@ -81,7 +81,6 @@ static MFUN(cytosol_add_record) {
 
 static MFUN(cytosol_run) {
   const m_int bound = *(m_int*)MEM(SZ_INT);
-printf("%li\n", bound);
   if(bound < 0)
     Except(shred, "Negative iteration requested");
    cyt_driver_runner_run(
