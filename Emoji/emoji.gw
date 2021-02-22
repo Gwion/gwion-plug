@@ -1,3 +1,6 @@
 #require Emoji
 
-<<< "This is a ${Emoji(":crab:")} and another ${Emoji("test :crab:")}" >>>;
+<<<
+  "This is a ${Emoji(":crab:")} ",
+  "and another ${Emoji("test :tada:")}"
+>>>;

@@ -5,7 +5,6 @@
 var stk.Guitar guitar ~> dac;
 
 fun void print_int(Cytosol.Value values[]) {
-#!    <<< (values[0] $ Cytosol.Int) => var int s >>>;
   values[0] $ Cytosol.Int => var int i;
   guitar.noteOn(i => Std.mtof , .5);
 }
@@ -15,6 +14,6 @@ cytosol.set_fun("debug_print_int", print_int);
 cytosol.add_path("tmp.cyt");
 cytosol.compile();
 while(true) {
-  cytosol.run(50);
+  cytosol.run(1);
   .25::second => now;
 }
