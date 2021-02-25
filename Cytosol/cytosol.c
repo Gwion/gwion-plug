@@ -224,17 +224,31 @@ static void cytosol_fun(void* data, const struct cyt_value_buffer* buf) {
   shredule(closure->shred->tick->shreduler, closure->shred, 0);
 }
 
-// C defined func won't work atm
-static MFUN(cytosol_set_fun) {
+static void cytosol_cb(const M_Object o, const VM_Shred shred, const VM_Code code, const m_str name) {
   struct CytosolClosure_ *closure = mp_malloc(shred->info->vm->gwion->mp, CytosolClosure);
-  const M_Object name = *(M_Object*)MEM(SZ_INT);
-  const VM_Code code = *(VM_Code*)MEM(SZ_INT*2);
   closure->shred = shred;
   closure->code = vmcode_callback(shred->info->vm->gwion->mp, code);
   ++closure->shred->info->me->ref;
   vector_add(&FUNCVEC(o), (m_uint)closure);
   cyt_exec_state_set_extern_function(EXECSTATE(o),
-    STRING(name), cytosol_fun, closure);
+    name, cytosol_fun, closure);
+}
+
+// C defined func won't work atm
+static MFUN(cytosol_set_fun0) {
+  const VM_Code code = *(VM_Code*)MEM(SZ_INT);
+  char *end = strchr(code->name, '@');
+  const ptrdiff_t diff = end - code->name;
+  char c[diff + 1];
+  strncpy(c, code->name, diff);
+  cytosol_cb(o, shred, code, c);
+}
+
+// C defined func won't work atm
+static MFUN(cytosol_set_fun) {
+  const VM_Code code = *(VM_Code*)MEM(SZ_INT);
+  const M_Object name = *(M_Object*)MEM(SZ_INT*2);
+  cytosol_cb(o, shred, code, STRING(name));
 }
 
 static DTOR(value_dtor) {
@@ -335,10 +349,29 @@ static INSTR(IntCast) {
     Except(shred, "Invalid cytosol value cast to Int")
 }
 
+static INSTR(intCast) {
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  if(cyt_value_get_type(BUFFER(o), INDEX(o)) != CYT_VALUE_TYPE_INTEGER)
+    Except(shred, "Invalid cytosol value cast to int")
+  cyt_value_buffer_get_integer(BUFFER(o), INDEX(o), (ptrdiff_t*)REG(-SZ_INT));
+}
+
 static INSTR(StringCast) {
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   if(cyt_value_get_type(BUFFER(o), INDEX(o)) != CYT_VALUE_TYPE_STRING)
     Except(shred, "Invalid cytosol value cast to String")
+}
+
+static INSTR(stringCast) {
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  if(cyt_value_get_type(BUFFER(o), INDEX(o)) != CYT_VALUE_TYPE_STRING)
+    Except(shred, "Invalid cytosol value cast to string")
+  const char *str; size_t outlen;
+  cyt_value_buffer_get_string(BUFFER(o), INDEX(o), &str, &outlen);
+  char name[outlen + 1];
+  strncpy(name, str, outlen);
+  name[outlen] = '\0';
+  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->vm->gwion->mp, shred, name);
 }
 
 static INSTR(RecordCast) {
@@ -502,8 +535,12 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_fptr_end(gwi, ae_flag_global))
 
   GWI_BB(gwi_func_ini(gwi, "void", "set_fun"))
-  GWI_BB(gwi_func_arg(gwi, "string", "name"))
   GWI_BB(gwi_func_arg(gwi, "FunType", "fun"))
+  GWI_BB(gwi_func_end(gwi, cytosol_set_fun0, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "void", "set_fun"))
+  GWI_BB(gwi_func_arg(gwi, "FunType", "fun"))
+  GWI_BB(gwi_func_arg(gwi, "string", "name"))
   GWI_BB(gwi_func_end(gwi, cytosol_set_fun, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
@@ -539,6 +576,15 @@ GWION_IMPORT(Cytosol) {
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "Cytosol.Record", "Cytosol.Record"))
   GWI_BB(gwi_oper_end(gwi, "$", RecordCast))
+
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "int", "int"))
+  GWI_BB(gwi_oper_end(gwi, "$", intCast))
+
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "string", "string"))
+  GWI_BB(gwi_oper_end(gwi, "$", stringCast))
+
+//  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "Cytosol.Record", "Cytosol.Record"))
+//  GWI_BB(gwi_oper_end(gwi, "$", recordCast))
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Fields", NULL, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_fields_check))

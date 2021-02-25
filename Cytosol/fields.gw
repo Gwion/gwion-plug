@@ -9,12 +9,11 @@ const Cytosol cyt;
 
 fun void test(Cytosol.Value values[]) {
   foreach(v : values)
-    <<< (v $ Cytosol.String) => var string s >>>;
+    <<< v $ string >>>;
 }
 
-cyt.set_fun("test", test);
+cyt.set_fun(test); #! alternatively, cyt.set_fun(test, "test")
 cyt.add_path("test.cyt");
 cyt.compile();
 cyt.add_record(1, Person("Tia", 1));
 cyt.run(1);
-
