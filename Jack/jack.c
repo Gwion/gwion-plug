@@ -138,6 +138,8 @@ static void jack_run(VM* vm, Driver* di) {
 
 static void jack_del(VM* vm __attribute__((unused)), Driver* di) {
   struct JackInfo* info = (struct JackInfo*)di->driver->data;
+  if(!info)
+    return;
   free(info->iport);
   free(info->oport);
   xfree(info);

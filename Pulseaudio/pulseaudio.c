@@ -72,6 +72,8 @@ static DRVRUN(pa_run) {
 
 static DRVDEL(pa_del) {
   struct PaInfo* info = (struct PaInfo*)di->driver->data;
+  if(!info)
+    return;
   if(info->in)
     pa_simple_free(info->in);
   if(info->out)
