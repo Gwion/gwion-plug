@@ -1,5 +1,5 @@
 extern test(name: string)
-
+record Person
 gene []
 {
     call test(name: "hello there")

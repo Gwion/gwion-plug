@@ -1,0 +1,20 @@
+#require Cytosol
+
+class Person extends Cytosol.Fields {
+  var string name;
+  var int age;
+}
+
+const Cytosol cyt;
+
+fun void test(Cytosol.Value values[]) {
+  foreach(v : values)
+    <<< (v $ Cytosol.String) => var string s >>>;
+}
+
+cyt.set_fun("test", test);
+cyt.add_path("test.cyt");
+cyt.compile();
+cyt.add_record(1, Person("Tia", 1));
+cyt.run(1);
+

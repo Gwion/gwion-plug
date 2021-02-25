@@ -1,0 +1,21 @@
+extern debug_print_int(x: int)
+
+record Value(val: int)
+
+record DoRandom
+
+rule [DoRandom] -> Value(val: 60)
+rule [DoRandom] -> Value(val: 62)
+rule [DoRandom] -> Value(val: 64)
+
+rule [Value] -> DoRandom
+
+gene [0 DoRandom, 0 Value]
+{
+    express DoRandom
+}
+
+gene [x: Value]
+{
+    call debug_print_int(x: x.val)
+}
