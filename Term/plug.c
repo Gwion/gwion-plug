@@ -182,7 +182,7 @@ GWION_IMPORT(Term) {
   GWI_BB(gwi_oper_ini(gwi, "Term.AttrStr", "Term.Attr", "Term.AttrStr"))
   GWI_BB(gwi_oper_end(gwi, "|", term_str_attr_concat))
 
-  GWI_BB(gwi_oper_ini(gwi, "Term.AttrStr", "Term.Attr", "Term.AttrStr"))
+  GWI_BB(gwi_oper_ini(gwi, "Term.Attr", "Term.AttrStr", "Term.AttrStr"))
   GWI_BB(gwi_oper_end(gwi, "|", term_attr_str_concat))
 
   GWI_BB(gwi_oper_ini(gwi, "Term.AttrStr", "Term.AttrStr", "Term.AttrStr"))

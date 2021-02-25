@@ -1,0 +1,6 @@
+#require Term
+
+<<< Term.color(Term.red), "test" >>>;
+<<< Term.color(Term.red, Term.green), "test" >>>;
+<<< Term.color(Term.red, Term.green, Term.underscore), "test" >>>;
+<<< Term.color(Term.white, Term.black, Term.bold | Term.italic), "test" >>>;

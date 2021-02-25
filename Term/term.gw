@@ -22,8 +22,5 @@
 
 <<< Term.color(Term.red), "test" >>>;
 <<< Term.color(Term.red, Term.green), "test" >>>;
-<<< Term.color(Term.red, Term.green, Term.fastblink), "test" >>>;
+<<< Term.color(Term.red, Term.green, Term.bold), "test" >>>;
 <<< Term.color(Term.white, Term.black, Term.bold | Term.underscore), "test" >>>;
-<<< "test">>>;
-<<<Term.color(Term.white, Term.white)>>>;
-hour => now;
