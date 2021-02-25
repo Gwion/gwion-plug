@@ -1,0 +1,29 @@
+#require Term
+
+<<< "Terminal Attributes" >>>;
+<<< "===================" >>>;
+
+<<< "Dimensions: ${ Term.width() } by ${ Term.height() } (${ Term.cols() } cols, ${ Term.rows() } rows)" >>>;
+<<< "Supports UTF8: ${ Term.supportsUTF8() }" >>>;
+<<< "Supports Color: ${ Term.supportsColor() }" >>>;
+<<< "Is Blocking: ${ Term.isBlocking() }" >>>;
+<<< "Is Line Buffered: ${ Term.isLineBuffered() }" >>>;
+
+5::second => now;
+
+<<< "Terminal Attributes" >>>;
+<<< "===================" >>>;
+
+<<< "Dimensions: ${ Term.width() } by ${ Term.height() } (${ Term.cols() } cols, ${ Term.rows() } rows)" >>>;
+<<< "Supports UTF8: ${ Term.supportsUTF8() }" >>>;
+<<< "Supports Color: ${ Term.supportsColor() }" >>>;
+<<< "Is Blocking: ${ Term.isBlocking() }" >>>;
+<<< "Is Line Buffered: ${ Term.isLineBuffered() }" >>>;
+
+<<< Term.color(Term.red), "test" >>>;
+<<< Term.color(Term.red, Term.green), "test" >>>;
+<<< Term.color(Term.red, Term.green, Term.fastblink), "test" >>>;
+<<< Term.color(Term.white, Term.black, Term.bold | Term.underscore), "test" >>>;
+<<< "test">>>;
+<<<Term.color(Term.white, Term.white)>>>;
+hour => now;
