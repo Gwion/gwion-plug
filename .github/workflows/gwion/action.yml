@@ -5,7 +5,7 @@ runs:
   - run: |
       git clone --depth=1 https://github.com/Gwion/Gwion
       cd Gwion
-      git submodule init util ast
+      git submodule init util ast libcmdapp
       for i in $(git submodule | sed -e 's/.* //'); do
         spath=$(git config -f .gitmodules --get submodule.$i.path)
         surl=$(git config -f .gitmodules --get submodule.$i.url)
