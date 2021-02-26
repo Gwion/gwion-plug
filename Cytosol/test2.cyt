@@ -1,0 +1,7 @@
+record Person(name: string, age: int)
+extern printperson(p: Person)
+
+gene [x: Person]
+{
+    call printperson(p: x)
+}

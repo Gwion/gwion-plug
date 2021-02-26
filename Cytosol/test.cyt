@@ -1,6 +1,6 @@
 extern test(name: string)
 record Person
-gene []
+gene [ 1 Person ]
 {
     call test(name: "hello there")
 }

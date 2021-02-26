@@ -1,0 +1,19 @@
+#require Cytosol
+class Person extends Cytosol.Fields {
+  var string name;
+  var int age;
+}
+
+const Cytosol cyt;
+
+fun void printperson(Cytosol.Value values[]) {
+  values[0] $ Cytosol.Record => late Person p;
+  <<< "Name: ", p.name >>>;
+  <<< "Age:  ", p.age >>>;
+}
+
+cyt.set_fun(printperson);
+cyt.add_path("test2.cyt");
+cyt.compile();
+cyt.add_record(1, Person("Tia", 1));
+cyt.run(1);
