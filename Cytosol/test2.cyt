@@ -1,7 +1,7 @@
 record Person(name: string, age: int)
-extern printperson(p: Person)
+extern print_person(p: Person)
 
 gene [x: Person]
 {
-    call printperson(p: x)
+    call print_person(p: x)
 }

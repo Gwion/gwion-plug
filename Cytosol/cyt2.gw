@@ -6,13 +6,13 @@ class Person extends Cytosol.Fields {
 
 const Cytosol cyt;
 
-fun void printperson(Cytosol.Value values[]) {
-  values[0] $ Cytosol.Record => late Person p;
+fun void print_person(Cytosol.Value values[]) {
+  values[0] => late Person p;
   <<< "Name: ", p.name >>>;
   <<< "Age:  ", p.age >>>;
 }
 
-cyt.set_fun(printperson);
+cyt.set_fun(print_person);
 cyt.add_path("test2.cyt");
 cyt.compile();
 cyt.add_record(1, Person("Tia", 1));

@@ -316,6 +316,13 @@ static INSTR(record2field) {
   **(M_Object**)REG(0) = record;
 }
 
+static INSTR(value2field) {
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  if(cyt_value_get_type(BUFFER(o), INDEX(o)) != CYT_VALUE_TYPE_RECORD)
+    Except(shred, "Invalid cytosol value cast to Field")
+  record2field(shred, instr);
+}
+
 static OP_CHECK(opck_record2field) {
   Exp_Binary *bin = (Exp_Binary*)data;
   exp_setvar(bin->rhs, 1);
@@ -387,7 +394,10 @@ static INSTR(RecordCast) {
 }
 
 static INSTR(FieldsCast) {
-
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  if(cyt_value_get_type(BUFFER(o), INDEX(o)) != CYT_VALUE_TYPE_RECORD)
+    Except(shred, "Invalid cytosol value cast to Field")
+  RecordCast(shred, instr);
 }
 
 static Type cytosol_stmt_list(const Env env, const Type fields, Stmt_List list) {
@@ -579,6 +589,11 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_oper_emi(gwi, opem_record2field))
   GWI_BB(gwi_oper_end(gwi, "=>", record2field))
 
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "Cytosol.Fields", "Cytosol.Fields"))
+  GWI_BB(gwi_oper_add(gwi, opck_record2field))
+  GWI_BB(gwi_oper_emi(gwi, opem_record2field))
+  GWI_BB(gwi_oper_end(gwi, "=>", value2field))
+
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "Cytosol.Int", "Cytosol.Int"))
   GWI_BB(gwi_oper_end(gwi, "$", IntCast))
 
@@ -587,6 +602,9 @@ GWION_IMPORT(Cytosol) {
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "Cytosol.Record", "Cytosol.Record"))
   GWI_BB(gwi_oper_end(gwi, "$", RecordCast))
+
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "Cytosol.Fields", "Cytosol.Fields"))
+  GWI_BB(gwi_oper_end(gwi, "$", FieldsCast))
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Value", "int", "int"))
   GWI_BB(gwi_oper_end(gwi, "$", intCast))
