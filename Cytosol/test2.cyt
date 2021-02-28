@@ -1,7 +1,20 @@
 record Person(name: string, age: int)
-extern print_person(p: Person)
+
+extern pp(s: string, i: int)
+extern pp2(p: Person)
 
 gene [x: Person]
 {
-    call print_person(p: x)
+    express Person(name: "Tia", age: 1)
+    express Person(name: "Tia", age: 1)
+}
+
+gene [x: Person]
+{
+    call pp2(p: x)
+}
+
+gene [x: Person]
+{
+    call pp(s: x.name, i : x.age + 1)
 }

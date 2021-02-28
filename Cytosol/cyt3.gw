@@ -1,0 +1,23 @@
+#require Cytosol
+
+class Person extends Cytosol.Fields {
+  var string name;
+  var int age;
+}
+
+
+fun void pp(Cytosol.Record p) {
+  p $ Person => late Person tia;
+  "${ tia.age > 1 ? "s" : "" }" => const string plural;
+  <<< "${ tia.name} is ${ tia.age } year${ plural } old" >>>;
+  <<< "Yes, I was a bit surprised too" >>>;
+}
+
+const Cytosol cyt;
+pp => cyt;
+cyt.add_path("test2.cyt");
+
+if(cyt.compile()) {
+  cyt.add_record(1, Person("Tia", 1));
+  cyt.run(1);
+}
