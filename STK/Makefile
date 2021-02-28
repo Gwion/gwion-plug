@@ -1,4 +1,4 @@
-CC ?= g++
+CC = g++
 
 include ../config.mk
 
