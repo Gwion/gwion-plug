@@ -45,7 +45,7 @@ jobs:
     - name: Compress
       run: |
         mv */*.so .
-        tar -czvf plug-linux.tar.gz *.so
+        tar -czvf gwion-plug-linux.tar.gz *.so
 
     - name: Upload Release Asset
       id: upload-release-asset-linux
