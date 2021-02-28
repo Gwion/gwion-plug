@@ -103,8 +103,9 @@ static INSTR(term_str_str_concat) {
 
 GWION_IMPORT(Term) {
   resize(0);
+#ifndef BUILD_ON_WINDOWS
   signal(SIGWINCH, resize);
-
+#endif
   DECL_OB(const Type, t_term, = gwi_class_ini(gwi, "Term", "Object"))
 
   GWI_BB(gwi_func_ini(gwi, "int", "cols"))
