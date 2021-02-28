@@ -29,6 +29,13 @@ jobs:
         USE_LTO: 1 
         AUTO_INSTALL_DEPS: 1
 
+    - name: Build Cytosol
+      run: |
+        cd Cytosol
+        wget https://github.com/fennecdjay/cytosol/releases/download/cytosol-linux-cffi-3f5cbd20ef15054a1624ccbcf1fa06fdaf84341c/cytosol-linux-cffi.tar.gz
+        tar xvf cytosol-linux-cffi.tar.gz
+        CYTOSOL_DIR=. make
+
     - name: Create Release                                                                                                                                                                
       id: create_release_linux
       uses: actions/create-release@v1                                                                                                                                                     
