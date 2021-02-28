@@ -42,7 +42,9 @@ jobs:
         prerelease: false       
 
     - name: Compress
-      run: tar -czvf plug-macos.tar.gz */*.so
+      run: |
+        mv */*.so .
+        tar -czvf gwion-plug-macos.tar.gz *.so
 
     - name: Upload Release Asset
       id: upload-release-asset-macos
@@ -51,6 +53,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release_macos.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./plug-macos.tar.gz
-        asset_name: plug-macos.tar.gz
+        asset_path: ./gwion-plug-macos.tar.gz
+        asset_name: gwion-plug-macos.tar.gz
         asset_content_type: application/gzip
