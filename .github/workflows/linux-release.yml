@@ -35,6 +35,8 @@ jobs:
         wget https://github.com/fennecdjay/cytosol/releases/download/cytosol-linux-cffi-3f5cbd20ef15054a1624ccbcf1fa06fdaf84341c/cytosol-linux-cffi.tar.gz
         tar xvf cytosol-linux-cffi.tar.gz
         CYTOSOL_DIR=. make
+      env:
+        BASEDIR: ../Gwion
 
     - name: Create Release                                                                                                                                                                
       id: create_release_linux
