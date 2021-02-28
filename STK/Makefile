@@ -1,3 +1,5 @@
+CC ?= g++
+
 include ../config.mk
 
 STK_LIB := stk/src/libstk.a
