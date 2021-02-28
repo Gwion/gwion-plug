@@ -15,4 +15,4 @@ include ../config_post.mk
 
 get-stk:
 	git clone https://github.com/thestk/stk
-	cd stk && export CXXFLAGS="" && export LDFLAGS="" && autoconf && ./configure --with-alsa=no && make -C src
+	cd stk && export CXXFLAGS="" && export LDFLAGS="" && autoconf && ./configure --without-alsa && make -C src
