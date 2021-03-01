@@ -1,0 +1,33 @@
+#require Cytosol
+
+class Person extends Cytosol.Record {
+  var string name;
+  var int age;
+
+  operator void @gack() {
+     <<< "${ __func__ } ${ name } ${ age }" >>>;
+  }
+}
+
+fun void pp(string s, int i) {
+   <<< "${ __func__ } ${s} ${i}" >>>;
+}
+
+fun void pp2(Person p) {
+   <<< p >>>;
+}
+
+const Cytosol cyt;
+
+#! set functions
+cyt << pp << pp2;
+
+cyt.add_path("test.cyt");
+
+if(cyt.compile()) {
+  cyt.add_record(1, Person("Tia", 1));
+  repeat(2) {
+    cyt.run(1);
+    me.yield();
+  }
+}

@@ -13,6 +13,7 @@
 #include "traverse.h"
 #include "emit.h"
 #include "gwi.h"
+#include "parse.h"
 #include "cytosol.h"
 
 #define PROG(o)      (*(struct cyt_program**)o->data)
@@ -71,14 +72,14 @@ static MFUN(cytosol_compile) {
 }
 
 static cyt_value_buffer* cytosol_buffer(Type *types, const M_Object o) {
-  const Map map = &o->type_ref->nspc->info->value->map;
-  const m_uint sz = map_size(map);
+  const Vector v = &o->type_ref->info->tuple->contains;
+  const m_uint sz = vector_size(v);
   cyt_value_buffer *buf = cyt_value_buffer_new(sz);
   for(m_uint i = 0; i < sz; i++) {
-    const Value value = (Value)map_at(map, i);
-    if(isa(value->type, types[et_int]) > 0)
+    const Type t = (Type)vector_at(v, i);
+    if(isa(t, types[et_int]) > 0)
       cyt_value_buffer_set_int(buf, i, *(m_int*)(o->data + i*SZ_INT));
-    else if(isa(value->type, types[et_string]) > 0)
+    else if(isa(t, types[et_string]) > 0)
       cyt_value_buffer_set_string(buf, i, STRING(*(M_Object*)(o->data + i*SZ_INT)));
     else {
       cyt_value_buffer *_buf = cytosol_buffer(types, *(M_Object*)(o->data + i*SZ_INT));
@@ -150,23 +151,23 @@ static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
     } else {
       const M_Object o = new_object(gwion->mp, ca->shred, t);
       *(M_Object*)(ca->data + i*SZ_INT) = o;
-      struct Vector_ v;
-      const Map base = &t->nspc->info->value->map;
-      vector_init(&v);
-      for(m_uint i = 0; i < map_size(base); i++) {
-        const Value value = (Value)map_at(base, i);
-        vector_add(&v, (m_uint)value->type);
+      struct Vector_ tmp;
+      const Vector v = &t->info->tuple->contains;
+      vector_init(&tmp);
+      for(m_uint i = 0; i < vector_size(v); i++) {
+        const Type t = (Type)vector_at(v, i);
+        vector_add(&tmp, (m_uint)t);
       }
       cyt_value_buffer *out;
       cyt_value_buffer_get_record_fields(ca->buf, i, &out);
       struct CytosolArg record = {
         .shred = ca->shred,
         .data  = o->data,
-        .types = v,
+        .types = tmp,
         .buf = out
       };
       cytosol_args(gwion, &record);
-      vector_release(&v);
+      vector_release(&tmp);
     }
   }
   return;
@@ -199,8 +200,8 @@ static void cytosol_cb(const M_Object o, const VM_Shred shred, const VM_Code cod
 }
 
 static INSTR(func2cyt) {
-  const VM_Code code = *(VM_Code*)REG(-SZ_INT);
-  const M_Object o = *(M_Object*)REG(0);
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  const VM_Code code = *(VM_Code*)REG(0);
   char *end = strchr(code->name, '@');
   const ptrdiff_t diff = end - code->name;
   char c[diff + 1];
@@ -212,8 +213,9 @@ static INSTR(func2cyt) {
 // C defined func won't work atm
 static OP_CHECK(opck_func2cyt) {
   const Exp_Binary *bin = (Exp_Binary*)data;
-  const Func func = bin->lhs->type->info->func;
-  const Type fields = (Type)map_at(&bin->rhs->type->nspc->info->type->map, 0);
+  const Func func = bin->rhs->type->info->func;
+//  const Type cyt = actual_type(env->gwion, bin->lhs->type);
+  const Type fields = (Type)vector_front(&bin->lhs->type->info->tuple->contains);
   Arg_List arg = func->def->base->args;
   while(arg) {
     if(isa(arg->type, env->gwion->type[et_int]) < 0 &&
@@ -229,7 +231,7 @@ static OP_CHECK(opck_func2cyt) {
 
 static OP_EMIT(opem_func2cyt) {
   const Exp_Binary *bin = (Exp_Binary*)data;
-  const Func func = bin->lhs->type->info->func;
+  const Func func = bin->rhs->type->info->func;
   const Instr pop = emit_add_instr(emit, RegMove);
   pop->m_val = -SZ_INT;
   const Instr instr = emit_add_instr(emit, func2cyt);
@@ -243,7 +245,7 @@ static OP_EMIT(opem_func2cyt) {
   instr->m_val = (m_uint)v.ptr;
   return GW_OK;
 }
-#include "parse.h"
+
 static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list) {
   int n = 0;
   while(list) {
@@ -267,18 +269,17 @@ static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list)
 static OP_CHECK(opck_record_check) {
   const Class_Def cdef = (Class_Def)data;
   const Type t = cdef->base.type;
-  const Map map = &t->nspc->info->value->map;
   Ast ast = cdef->body;
   nspc_allocdata(env->gwion->mp, t->nspc);
   if(ast) {
-    if (ast->next || ast->section->section_type != ae_section_stmt)
+    if (ast->section->section_type != ae_section_stmt)
       ERR_N(cdef->pos, "Invalid section in Cytosol.Field");
     const Type fields = t->info->parent;
     CHECK_BN(cytosol_stmt_list(env, fields, ast->section->d.stmt_list))
-//    while((ast = ast->next)) {
-//      if (ast->section->section_type == ae_section_stmt)
-//        ERR_N(cdef->pos, "Declaration must be at the of Cytosol.Record declaration");
-//    }
+    while((ast = ast->next)) {
+      if (ast->section->section_type == ae_section_stmt)
+        ERR_N(cdef->pos, "Declaration must be at the top of Cytosol.Record declaration");
+    }
   }
   SET_FLAG(cdef->base.type, abstract | ae_flag_final);
   return t;
@@ -288,13 +289,13 @@ static OP_CHECK(opck_record_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   Exp arg = call->args;
   CHECK_NN(check_exp(env, arg))
-  const Map map = &actual_type(env->gwion, call->func->type)->nspc->info->value->map;
+  const Vector v = &actual_type(env->gwion, call->func->type)->info->tuple->contains;
   m_uint i = 0;
   while(arg) {
-    const Value value = (Value)map_at(map, i);
-    if(isa(arg->type , value->type) < 0)
+    const Type t = (Type)vector_at(v, i);
+    if(isa(arg->type, t) < 0)
        ERR_N(arg->pos, _("invalid type '%s' in '%s' constructor (expected '%s')"),
-            arg->type->name, call->func->type->name, value->type->name)
+            arg->type->name, call->func->type->name, t->name)
     i++;
     arg = arg->next;
   }
@@ -311,11 +312,11 @@ static INSTR(RecordCtor) {
 static OP_EMIT(opem_record_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   const Type t = actual_type(emit->gwion, call->func->type);
-  const Map map = &t->nspc->info->value->map;
-  const size_t sz = map_size(map);
+  const Vector v = &t->info->tuple->contains;
+  const size_t sz = vector_size(v);
   for(m_uint i = 0; i < sz; i++) {
-    const Value value = (Value)map_at(map, i);
-    if(isa(value->type, emit->gwion->type[et_object]) > 0)
+    const Type t = (Type)vector_at(v, i);
+    if(isa(t, emit->gwion->type[et_object]) > 0)
       emit_object_addref(emit, (-sz + i - 1) * SZ_INT, 0);
   }
   const Instr instr = emit_add_instr(emit, RecordCtor);
@@ -385,10 +386,10 @@ GWION_IMPORT(Cytosol) {
 
   // define operators at global scope
 
-  GWI_BB(gwi_oper_ini(gwi, "@function", "Cytosol", "void"))
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol", "@function", "Cytosol"))
   GWI_BB(gwi_oper_add(gwi, opck_func2cyt))
   GWI_BB(gwi_oper_emi(gwi, opem_func2cyt))
-  GWI_BB(gwi_oper_end(gwi, "=>", NULL))
+  GWI_BB(gwi_oper_end(gwi, "<<", NULL))
 
   GWI_BB(gwi_oper_ini(gwi, "Cytosol.Record", NULL, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_record_check))
