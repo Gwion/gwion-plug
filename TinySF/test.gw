@@ -1,0 +1,8 @@
+#require TinySF
+
+const TinySF tsf ~> dac;
+"Piano.sf2" => tsf.load_filename;
+tsf.noteOn(60, .5);
+.2::second => now;
+tsf.noteOff(60);
+1::second => now;
