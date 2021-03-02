@@ -87,10 +87,6 @@ GWION_IMPORT(TinySF) {
   GWI_BB(gwi_func_arg(gwi, "int", "note"))
   GWI_BB(gwi_func_end(gwi, note_off, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "sfun"))
-  GWI_BB(gwi_func_arg(gwi, "int", "arg"))
-  GWI_BB(gwi_func_end(gwi, sfun, ae_flag_static))
-
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "TinySF", NULL))
