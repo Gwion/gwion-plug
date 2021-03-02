@@ -10,6 +10,9 @@
 #include "import.h"
 #include "ugen.h"
 #include "array.h"
+#include "traverse.h"
+#include "parse.h"
+#include "emit.h"
 
 #define TSF_IMPLEMENTATION
 #include "tsf.h"
@@ -17,36 +20,50 @@
 #define TSF(o) (*(tsf**)(o->data + SZ_INT))
 
 static TICK(tsf_tick) {
-#ifndef USE_DOUBLE
   m_float f[2];
   tsf_render_float(u->module.gen.data, f, 1, TSF_STEREO_INTERLEAVED);
   UGEN(u->connect.multi->channel[0])->out = f[0];
   UGEN(u->connect.multi->channel[1])->out = f[1];
-#else
-puts("not implemented yet");
-exit(3);
-#endif
 }
 
-static CTOR(tinysf_ctor) {
-  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
-  ugen_gen(shred->info->vm->gwion, UGEN(o), tsf_tick, TSF(o), 0);
+static INSTR(TinySFCtor) {
+   POP_REG(shred, SZ_INT);
+   tsf* tiny = tsf_load_filename(STRING(*(M_Object*)REG(-SZ_INT)));
+   if(!tiny) {
+     gw_out("file '%s' can't opened file for reading", STRING(*(M_Object*)REG(-SZ_INT)));
+     Except(shred, "TinySF Exception");
+   }
+   tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
+   const M_Object o = new_object(shred->info->vm->gwion->mp, shred, (Type)instr->m_val);
+   UGEN(o) = new_UGen(shred->info->mp);
+   UGEN(o)->module.gen.data = TSF(o) = tiny;
+   vector_add(&shred->info->vm->ugen, (vtype)UGEN(o));
+   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
+   ugen_gen(shred->info->vm->gwion, UGEN(o), tsf_tick, tiny, 0);
+   *(M_Object*)REG(-SZ_INT) = o;
 }
 
-// check it with a constructor
-static DTOR(tinysf_dtor) { if(TSF(o))tsf_close(TSF(o)); }
+static OP_CHECK(opck_tinysf_ctor) {
+  Exp_Call *call = (Exp_Call*)data;
+  if(!call->args || call->args->next ||
+     !check_exp(env, call->args) || isa(call->args->type, env->gwion->type[et_string]) < 0)
+    ERR_N(call->func->pos, "TinySF constructor requires one "
+         "and only one 'string' argument")
+  return actual_type(env->gwion, call->func->type);
+}
+
+static OP_EMIT(opem_tinysf_ctor) {
+  Exp_Call *call = (Exp_Call*)data;
+  const Instr instr = emit_add_instr(emit, TinySFCtor);
+  instr->m_val = (m_uint) exp_self(call)->type;
+  return GW_OK;
+}
+
+static DTOR(tinysf_dtor) { tsf_close(TSF(o)); }
 
 static m_int o_tinysf_member_data;
 static m_int o_tinysf_static_data;
 static m_int* tinysf_static_value;
-
-static MFUN(load_filename) { 
-// check if there is already one
-// or ... ctor
-  UGEN(o)->module.gen.data = TSF(o) = tsf_load_filename(STRING(*(M_Object*)MEM(SZ_INT)));
-tsf_set_output(TSF(o), TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
-
-}
 
 static MFUN(note_on) {
   tsf_note_on(TSF(o), 1, *(m_int*)MEM(SZ_INT), *(m_float*)MEM(SZ_INT*2));
@@ -56,23 +73,10 @@ static MFUN(note_off) {
   tsf_note_off(TSF(o), 1, *(m_int*)MEM(SZ_INT));
 }
 
-static SFUN(sfun) { /*code here */ }
-
 GWION_IMPORT(TinySF) {
   DECL_OB(const Type, t_tinysf, = gwi_class_ini(gwi, "TinySF", "UGen"))
   t_tinysf->nspc->info->offset += sizeof(struct tsf);
-  gwi_class_xtor(gwi, tinysf_ctor, tinysf_dtor);
-
-
-//  GWI_BB(gwi_item_ini(gwi, "int", "member"))
-//  GWI_BB((o_tinysf_member_data = gwi_item_end(gwi, ae_flag_none, num, 0)))
-
-//  GWI_BB(gwi_item_ini(gwi, "int", "static"))
-//  GWI_BB((o_tinysf_static_data = gwi_item_end(gwi, ae_flag_static, num, 1234)))
-
-  GWI_BB(gwi_func_ini(gwi, "int", "load_filename"))
-  GWI_BB(gwi_func_arg(gwi, "string", "arg"))
-  GWI_BB(gwi_func_end(gwi, load_filename, ae_flag_none))
+  gwi_class_xtor(gwi, NULL, tinysf_dtor);
 
   GWI_BB(gwi_func_ini(gwi, "void", "noteOn"))
   GWI_BB(gwi_func_arg(gwi, "int", "note"))
@@ -88,5 +92,11 @@ GWION_IMPORT(TinySF) {
   GWI_BB(gwi_func_end(gwi, sfun, ae_flag_static))
 
   GWI_BB(gwi_class_end(gwi))
+
+  GWI_BB(gwi_oper_ini(gwi, NULL, "TinySF", NULL))
+  GWI_BB(gwi_oper_add(gwi, opck_tinysf_ctor))
+  GWI_BB(gwi_oper_emi(gwi, opem_tinysf_ctor))
+  GWI_BB(gwi_oper_end(gwi, "@ctor", TinySFCtor))
+
   return GW_OK;
 }
