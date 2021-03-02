@@ -30,7 +30,7 @@ static INSTR(TinySFCtor) {
    POP_REG(shred, SZ_INT);
    tsf* tiny = tsf_load_filename(STRING(*(M_Object*)REG(-SZ_INT)));
    if(!tiny) {
-     gw_out("file '%s' can't opened file for reading", STRING(*(M_Object*)REG(-SZ_INT)));
+     gw_err("file '%s' can't opened file for reading", STRING(*(M_Object*)REG(-SZ_INT)));
      Except(shred, "TinySF Exception");
    }
    tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
