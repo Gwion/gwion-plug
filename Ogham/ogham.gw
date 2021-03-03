@@ -1,0 +1,54 @@
+#require Ogham
+#require Math
+#require Std
+#require STK
+
+class Player extends Ogham.Player {
+  const stk.Rhodey array[1];
+
+  fun void noteOn(const float note, const float velocity) {
+    array[0].noteOn(note, velocity);
+  }
+
+  #! those are not yet implemented in the plug
+  #! that's why we connect the UGen[] to the dac above
+  #! neither are reading tempo changes
+  fun void noteOff(const float note, const float velocity) {}
+  fun void connect(const UGen u)    { array ~> u; }
+  fun void disconnect(const UGen u) { array ~< u; }
+}
+
+const Ogham ogh;
+
+const Ogham.Note notes[5];
+'A' => notes[0].name;
+4 => notes[0].octave;
+60 => notes[0].volume;
+ogh << notes[0];
+
+'B' => notes[1].name;
+4 => notes[1].octave;
+64 => notes[1].offset;
+80 => notes[1].volume;
+ogh << notes[1];
+
+'C' => notes[2].name;
+4 => notes[2].octave;
+128 => notes[2].offset;
+100 => notes[2].volume;
+ogh << notes[2];
+
+'E' => notes[3].name;
+4 => notes[3].octave;
+128 => notes[3].offset;
+100 => notes[3].volume;
+ogh << notes[3];
+#!'G' => notes[4].name;
+#!5 => notes[4].octave;
+#!128 => notes[4].offset;
+#!100 => notes[4].volume;
+#!ogh << notes[4];
+
+Player(ogh) => const Player p ~> blackhole;
+dac => p.connect;
+4::second => now;
