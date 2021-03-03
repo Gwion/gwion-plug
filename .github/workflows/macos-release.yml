@@ -16,6 +16,9 @@ jobs:
     - name: clone
       uses: actions/checkout@v2
 
+    - name: Deps
+      run: brew install stk
+
     - name: Build Gwion
       uses: ./.github/workflows/gwion
 
