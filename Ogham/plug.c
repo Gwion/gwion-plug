@@ -119,7 +119,7 @@ static INSTR(ogham_add_note) {
   M_Object not = *(M_Object*)REG(0);
   const uint32_t len = OGH(ogh)->length;
   OGH(ogh) = mp_realloc(shred->info->vm->gwion->mp, OGH(ogh),
-     sizeof(ogh_music_t) + len*sizeof(ogh_note_t), sizeof(ogh_music_t) + (len+1)*sizeof(ogh_note_t));
+     sizeof(ogh_music_t) + len*sizeof(ogh_packed_t), sizeof(ogh_packed_t) + (len+1)*sizeof(ogh_note_t));
   ogh_music_add_notes(OGH(ogh), 1, &NOTE(not));
 }
 
@@ -224,6 +224,7 @@ static INSTR(PlayerCtor) {
   PLAYER_NOW(ret) = shred->tick->shreduler->bbq->pos;
   PLAYER_GWION(ret) = shred->info->vm->gwion;
   *(M_Object*)REG(-SZ_INT) = ret;
+  ++ret->ref;
   const VM_Code ctor_code = ogh_callback(shred->info->vm->gwion->mp, t->nspc->pre_ctor);
   const VM_Shred ctor_sh = new_vm_shred(shred->info->vm->gwion->mp, ctor_code);
   *(M_Object*)(ctor_sh->mem) = ret;
