@@ -67,8 +67,34 @@ static MFUN(file_from_path) {
     STRING(*(M_Object*)MEM(SZ_INT)));
 }
 
+struct CytThread_ {
+  M_Object o;
+  VM_Shred shred;
+};
+
+/*
+static MFUN(cytosol_compile_end) {
+  THREAD_JOIN(*(THREAD_TYPE*)MEM(0));
+  broadcast(*(M_Object*)MEM(SZ_INT));
+  vm_shred_exit(shred);
+}
+*/
+
+static THREAD_FUNC(cytosol_compile_thread) {
+  const struct CytThread_ *ct = (struct CytThread_*)data;
+  *(m_uint*)cyt_driver_runner_compile(RUNNER(ct->o), PROG(ct->o));
+// create Cytosol.event
+// add new shred to vm, with cytosol_compile_end
+// compile_end(thread, ct)
+}
+
 static MFUN(cytosol_compile) {
-  *(m_uint*)cyt_driver_runner_compile(RUNNER(o), PROG(o));
+  THREAD_TYPE thread;
+  struct CytThread_ *ct = (struct CytThread_*)mp_malloc(shred->info->vm->gwion->mp, CytThread);
+  ct->o = o;
+  ct->shred = shred;
+  THREAD_CREATE(thread, cytosol_compile_thread, ct)
+//  *(m_uint*)cyt_driver_runner_compile(RUNNER(o), PROG(o));
 }
 
 static cyt_value_buffer* cytosol_buffer(Type *types, const M_Object o) {
@@ -81,6 +107,8 @@ static cyt_value_buffer* cytosol_buffer(Type *types, const M_Object o) {
       cyt_value_buffer_set_int(buf, i, *(m_int*)(o->data + i*SZ_INT));
     else if(isa(t, types[et_string]) > 0)
       cyt_value_buffer_set_string(buf, i, STRING(*(M_Object*)(o->data + i*SZ_INT)));
+    else if(isa(t, types[et_bool]) > 0)
+      cyt_value_buffer_set_bool(buf, i, *(m_uint*)(o->data + i*SZ_INT));
     else {
       cyt_value_buffer *_buf = cytosol_buffer(types, *(M_Object*)(o->data + i*SZ_INT));
       cyt_value_buffer_set_record(buf, i, _buf);
@@ -137,8 +165,12 @@ static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
     m_bit *data = ca->data + i*SZ_INT;
     if(isa(t, gwion->type[et_int]) > 0) {
       ptrdiff_t n;
-      cyt_value_buffer_get_integer(ca->buf, i, &n);
+      cyt_value_buffer_get_int(ca->buf, i, &n);
       *(m_int*)(ca->data + i*SZ_INT) = n;
+    } else if(isa(t, gwion->type[et_bool]) > 0) {
+      bool b;
+      cyt_value_buffer_get_bool(ca->buf, i, &b);
+      *(m_uint*)(ca->data + i*SZ_INT) = n;
     } else if(isa(t, gwion->type[et_string]) > 0) {
       const char* data;
       size_t outlen;
