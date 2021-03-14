@@ -1,6 +1,7 @@
 BASEDIR  ?= ../..
 GWION    ?= ${BASEDIR}/gwion
-INC      ?= ${BASEDIR}/include -I${BASEDIR}/util/include -I${BASEDIR}/ast/include
+INC      ?= ${BASEDIR}/include -I${BASEDIR}/util/include -I${BASEDIR}/util/libtermcolor/src 
+INC      ?= -I${BASEDIR}/ast/include -I${BASEDIR}/ast/libprettyerr/src
 CC       ?= gcc
 PLUG_DIR ?= $(shell ${GWION} -c 2>&1 | head -n 1 | cut -d '"' -f 2)
 SRC      += $(wildcard *.c)
