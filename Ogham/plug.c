@@ -245,7 +245,6 @@ static m_uint get_polyphony(MemPool mp, M_Vector notes) {
     if(++count > max)
       max = count;
   }
-printf("max %lu\n", max);
   return max;
 }
 
@@ -355,6 +354,8 @@ GWION_IMPORT(Ogham) {
       GWI_BB(gwi_item_ini(gwi, "float", "velocity"))
       GWI_BB(gwi_item_end(gwi, ae_flag_none, fnum, 0))
       GWI_BB(gwi_item_ini(gwi, "dur", "duration"))
+      GWI_BB(gwi_item_end(gwi, ae_flag_none, fnum, 0))
+      GWI_BB(gwi_item_ini(gwi, "dur", "offset"))
       GWI_BB(gwi_item_end(gwi, ae_flag_none, fnum, 0))
       GWI_BB(gwi_class_end(gwi))
 
