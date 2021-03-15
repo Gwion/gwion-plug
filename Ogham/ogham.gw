@@ -7,7 +7,6 @@ class Player extends Ogham.Player {
     0 => a.freq;
 
   fun void play(const Note note) {
-<<< "ijlk ", note.index >>>;
     array[note.index] => const auto sine;
     note.frequency => sine.freq;
     note.velocity => sine.amp;

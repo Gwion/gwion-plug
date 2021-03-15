@@ -189,6 +189,17 @@ static OP_CHECK(opck_player_ctor) {
   return t; // return event?
 }
 
+ANN static void debug(const char *func, const ogh_adjusted_note_t *note) {
+  tcol_printf("{-Y}[%s]{0} %lu %f %f %f %f %f\n",
+    func,
+    note->real_offset,
+    note->index,
+    note->freq,
+    note->volume,
+    note->real_duration,
+    note->real_offset);
+}
+
 static void launch_notes(const M_Object o, ogh_adjusted_note_t *note) {
   const Runtime *runtime = PLAYER_RUNTIME(o);
   const VM_Shred shred = runtime->voice[note->index].shred;
@@ -196,6 +207,7 @@ static void launch_notes(const M_Object o, ogh_adjusted_note_t *note) {
   shred->pc = 0;
   ++shred->info->me->ref;
   const M_Object player_note = runtime->voice[note->index].note;
+debug(__func__, note);
   (*(ogh_adjusted_note_t*)player_note->data).real_offset = note->real_offset;
   (*(ogh_adjusted_note_t*)player_note->data).freq = note->freq;
   (*(ogh_adjusted_note_t*)player_note->data).volume = note->volume;
@@ -215,6 +227,7 @@ static TICK(player_tick) {
   m_uint i = PLAYER_CURRENT(o);
   while(i < sz) {
     ogh_adjusted_note_t *note = ARRAY_NOTE(array, i);
+//debug(__func__, note);
     if((note->real_offset * PLAYER_DUR(o)) <= now) {
       ++PLAYER_CURRENT(o);
       launch_notes(o, note);
@@ -225,12 +238,14 @@ static TICK(player_tick) {
   PLAYER_NOW(o) += 1;
 }
 
+
 static m_uint get_polyphony(MemPool mp, M_Vector notes) {
   m_int count = 1, max = 0;
   const m_uint sz = m_vector_size(notes);
   if(sz)
   for(m_uint i = 0; i < sz-1; i++) {
     ogh_adjusted_note_t *const note = ARRAY_NOTE(notes, i);
+debug(__func__, note);
     const double end = note->real_offset + note->real_duration;
     for(m_uint j = 0; j < sz; j++) {
       const ogh_adjusted_note_t *other = ARRAY_NOTE(notes, j);
