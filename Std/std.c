@@ -124,6 +124,26 @@ static SFUN(std_atof) {
   *(m_float*)RETURN = (m_float)atof(key);
 }
 
+static SFUN(std_atoi2) {
+  GETSTRING(key, 0)
+  char *endptr;
+  *(m_int*)RETURN = strtol(key, &endptr, 10);
+  **(m_uint**)MEM(SZ_INT) = endptr - key;
+}
+
+#ifdef USE_DOUBLE
+#define str2float strtod
+#else
+#define str2float strtof
+#endif
+
+static SFUN(std_atof2) {
+  GETSTRING(key, 0)
+  char *endptr;
+  *(m_float*)RETURN = (m_float)str2float(key, &endptr);
+  **(m_uint**)MEM(SZ_INT) = endptr - key;
+}
+
 #define pow10(a) pow(10.0, (a) / 20.0)
 #define std(name, func)\
 static SFUN(std_##name) {\
@@ -170,6 +190,16 @@ GWION_IMPORT(std) {
   gwi_func_arg(gwi, "string", "key");
   gwi_func_arg(gwi, "string", "value");
   GWI_BB(gwi_func_end(gwi, std_setenv, ae_flag_static))
+
+  gwi_func_ini(gwi, "int", "atoi");
+  gwi_func_arg(gwi, "string", "key");
+  gwi_func_arg(gwi, "Ref:[int]", "idx");
+  GWI_BB(gwi_func_end(gwi, std_atoi2, ae_flag_static))
+
+  gwi_func_ini(gwi, "float", "atof");
+  gwi_func_arg(gwi, "string", "key");
+  gwi_func_arg(gwi, "Ref:[int]", "idx");
+  GWI_BB(gwi_func_end(gwi, std_atof2, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "atoi");
   gwi_func_arg(gwi, "string", "key");

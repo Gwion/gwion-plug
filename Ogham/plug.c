@@ -70,8 +70,7 @@ static DTOR(player_dtor) {
   free_m_vector(shred->info->vm->gwion->mp, PLAYER_NOTES(o));
   Runtime *runtime = PLAYER_RUNTIME(o);
   for(m_uint i = 0; i < PLAYER_POLYPHONY(o); i++) {
-shreduler_remove(shred->tick->shreduler, runtime->voice[i].shred, 0);
-    free_vm_shred(runtime->voice[i].shred);
+    shreduler_remove(shred->tick->shreduler, runtime->voice[i].shred, 1);
     release(runtime->voice[i].note, shred);
   }
   vmcode_remref(runtime->code, shred->info->vm->gwion);
@@ -193,14 +192,18 @@ static OP_CHECK(opck_player_ctor) {
 static void launch_notes(const M_Object o, ogh_adjusted_note_t *note) {
   const Runtime *runtime = PLAYER_RUNTIME(o);
   const VM_Shred shred = runtime->voice[note->index].shred;
-//shred->code = runtime->code;
+  shred->code = runtime->code;
   shred->pc = 0;
   ++shred->info->me->ref;
   const M_Object player_note = runtime->voice[note->index].note;
-  memcpy(player_note->data, note, sizeof(ogh_adjusted_note_t) - sizeof(m_float) * 2);
-  (*(ogh_adjusted_note_t*)player_note->data).real_duration = note->real_duration * PLAYER_DUR(o) -1;
+  (*(ogh_adjusted_note_t*)player_note->data).real_offset = note->real_offset;
+  (*(ogh_adjusted_note_t*)player_note->data).freq = note->freq;
+  (*(ogh_adjusted_note_t*)player_note->data).volume = note->volume;
+  (*(ogh_adjusted_note_t*)player_note->data).index = note->index;
+  (*(ogh_adjusted_note_t*)player_note->data).real_duration = note->real_duration * PLAYER_DUR(o) - 1;
   *(M_Object*)(shred->mem) = o;
   *(M_Object*)(shred->mem + SZ_INT) = player_note;
+  shreduler_remove(shred->info->vm->shreduler, shred, 0);
   shredule(shred->info->vm->shreduler, shred, GWION_EPSILON);
 }
 
@@ -242,6 +245,7 @@ static m_uint get_polyphony(MemPool mp, M_Vector notes) {
     if(++count > max)
       max = count;
   }
+printf("max %lu\n", max);
   return max;
 }
 
@@ -255,6 +259,7 @@ static INSTR(PlayerCtor) {
   qsort(ARRAY_PTR(dec.array), m_vector_size(dec.array), sizeof(ogh_adjusted_note_t), compare);
   const Type t = (Type)instr->m_val;
   const M_Object ret = new_object(gwion->mp, shred, t);
+//  const M_Object ret = new_object(gwion->mp, NULL, t);
   UGEN(ret) = new_UGen(shred->info->mp);
   vector_add(&shred->info->vm->ugen, (vtype)UGEN(ret));
   ugen_ini(shred->info->vm->gwion, UGEN(ret), 0, 1);
@@ -273,27 +278,32 @@ static INSTR(PlayerCtor) {
     runtime->voice[i].shred = new_vm_shred(gwion->mp, runtime->code);
     vm_add_shred(gwion->vm, runtime->voice[i].shred);
     shreduler_remove(gwion->vm->shreduler, runtime->voice[i].shred, 0);
-    runtime->voice[i].note = new_object(gwion->mp, shred, note_type);
+//    runtime->voice[i].note = new_object(gwion->mp, shred, note_type);
+    runtime->voice[i].note = new_object(gwion->mp, NULL, note_type);
   }
   *(M_Object*)REG(-SZ_INT) = ret;
   const VM_Code ctor_code = t->nspc->pre_ctor;
-  register const m_uint push = SZ_INT + *(m_uint*)(shred->mem-SZ_INT);
+  register const m_uint push = *(m_uint*)REG(SZ_INT) + *(m_uint*)MEM(-SZ_INT);
   shred->mem += push;
   *(m_uint*)  shred->mem = push; shred->mem += SZ_INT;
   *(VM_Code*) shred->mem = shred->code; shred->mem += SZ_INT;
   *(m_uint*)  shred->mem = shred->pc; shred->mem += SZ_INT;
-  *(m_uint*) shred->mem = ctor_code->stack_depth; shred->mem += SZ_INT;
+  *(m_uint*)  shred->mem = ctor_code->stack_depth; shred->mem += SZ_INT;
   shred->code = ctor_code;
   shred->pc = 0;
-  *(M_Object*)(shred->mem) = ret;
+  *(M_Object*)MEM(0) = ret;
 }
 
 static OP_EMIT(opem_player_ctor) {
+  const Instr offset = emit_add_instr(emit, RegSetImm);
+  offset->m_val = emit_code_offset(emit);
+//  offset->m_val2 = SZ_INT;
   Exp_Call *call = (Exp_Call*)data;
   const Instr instr = emit_add_instr(emit, PlayerCtor);
   const Type t = exp_self(call)->type;
   instr->m_val = (m_uint)t;
   instr->m_val2 = (m_uint)get_player_type(emit->gwion, t);
+//  emit_add_instr(emit, OghStop);
   return GW_OK;
 }
 

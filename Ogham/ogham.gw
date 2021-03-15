@@ -7,6 +7,7 @@ class Player extends Ogham.Player {
     0 => a.freq;
 
   fun void play(const Note note) {
+<<< "ijlk ", note.index >>>;
     array[note.index] => const auto sine;
     note.frequency => sine.freq;
     note.velocity => sine.amp;
@@ -16,11 +17,12 @@ class Player extends Ogham.Player {
 
   fun void connect(const UGen u)    { array ~> u; }
   fun void disconnect(const UGen u) { array ~< u; }
+<<< "end of ctor" >>>;
 }
 
 const Ogham ogh;
 
-const Ogham.Note notes[9];
+<<< "notes: ", const Ogham.Note notes[9] >>>;
 
 <<< "setting notes" >>>;
 'C' => notes[0].name;
@@ -73,12 +75,13 @@ true => notes[8].is_sharp;
 
 foreach (note: notes)
   60 => note.volume;
-
 <<< "adding notes" >>>;
 ogh << notes;
 
 <<< "decoding" >>>;
 Player(ogh) => const Player p ~> blackhole;
+#!me.exit();
+<<< p >>>;
 0.8::second => p.speed;
 dac => p.connect;
 
