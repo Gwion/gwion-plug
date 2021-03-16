@@ -155,6 +155,17 @@ static MFUN(note_name_str_set) {
   *(M_Object*)RETURN = arg;
 }
 
+ANN static void debug(const char *func, const ogh_adjusted_note_t *note) {
+  tcol_printf("{-Y}[%s]{0} %lu %f %f %f %f %f\n",
+    func,
+    note->real_offset,
+    note->index,
+    note->freq,
+    note->volume,
+    note->real_duration,
+    note->real_offset);
+}
+
 static INSTR(ogham_add_notes) {
   POP_REG(shred, SZ_INT);
   M_Object ogh = *(M_Object*)REG(-SZ_INT);
@@ -167,6 +178,10 @@ static INSTR(ogham_add_notes) {
   ogh_note_t notes[sz];
   for(m_uint i = 0; i < sz; i++) {
     const M_Object o = *(M_Object*)(ARRAY_PTR((array)) + ((i) * SZ_INT));
+tcol_printf("{-Y}%s{0}:", __func__);
+ogh_note_dump(stdout, &NOTE(o));
+putc('\n', stdout);
+//    debug(__func__, NOTE(o));
     notes[i] = NOTE(o);
   }
   ogh_music_add_notes(OGH(ogh), sz, notes);
@@ -187,17 +202,6 @@ static OP_CHECK(opck_player_ctor) {
     ERR_N(call->func->pos, "Ogham.Player constructor requires one "
          "and only one 'Ogham' argument")
   return t; // return event?
-}
-
-ANN static void debug(const char *func, const ogh_adjusted_note_t *note) {
-  tcol_printf("{-Y}[%s]{0} %lu %f %f %f %f %f\n",
-    func,
-    note->real_offset,
-    note->index,
-    note->freq,
-    note->volume,
-    note->real_duration,
-    note->real_offset);
 }
 
 static void launch_notes(const M_Object o, ogh_adjusted_note_t *note) {
