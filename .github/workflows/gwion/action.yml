@@ -12,5 +12,7 @@ runs:
         git clone --depth 1 $surl $spath
       done
       git submodule update
+      cd util; git submodule update; cd ..
+      cd ast; git submodule update; cd ..
       make
     shell: bash
