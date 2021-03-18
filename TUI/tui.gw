@@ -33,4 +33,4 @@ win #!<< label
 exit => now;
 #!}
 #!60::minute => now;
-#!<<< "end" >>>;
+<<< "end" >>>;

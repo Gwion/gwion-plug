@@ -22,8 +22,6 @@
 #include "widgets/row.h"
 #include "screen.h"
 
-#include "../xml/parser.h"
-
 #define FPS_30 33333
 #define FPS_60 16667
 #define FPS FPS_60
@@ -35,16 +33,16 @@ struct TUIMeta {
   TUIBuffer buffer;
   TUIWindows wstack;
   THREAD_TYPE thread;
-//  struct Vector_ windows;
   TUIConfig old_config;
   MemPool mp;
+  VM *vm;
   volatile bool running;
 };
 
 #include <signal.h>
-static int grun = 1;
+static volatile int grun = 1;
 void ctrlc(int _NUSED) {
-  grun = 0;
+  --grun;
   THREAD_RETURN();
 }
 
@@ -52,9 +50,9 @@ void* tui_func(void* arg) {
 signal(SIGINT, ctrlc);
   struct TUIMeta* meta = (struct TUIMeta*)arg;
   const int timeout_msecs = 12;
-
   TUIEvent event = {};
-  while (meta->running && grun) {
+  while (meta->running) {
+    vm_run(meta->vm);
     for(short i = 0; i < meta->wstack.count; i++)
       tui_window_draw(&meta->buffer, &meta->wstack.windows[i]);
     tui_buffer_draw(&meta->buffer);
@@ -64,6 +62,7 @@ signal(SIGINT, ctrlc);
     }
     tui_screen_update();
   }
+  free_vm(meta->vm);
   tui_screen_deconfigure(&meta->old_config);
   tui_buffer_destroy(&meta->buffer);
   return NULL;
@@ -80,6 +79,8 @@ static CTOR(win_ctor) {
   TUIWindow *win = WINDOW(o) = &meta->wstack.windows[0];
   if(!meta->running) {
     meta->mp = shred->info->vm->gwion->mp;
+    meta->vm = new_vm(meta->mp, 0);
+    meta->vm->gwion = shred->info->vm->gwion;
     if(tui_screen_configure(&meta->buffer, &meta->old_config) == EXIT_FAILURE)
       exit(3);//TODO
     THREAD_CREATE(meta->thread, tui_func, meta);
@@ -88,7 +89,7 @@ static CTOR(win_ctor) {
   tui_window_fullscreen(win, &meta->buffer);
   ++meta->running;
   vector_init(&*(struct Vector_*)(o->data + SZ_INT));
-  *(TUIWidget**)(o->data + SZ_INT*2) = _mp_malloc(shred->info->vm->gwion->mp, 64 * sizeof(TUIWidget));
+  *(TUIWidget**)(o->data + SZ_INT*2) = _mp_malloc(meta->mp, 64 * sizeof(TUIWidget));
 }
 
 static DTOR(win_dtor) {
@@ -132,6 +133,112 @@ static INSTR(window_append) {
   vector_add(v, (m_uint)w);
   win->widgets = (TUIWidgets){ sz + 1, win->widgets.selection, e };
   tui_window_select(win, array_next, (TUIEvent){});
+}
+
+/* TUIUser */
+typedef struct TUIUser {
+  TUIBuffer *buffer;
+  TUIRect rect;
+  TUIRect region;
+  M_Object o;
+  VM *vm;
+  VM_Shred shred;
+} TUIUser;
+
+#define USER_WIDGET(o) ((TUIUser*)WIDGET((o)).user_data)
+
+static TUI_INIT(TUIUser) {
+  TUIUser *user = tui_alloc(sizeof(TUIUser));
+  user->rect = TUISizeMake(1,1);
+  widget->user_data = user;
+}
+
+static TUI_SIZE(TUIUser) {
+  TUIUser *user = widget->user_data;
+  return user->rect;
+}
+
+// set arguments in memory
+static TUI_DRAW(TUIUser) {
+  TUIUser* user = widget->user_data;
+  VM_Shred shred = user->shred;
+  user->region = region;
+  *(M_Object*)MEM(0) = user->o;
+  shred->pc = 0;
+  ++shred->info->me->ref;
+  vmcode_addref(shred->code);
+  shreduler_remove(user->vm->shreduler, shred, 0);
+  shredule(user->vm->shreduler, shred, 0);
+  vm_run(user->vm);
+}
+
+static TUI_SELECT(TUIUser) {
+  // should call user *select* function
+  widget->is_selected = !!widget->is_selected;//
+}
+static TUI_ACTIVATE(TUIUser) {
+  // should call user *activate* function
+//  exit(5);
+}
+static TUI_DESTROY(TUIUser) {
+  // ignore this
+}
+
+static CTOR(UserCtor) {
+  WIDGET(o).init = TUIUser_init;
+  WIDGET(o).size = TUIUser_size;
+  WIDGET(o).draw = TUIUser_draw;
+  WIDGET(o).select = TUIUser_select; // could be set to 1
+  WIDGET(o).activate = TUIUser_activate;
+  WIDGET(o).destroy = TUIUser_destroy;
+  WIDGET(o).is_selected = false;
+  WIDGET(o).init(&WIDGET(o));
+  // construct the widget
+  const Gwion gwion = shred->info->vm->gwion;
+  const Type tui = str2type(gwion, "TUI", (loc_t){});
+  struct TUIMeta* meta = (&*(struct TUIMeta*)(tui->nspc->info->class_data));
+  USER_WIDGET(o)->vm = meta->vm;
+  USER_WIDGET(o)->buffer = &meta->buffer;
+  // catch the *draw* function
+  const Func func = (Func)vector_at(&o->vtable, 3);
+  VM_Code code = vmcode_callback(gwion->mp, func->code);
+  USER_WIDGET(o)->o = o;
+  USER_WIDGET(o)->shred = new_vm_shred(gwion->mp, code);
+  vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->shred);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->shred, 0);
+}
+
+static CTOR(UserDtor) {
+  TUIUser *user = USER_WIDGET(o);
+  vmcode_remref(user->shred->code, user->vm->gwion);
+  free_vm_shred(user->shred);
+}
+
+static MFUN(user_position) {
+  TUIUser *user = USER_WIDGET(o);
+  user->rect = TUISizeMake(*(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2));
+}
+
+static MFUN(user_write) {
+  TUIUser *user = USER_WIDGET(o);
+  tui_buffer_write(user->buffer, STRING(*(M_Object*)MEM(SZ_INT)),
+    user->region.x + *(size_t*)MEM(SZ_INT*2), user->region.y + *(size_t*)MEM(SZ_INT*3));
+}
+
+static MFUN(user_markup) {
+  TUIUser *user = USER_WIDGET(o);
+  const m_uint e = *(m_uint*)MEM(SZ_INT);
+  TUIAttribute attr = TUIResetAttribute;
+  if(e == 1)
+    attr = TUINormalAttribute;
+  else if(e == 2)
+    attr = TUISelectedAttribute;
+  else if(e == 3)
+    attr = TUIBackgroundActivatedAttribute;
+  else if(e == 3)
+    attr = TUIActivatedAttribute;
+  tui_buffer_markup(user->buffer, attr, user->region.x + *(m_uint*)MEM(SZ_INT*2),
+    user->region.y + *(size_t*)MEM(SZ_INT*3), *(size_t*)MEM(SZ_INT*4));
 }
 
 static CTOR(WidgetCtor) {
@@ -306,16 +413,14 @@ WIDGET_STRING_ARRAY(Options, names)
 WIDGET_INT(Row, uint16_t, spacing)
 WIDGET_INT(Row, TUIRowPositioning, positioning)
 
-static void ElementStarted(const char* name, XMLAttribute *attr, int length) {
-  printf("start %s %p %i\n", name, attr, length);
-}
-static void ElementEnded(const char* name) {}
-
-static MFUN(tui_xml_parse) {
-  const m_str data = STRING(*(M_Object*)MEM(0));
-  puts(data);
-  xml_parse(data, ElementStarted, ElementEnded);
-}
+//#define USER_BUFFER(o)    *(void**)((o)->datat + sizeof(TUIWidget))
+//#define USER_SHRED(o)    *(void**)((o)->datat + sizeof(TUIWidget) + SZ_INT)
+//  tui_buffer_markup(buffer, attr, *(size_t*)MEM(SZ_INT*2),
+//                       *(size_t*)MEM(SZ_INT*3), *(size_t)MEM(SZ_INT*4))
+//static MFUN(user_write) {
+//  tui_buffer_write(*(TUIBuffer**)MEM(SZ_INT), STRING(*(M_Object*)MEM(SZ_INT*2)),
+//    *(size_t*)MEM(SZ_INT*3), *(size_t*)MEM(SZ_INT*4));
+//}
 
 #define TUI_INI(name, parent)                                         \
   DECL_OB(const Type, t_##name, = gwi_class_ini(gwi, #name, #parent)) \
@@ -338,43 +443,57 @@ GWION_IMPORT(TUI) {
   DECL_OB(const Type, t_tui, = gwi_class_ini(gwi, "TUI", "Object"))
   t_tui->nspc->info->class_data_size += sizeof(struct TUIMeta);
 
-    DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"))
+    DECL_OB(const Type, t_attribute, = gwi_struct_ini(gwi, "Attribute"))
+    t_attribute->nspc->info->class_data_size += sizeof(struct TUIMeta);
+    GWI_BB(gwi_enum_ini(gwi, "attribute"))
+    GWI_BB(gwi_enum_add(gwi, "system", 0))
+    GWI_BB(gwi_enum_add(gwi, "normal", 0))
+    GWI_BB(gwi_enum_add(gwi, "normalActive", 0))
+    GWI_BB(gwi_enum_add(gwi, "background", 0))
+    GWI_BB(gwi_enum_add(gwi, "backgroundActive", 0))
+    GWI_BB(gwi_enum_end(gwi))
+    GWI_BB(gwi_struct_end(gwi))
 
+    DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"))
+    SET_FLAG(t_widget, abstract);
+    t_widget->nspc->info->offset += sizeof(TUIWidget);
     GWI_BB(gwi_fptr_ini(gwi, "void", "FunType"))
     GWI_BB(gwi_func_arg(gwi, "TUI.Widget", "widget"))
     GWI_BB(gwi_fptr_end(gwi, ae_flag_global))
 
-    t_widget->nspc->info->offset += sizeof(TUIWidget);
-    gwi_class_xtor(gwi, WidgetCtor, NULL);
     GWI_BB(gwi_func_ini(gwi, "void", "callback"))
     GWI_BB(gwi_func_arg(gwi, "int", "key"))
     GWI_BB(gwi_func_arg(gwi, "FunType", "func"))
     GWI_BB(gwi_func_end(gwi, WidgetCallback, ae_flag_none))
     GWI_BB(gwi_class_end(gwi))
 
-    TUI_INI(Label, Widget)
+    DECL_OB(const Type, t_twidget, = gwi_class_ini(gwi, "TuiWidget", "Widget"))
+    gwi_class_xtor(gwi, WidgetCtor, NULL);
+    GWI_BB(gwi_class_end(gwi))
+
+    TUI_INI(Label, TuiWidget)
     TUI_FUNC(Label, string, text)
     TUI_END(Label, label)
 
-    TUI_INI(Button, Widget)
+    TUI_INI(Button, TuiWidget)
     TUI_FUNC(Button, string, text)
     TUI_FUNC(Button, int, timeout)
     TUI_END(Button, button)
 
-    TUI_INI(Toggle, Widget)
+    TUI_INI(Toggle, TuiWidget)
     TUI_FUNC(Toggle, bool, state)
     TUI_FUNC(Toggle, string, text)
     TUI_END(Toggle, toggle)
 
-    TUI_INI(Check, Widget)
+    TUI_INI(Check, TuiWidget)
     TUI_FUNC(Check, bool, state)
     TUI_END(Check, check)
 
-    TUI_INI(Sep, Widget)
+    TUI_INI(Sep, TuiWidget)
     TUI_FUNC(Sep, char, c)
     TUI_END(Sep, sep)
 
-    TUI_INI(Slider, Widget)
+    TUI_INI(Slider, TuiWidget)
     TUI_FUNC(Slider, float, value)
     TUI_FUNC(Slider, float, min)
     TUI_FUNC(Slider, float, max)
@@ -393,7 +512,7 @@ GWION_IMPORT(TUI) {
     TUI_FUNC(Slider, Display, dis) // should be enum
     TUI_END(Slider, slider)
 
-    TUI_INI(Options, Widget)
+    TUI_INI(Options, TuiWidget)
     GWI_BB(gwi_enum_ini(gwi, "SelectionType"))
     GWI_BB(gwi_enum_add(gwi, "Multiple", TUIOptionsSelectionTypeMultiple))
     GWI_BB(gwi_enum_add(gwi, "Singular", TUIOptionsSelectionTypeSingular))
@@ -403,7 +522,7 @@ GWION_IMPORT(TUI) {
     TUI_FUNC(Options, SelectionType, selections)
     TUI_END(Options, options)
 
-    TUI_INI(Row, Widget)
+    TUI_INI(Row, TuiWidget)
     t_Row->nspc->info->offset += SZ_INT*2;
     gwi_class_xtor(gwi, RowCtor, NULL);
     TUI_FUNC(Row, int, spacing)
@@ -421,17 +540,55 @@ GWION_IMPORT(TUI) {
     gwi_class_xtor(gwi, win_ctor, win_dtor);
     GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "parse"))
-  GWI_BB(gwi_func_arg(gwi, "string", "data"))
-  GWI_BB(gwi_func_end(gwi, tui_xml_parse, ae_flag_static))
+//    TUI_INI(User, Widget)
+    DECL_OB(const Type, t_user, = gwi_class_ini(gwi, "User", "Widget"))
+    gwi_class_xtor(gwi, UserCtor, UserDtor);
+    SET_FLAG(t_user, abstract);
+       GWI_BB(gwi_func_ini(gwi, "void", "draw"))
+//       GWI_BB(gwi_func_arg(gwi, "int", "y"))
+//       GWI_BB(gwi_func_arg(gwi, "int", "x"))
+       GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_abstract))
+
+       GWI_BB(gwi_func_ini(gwi, "void", "size"))
+       GWI_BB(gwi_func_arg(gwi, "int", "y"))
+       GWI_BB(gwi_func_arg(gwi, "int", "x"))
+       GWI_BB(gwi_func_end(gwi, user_position, ae_flag_none))
+/*
+         DECL_OB(const Type, t_buffer, = gwi_mk_type(gwi, "Buffer", SZ_INT, NULL))
+         SET_FLAG(t_buffer, abstract);
+         gwi_add_type(gwi, t_buffer);
+*/
+
+//         DECL_OB(const Type, t_attribute, = gwi_mk_type(gwi, "Attribute", SZ_INT, NULL))
+//         gwi_add_type(gwi, t_attribute);
+
+
+       GWI_BB(gwi_func_ini(gwi, "void", "write"))
+       GWI_BB(gwi_func_arg(gwi, "string", "content"))
+       GWI_BB(gwi_func_arg(gwi, "int", "y"))
+       GWI_BB(gwi_func_arg(gwi, "int", "x"))
+       GWI_BB(gwi_func_end(gwi, user_write, ae_flag_protect))
+
+       GWI_BB(gwi_func_ini(gwi, "void", "markup"))
+       GWI_BB(gwi_func_arg(gwi, "Attribute.attribute", "attr"))
+       GWI_BB(gwi_func_arg(gwi, "int", "y"))
+       GWI_BB(gwi_func_arg(gwi, "int", "x"))
+       GWI_BB(gwi_func_arg(gwi, "int", "height"))
+       GWI_BB(gwi_func_end(gwi, user_markup, ae_flag_protect))
+
+//    t_user->nspc->info->offset += SZ_INT*3;
+//    TUI_FUNC(Window, string, title)
+//    gwi_class_xtor(gwi, win_ctor, win_dtor);
+//    set_tflag(t_user, tflag_abstract);
+    GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_class_end(gwi))
 
 
-    GWI_BB(gwi_oper_ini(gwi, "TUI.Window", "TUI.Widget", "TUI.Window"))
-    GWI_BB(gwi_oper_end(gwi, "<<", window_append))
-    GWI_BB(gwi_oper_ini(gwi, "TUI.Row", "TUI.Widget", "TUI.Row"))
-    GWI_BB(gwi_oper_end(gwi, "<<", row_append))
+  GWI_BB(gwi_oper_ini(gwi, "TUI.Window", "TUI.Widget", "TUI.Window"))
+  GWI_BB(gwi_oper_end(gwi, "<<", window_append))
+  GWI_BB(gwi_oper_ini(gwi, "TUI.Row", "TUI.Widget", "TUI.Row"))
+  GWI_BB(gwi_oper_end(gwi, "<<", row_append))
 // remove
 // insert
   return GW_OK;
