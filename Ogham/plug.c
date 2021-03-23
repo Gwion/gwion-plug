@@ -178,7 +178,7 @@ static INSTR(ogham_add_notes) {
   ogh_note_t notes[sz];
   for(m_uint i = 0; i < sz; i++) {
     const M_Object o = *(M_Object*)(ARRAY_PTR((array)) + ((i) * SZ_INT));
-tcol_printf("{-Y}%s{0}:", __func__);
+tcol_printf("{-Y}[%s]{0}", __func__);
 ogh_note_dump(stdout, &NOTE(o));
 putc('\n', stdout);
 //    debug(__func__, NOTE(o));
