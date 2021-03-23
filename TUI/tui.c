@@ -120,6 +120,11 @@ static MFUN(Window_title_get) {
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, (m_str)win->menu.title);
 }
 
+static MFUN(window_position) {
+  TUIWindow *win = WINDOW(o);
+  win->total= TUIRectMake(0, 0, *(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2));
+}
+
 bool tui_window_select(TUIWindow* window, ssize_t (*array_func)(TUIWidgets*), TUIEvent event);
 
 static INSTR(window_append) {
@@ -203,8 +208,6 @@ static TUI_ACTIVATE(TUIUser) {
   TUIUser* user = widget->user_data;
   VM_Shred shred = user->activate_shred;
   *(M_Object*)MEM(0) = user->o;
-//printf("%u %u\n", event.keycode, event.intent);
-printf("%u %u\n", TUIEventIntentEnter, event.intent);exit(12);
   *(m_uint*)MEM(SZ_INT) = event.keycode;
   *(m_uint*)MEM(SZ_INT*2) = event.intent;
   shred->pc = 0;
@@ -627,6 +630,11 @@ GWION_IMPORT(TUI) {
     DECL_OB(const Type, t_window, = gwi_class_ini(gwi, "Window", "Event"))
     t_window->nspc->info->offset += SZ_INT*3;
     TUI_FUNC(Window, string, title)
+    GWI_BB(gwi_func_ini(gwi, "void", "size"))
+    GWI_BB(gwi_func_arg(gwi, "int", "x"))
+    GWI_BB(gwi_func_arg(gwi, "int", "y"))
+    GWI_BB(gwi_func_end(gwi, window_position, ae_flag_none))
+
     gwi_class_xtor(gwi, win_ctor, win_dtor);
     GWI_BB(gwi_class_end(gwi))
 
