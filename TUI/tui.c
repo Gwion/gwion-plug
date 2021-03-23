@@ -42,16 +42,18 @@ struct TUIMeta {
 #include <signal.h>
 static volatile int grun = 1;
 void ctrlc(int _NUSED) {
-  --grun;
-  THREAD_RETURN();
+  grun = 0;
+  pthread_exit(NULL);
+//  return;
+//  THREAD_RETURN();
 }
-
+#include "shreduler_private.h"
 void* tui_func(void* arg) {
 signal(SIGINT, ctrlc);
   struct TUIMeta* meta = (struct TUIMeta*)arg;
   const int timeout_msecs = 12;
   TUIEvent event = {};
-  while (meta->running) {
+  while (grun && meta->running) {
     vm_run(meta->vm);
     for(short i = 0; i < meta->wstack.count; i++)
       tui_window_draw(&meta->buffer, &meta->wstack.windows[i]);
@@ -142,7 +144,9 @@ typedef struct TUIUser {
   TUIRect region;
   M_Object o;
   VM *vm;
-  VM_Shred shred;
+  VM_Shred draw_shred;
+  VM_Shred activate_shred;
+  VM_Shred select_shred;
 } TUIUser;
 
 #define USER_WIDGET(o) ((TUIUser*)WIDGET((o)).user_data)
@@ -161,7 +165,7 @@ static TUI_SIZE(TUIUser) {
 // set arguments in memory
 static TUI_DRAW(TUIUser) {
   TUIUser* user = widget->user_data;
-  VM_Shred shred = user->shred;
+  VM_Shred shred = user->draw_shred;
   user->region = region;
   *(M_Object*)MEM(0) = user->o;
   shred->pc = 0;
@@ -173,13 +177,44 @@ static TUI_DRAW(TUIUser) {
 }
 
 static TUI_SELECT(TUIUser) {
-  // should call user *select* function
-  widget->is_selected = !!widget->is_selected;//
+  TUIUser* user = widget->user_data;
+  VM_Shred shred = user->select_shred;
+//  user->region = region;
+  *(M_Object*)MEM(0) = user->o;
+  *(m_uint*)MEM(SZ_INT) = event.keycode;
+  *(m_uint*)MEM(SZ_INT*2) = event.intent;
+  shred->pc = 0;
+  ++shred->info->me->ref;
+  vmcode_addref(shred->code);
+  shreduler_remove(user->vm->shreduler, shred, 0);
+  shredule(user->vm->shreduler, shred, 0);
+  vm_run(user->vm);
 }
+
+static MFUN(WidgetSetIsSelected) {
+  *(m_uint*)RETURN = WIDGET(o).is_selected = *(m_uint*)MEM(SZ_INT);
+}
+
+static MFUN(WidgetGetIsSelected) {
+  *(m_uint*)RETURN = WIDGET(o).is_selected;
+}
+
 static TUI_ACTIVATE(TUIUser) {
-  // should call user *activate* function
-//  exit(5);
+  TUIUser* user = widget->user_data;
+  VM_Shred shred = user->activate_shred;
+  *(M_Object*)MEM(0) = user->o;
+//printf("%u %u\n", event.keycode, event.intent);
+printf("%u %u\n", TUIEventIntentEnter, event.intent);exit(12);
+  *(m_uint*)MEM(SZ_INT) = event.keycode;
+  *(m_uint*)MEM(SZ_INT*2) = event.intent;
+  shred->pc = 0;
+  ++shred->info->me->ref;
+  vmcode_addref(shred->code);
+  shreduler_remove(user->vm->shreduler, shred, 0);
+  shredule(user->vm->shreduler, shred, 0);
+  vm_run(user->vm);
 }
+
 static TUI_DESTROY(TUIUser) {
   // ignore this
 }
@@ -200,18 +235,38 @@ static CTOR(UserCtor) {
   USER_WIDGET(o)->vm = meta->vm;
   USER_WIDGET(o)->buffer = &meta->buffer;
   // catch the *draw* function
-  const Func func = (Func)vector_at(&o->vtable, 3);
-  VM_Code code = vmcode_callback(gwion->mp, func->code);
+  const Func draw_func = (Func)vector_at(&o->vtable, 5);
+  VM_Code draw_code = vmcode_callback(gwion->mp, draw_func->code);
   USER_WIDGET(o)->o = o;
-  USER_WIDGET(o)->shred = new_vm_shred(gwion->mp, code);
-  vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->shred);
-  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->shred, 0);
+  USER_WIDGET(o)->draw_shred = new_vm_shred(gwion->mp, draw_code);
+  USER_WIDGET(o)->draw_shred->base = shred->base;
+  vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->draw_shred);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->draw_shred, 0);
+  const Func on_func = (Func)vector_at(&o->vtable, 6);
+  VM_Code on_code = vmcode_callback(gwion->mp, on_func->code);
+  USER_WIDGET(o)->activate_shred = new_vm_shred(gwion->mp, on_code);
+  USER_WIDGET(o)->activate_shred->base = shred->base;
+  vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->activate_shred);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->activate_shred, 0);
+  const Func select_func = (Func)vector_at(&o->vtable, 7);
+  VM_Code select_code = vmcode_callback(gwion->mp, select_func->code);
+  USER_WIDGET(o)->select_shred = new_vm_shred(gwion->mp, select_code);
+  USER_WIDGET(o)->select_shred->base = shred->base;
+  vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->select_shred);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->select_shred, 0);
 }
 
 static CTOR(UserDtor) {
   TUIUser *user = USER_WIDGET(o);
-  vmcode_remref(user->shred->code, user->vm->gwion);
-  free_vm_shred(user->shred);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->draw_shred, 0);
+  vmcode_remref(user->draw_shred->code, user->vm->gwion);
+  free_vm_shred(user->draw_shred);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->activate_shred, 0);
+  vmcode_remref(user->activate_shred->code, user->vm->gwion);
+  free_vm_shred(user->activate_shred);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->select_shred, 0);
+  vmcode_remref(user->select_shred->code, user->vm->gwion);
+  free_vm_shred(user->select_shred);
 }
 
 static MFUN(user_position) {
@@ -239,6 +294,15 @@ static MFUN(user_markup) {
     attr = TUIActivatedAttribute;
   tui_buffer_markup(user->buffer, attr, user->region.x + *(m_uint*)MEM(SZ_INT*2),
     user->region.y + *(size_t*)MEM(SZ_INT*3), *(size_t*)MEM(SZ_INT*4));
+}
+
+static MFUN(user_set_no_select) {
+  WIDGET(o).select = *(m_uint*)MEM(SZ_INT) ? (void*)1 : TUIUser_select;
+  *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
+}
+
+static MFUN(user_get_no_select) {
+  *(m_uint*)RETURN = WIDGET(o).select == (void*)1;
 }
 
 static CTOR(WidgetCtor) {
@@ -443,8 +507,7 @@ GWION_IMPORT(TUI) {
   DECL_OB(const Type, t_tui, = gwi_class_ini(gwi, "TUI", "Object"))
   t_tui->nspc->info->class_data_size += sizeof(struct TUIMeta);
 
-    DECL_OB(const Type, t_attribute, = gwi_struct_ini(gwi, "Attribute"))
-    t_attribute->nspc->info->class_data_size += sizeof(struct TUIMeta);
+    GWI_OB(gwi_struct_ini(gwi, "Attribute"))
     GWI_BB(gwi_enum_ini(gwi, "attribute"))
     GWI_BB(gwi_enum_add(gwi, "system", 0))
     GWI_BB(gwi_enum_add(gwi, "normal", 0))
@@ -453,6 +516,25 @@ GWION_IMPORT(TUI) {
     GWI_BB(gwi_enum_add(gwi, "backgroundActive", 0))
     GWI_BB(gwi_enum_end(gwi))
     GWI_BB(gwi_struct_end(gwi))
+
+  //  GWI_OB(gwi_struct_ini(gwi, "Intent"))
+    GWI_BB(gwi_enum_ini(gwi, "Intent"))
+    GWI_BB(gwi_enum_add(gwi, "None", TUIEventIntentNone))
+    GWI_BB(gwi_enum_add(gwi, "Meta", TUIEventIntentMeta))
+    GWI_BB(gwi_enum_add(gwi, "Enter", TUIEventIntentEnter))
+    GWI_BB(gwi_enum_add(gwi, "Leave", TUIEventIntentLeave))
+    GWI_BB(gwi_enum_add(gwi, "Activate", TUIEventIntentActivate))
+    GWI_BB(gwi_enum_add(gwi, "Left", TUIEventIntentLeft))
+    GWI_BB(gwi_enum_add(gwi, "Right", TUIEventIntentRight))
+    GWI_BB(gwi_enum_add(gwi, "Back", TUIEventIntentBack))
+    GWI_BB(gwi_enum_add(gwi, "Forward", TUIEventIntentForward))
+    GWI_BB(gwi_enum_add(gwi, "Previous", TUIEventIntentPrevious))
+    GWI_BB(gwi_enum_add(gwi, "Next", TUIEventIntentNext))
+    GWI_BB(gwi_enum_add(gwi, "First", TUIEventIntentFirst))
+    GWI_BB(gwi_enum_add(gwi, "Last", TUIEventIntentLast))
+    GWI_BB(gwi_enum_end(gwi))
+  //  GWI_BB(gwi_struct_end(gwi))
+
 
     DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"))
     SET_FLAG(t_widget, abstract);
@@ -465,6 +547,14 @@ GWION_IMPORT(TUI) {
     GWI_BB(gwi_func_arg(gwi, "int", "key"))
     GWI_BB(gwi_func_arg(gwi, "FunType", "func"))
     GWI_BB(gwi_func_end(gwi, WidgetCallback, ae_flag_none))
+
+    GWI_BB(gwi_func_ini(gwi, "bool", "is_selected"))
+    GWI_BB(gwi_func_arg(gwi, "bool", "_"))
+    GWI_BB(gwi_func_end(gwi, WidgetSetIsSelected, ae_flag_none))
+
+    GWI_BB(gwi_func_ini(gwi, "bool", "is_selected"))
+    GWI_BB(gwi_func_end(gwi, WidgetGetIsSelected, ae_flag_none))
+
     GWI_BB(gwi_class_end(gwi))
 
     DECL_OB(const Type, t_twidget, = gwi_class_ini(gwi, "TuiWidget", "Widget"))
@@ -549,10 +639,27 @@ GWION_IMPORT(TUI) {
 //       GWI_BB(gwi_func_arg(gwi, "int", "x"))
        GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_abstract))
 
+       GWI_BB(gwi_func_ini(gwi, "void", "activate"))
+       GWI_BB(gwi_func_arg(gwi, "int", "keycode"))
+       GWI_BB(gwi_func_arg(gwi, "TUI.Intent", "_"))
+       GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_abstract))
+
+       GWI_BB(gwi_func_ini(gwi, "void", "select"))
+       GWI_BB(gwi_func_arg(gwi, "int", "keycode"))
+       GWI_BB(gwi_func_arg(gwi, "TUI.Intent", "_"))
+       GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_abstract))
+
        GWI_BB(gwi_func_ini(gwi, "void", "size"))
-       GWI_BB(gwi_func_arg(gwi, "int", "y"))
        GWI_BB(gwi_func_arg(gwi, "int", "x"))
+       GWI_BB(gwi_func_arg(gwi, "int", "y"))
        GWI_BB(gwi_func_end(gwi, user_position, ae_flag_none))
+
+       GWI_BB(gwi_func_ini(gwi, "bool", "no_select"))
+       GWI_BB(gwi_func_arg(gwi, "bool", "state"))
+       GWI_BB(gwi_func_end(gwi, user_set_no_select, ae_flag_none))
+
+       GWI_BB(gwi_func_ini(gwi, "bool", "no_select"))
+       GWI_BB(gwi_func_end(gwi, user_get_no_select, ae_flag_none))
 /*
          DECL_OB(const Type, t_buffer, = gwi_mk_type(gwi, "Buffer", SZ_INT, NULL))
          SET_FLAG(t_buffer, abstract);
