@@ -14,7 +14,7 @@
 #include "import.h"
 #include "ugen.h"
 #include "array.h"
-#include "gack.h"
+#include "gwi.h"
 
 
 #include "buffer.h"
@@ -65,7 +65,6 @@ signal(SIGINT, ctrlc);
     }
     tui_screen_update();
   }
-//  free_vm(meta->vm);
   tui_screen_deconfigure(&meta->old_config);
   tui_buffer_destroy(&meta->buffer);
   return NULL;
@@ -499,7 +498,6 @@ WIDGET_INT(Row, TUIRowPositioning, positioning)
   GWI_BB(gwi_class_end(gwi))                             \
   *(m_str*)t_##name->nspc->info->class_data = #tuiclass; \
 
-#include "gwi.h"
 ANN static m_bool attr_object(const Gwi gwi, const Type t, const m_str name, const TUIAttribute attr) {
   const M_Object o = new_object(gwi->gwion->mp, NULL, t);
   *(TUIAttribute*)o->data = attr;
