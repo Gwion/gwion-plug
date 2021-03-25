@@ -14,6 +14,7 @@
 #include "import.h"
 #include "ugen.h"
 #include "array.h"
+#include "gack.h"
 
 
 #include "buffer.h"
@@ -43,9 +44,9 @@ struct TUIMeta {
 static volatile int grun = 1;
 void ctrlc(int _NUSED) {
   grun = 0;
-  pthread_exit(NULL);
+//  pthread_exit(NULL);
 //  return;
-//  THREAD_RETURN();
+  THREAD_RETURN();
 }
 #include "shreduler_private.h"
 void* tui_func(void* arg) {
@@ -64,7 +65,7 @@ signal(SIGINT, ctrlc);
     }
     tui_screen_update();
   }
-  free_vm(meta->vm);
+//  free_vm(meta->vm);
   tui_screen_deconfigure(&meta->old_config);
   tui_buffer_destroy(&meta->buffer);
   return NULL;
@@ -100,6 +101,7 @@ static DTOR(win_dtor) {
   if(!--meta->running) {
     pthread_cancel(meta->thread);
     pthread_detach(meta->thread);
+    free_vm(meta->vm);
   }
   win->widgets = (TUIWidgets){ 0, 0, NULL };
   struct Vector_ v = *(struct Vector_*)(o->data + SZ_INT);
@@ -285,17 +287,8 @@ static MFUN(user_write) {
 
 static MFUN(user_markup) {
   TUIUser *user = USER_WIDGET(o);
-  const m_uint e = *(m_uint*)MEM(SZ_INT);
-  TUIAttribute attr = TUIResetAttribute;
-  if(e == 1)
-    attr = TUINormalAttribute;
-  else if(e == 2)
-    attr = TUISelectedAttribute;
-  else if(e == 3)
-    attr = TUIBackgroundActivatedAttribute;
-  else if(e == 3)
-    attr = TUIActivatedAttribute;
-  tui_buffer_markup(user->buffer, attr, user->region.x + *(m_uint*)MEM(SZ_INT*2),
+  M_Object attr = *(M_Object*)MEM(SZ_INT);
+  tui_buffer_markup(user->buffer, *(TUIAttribute*)attr->data, user->region.x + *(m_uint*)MEM(SZ_INT*2),
     user->region.y + *(size_t*)MEM(SZ_INT*3), *(size_t*)MEM(SZ_INT*4));
 }
 
@@ -506,17 +499,95 @@ WIDGET_INT(Row, TUIRowPositioning, positioning)
   GWI_BB(gwi_class_end(gwi))                             \
   *(m_str*)t_##name->nspc->info->class_data = #tuiclass; \
 
+#include "gwi.h"
+ANN static m_bool attr_object(const Gwi gwi, const Type t, const m_str name, const TUIAttribute attr) {
+  const M_Object o = new_object(gwi->gwion->mp, NULL, t);
+  *(TUIAttribute*)o->data = attr;
+  GWI_BB(gwi_item_ini(gwi, "Attribute", name))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const | ae_flag_late, obj, o))
+}
+
+static SFUN(tui_attr0) {
+  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  *(TUIAttribute*)attr->data = (TUIAttribute) {
+      .foreground=*(TUIColor*)MEM(0)
+  };
+  *(M_Object*)RETURN = attr;
+}
+
+static SFUN(tui_attr1) {
+  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  *(TUIAttribute*)attr->data = (TUIAttribute) {
+      .foreground=*(TUIColor*)MEM(0),
+      .background=*(TUIColor*)MEM(SZ_INT),
+  };
+  *(M_Object*)RETURN = attr;
+}
+
+static SFUN(tui_attr2) {
+  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  *(TUIAttribute*)attr->data = (TUIAttribute) {
+      .foreground=*(TUIColor*)MEM(0),
+      .background=*(TUIColor*)MEM(SZ_INT),
+      .font_mode=*(TUIFontMode*)MEM(SZ_INT*2),
+  };
+  *(M_Object*)RETURN = attr;
+}
+
+static SFUN(tui_attr3) {
+  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  *(TUIAttribute*)attr->data = (TUIAttribute) {
+      .foreground=*(TUIColor*)MEM(0),
+      .background=*(TUIColor*)MEM(SZ_INT),
+      .font_mode=*(TUIFontMode*)MEM(SZ_INT*2),
+      .formatting=*(TUIFormatting*)MEM(SZ_INT*3),
+  };
+  *(M_Object*)RETURN = attr;
+}
+
 GWION_IMPORT(TUI) {
   DECL_OB(const Type, t_tui, = gwi_class_ini(gwi, "TUI", "Object"))
   t_tui->nspc->info->class_data_size += sizeof(struct TUIMeta);
 
-    GWI_OB(gwi_struct_ini(gwi, "Attribute"))
-    GWI_BB(gwi_enum_ini(gwi, "attribute"))
-    GWI_BB(gwi_enum_add(gwi, "system", 0))
-    GWI_BB(gwi_enum_add(gwi, "normal", 0))
-    GWI_BB(gwi_enum_add(gwi, "normalActive", 0))
-    GWI_BB(gwi_enum_add(gwi, "background", 0))
-    GWI_BB(gwi_enum_add(gwi, "backgroundActive", 0))
+    DECL_OB(const Type, t_attrs, = gwi_class_ini(gwi, "Attribute", NULL))
+    t_attrs->nspc->info->offset += sizeof(TUIAttribute);
+    CHECK_BB(attr_object(gwi, t_attrs, "reset", TUIResetAttribute))
+    CHECK_BB(attr_object(gwi, t_attrs, "normal", TUINormalAttribute))
+    CHECK_BB(attr_object(gwi, t_attrs, "selected", TUISelectedAttribute))
+    CHECK_BB(attr_object(gwi, t_attrs, "active", TUIActivatedAttribute))
+    CHECK_BB(attr_object(gwi, t_attrs, "backgroundActive", TUIBackgroundActivatedAttribute))
+
+    GWI_BB(gwi_class_end(gwi))
+
+    GWI_OB(gwi_struct_ini(gwi, "FontMode"))
+    GWI_BB(gwi_enum_ini(gwi, "fontmode"))
+    GWI_BB(gwi_enum_add(gwi, "normal", TUIFontModeNormal))
+    GWI_BB(gwi_enum_add(gwi, "bold", TUIFontModeBold))
+    GWI_BB(gwi_enum_add(gwi, "dim", TUIFontModeDim))
+    GWI_BB(gwi_enum_add(gwi, "reset", TUI_RESETATTRIBUTES))
+    GWI_BB(gwi_enum_end(gwi))
+    GWI_BB(gwi_struct_end(gwi))
+
+    GWI_OB(gwi_struct_ini(gwi, "Formatting"))
+    GWI_BB(gwi_enum_ini(gwi, "formatting"))
+    GWI_BB(gwi_enum_add(gwi, "none", TUIFormattingNone))
+    GWI_BB(gwi_enum_add(gwi, "underline", TUIFormattingUnderline))
+    GWI_BB(gwi_enum_add(gwi, "strikethrough", TUIFormattingStrikethrough))
+    GWI_BB(gwi_enum_add(gwi, "understrike", TUIFormattingUnderStrike))
+    GWI_BB(gwi_enum_end(gwi))
+    GWI_BB(gwi_struct_end(gwi))
+
+    GWI_OB(gwi_struct_ini(gwi, "Color"))
+    GWI_BB(gwi_enum_ini(gwi, "color"))
+    GWI_BB(gwi_enum_add(gwi, "black", TUIColorBlack))
+    GWI_BB(gwi_enum_add(gwi, "red", TUIColorRed))
+    GWI_BB(gwi_enum_add(gwi, "green", TUIColorGreen))
+    GWI_BB(gwi_enum_add(gwi, "yellow", TUIColorYellow))
+    GWI_BB(gwi_enum_add(gwi, "blue", TUIColorBlue))
+    GWI_BB(gwi_enum_add(gwi, "magenta", TUIColorMagenta))
+    GWI_BB(gwi_enum_add(gwi, "cyan", TUIColorCyan))
+    GWI_BB(gwi_enum_add(gwi, "white", TUIColorWhite))
+    GWI_BB(gwi_enum_add(gwi, "reset", TUIColorReset))
     GWI_BB(gwi_enum_end(gwi))
     GWI_BB(gwi_struct_end(gwi))
 
@@ -538,6 +609,27 @@ GWION_IMPORT(TUI) {
     GWI_BB(gwi_enum_end(gwi))
   //  GWI_BB(gwi_struct_end(gwi))
 
+    GWI_BB(gwi_func_ini(gwi, "Attribute", "attribute"))
+    GWI_BB(gwi_func_arg(gwi, "Color.color", "foreground"))
+    GWI_BB(gwi_func_end(gwi, tui_attr0, ae_flag_static))
+
+    GWI_BB(gwi_func_ini(gwi, "Attribute", "attribute"))
+    GWI_BB(gwi_func_arg(gwi, "Color.color", "foreground"))
+    GWI_BB(gwi_func_arg(gwi, "Color.color", "background"))
+    GWI_BB(gwi_func_end(gwi, tui_attr1, ae_flag_static))
+
+    GWI_BB(gwi_func_ini(gwi, "Attribute", "attribute"))
+    GWI_BB(gwi_func_arg(gwi, "Color.color", "foreground"))
+    GWI_BB(gwi_func_arg(gwi, "Color.color", "background"))
+    GWI_BB(gwi_func_arg(gwi, "FontMode", "fontmode"))
+    GWI_BB(gwi_func_end(gwi, tui_attr2, ae_flag_static))
+
+    GWI_BB(gwi_func_ini(gwi, "Attribute", "attribute"))
+    GWI_BB(gwi_func_arg(gwi, "Color.color", "foreground"))
+    GWI_BB(gwi_func_arg(gwi, "Color.color", "background"))
+    GWI_BB(gwi_func_arg(gwi, "FontMode", "fontmode"))
+    GWI_BB(gwi_func_arg(gwi, "Formatting", "format"))
+    GWI_BB(gwi_func_end(gwi, tui_attr3, ae_flag_static))
 
     DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"))
     SET_FLAG(t_widget, abstract);
@@ -685,7 +777,7 @@ GWION_IMPORT(TUI) {
        GWI_BB(gwi_func_end(gwi, user_write, ae_flag_protect))
 
        GWI_BB(gwi_func_ini(gwi, "void", "markup"))
-       GWI_BB(gwi_func_arg(gwi, "Attribute.attribute", "attr"))
+       GWI_BB(gwi_func_arg(gwi, "Attribute", "attr"))
        GWI_BB(gwi_func_arg(gwi, "int", "y"))
        GWI_BB(gwi_func_arg(gwi, "int", "x"))
        GWI_BB(gwi_func_arg(gwi, "int", "height"))
