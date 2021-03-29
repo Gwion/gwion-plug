@@ -5388,7 +5388,7 @@ static MFUN(gw_Wurley_noteOn) {
 }
 
 m_bool CPPIMPORT(Gwi gwi) {
-  CHECK_BB(gwi_struct_ini(gwi, (m_str)"stk"))
+  CHECK_OB(gwi_struct_ini(gwi, (m_str)"stk"))
   
   gwi_typedef_ini(gwi, (m_str)"float", (m_str)"StkFloat");
   gwi_typedef_end(gwi, ae_flag_none);
@@ -5587,7 +5587,7 @@ m_bool CPPIMPORT(Gwi gwi) {
   CHECK_BB(gwi_enum_add(gwi, (m_str)"SUSTAIN", (m_uint)stk::ADSR::SUSTAIN))
   CHECK_BB(gwi_enum_add(gwi, (m_str)"RELEASE", (m_uint)stk::ADSR::RELEASE))
   CHECK_BB(gwi_enum_add(gwi, (m_str)"IDLE", (m_uint)stk::ADSR::IDLE))
-  CHECK_BB(gwi_enum_end(gwi))
+  CHECK_OB(gwi_enum_end(gwi))
   
   CHECK_BB(gwi_func_ini(gwi, "void", "keyOn"))
   CHECK_BB(gwi_func_end(gwi, gw_ADSR_keyOn, ae_flag_none))
@@ -6339,7 +6339,7 @@ m_bool CPPIMPORT(Gwi gwi) {
   CHECK_BB(gwi_enum_add(gwi, (m_str)"GRAIN_FADEIN", (m_uint)stk::Granulate::GRAIN_FADEIN))
   CHECK_BB(gwi_enum_add(gwi, (m_str)"GRAIN_SUSTAIN", (m_uint)stk::Granulate::GRAIN_SUSTAIN))
   CHECK_BB(gwi_enum_add(gwi, (m_str)"GRAIN_FADEOUT", (m_uint)stk::Granulate::GRAIN_FADEOUT))
-  CHECK_BB(gwi_enum_end(gwi))
+  CHECK_OB(gwi_enum_end(gwi))
   
   CHECK_BB(gwi_class_end(gwi))// Granulate
   
