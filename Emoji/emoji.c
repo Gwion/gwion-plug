@@ -22,6 +22,7 @@ static OP_CHECK(opck_emoji_ctor) {
     !check_exp(env, call->args) || isa(call->args->type, t_string) < 0)
       ERR_N(exp_self(call)->pos, _("Emoji require one string argument"))
   call->func->d.prim.d.var = insert_symbol("@Emojify");
+  call->func->type = NULL;
   CHECK_ON(check_exp(env, call->func))
   return t_string;
 }
