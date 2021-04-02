@@ -15,6 +15,7 @@ jobs:
     env:
       CC: gcc
       USE_LTO: 1 
+      AUTO_INSTALL_DEPS: 1
     runs-on: ${{ matrix.os }}
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
