@@ -39,7 +39,7 @@ jobs:
       if: ${{ matrix.os  != 'windows-latest' }}
       run: make
 
-    - name: Build Gwion
+    - name: Build
       if: ${{ matrix.os  == 'windows-latest' }}
       run: make
       env:
