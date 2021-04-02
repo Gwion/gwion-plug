@@ -35,11 +35,11 @@ jobs:
 
     - name: Build
       if: ${{ matrix.os  != 'windows-latest' }}
-      run: make AUTO_INSTALL_DEPS=1
+      run: make
 
     - name: Build Gwion
       if: ${{ matrix.os  == 'windows-latest' }}
-      run: make AUTO_INSTALL_DEPS=1
+      run: make
       env:
         USE_LTO: 0
         BUILD_ON_WINDOWS: 1 
