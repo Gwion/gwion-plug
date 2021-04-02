@@ -25,9 +25,20 @@ jobs:
       if: ${{ matrix.os  != 'windows-latest' }}
       uses: ./.github/workflows/gwion
 
-    - name: Build
+    - name: Build Gwion
       if: ${{ matrix.os  == 'windows-latest' }}
       uses: ./.github/workflows/gwion
+      env:
+        USE_LTO: 0
+        BUILD_ON_WINDOWS: 1 
+
+    - name: Build
+      if: ${{ matrix.os  != 'windows-latest' }}
+      run: make AUTO_INSTALL_DEPS=1
+
+    - name: Build Gwion
+      if: ${{ matrix.os  == 'windows-latest' }}
+      run: make AUTO_INSTALL_DEPS=1
       env:
         USE_LTO: 0
         BUILD_ON_WINDOWS: 1 
