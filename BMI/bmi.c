@@ -131,6 +131,11 @@ static SFUN(gwbmi_from_file) {
   fclose(f);
 }
 
+static INSTR(gwbmi_color_assign) {
+  POP_REG(shred, sizeof(bmi_component));
+  *(bmi_component*)REG(-sizeof(bmi_component)) = *(bmi_component*)REG(0);
+}
+
 GWION_IMPORT(BMI) {
   DECL_OB(const Type, t_bmi, = gwi_class_ini(gwi, "BMI", "Object"))
   gwi_class_xtor(gwi, bmi_ctor, bmi_dtor);
@@ -265,5 +270,9 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
+
+  GWI_BB(gwi_oper_ini(gwi, "BMI.Color", "BMI.Color", "BMI.Color"))
+  GWI_BB(gwi_oper_add(gwi, opck_rassign))
+  GWI_BB(gwi_oper_end(gwi, "=>", gwbmi_color_assign))
   return GW_OK;
 }
