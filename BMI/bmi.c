@@ -116,17 +116,23 @@ static SFUN(gwbmi_create) {
   const m_uint width = *(m_uint*)MEM(0);
   const m_uint height = *(m_uint*)MEM(SZ_INT);
   const m_uint flags = *(m_uint*)MEM(SZ_INT*2);
+  bmi_buffer *buffer = bmi_buffer_new(width, height, flags);
+  if(!buffer)
+    Except(shred, "[{+R}BMI{0}] can't create buffer.")
   const M_Object ret = new_object_str(shred->info->vm->gwion, shred, "BMI");
-  *(bmi_buffer**)ret->data = bmi_buffer_new(width, height, flags);
-  const size_t sz = bmi_buffer_content_size(*(bmi_buffer**)ret->data);
-  memset((*(bmi_buffer**)ret->data)->contents, 0, sz);
+  *(bmi_buffer**)ret->data = buffer;
+  const size_t sz = bmi_buffer_content_size(buffer);
+  memset(buffer->contents, 0, sz);
   *(M_Object*)RETURN = ret;
 }
 
 static SFUN(gwbmi_from_file) {
   FILE *f = fopen(STRING(*(M_Object*)MEM(SZ_INT)), "w");
+  bmi_buffer* buffer = bmi_buffer_from_file(f);
+  if(!buffer)
+    Except(shred, "[{+R}BMI{0}] can't open file.")
   const M_Object ret = new_object_str(shred->info->vm->gwion, shred, "BMI");
-  *(bmi_buffer**)ret->data = bmi_buffer_from_file(f);
+  *(bmi_buffer**)ret->data = buffer;
   *(M_Object*)RETURN = ret;
   fclose(f);
 }
