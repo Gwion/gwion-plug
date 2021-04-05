@@ -1,0 +1,25 @@
+#require BMI
+
+BMI.create(256, 256, 0) => const auto bmi;
+#! buffer check should be in constructor
+#! and throw an exception
+
+#! we'll have a constructor, but for now ...
+fun BMI.Rect mk_rect(const int x, const int y, const int w, const int h) {
+  const BMI.Rect rect;
+  x => rect.x;
+  y => rect.y;
+  w => rect.w;
+  h => rect.h;
+  return rect;
+}
+
+bmi.fill_rect(mk_rect(0, 0, 256, 256), BMI.newRGB(255, 255, 0));
+bmi.fill_rect(mk_rect(32, 32, 48, 48), BMI.newRGB(0, 0, 0));
+bmi.fill_rect(mk_rect(176, 32, 48, 48), BMI.newRGB(0, 0, 0));
+bmi.fill_rect(mk_rect(32, 124, 48, 96), BMI.newRGB(0, 0, 0));
+bmi.fill_rect(mk_rect(180, 124, 48, 96), BMI.newRGB(0, 0, 0));
+bmi.fill_rect(mk_rect(32, 172, 196, 48), BMI.newRGB(0, 0, 0));
+
+
+bmi.to_ppm("test.ppm");
