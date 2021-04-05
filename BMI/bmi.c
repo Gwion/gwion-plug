@@ -35,9 +35,7 @@ static MFUN(gwbmi_newrgb) {
   const m_uint r = *(m_uint*)MEM(0);
   const m_uint g = *(m_uint*)MEM(SZ_INT);
   const m_uint b = *(m_uint*)MEM(SZ_INT*2);
-printf("rgb %u %u %u\n", r,g,b);
   *(bmi_component*)RETURN = BMI_RGB(r,g,b);
-printf("component %u\n", *(bmi_component*)RETURN);
 }
 
 static MFUN(gwbmi_newgray) {
@@ -64,13 +62,8 @@ static MFUN(gwbmi_draw_point) {
 static MFUN(gwbmi_fill_rect) {
   const M_Object rect = *(M_Object*)MEM(SZ_INT);
   const m_uint pixel = *(m_uint*)MEM(SZ_INT*2);
-printf("red???? %u\n", pixel);
   const bmi_rect ret = GWI_RECT(rect);
-printf("%u %u %u %u\n", ret.x , ret.y, ret.w, ret.h);
-//  bmi_buffer_fill_rect(GWI_BMI(o), ret, pixel); I should check the buffe maybe?
-printf("buffer (fill_rect) %p\n", GWI_BMI(o));
   bmi_buffer_fill_rect(GWI_BMI(o), ret, pixel);
-//exit(3);
 }
 
 static MFUN(gwbmi_stroke_rect) {
@@ -122,14 +115,11 @@ static MFUN(gwbmi2bmp) {
 static SFUN(gwbmi_create) {
   const m_uint width = *(m_uint*)MEM(0);
   const m_uint height = *(m_uint*)MEM(SZ_INT);
-printf("height %lu\n", height);
   const m_uint flags = *(m_uint*)MEM(SZ_INT*2);
   const M_Object ret = new_object_str(shred->info->vm->gwion, shred, "BMI");
   *(bmi_buffer**)ret->data = bmi_buffer_new(width, height, flags);
-printf("buffer (create) %p\n", GWI_BMI(ret));
-printf("buffer (create) %p\n", *(bmi_buffer**)ret->data);
   const size_t sz = bmi_buffer_content_size(*(bmi_buffer**)ret->data);
-//  memset((*(bmi_buffer**)ret->data)->contents, 0, sz);
+  memset((*(bmi_buffer**)ret->data)->contents, 0, sz);
   *(M_Object*)RETURN = ret;
 }
 
@@ -180,8 +170,6 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_item_ini(gwi, "int", "grayscale"))
   GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_FL_IS_GRAYSCALE))
   GWI_BB(gwi_struct_end(gwi))
-
-printf("red %u\n",BMI_RGB_RED());
 
   DECL_OB(const Type, t_rgb, = gwi_struct_ini(gwi, "RGB"))
 // more colors :)
