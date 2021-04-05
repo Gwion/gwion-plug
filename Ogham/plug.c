@@ -81,7 +81,7 @@ static DTOR(player_dtor) {
 typedef struct {
   M_Vector array;
   m_uint idx;
-  m_float tempo;
+  double tempo;
 } Decoder;
 #define DEFAULT_TEMPO (1.0/64.0)
 
@@ -95,7 +95,7 @@ static inline void adjust(ogh_adjusted_note_t *dec, ogh_note_t* n, m_float tempo
   dec->real_offset = tempo * n->offset;
   dec->real_duration = tempo * n->duration;
   const uint midi = ogh_note_midi(n) + n->is_sharp + (n->octave + 1) *12;
-  dec->freq = note2freq(midi);
+  dec->freq = (m_float)note2freq(midi);
   dec->volume = n->volume / 128.0;
 }
 
