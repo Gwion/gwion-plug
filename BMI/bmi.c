@@ -127,6 +127,14 @@ static MFUN(gwbmi2bmp) {
   fclose(f);
 }
 
+static SFUN(gwbmi_color_blend) {
+  const m_uint c0 = *(m_uint*)MEM(0);
+  const uint32_t i0 = (*(m_float*)MEM(SZ_INT) * 256);
+  const m_uint c1 = *(m_uint*)MEM(SZ_INT+SZ_FLOAT);
+  const uint32_t i1 = (*(m_float*)MEM(SZ_INT*2+SZ_FLOAT) * 256);
+  bmi_rgb_blend(c0, i0, c1, i1);
+}
+
 static SFUN(gwbmi_create) {
   const m_uint width = *(m_uint*)MEM(0);
   const m_uint height = *(m_uint*)MEM(SZ_INT);
@@ -236,6 +244,13 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Cyan"))
   GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_CYAN()))
   GWI_BB(gwi_struct_end(gwi))
+
+  GWI_BB(gwi_func_ini(gwi, "Color", "blend"))
+  GWI_BB(gwi_func_arg(gwi, "Color", "color0"))
+  GWI_BB(gwi_func_arg(gwi, "float", "intensity0"))
+  GWI_BB(gwi_func_arg(gwi, "Color", "color1"))
+  GWI_BB(gwi_func_arg(gwi, "float", "intentsity1"))
+  GWI_BB(gwi_func_end(gwi, gwbmi_color_blend, ae_flag_static))
 
   DECL_OB(const Type, t_gry, = gwi_struct_ini(gwi, "Gray"))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "White"))
