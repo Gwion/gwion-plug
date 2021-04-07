@@ -1,0 +1,31 @@
+#require BMI
+
+BMI.create(256, 256, 0) => const auto bmi;
+
+#! we'll have a constructor, but for now ...
+fun BMI.Rect mk_rect(const int x, const int y, const int w, const int h) {
+  const BMI.Rect rect;
+  x => rect.x;
+  y => rect.y;
+  w => rect.w;
+  h => rect.h;
+  return rect;
+}
+
+
+bmi.fill_rect(mk_rect(0, 0, 256, 256), BMI.newRGB(0,0,0));
+#!bmi.stroke_rect(mk_rect(0, 0, 256, 256), 8,  BMI.newRGB(255, 0, 0));
+bmi.stroke_rect(mk_rect(0, 0, 256, 256), 8,  BMI.RGB.Red);
+bmi.stroke_rect(mk_rect(16, 16, 224, 224), 8,  BMI.newRGB(255, 128, 0));
+bmi.stroke_rect(mk_rect(16, 16, 224, 224), 8,  BMI.newRGB(255, 255, 0));
+bmi.stroke_rect(mk_rect(32, 32, 192, 192), 8,  BMI.newRGB(0, 255, 0));
+bmi.stroke_rect(mk_rect(48, 48, 160, 160), 8,  BMI.newRGB(0, 0, 255));
+bmi.stroke_rect(mk_rect(64, 64, 128, 128), 8,  BMI.newRGB(255, 0, 255));
+bmi.stroke_rect(mk_rect(80, 80, 96, 96), 8,  BMI.newRGB(0, 255, 255));
+bmi.stroke_rect(mk_rect(96, 96, 64, 64), 8,  BMI.newRGB(255, 255, 255));
+bmi.stroke_rect(mk_rect(112, 112, 32, 32), 8,  BMI.newRGB(128, 64, 32));
+
+
+
+bmi.to_ppm("stroke.ppm"); #! we'll test for success later
+#! (when we have result ig
