@@ -28,9 +28,10 @@ static OP_CHECK(opck_emoji_ctor) {
 }
 
 static SFUN(sfun) {
-  m_str in = STRING(*(M_Object*)MEM(0));
-  char out[strlen(in) + 1];
-  cmojify(in, out);
+  const m_str in = STRING(*(M_Object*)MEM(0));
+  const size_t sz = strlen(in);
+  char out[sz + 1];
+  cmojify(out, sz, in);
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, out);
 }
 
