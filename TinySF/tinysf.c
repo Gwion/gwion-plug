@@ -77,7 +77,7 @@ GWION_IMPORT(TinySF) {
   DECL_OB(const Type, t_tinysf, = gwi_class_ini(gwi, "TinySF", "UGen"))
   t_tinysf->nspc->info->offset += sizeof(struct tsf);
   gwi_class_xtor(gwi, NULL, tinysf_dtor);
-  SET_FLAG(t_tinysf, abstract)
+  SET_FLAG(t_tinysf, abstract);
 
   GWI_BB(gwi_func_ini(gwi, "void", "noteOn"))
   GWI_BB(gwi_func_arg(gwi, "int", "note"))
