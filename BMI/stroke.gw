@@ -14,7 +14,6 @@ fun BMI.Rect mk_rect(const int x, const int y, const int w, const int h) {
 
 
 bmi.fill_rect(mk_rect(0, 0, 256, 256), BMI.newRGB(0,0,0));
-#!bmi.stroke_rect(mk_rect(0, 0, 256, 256), 8,  BMI.newRGB(255, 0, 0));
 bmi.stroke_rect(mk_rect(0, 0, 256, 256), 8,  BMI.RGB.Red);
 bmi.stroke_rect(mk_rect(16, 16, 224, 224), 8,  BMI.newRGB(255, 128, 0));
 bmi.stroke_rect(mk_rect(16, 16, 224, 224), 8,  BMI.newRGB(255, 255, 0));

@@ -37,10 +37,15 @@ static MFUN(gwbmi_newgray) {
 #define GWI_POINT(o) \
   BMI_POINT(*(m_uint*)(o)->data, *(m_uint*)((o)->data + SZ_INT))
 
+static GACK(bmi_component_gack) {
+    const bmi_component c = *(bmi_component*)VALUE;
+    INTERP_PRINTF("%u", c)
+}
+
 static GACK(bmi_point_gack) {
     const M_Object o = *(M_Object*)VALUE;
     const bmi_point point = GWI_POINT(o);
-    INTERP_PRINTF("(x: %u, y: %u)\n", point.x, point.y)
+    INTERP_PRINTF("(x: %u, y: %u)", point.x, point.y)
 }
 
 static MFUN(gwbmi_draw_point) {
@@ -128,11 +133,11 @@ static MFUN(gwbmi2bmp) {
 }
 
 static SFUN(gwbmi_color_blend) {
-  const m_uint c0 = *(m_uint*)MEM(0);
-  const uint32_t i0 = (*(m_float*)MEM(SZ_INT) * 256);
-  const m_uint c1 = *(m_uint*)MEM(SZ_INT+SZ_FLOAT);
-  const uint32_t i1 = (*(m_float*)MEM(SZ_INT*2+SZ_FLOAT) * 256);
-  bmi_rgb_blend(c0, i0, c1, i1);
+  const bmi_component c0 = *(bmi_component*)MEM(0);
+  const m_float i0 = *(m_float*)MEM(sizeof(bmi_component));
+  const bmi_component c1 = *(bmi_component*)MEM(sizeof(bmi_component)+ SZ_FLOAT);
+  const m_float i1 = *(m_float*)MEM(sizeof(bmi_component)*2+SZ_FLOAT);
+  *(bmi_component*)RETURN = bmi_rgb_blend(c0, (uint32_t)(i0*256), c1, (uint32_t)(i1*256));
 }
 
 static SFUN(gwbmi_create) {
@@ -161,8 +166,10 @@ static SFUN(gwbmi_from_file) {
 }
 
 static INSTR(gwbmi_color_assign) {
-  POP_REG(shred, sizeof(bmi_component));
-  *(bmi_component*)REG(-sizeof(bmi_component)) = *(bmi_component*)REG(0);
+  POP_REG(shred, SZ_INT);
+  const bmi_component c = *(bmi_component*)REG(-sizeof(bmi_component));
+  **(bmi_component**)REG(0) = c;
+  *(bmi_component*)REG(-sizeof(bmi_component)) = c;
 }
 
 GWION_IMPORT(BMI) {
@@ -215,6 +222,7 @@ GWION_IMPORT(BMI) {
 // TODO: should inherit from component
   DECL_OB(const Type, t_color, = gwi_mk_type(gwi, "Color", sizeof(bmi_component), NULL))
   gwi_add_type(gwi, t_color);
+  gwi_gack(gwi, t_color, bmi_component_gack);
 
   DECL_OB(const Type, t_flag, = gwi_struct_ini(gwi, "Flag"))
   GWI_BB(gwi_item_ini(gwi, "int", "none"))
@@ -249,7 +257,7 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "Color", "color0"))
   GWI_BB(gwi_func_arg(gwi, "float", "intensity0"))
   GWI_BB(gwi_func_arg(gwi, "Color", "color1"))
-  GWI_BB(gwi_func_arg(gwi, "float", "intentsity1"))
+  GWI_BB(gwi_func_arg(gwi, "float", "intensity1"))
   GWI_BB(gwi_func_end(gwi, gwbmi_color_blend, ae_flag_static))
 
   DECL_OB(const Type, t_gry, = gwi_struct_ini(gwi, "Gray"))

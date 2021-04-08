@@ -1,8 +1,6 @@
 #require BMI
 
 BMI.create(256, 256, 0) => const auto bmi;
-#! buffer check should be in constructor
-#! and throw an exception
 
 #! we'll have a constructor, but for now ...
 fun BMI.Rect mk_rect(const int x, const int y, const int w, const int h) {
@@ -14,7 +12,7 @@ fun BMI.Rect mk_rect(const int x, const int y, const int w, const int h) {
   return rect;
 }
 
-bmi.fill_rect(mk_rect(0, 0, 256, 256),   BMI.newRGB(255, 255, 0));
+bmi.fill_rect(mk_rect(0, 0, 256, 256),   BMI.RGB.Yellow);
 
 
 BMI.newRGB(0, 0, 0) => const auto black;

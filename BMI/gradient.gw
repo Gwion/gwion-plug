@@ -1,0 +1,23 @@
+#require BMI
+
+#define SIZE 256
+
+BMI.create(SIZE, SIZE, 0) => const auto bmi;
+
+const BMI.Point matrix[SIZE][SIZE];
+
+BMI.newRGB(255, 0, 0) => const BMI.Color c0;
+BMI.newRGB(0, 0, 255) => const BMI.Color c1;
+
+foreach(x, points: matrix) {
+  foreach(y, point : points) {
+    x => point.x;
+    y => point.y;
+    x/(SIZE $ float) => const float i0;
+    1-y/(SIZE $ float) => const float i1;
+    BMI.blend(c0, i0, c1, i1) => const BMI.Color c;
+    bmi.draw_point(point, c);
+  }
+}
+
+bmi.to_ppm("gradient.ppm");
