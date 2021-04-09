@@ -12,6 +12,8 @@
 #include "array.h"
 #include "gwi.h"
 #include "gack.h"
+#include "traverse.h"
+#include "parse.h"
 
 #include "bmi.h"
 #include "bmi/tests.h"
@@ -37,6 +39,34 @@ static MFUN(gwbmi_newgray) {
 #define GWI_POINT(o) \
   BMI_POINT(*(m_uint*)(o)->data, *(m_uint*)((o)->data + SZ_INT))
 
+static INSTR(BMIPointCtor) {
+  POP_REG(shred, SZ_INT*2);
+  const m_uint x = *(m_uint*)REG(-SZ_INT);
+  const m_uint y = *(m_uint*)REG(0);
+  const M_Object point = new_object_str(shred->info->vm->gwion, shred, "BMI.Point");
+  *(m_uint*)(point->data) = x;
+  *(m_uint*)(point->data + SZ_INT) = y;
+  *(M_Object*)REG(-SZ_INT) = point;
+}
+
+#define POINT_CTOR_ERR _("BMI.Point constructor takes two `{+/}int{0}` arguments")
+static OP_CHECK(opck_bmi_point_ctor) {
+  Exp_Call *call = (Exp_Call*)data;
+  if(!call->args)
+      ERR_N(call->func->pos, POINT_CTOR_ERR);
+  CHECK_BN(check_exp(env, call->args))
+  Exp e = call->args;
+  int n = 0;
+  while(e) {
+    if(isa(e->type, env->gwion->type[et_int]) < 0 || ++n > 2)
+      ERR_N(e->pos, POINT_CTOR_ERR);
+    e = e->next;
+  }
+  if(n < 2)
+    ERR_N(call->func->pos, POINT_CTOR_ERR);
+  return actual_type(env->gwion, call->func->type);
+}
+
 static GACK(bmi_component_gack) {
     const bmi_component c = *(bmi_component*)VALUE;
     INTERP_PRINTF("%u", c)
@@ -61,10 +91,61 @@ static MFUN(gwbmi_draw_point) {
       *(m_uint*)((o)->data + SZ_INT*2), \
       *(m_uint*)((o)->data + SZ_INT*3))
 
+static INSTR(BMIRectCtor) {
+  POP_REG(shred, SZ_INT*4);
+  const m_uint x = *(m_uint*)REG(-SZ_INT);
+  const m_uint y = *(m_uint*)REG(0);
+  const m_uint w = *(m_uint*)REG(SZ_INT);
+  const m_uint h = *(m_uint*)REG(SZ_INT*2);
+  const M_Object rect = new_object_str(shred->info->vm->gwion, shred, "BMI.Rect");
+  *(m_uint*)(rect->data) = x;
+  *(m_uint*)(rect->data + SZ_INT) = y;
+  *(m_uint*)(rect->data + SZ_INT*2) = w;
+  *(m_uint*)(rect->data + SZ_INT*3) = h;
+  *(M_Object*)REG(-SZ_INT) = rect;
+}
+
+#define RECT_CTOR_ERR _("BMI.Rect constructor takes two `{+/}int{0}` arguments")
+static OP_CHECK(opck_bmi_rect_ctor) {
+  Exp_Call *call = (Exp_Call*)data;
+  if(!call->args)
+    ERR_N(call->func->pos, RECT_CTOR_ERR);
+  CHECK_BN(check_exp(env, call->args))
+  Exp e = call->args;
+  int n = 0;
+  while(e) {
+    if(isa(e->type, env->gwion->type[et_int]) < 0 || ++n > 4)
+      ERR_N(e->pos, POINT_CTOR_ERR);
+    e = e->next;
+  }
+  if(n < 4)
+    ERR_N(call->func->pos, POINT_CTOR_ERR);
+  return actual_type(env->gwion, call->func->type);
+}
+
+
 static GACK(bmi_rect_gack) {
     const M_Object o = *(M_Object*)VALUE;
     const bmi_rect rect = GWI_RECT(o);
-    INTERP_PRINTF("(x: %u, y: %u): %u by %u\n", rect.x, rect.y, rect.w, rect.h);
+    INTERP_PRINTF("(x: %u, y: %u): %u by %u\n", rect.x, rect.y, rect.width, rect.height);
+}
+
+
+static MFUN(gwbmi_get_pixel) {
+  const M_Object p = *(M_Object*)MEM(SZ_INT*2);
+  const bmi_pixel pixel = bmi_buffer_get_pixel(GWI_BMI(o), GWI_POINT(p));
+  if(pixel != BMI_PIXEL_INVALID)
+    *(bmi_pixel*)RETURN = pixel;
+  else {
+    const m_str error = (const m_str)bmi_last_error();
+    Except(shred, error);
+  }
+}
+
+static MFUN(gwbmi_overdraw) {
+  const M_Object region = *(M_Object*)MEM(SZ_INT);
+  const M_Object layer = *(M_Object*)MEM(SZ_INT*2);
+  *(m_int*)RETURN = bmi_buffer_overdraw_buffer(GWI_BMI(o), GWI_RECT(region), GWI_BMI(layer));
 }
 
 static MFUN(gwbmi_fill_rect) {
@@ -281,6 +362,15 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "Color", "color"))
   GWI_BB(gwi_func_end(gwi, gwbmi_draw_point, ae_flag_none))
 
+  GWI_BB(gwi_func_ini(gwi, "Color", "get"))
+  GWI_BB(gwi_func_arg(gwi, "Point", "point"))
+  GWI_BB(gwi_func_end(gwi, gwbmi_get_pixel, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "overdraw"))
+  GWI_BB(gwi_func_arg(gwi, "Rect", "region"))
+  GWI_BB(gwi_func_arg(gwi, "BMI", "layer"))
+  GWI_BB(gwi_func_end(gwi, gwbmi_overdraw, ae_flag_none))
+
   GWI_BB(gwi_func_ini(gwi, "void", "fill_rect"))
   GWI_BB(gwi_func_arg(gwi, "Rect", "rect"))
   GWI_BB(gwi_func_arg(gwi, "Color", "color"))
@@ -357,5 +447,14 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_oper_ini(gwi, "BMI.Color", "BMI.Color", "BMI.Color"))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
   GWI_BB(gwi_oper_end(gwi, "=>", gwbmi_color_assign))
+
+  GWI_BB(gwi_oper_ini(gwi, NULL, "BMI.Point", NULL))
+  GWI_BB(gwi_oper_add(gwi, opck_bmi_point_ctor))
+  GWI_BB(gwi_oper_end(gwi, "@ctor", BMIPointCtor))
+
+  GWI_BB(gwi_oper_ini(gwi, NULL, "BMI.Rect", NULL))
+  GWI_BB(gwi_oper_add(gwi, opck_bmi_rect_ctor))
+  GWI_BB(gwi_oper_end(gwi, "@ctor", BMIRectCtor))
+
   return GW_OK;
 }

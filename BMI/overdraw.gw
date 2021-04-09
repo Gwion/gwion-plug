@@ -1,0 +1,38 @@
+#require BMI
+#require Math
+
+#define SIZE 256
+
+BMI.create(SIZE, SIZE, 0) => const auto bmi;
+
+const BMI.Point matrix[SIZE][SIZE];
+
+const BMI.Rect rect;
+SIZE => rect.w;
+SIZE => rect.h;
+
+bmi.fill_rect(rect, BMI.newRGB(0,0,0));
+
+BMI.create(32, 32, 0) => const auto layer;
+const BMI.Rect rect0;
+32 => rect0.w => rect0.h;
+
+const BMI.Rect rect1;
+8 => rect1.x => rect1.y;
+16 => rect1.w => rect1.h;
+
+layer.fill_rect(rect0, BMI.newRGB(255, 0, 0));
+layer.fill_rect(rect1, BMI.newRGB(0, 255, 0));
+
+const BMI.Rect over;
+32 => over.x => over.y => over.w => over.h;
+bmi.overdraw(over, layer);
+196 => over.x;
+bmi.overdraw(over, layer);
+196 => over.y;
+bmi.overdraw(over, layer);
+32 => over.x;
+196 => over.y;
+bmi.overdraw(over, layer);
+
+bmi.to_ppm("overdraw.ppm");

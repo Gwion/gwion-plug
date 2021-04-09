@@ -9,6 +9,7 @@ LDFLAGS += -L$(shell dirname ${BMI_LIB})
 CFLAGS += -Ibmi/include
 endif
 
+CFLAGS += -D_BMI_PIXEL_NAMED_COMPONENT
 all: bmi.checklib ${NAME}.so
 
 include ../config_post.mk
