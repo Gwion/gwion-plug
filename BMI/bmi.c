@@ -75,10 +75,19 @@ static MFUN(gwbmi_fill_rect) {
 }
 
 static MFUN(gwbmi_stroke_rect) {
-  M_Object rect = *(M_Object*)MEM(SZ_INT);
-  m_uint t = *(m_uint*)MEM(SZ_INT*2);
-  m_uint pixel = *(m_uint*)MEM(SZ_INT*3);
+  const M_Object rect = *(M_Object*)MEM(SZ_INT);
+  const m_uint t = *(m_uint*)MEM(SZ_INT*2);
+  const m_uint pixel = *(m_uint*)MEM(SZ_INT*3);
   bmi_buffer_stroke_rect(GWI_BMI(o), GWI_RECT(rect), t, pixel);
+}
+
+static MFUN(gwbmi_stroke_line) {
+  const M_Object s = *(M_Object*)MEM(SZ_INT);
+  const M_Object e = *(M_Object*)MEM(SZ_INT*2);
+  const m_uint t = *(m_uint*)MEM(SZ_INT*3);
+  const m_uint color = *(bmi_component*)MEM(SZ_INT*4);
+  bmi_buffer_stroke_line(GWI_BMI(o), GWI_POINT(s),
+    GWI_POINT(e), t, color);
 }
 
 static MFUN(gwbmi_rect_inset) {
@@ -282,6 +291,13 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "int", "t"))
   GWI_BB(gwi_func_arg(gwi, "Color", "color"))
   GWI_BB(gwi_func_end(gwi, gwbmi_stroke_rect, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "void",  "stroke_line"))
+  GWI_BB(gwi_func_arg(gwi, "Point", "start"))
+  GWI_BB(gwi_func_arg(gwi, "Point", "end"))
+  GWI_BB(gwi_func_arg(gwi, "int",   "thickness"))
+  GWI_BB(gwi_func_arg(gwi, "Color", "color"))
+  GWI_BB(gwi_func_end(gwi, gwbmi_stroke_line, ae_flag_none))
 
   GWI_BB(gwi_item_ini(gwi, "int", "member"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
