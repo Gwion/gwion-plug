@@ -198,7 +198,7 @@ static OP_CHECK(opck_player_ctor) {
   const Type t = actual_type(env->gwion, call->func->type);
   const Type player = get_player_type(env->gwion, t);
   if(!call->args || call->args->next ||
-     !check_exp(env, call->args) || isa(call->args->type, player->info->owner_class) < 0)
+     !check_exp(env, call->args) || isa(call->args->type, player->info->value->from->owner_class) < 0)
     ERR_N(call->func->pos, "Ogham.Player constructor requires one "
          "and only one 'Ogham' argument")
   return t; // return event?

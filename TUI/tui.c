@@ -70,7 +70,7 @@ signal(SIGINT, ctrlc);
   return NULL;
 }
 
-#define GET_META(o) (&*(struct TUIMeta*)(o->type_ref->info->owner_class->nspc->info->class_data))
+#define GET_META(o) (&*(struct TUIMeta*)(o->type_ref->info->value->from->owner_class->nspc->info->class_data))
 
 #define WINDOW(a) (*(TUIWindow**)(a->data + SZ_INT*3))
 #define WIDGET(a) (*(TUIWidget*)(a->data + SZ_INT))

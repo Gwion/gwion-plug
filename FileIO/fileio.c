@@ -193,24 +193,8 @@ GWION_IMPORT(fileio) {
 
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "int",    "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", int_to_file))
-  GWI_BB(gwi_oper_ini(gwi, "float",  "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", float_to_file))
-  GWI_BB(gwi_oper_ini(gwi, "complex",  "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", complex_to_file))
-  GWI_BB(gwi_oper_ini(gwi, "polar",  "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", polar_to_file))
-  GWI_BB(gwi_oper_ini(gwi, "Vec3",  "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", vec3_to_file))
-  GWI_BB(gwi_oper_ini(gwi, "Vec4",  "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", vec4_to_file))
   GWI_BB(gwi_oper_ini(gwi,"string", "FileIO", "FileIO"))
   GWI_BB(gwi_oper_end(gwi, "=>", string_to_file))
-  GWI_BB(gwi_oper_ini(gwi,"Object", "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", object_to_file))
-  GWI_BB(gwi_oper_ini(gwi,"@null",  "FileIO", "FileIO"))
-  GWI_BB(gwi_oper_end(gwi, "=>", object_to_file))
   GWI_BB(gwi_oper_ini(gwi, "FileIO", "string", "string"))
   GWI_BB(gwi_oper_add(gwi, opck_const_rhs))
   GWI_BB(gwi_oper_end(gwi, "=>", file_to_string))
@@ -221,32 +205,24 @@ GWION_IMPORT(fileio) {
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
   GWI_BB(gwi_oper_end(gwi, "=>", file_to_float))
 
-  const Type t_cout = gwi_class_ini(gwi, "@Cout", "FileIO");
+  const Type t_internal = gwi_class_ini(gwi, "@FileIOInternal", "FileIO");
   gwi_class_xtor(gwi,  NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  const Type t_cerr = gwi_class_ini(gwi, "@Cerr", "FileIO");
-  gwi_class_xtor(gwi,  NULL, static_fileio_dtor);
-  GWI_BB(gwi_class_end(gwi))
-
-  const Type t_cin = gwi_class_ini(gwi, "@Cin", "FileIO");
-  gwi_class_xtor(gwi, NULL, static_fileio_dtor);
-  GWI_BB(gwi_class_end(gwi))
-
-  const M_Object gw_cin = new_object(gwi->gwion->mp, NULL, t_cin);
+  const M_Object gw_cin = new_object(gwi->gwion->mp, NULL, t_internal);
   IO_FILE(gw_cin) = stdin;
   vector_init(&EV_SHREDS(gw_cin));
-  const M_Object gw_cout = new_object(gwi->gwion->mp, NULL, t_cout);
+  const M_Object gw_cout = new_object(gwi->gwion->mp, NULL, t_internal);
   IO_FILE(gw_cout) = stdout;
   vector_init(&EV_SHREDS(gw_cout));
-  const M_Object gw_cerr = new_object(gwi->gwion->mp, NULL, t_cerr);
+  const M_Object gw_cerr = new_object(gwi->gwion->mp, NULL, t_internal);
   IO_FILE(gw_cerr) = stderr;
   vector_init(&EV_SHREDS(gw_cerr));
-  gwi_item_ini(gwi, "FileIO", "cin");
+  gwi_item_ini(gwi, "@FileInternal", "cin");
   gwi_item_end(gwi, ae_flag_const, obj, gw_cin);
-  gwi_item_ini(gwi, "FileIO", "cout");
+  gwi_item_ini(gwi, "@FileInternal", "cout");
   gwi_item_end(gwi, ae_flag_const, obj, gw_cout);
-  gwi_item_ini(gwi, "FileIO", "cerr");
+  gwi_item_ini(gwi, "@FileInternal", "cerr");
   gwi_item_end(gwi, ae_flag_const, obj, gw_cerr);
   return GW_OK;
 }

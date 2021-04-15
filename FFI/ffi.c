@@ -217,10 +217,10 @@ static OP_CHECK(opck_ffi_ctor) {
   char _ret_name[64];
   sprintf(_ret_name, "FFIBASE.%s", ret_type->name);
   Type_Decl *td = str2td(env->gwion, _ret_name, call->func->pos);
-  Func_Base *fb = new_func_base(mp, td, insert_symbol(env->gwion->st, "call"), base, ae_flag_none);
+  Func_Base *fb = new_func_base(mp, td, insert_symbol(env->gwion->st, "call"), base, ae_flag_none, call->func->pos);
   if(variadic)
     set_fbflag(fb, fbflag_variadic);
-  Func_Def fdef = new_func_def(mp, fb, NULL, call->func->pos);
+  Func_Def fdef = new_func_def(mp, fb, NULL);
   Section * section = new_section_func_def(env->gwion->mp, fdef);
   Ast body = new_ast(env->gwion->mp, section, NULL);
 {
