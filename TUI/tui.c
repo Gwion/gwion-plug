@@ -67,6 +67,8 @@ signal(SIGINT, ctrlc);
   }
   tui_screen_deconfigure(&meta->old_config);
   tui_buffer_destroy(&meta->buffer);
+  if(grun)
+    free_vm(meta->vm);
   return NULL;
 }
 
@@ -100,7 +102,8 @@ static DTOR(win_dtor) {
   if(!--meta->running) {
     pthread_cancel(meta->thread);
     pthread_detach(meta->thread);
-    free_vm(meta->vm);
+    if(!grun)
+      free_vm(meta->vm);
   }
   win->widgets = (TUIWidgets){ 0, 0, NULL };
   struct Vector_ v = *(struct Vector_*)(o->data + SZ_INT);
@@ -360,6 +363,7 @@ static MFUN(WidgetCallback) {
   closure->o = o;
   if(!WIDGET(o).callbacks)
     WIDGET(o).callbacks = tui_alloc(sizeof(TUIWidgetCallback));
+  // TODO clean callback if it exists
   WIDGET(o).callbacks->func[key] = widget_cb;
   WIDGET(o).callbacks->user_data = closure;
 }
