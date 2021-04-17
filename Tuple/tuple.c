@@ -405,7 +405,7 @@ static OP_EMIT(unpack_em) {
 }
 
 static void parents(const Env env, const Type t, const Vector v) {
-  const Nspc parent = t->info->owner;
+  const Nspc parent = t->info->value->from->owner;
   if(parent->parent && parent != env->context->nspc && parent != env->global_nspc) {
     const Type older = nspc_lookup_type1(parent->parent, insert_symbol(env->gwion->st, parent->name));
     parents(env, older, v);
