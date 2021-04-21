@@ -78,7 +78,7 @@ static inline VM_Shred repl_shred(MemPool p) {
 }
 
 INSTR(EOC2) {
-  shreduler_remove(shred->info->vm->shreduler, shred, 0);
+  shreduler_remove(shred->info->vm->shreduler, shred, false);
   shred->pc = 0;
   vmcode_remref(shred->code, shred->info->vm->gwion);
 }
@@ -126,7 +126,7 @@ ANN static void free_repl(struct Repl* repl, const VM* vm) {
     repl->shred->pc = vector_size(repl->shred->code->instr) - 2;
     vm_add_shred(vm, repl->shred);
   } else if(repl->shred->tick)
-    shreduler_remove(vm->shreduler, repl->shred, 1);
+    shreduler_remove(vm->shreduler, repl->shred, true);
 */
   context_remref(repl->ctx, vm->gwion);
   free(repl);
@@ -272,7 +272,7 @@ ANN static void* repl_process(void* data) {
 }
 
 GWMODINI(repl) {
-//  shreduler_set_loop(gwion->vm->shreduler, 1);
+  shreduler_set_loop(gwion->vm->shreduler, 1);
   pthread_create(&repl_thread, NULL, repl_process, gwion->vm);
 //#ifndef __linux__
 //  pthread_detach(repl_thread);

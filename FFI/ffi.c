@@ -93,7 +93,7 @@ static MFUN(ffivar_do_call) {
   }
   if(ffi_prep_cif_var(&FFI_CIF(t), FFI_DEFAULT_ABI,
         FFI_CIF(t).nargs, FFI_CIF(t).nargs + nvariadic, &ffi_type_sint, trash) != FFI_OK)
-    Except(shred, "can't prepare variadic func");
+    handle(shred, "can't prepare variadic func");
   ffi_call(&FFI_CIF(t), FFI_FN(FFI_DL(t)), (m_bit*)RETURN, data);
   FFI_CIF(t).nargs -= nvariadic;
 }
@@ -113,7 +113,7 @@ ANN static inline Stmt_List stmt_list_from_id(const Gwion gwion, const m_str typ
 }
 
 static OP_CHECK(ctor_as_call) {
-  const Exp_Call *call = (Exp_Call*)data;
+  Exp_Call *const call = (Exp_Call*)data;
   Exp func = cpy_exp(env->gwion->mp, call->func), e = call->func;
   e->exp_type = ae_exp_dot;
   Exp_Dot *dot = &e->d.exp_dot;

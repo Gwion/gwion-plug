@@ -221,7 +221,7 @@ static MFUN(osc_port) {
   struct Server* s = NULL;
   /*if(!o)*/
   /*{*/
-  /*Except(shred)*/
+  /*handle(shred)*/
   /*return;*/
   /*}*/
   m_int port = *(m_int*)MEM(SZ_INT);

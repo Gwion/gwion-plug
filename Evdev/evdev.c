@@ -246,7 +246,7 @@ static MFUN(evdev_set_##func) {                  \
   const EvdevInfo* info = INFO(o);               \
   const M_Object obj = *(M_Object*)MEM(SZ_INT);  \
   if(!obj)                                       \
-    Except(shred, "NullPtrException");           \
+    handle(shred, "NullPtrhandleion");           \
   libevdev_set_##func(info->evdev, STRING(obj));   \
   *(M_Object*)RETURN  = obj;                     \
 }
@@ -478,13 +478,13 @@ describe_id(version)
 static MFUN(evdev_##func##_from_name) {                       \
   const EvdevInfo* info = INFO(o);                       \
   const M_Object str = *(M_Object*)MEM(SZ_INT);                 \
-  if(!str)Except(shred, "NullPtrException");\
+  if(!str)handle(shred, "NullPtrhandleion");\
   *(m_int*)RETURN = libevdev_##func##_from_name(STRING(str)); \
 }                                                        \
 static MFUN(evdev_##func##_from_name_n) {                       \
   const EvdevInfo* info = INFO(o);                       \
   const M_Object str = *(M_Object*)MEM(SZ_INT);                 \
-  if(!str)Except(shred, "NullPtrException");\
+  if(!str)handle(shred, "NullPtrhandleion");\
   const m_int n  = *(m_int*)MEM(SZ_INT*2);                 \
   *(m_int*)RETURN = libevdev_##func##_from_name_n(STRING(str), n); \
 }
@@ -504,14 +504,14 @@ static MFUN(evdev_event_code_from_name) {
   const EvdevInfo* info = INFO(o);
   const m_int type = *(m_int*)MEM(SZ_INT);
   const M_Object str = *(M_Object*)MEM(SZ_INT*2);
-  if(!str)Except(shred, "NullPtrException");
+  if(!str)handle(shred, "NullPtrhandleion");
   *(m_int*)RETURN = libevdev_event_code_from_name(type, STRING(str));
 }
 static MFUN(evdev_eventcode_from_name_n) {
   const EvdevInfo* info = INFO(o);
   const m_int type = *(m_int*)MEM(SZ_INT);
   const M_Object str = *(M_Object*)MEM(SZ_INT);
-  if(!str)Except(shred, "NullPtrException");
+  if(!str)handle(shred, "NullPtrhandleion");
   const m_int n  = *(m_int*)MEM(SZ_INT*2);
   *(m_int*)RETURN = libevdev_event_code_from_name_n(type, STRING(str), n);
 }
@@ -532,7 +532,7 @@ static MFUN(uinput_fd) {
 static MFUN(uinput_create) {
   const M_Object ev = *(M_Object*)MEM(SZ_INT);
   if(!ev)
-    Except(shred, "NullPtrException");
+    handle(shred, "NullPtrhandleion");
   const EvdevInfo* info = INFO(ev);
   if(info->fd == -1) {
     *(m_int*)RETURN = -1;

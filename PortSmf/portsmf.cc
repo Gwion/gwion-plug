@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <portsmf/allegro.h>
-#include "Gwion.hpp"
+#include "Gwion.hh"
 
 static Type t_midifileev;
 #define TYPE(o)  *(m_uint*)(o->data + o_midiev_type)
@@ -156,7 +156,7 @@ MFUN(midifile_add_note)
   Alg_seq* seq = SEQ(o);
   M_Object obj = *(M_Object*)MEM(SZ_INT);
   if(TYPE(obj) != 'n')
-    Except(0, (m_str)"not a note.");
+    handle(0, (m_str)"not a note.");
   Alg_note* ev = new Alg_note();
   ev->pitch = PITCH(obj);
   ev->loud  = LOUD(obj);

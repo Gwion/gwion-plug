@@ -70,7 +70,7 @@ static DTOR(player_dtor) {
   free_m_vector(shred->info->vm->gwion->mp, PLAYER_NOTES(o));
   Runtime *runtime = PLAYER_RUNTIME(o);
   for(m_uint i = 0; i < PLAYER_POLYPHONY(o); i++) {
-    shreduler_remove(shred->tick->shreduler, runtime->voice[i].shred, 1);
+    shreduler_remove(shred->tick->shreduler, runtime->voice[i].shred, true);
     release(runtime->voice[i].note, shred);
   }
   vmcode_remref(runtime->code, shred->info->vm->gwion);
@@ -143,13 +143,13 @@ static MFUN(note_name_str_set) {
   const m_str str = STRING(arg);
   const size_t sz = strlen(str);
   if(sz == 0 || sz > 2 || *str < 'A' || *str > 'G')
-    Except (shred, "invalid note name")
+    handle (shred, "invalid note name");
   NOTE(o).name = *str;
   if(sz == 2) {
     if(str[1] == 'b')
       --NOTE(o).name;
     else if(str[1] != '#')
-      Except (shred, "invalid note alteration")
+      handle (shred, "invalid note alteration");
     NOTE(o).is_sharp = true;
   }
   *(M_Object*)RETURN = arg;
@@ -219,7 +219,7 @@ debug(__func__, note);
   (*(ogh_adjusted_note_t*)player_note->data).real_duration = note->real_duration * PLAYER_DUR(o) - 1;
   *(M_Object*)(shred->mem) = o;
   *(M_Object*)(shred->mem + SZ_INT) = player_note;
-  shreduler_remove(shred->info->vm->shreduler, shred, 0);
+  shreduler_remove(shred->info->vm->shreduler, shred, false);
   shredule(shred->info->vm->shreduler, shred, GWION_EPSILON);
 }
 
@@ -295,7 +295,7 @@ static INSTR(PlayerCtor) {
   for(m_uint i = 0; i < polyphony; i++) {
     runtime->voice[i].shred = new_vm_shred(gwion->mp, runtime->code);
     vm_add_shred(gwion->vm, runtime->voice[i].shred);
-    shreduler_remove(gwion->vm->shreduler, runtime->voice[i].shred, 0);
+    shreduler_remove(gwion->vm->shreduler, runtime->voice[i].shred, false);
 //    runtime->voice[i].note = new_object(gwion->mp, shred, note_type);
     runtime->voice[i].note = new_object(gwion->mp, NULL, note_type);
   }
@@ -329,7 +329,7 @@ static SFUN(ogh_open) {
   const m_str filename = STRING(*(M_Object*)MEM(0));
   FILE *file = fopen(filename, "r");
   if(!file)
-    Except(shred, "Ogham can't open file for reading")
+    handle(shred, "Ogham can't open file for reading");
   fseek(file, 0, SEEK_END);
   const size_t length = ftell(file);
   ogh_music_t* ogh = _mp_malloc(shred->info->vm->gwion->mp, length);
@@ -345,7 +345,7 @@ static MFUN(ogh_write) {
   const m_str filename = STRING(*(M_Object*)MEM(SZ_INT));
   FILE *file = fopen(filename, "w");
   if(!file)
-    Except(shred, "Ogham can't open file for writing")
+    handle(shred, "Ogham can't open file for writing");
   const size_t length = sizeof(ogh_music_t) + OGH(o)->length * sizeof(ogh_packed_t);
   *(m_int*)RETURN = fwrite(OGH(o), length, 1, file);
   fclose(file);

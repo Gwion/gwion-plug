@@ -83,7 +83,7 @@ static CTOR(win_ctor) {
   TUIWindow *win = WINDOW(o) = &meta->wstack.windows[0];
   if(!meta->running) {
     meta->mp = shred->info->vm->gwion->mp;
-    meta->vm = new_vm(meta->mp, 0);
+    meta->vm = new_vm(meta->mp, false);
     meta->vm->gwion = shred->info->vm->gwion;
     if(tui_screen_configure(&meta->buffer, &meta->old_config) == EXIT_FAILURE)
       exit(3);//TODO
@@ -180,7 +180,7 @@ static TUI_DRAW(TUIUser) {
   shred->pc = 0;
   ++shred->info->me->ref;
   vmcode_addref(shred->code);
-  shreduler_remove(user->vm->shreduler, shred, 0);
+  shreduler_remove(user->vm->shreduler, shred, false);
   shredule(user->vm->shreduler, shred, 0);
   vm_run(user->vm);
 }
@@ -195,7 +195,7 @@ static TUI_SELECT(TUIUser) {
   shred->pc = 0;
   ++shred->info->me->ref;
   vmcode_addref(shred->code);
-  shreduler_remove(user->vm->shreduler, shred, 0);
+  shreduler_remove(user->vm->shreduler, shred, false);
   shredule(user->vm->shreduler, shred, 0);
   vm_run(user->vm);
 }
@@ -217,7 +217,7 @@ static TUI_ACTIVATE(TUIUser) {
   shred->pc = 0;
   ++shred->info->me->ref;
   vmcode_addref(shred->code);
-  shreduler_remove(user->vm->shreduler, shred, 0);
+  shreduler_remove(user->vm->shreduler, shred, false);
   shredule(user->vm->shreduler, shred, 0);
   vm_run(user->vm);
 }
@@ -248,30 +248,30 @@ static CTOR(UserCtor) {
   USER_WIDGET(o)->draw_shred = new_vm_shred(gwion->mp, draw_code);
   USER_WIDGET(o)->draw_shred->base = shred->base;
   vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->draw_shred);
-  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->draw_shred, 0);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->draw_shred, false);
   const Func on_func = (Func)vector_at(&o->vtable, 6);
   VM_Code on_code = vmcode_callback(gwion->mp, on_func->code);
   USER_WIDGET(o)->activate_shred = new_vm_shred(gwion->mp, on_code);
   USER_WIDGET(o)->activate_shred->base = shred->base;
   vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->activate_shred);
-  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->activate_shred, 0);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->activate_shred, false);
   const Func select_func = (Func)vector_at(&o->vtable, 7);
   VM_Code select_code = vmcode_callback(gwion->mp, select_func->code);
   USER_WIDGET(o)->select_shred = new_vm_shred(gwion->mp, select_code);
   USER_WIDGET(o)->select_shred->base = shred->base;
   vm_add_shred(USER_WIDGET(o)->vm, USER_WIDGET(o)->select_shred);
-  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->select_shred, 0);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->select_shred, false);
 }
 
 static CTOR(UserDtor) {
   TUIUser *user = USER_WIDGET(o);
-  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->draw_shred, 0);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->draw_shred, false);
   vmcode_remref(user->draw_shred->code, user->vm->gwion);
   free_vm_shred(user->draw_shred);
-  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->activate_shred, 0);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->activate_shred, false);
   vmcode_remref(user->activate_shred->code, user->vm->gwion);
   free_vm_shred(user->activate_shred);
-  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->select_shred, 0);
+  shreduler_remove(USER_WIDGET(o)->vm->shreduler, USER_WIDGET(o)->select_shred, false);
   vmcode_remref(user->select_shred->code, user->vm->gwion);
   free_vm_shred(user->select_shred);
 }

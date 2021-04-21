@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "Gwion.hpp"
+#include "Gwion.hh"
 #include "gwi.h"
 #include "array.h"
 
@@ -354,7 +354,7 @@ static DTOR(gw_FM_dtor) {
 static MFUN(gw_FM_loadWaves) {
   stk::FM * arg1 = (stk::FM *)GW_FM((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   char ** arg2 = (char**)m_vector_addr(ARRAY(*(M_Object*)MEM(0+SZ_INT)), 0);
   (arg1)->loadWaves((char const **)arg2);
 }
@@ -1723,10 +1723,10 @@ static m_int o_Delay_swig;
 #define GW_Delay(a) *(stk::Delay**)(a->data + o_Stk_swig)
 static SFUN(gw_Delay_ctor0) {
   if(!*(M_Object*)MEM(0))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg1 = (unsigned long)*(m_int*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   stk::Delay * result = (stk::Delay *)new stk::Delay(arg1,arg2);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_Delay);
@@ -1740,7 +1740,7 @@ static SFUN(gw_Delay_ctor0) {
 
 static SFUN(gw_Delay_ctor1) {
   if(!*(M_Object*)MEM(0))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg1 = (unsigned long)*(m_int*)MEM(0);
   stk::Delay * result = (stk::Delay *)new stk::Delay(arg1);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_Delay);
@@ -1777,7 +1777,7 @@ static MFUN(gw_Delay_getMaximumDelay) {
 static MFUN(gw_Delay_setMaximumDelay) {
   stk::Delay * arg1 = (stk::Delay *)GW_Delay((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setMaximumDelay(arg2);
 }
@@ -1785,7 +1785,7 @@ static MFUN(gw_Delay_setMaximumDelay) {
 static MFUN(gw_Delay_setDelay) {
   stk::Delay * arg1 = (stk::Delay *)GW_Delay((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setDelay(arg2);
 }
@@ -1799,7 +1799,7 @@ static MFUN(gw_Delay_getDelay) {
 static MFUN(gw_Delay_tapOut) {
   stk::Delay * arg1 = (stk::Delay *)GW_Delay((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   stk::StkFloat result = (stk::StkFloat)(arg1)->tapOut(arg2);
   *(m_float*)RETURN = (m_float)(float)result;
@@ -1809,7 +1809,7 @@ static MFUN(gw_Delay_tapIn) {
   stk::Delay * arg1 = (stk::Delay *)GW_Delay((*(M_Object*)MEM(0)));
   stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
   if(!*(M_Object*)MEM(0+SZ_INT+SZ_FLOAT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg3 = (unsigned long)*(m_int*)MEM(0+SZ_INT+SZ_FLOAT);
   (arg1)->tapIn(arg2,arg3);
 }
@@ -1818,7 +1818,7 @@ static MFUN(gw_Delay_addTo) {
   stk::Delay * arg1 = (stk::Delay *)GW_Delay((*(M_Object*)MEM(0)));
   stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
   if(!*(M_Object*)MEM(0+SZ_INT+SZ_FLOAT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg3 = (unsigned long)*(m_int*)MEM(0+SZ_INT+SZ_FLOAT);
   stk::StkFloat result = (stk::StkFloat)(arg1)->addTo(arg2,arg3);
   *(m_float*)RETURN = (m_float)(float)result;
@@ -1846,7 +1846,7 @@ static m_int o_DelayA_swig;
 static SFUN(gw_DelayA_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_FLOAT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_FLOAT);
   stk::DelayA * result = (stk::DelayA *)new stk::DelayA(arg1,arg2);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_DelayA);
@@ -1900,7 +1900,7 @@ static MFUN(gw_DelayA_getMaximumDelay) {
 static MFUN(gw_DelayA_setMaximumDelay) {
   stk::DelayA * arg1 = (stk::DelayA *)GW_DelayA((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setMaximumDelay(arg2);
 }
@@ -1920,7 +1920,7 @@ static MFUN(gw_DelayA_getDelay) {
 static MFUN(gw_DelayA_tapOut) {
   stk::DelayA * arg1 = (stk::DelayA *)GW_DelayA((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   stk::StkFloat result = (stk::StkFloat)(arg1)->tapOut(arg2);
   *(m_float*)RETURN = (m_float)(float)result;
@@ -1930,7 +1930,7 @@ static MFUN(gw_DelayA_tapIn) {
   stk::DelayA * arg1 = (stk::DelayA *)GW_DelayA((*(M_Object*)MEM(0)));
   stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
   if(!*(M_Object*)MEM(0+SZ_INT+SZ_FLOAT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg3 = (unsigned long)*(m_int*)MEM(0+SZ_INT+SZ_FLOAT);
   (arg1)->tapIn(arg2,arg3);
 }
@@ -1951,7 +1951,7 @@ static m_int o_DelayL_swig;
 static SFUN(gw_DelayL_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_FLOAT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_FLOAT);
   stk::DelayL * result = (stk::DelayL *)new stk::DelayL(arg1,arg2);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_DelayL);
@@ -2000,7 +2000,7 @@ static MFUN(gw_DelayL_getMaximumDelay) {
 static MFUN(gw_DelayL_setMaximumDelay) {
   stk::DelayL * arg1 = (stk::DelayL *)GW_DelayL((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setMaximumDelay(arg2);
 }
@@ -2020,7 +2020,7 @@ static MFUN(gw_DelayL_getDelay) {
 static MFUN(gw_DelayL_tapOut) {
   stk::DelayL * arg1 = (stk::DelayL *)GW_DelayL((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   stk::StkFloat result = (stk::StkFloat)(arg1)->tapOut(arg2);
   *(m_float*)RETURN = (m_float)(float)result;
@@ -2030,7 +2030,7 @@ static MFUN(gw_DelayL_tapIn) {
   stk::DelayL * arg1 = (stk::DelayL *)GW_DelayL((*(M_Object*)MEM(0)));
   stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_INT);
   if(!*(M_Object*)MEM(0+SZ_INT+SZ_FLOAT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg3 = (unsigned long)*(m_int*)MEM(0+SZ_INT+SZ_FLOAT);
   (arg1)->tapIn(arg2,arg3);
 }
@@ -2096,7 +2096,7 @@ static m_int o_Echo_swig;
 #define GW_Echo(a) *(stk::Echo**)(a->data + o_Stk_swig)
 static SFUN(gw_Echo_ctor0) {
   if(!*(M_Object*)MEM(0))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg1 = (unsigned long)*(m_int*)MEM(0);
   stk::Echo * result = (stk::Echo *)new stk::Echo(arg1);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_Echo);
@@ -2125,7 +2125,7 @@ static MFUN(gw_Echo_clear) {
 static MFUN(gw_Echo_setMaximumDelay) {
   stk::Echo * arg1 = (stk::Echo *)GW_Echo((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setMaximumDelay(arg2);
 }
@@ -2133,7 +2133,7 @@ static MFUN(gw_Echo_setMaximumDelay) {
 static MFUN(gw_Echo_setDelay) {
   stk::Echo * arg1 = (stk::Echo *)GW_Echo((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setDelay(arg2);
 }
@@ -2460,7 +2460,7 @@ static CTOR(gw_Granulate_ctor0) {
 static SFUN(gw_Granulate_ctor1) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   bool arg3 = (bool)*(m_int*)MEM(0+SZ_INT+SZ_INT);
   stk::Granulate * result = (stk::Granulate *)new stk::Granulate(arg1,arg2,arg3);
@@ -2476,7 +2476,7 @@ static SFUN(gw_Granulate_ctor1) {
 static SFUN(gw_Granulate_ctor2) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   stk::Granulate * result = (stk::Granulate *)new stk::Granulate(arg1,arg2);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_Granulate);
@@ -2498,7 +2498,7 @@ static DTOR(gw_Granulate_dtor) {
 static MFUN(gw_Granulate_openFile0) {
   stk::Granulate * arg1 = (stk::Granulate *)GW_Granulate((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   bool arg3 = (bool)*(m_int*)MEM(0+SZ_INT+SZ_INT);
   (arg1)->openFile(arg2,arg3);
@@ -2507,7 +2507,7 @@ static MFUN(gw_Granulate_openFile0) {
 static MFUN(gw_Granulate_openFile1) {
   stk::Granulate * arg1 = (stk::Granulate *)GW_Granulate((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   (arg1)->openFile(arg2);
 }
@@ -2595,7 +2595,7 @@ static m_int o_Guitar_swig;
 static SFUN(gw_Guitar_ctor0) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   stk::Guitar * result = (stk::Guitar *)new stk::Guitar(arg1,arg2);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_Guitar);
@@ -2636,7 +2636,7 @@ static MFUN(gw_Guitar_clear) {
 static MFUN(gw_Guitar_setBodyFile0) {
   stk::Guitar * arg1 = (stk::Guitar *)GW_Guitar((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   (arg1)->setBodyFile(arg2);
 }
@@ -3000,10 +3000,10 @@ static m_int o_Mesh2D_swig;
 #define GW_Mesh2D(a) *(stk::Mesh2D**)(a->data + o_Stk_swig)
 static SFUN(gw_Mesh2D_ctor) {
   if(!*(M_Object*)MEM(0))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned short arg1 = (unsigned short)*(m_int*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned short arg2 = (unsigned short)*(m_int*)MEM(0+SZ_INT);
   stk::Mesh2D * result = (stk::Mesh2D *)new stk::Mesh2D(arg1,arg2);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_Mesh2D);
@@ -3030,7 +3030,7 @@ static MFUN(gw_Mesh2D_clear) {
 static MFUN(gw_Mesh2D_setNX) {
   stk::Mesh2D * arg1 = (stk::Mesh2D *)GW_Mesh2D((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned short arg2 = (unsigned short)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setNX(arg2);
 }
@@ -3038,7 +3038,7 @@ static MFUN(gw_Mesh2D_setNX) {
 static MFUN(gw_Mesh2D_setNY) {
   stk::Mesh2D * arg1 = (stk::Mesh2D *)GW_Mesh2D((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   unsigned short arg2 = (unsigned short)*(m_int*)MEM(0+SZ_INT);
   (arg1)->setNY(arg2);
 }
@@ -4394,7 +4394,7 @@ static m_int o_SingWave_swig;
 #define GW_SingWave(a) *(stk::SingWave**)(a->data + o_Stk_swig)
 static SFUN(gw_SingWave_ctor0) {
   if(!*(M_Object*)MEM(0))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg1(STRING(*(M_Object*)MEM(0))); // here arg1
   bool arg2 = (bool)*(m_int*)MEM(0+SZ_INT);
   stk::SingWave * result = (stk::SingWave *)new stk::SingWave(arg1,arg2);
@@ -4409,7 +4409,7 @@ static SFUN(gw_SingWave_ctor0) {
 
 static SFUN(gw_SingWave_ctor1) {
   if(!*(M_Object*)MEM(0))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   std::string arg1(STRING(*(M_Object*)MEM(0))); // here arg1
   stk::SingWave * result = (stk::SingWave *)new stk::SingWave(arg1);
   //M_Object ret_obj = new_object(shred->info->mp, shred, t_SingWave);
@@ -4835,7 +4835,7 @@ static MFUN(gw_Twang_setLoopGain) {
 static MFUN(gw_Twang_setLoopFilter) {
   stk::Twang * arg1 = (stk::Twang *)GW_Twang((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   const M_Vector arg2_array = ARRAY(*(M_Object*)MEM(0+SZ_INT));
   std::vector< stk::StkFloat > arg2;
   for (int i=0; i < m_vector_size(arg2_array); i++) {
@@ -5044,7 +5044,7 @@ static CTOR(gw_Voicer_ctor1) {
 static MFUN(gw_Voicer_addInstrument0) {
   stk::Voicer * arg1 = (stk::Voicer *)GW_Voicer((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   stk::Instrmnt * arg2 = (stk::Instrmnt *)GW_Instrmnt((*(M_Object*)MEM(0+SZ_INT)));
   int arg3 = (int)*(m_int*)MEM(0+SZ_INT+SZ_INT);
   (arg1)->addInstrument(arg2,arg3);
@@ -5053,7 +5053,7 @@ static MFUN(gw_Voicer_addInstrument0) {
 static MFUN(gw_Voicer_addInstrument1) {
   stk::Voicer * arg1 = (stk::Voicer *)GW_Voicer((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   stk::Instrmnt * arg2 = (stk::Instrmnt *)GW_Instrmnt((*(M_Object*)MEM(0+SZ_INT)));
   (arg1)->addInstrument(arg2);
 }
@@ -5061,7 +5061,7 @@ static MFUN(gw_Voicer_addInstrument1) {
 static MFUN(gw_Voicer_removeInstrument) {
   stk::Voicer * arg1 = (stk::Voicer *)GW_Voicer((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   stk::Instrmnt * arg2 = (stk::Instrmnt *)GW_Instrmnt((*(M_Object*)MEM(0+SZ_INT)));
   (arg1)->removeInstrument(arg2);
 }
@@ -5223,7 +5223,7 @@ static MFUN(gw_VoicForm_setFrequency) {
 static MFUN(gw_VoicForm_setPhoneme) {
   stk::VoicForm * arg1 = (stk::VoicForm *)GW_VoicForm((*(M_Object*)MEM(0)));
   if(!*(M_Object*)MEM(0+SZ_INT))
-  Except(shred, (m_str)"NullPtrException");
+  handle(shred, (m_str)"NullPtrException");
   char * arg2 = (char*)STRING(*(M_Object*)MEM(0+SZ_INT));
   bool result = (bool)(arg1)->setPhoneme((char const *)arg2);
   *(m_int*)RETURN = (m_int)result;

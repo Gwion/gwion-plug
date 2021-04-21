@@ -209,8 +209,8 @@ static INSTR(Tuple2Object) {
   const Type t = (Type)instr->m_val;
   if(o && isa(o->type_ref, t) < 0)
   // TODO: pass position by m_val2
-//    Except(shred, "can't cast %s to %s\n", o->type_ref->name, t->name);
-    Except(shred, _("can't cast\n"));
+//    handle(shred, "can't cast %s to %s\n", o->type_ref->name, t->name);
+    handle(shred, _("can't cast\n"));
 }
 
 // TODO: do not emit Tuple2Object if full match

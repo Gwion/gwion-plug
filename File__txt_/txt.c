@@ -23,7 +23,7 @@ static INSTR(TxtWrite) {
   POP_REG(shred, SZ_INT*2);
   const m_str str = *(m_str*)REG(SZ_INT);
   const M_Object o = *(M_Object*)REG(-SZ_INT);
-  writef(*(file_t**)(o->data + SZ_INT), str, strlen(str) - 1);
+  writef(*(file_t**)(o->data + SZ_INT), str, strlen(str));
 }
 
 m_bool emit_interp(const Emitter, const Exp);
@@ -112,7 +112,7 @@ static INSTR(FileTxtCtor) {
   const M_Object filename = *(M_Object*)REG(-SZ_INT);
   file_t *f = openf(STRING(filename), STRING(mode), FILE_512_BYTE_BUFFER);
   if(!f)
-    Except(shred, _("can't open file"));
+    handle(shred, _("can't open file"));
   const M_Object o = new_object(shred->info->vm->gwion->mp, shred, t);
   *(file_t**)(o->data + SZ_INT) = f;
   *(M_Object*)REG(-SZ_INT) = o;
@@ -159,5 +159,16 @@ GWION_IMPORT(File:[text]) {
   GWI_BB(gwi_oper_emi(gwi, opem_txt_write))
   GWI_BB(gwi_oper_end(gwi, "<<", NULL))
 
+  const M_Object gw_stdout = new_object_str(gwi->gwion, NULL, "File:[txt]");
+//  const M_Object gw_stdout = new_object_str(gwi->gwion, NULL, "@Filetxt");
+//  *(file_t**)(gw_stdout->data + SZ_INT) = openf_fd(1, O_RDONLY, 0666, FILE_512_BYTE_BUFFER);
+  *(file_t**)(gw_stdout->data + SZ_INT) = openf_fd(1, O_RDONLY, 0666, FILE_NO_BUFFERING);
+  GWI_BB(gwi_item_ini(gwi, "File:[txt]", "stdout"))
+  GWI_BB(gwi_item_end(gwi, ae_flag_none, obj, gw_stdout))
+
+  const M_Object gw_sterr = new_object_str(gwi->gwion, NULL, "File:[txt]");
+  *(file_t**)(gw_stdout->data + SZ_INT) = openf_fd(1, O_RDONLY, 0666, FILE_512_BYTE_BUFFER);
+  GWI_BB(gwi_item_ini(gwi, "File:[txt]", "stderr"))
+  GWI_BB(gwi_item_end(gwi, ae_flag_none, obj, gw_stdout))
   return GW_OK;
 }

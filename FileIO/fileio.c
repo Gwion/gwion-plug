@@ -32,7 +32,7 @@ static INSTR(name##_to_file) {\
   POP_REG(shred, SZ_INT)                                      \
   const type lhs = *(type*)REG(-offset);                      \
   const M_Object o = *(M_Object*)REG(0);                      \
-  if(!IO_FILE(o)) Except(shred, "EmptyFileException")         \
+  if(!IO_FILE(o)) handle(shred, "EmptyFilehandleion");        \
   fprintf(IO_FILE(o), format, __VA_ARGS__);                   \
   pop;                                                        \
   *(M_Object*)REG(-SZ_INT) = o;                               \
@@ -58,13 +58,13 @@ static INSTR(file_to_int) {
   m_int* ret = *(m_int**)REG(0);
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   if(!o)
-    Except(shred, "EmptyFileException");
+    handle(shred, "EmptyFilehandleion");
   if(IO_FILE(o)) {
     if(fscanf(IO_FILE(o), "%"INT_F, ret) < 0)
-      Except(shred, "FileReadException");
+      handle(shred, "FileReadhandleion");
     *(m_uint*)REG(-SZ_INT) = *ret;
   } else
-    Except(shred, "EmptyFileException");
+    handle(shred, "EmptyFilehandleion");
 }
 
 static INSTR(file_to_float) {
@@ -72,13 +72,13 @@ static INSTR(file_to_float) {
   float ret;
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   if(!o)
-    Except(shred, "EmptyFileException");
+    handle(shred, "EmptyFilehandleion");
   if(IO_FILE(o)) {
     if(fscanf(IO_FILE(o), "%f", &ret) < 0)
-      Except(shred, "FileReadException");                                     // LCOV_EXCL_LINE
+      handle(shred, "FileReadhandleion");                                     // LCOV_EXCL_LINE
     *(m_float*)REG(- SZ_FLOAT) = (**(m_float**)REG(0) = ret);
   } else
-    Except(shred, "EmptyFileException");
+    handle(shred, "EmptyFilehandleion");
   POP_REG(shred, SZ_FLOAT)
 }
 
@@ -87,13 +87,13 @@ static INSTR(file_to_string) {
   const M_Object o    = *(M_Object*)REG(- SZ_INT);
   const M_Object s    = *(M_Object*)REG(0);
   if(!o)
-    Except(shred, "EmptyFileException");
+    handle(shred, "EmptyFilehandleion");
   if(!s)
-    Except(shred, "EmptyStringException");
+    handle(shred, "EmptyStringhandleion");
   if(IO_FILE(o)) {
     char c[1025];
     if(fscanf(IO_FILE(o), "%1024s", c) < 0)
-      Except(shred, "FileReadException");                                     // LCOV_EXCL_LINE
+      handle(shred, "FileReadhandleion");                                     // LCOV_EXCL_LINE
     STRING(s) = s_name(insert_symbol(shred->info->vm->gwion->st, c));
     *(M_Object*)REG(- SZ_INT) = s;
   }
@@ -107,7 +107,7 @@ static MFUN(file_open) {
   const M_Object lhs = *(M_Object*)MEM(SZ_INT * 2);
   const M_Object rhs = *(M_Object*)MEM(SZ_INT);
   if(!lhs || !rhs)
-    Except(shred, "invalid arguments to FileIO.open()");
+    handle(shred, "invalid arguments to FileIO.open()");
   const m_str filename = STRING(rhs);
   const m_str mode = STRING(lhs);
   if(IO_FILE(o)) {

@@ -1,5 +1,5 @@
 #include <linuxsampler/Sampler.h>
-#include "Gwion.hpp"
+#include "Gwion.hh"
 
 m_int o_ls_data = 0;
 static LinuxSampler::Sampler * sampler = NULL;

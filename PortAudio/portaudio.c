@@ -9,9 +9,6 @@
 #include "driver.h"
 #include "plug.h"
 
-#define SAMPLE_RATE (48000)
-#define FRAMES_PER_BUFFER  (64)
-
 struct PaInfo {
   PaStream *stream;
   PaStreamParameters outputParameters;
@@ -26,8 +23,8 @@ static int callback(const void *inputBuffer, void *outputBuffer,
   float *out = (float*)outputBuffer;
   m_uint i, j;
   for(i = 0; i < framesPerBuffer; i++) {
-//    for(j = 0; j < vm->bbq->si->in; j++)
-//      vm->bbq->in[j] = *in++;
+    for(j = 0; j < vm->bbq->si->in; j++)
+      vm->bbq->in[j] = *in++;
     vm->bbq->run(vm);
     for(j = 0; j < (m_uint)vm->bbq->si->out; j++)
       *out++ = vm->bbq->out[j];
@@ -51,13 +48,14 @@ static DRVINI(portaudio_ini) {
   info->outputParameters.sampleFormat = paFloat32;
   info->outputParameters.suggestedLatency = Pa_GetDeviceInfo(info->outputParameters.device)->defaultLowOutputLatency;
   info->outputParameters.hostApiSpecificStreamInfo = NULL;
-
-//  info->inputParameters.device = Pa_GetDefaultInputDevice(); /* default output device */
-/*  if(info->inputParameters.device == paNoDevice) {
+/*
+  info->inputParameters.device = Pa_GetDefaultInputDevice(); // default output device
+  if(info->inputParameters.device == paNoDevice) {
     gw_err("Error: No default input device.\n");
     goto error;
   }
   info->inputParameters.channelCount = 2;
+//  info->inputParameters.sampleFormat = di->format;
   info->inputParameters.sampleFormat = paFloat32;
   info->inputParameters.suggestedLatency = Pa_GetDeviceInfo(info->inputParameters.device)->defaultLowOutputLatency;
   info->inputParameters.hostApiSpecificStreamInfo = NULL;
@@ -67,7 +65,7 @@ static DRVINI(portaudio_ini) {
 NULL,//        &info->inputParameters,
         &info->outputParameters,
         di->si->sr,
-128, //        di->bufsize,
+        256,//        di->bufsize,
         paClipOff,
         callback,
         vm) != paNoError)

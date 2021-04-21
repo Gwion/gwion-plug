@@ -31,7 +31,6 @@ struct CytosolClosure_ {
   VM_Code  code;
   struct Vector_ args;
 };
-
 static CTOR(cytosol_ctor) {
   PROG(o) = cyt_program_new();
   RUNNER(o) = cyt_driver_runner_new();
@@ -96,7 +95,7 @@ static MFUN(cytosol_add_record) {
   const M_Object record = *(M_Object*)MEM(SZ_INT*2);
   struct cyt_record_id out_id = {};
   if(!cyt_program_record_by_name(PROG(o), record->type_ref->name, &out_id))
-    Except(shred, "Invalid record Creation");
+    handle(shred, "Invalid record Creation");
   cyt_value_buffer *buf = cytosol_buffer(shred->info->vm->gwion->type, record);
   cyt_cellenv_add_record(CELLENV(o), quantity, out_id, buf);
 }
@@ -104,7 +103,7 @@ static MFUN(cytosol_add_record) {
 static MFUN(cytosol_run) {
   const m_int bound = *(m_int*)MEM(SZ_INT);
   if(bound < 0)
-    Except(shred, "Negative iteration requested");
+    handle(shred, "Negative iteration requested");
    cyt_driver_runner_run(
     RUNNER(o), PROG(o), EXECSTATE(o), CELLENV(o), bound);
 }
