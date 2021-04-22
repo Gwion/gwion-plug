@@ -36,12 +36,16 @@ static INSTR(ListAccess) {
   const Type t  = (Type)instr->m_val;
   shred->reg -= SZ_INT*2 - t->size;
   const m_int idx = *(m_uint*)REG(SZ_INT - t->size);
-  if(idx < 0)
+  if(idx < 0) {
     handle(shred, "Negative List index");
+    return;
+  }
   M_Object o = *(M_Object*)REG(-t->size);
   for(m_uint i = 0; i < idx; ++i) {
-    if(!(o = *(M_Object*)(o->data + t->size)))
+    if(!(o = *(M_Object*)(o->data + t->size))) {
       handle(shred, "No list");
+      return;
+    }
   }
   *(M_Object*)REG(-SZ_INT) = o;
 //  memcpy(shred->reg - t->size, o->data, t->size);

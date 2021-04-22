@@ -65,8 +65,10 @@ static double dbtorms(double f) {
 
 #define GETSTRING(a, b)                          \
   const M_Object a##_obj = *(M_Object*)MEM((b)); \
-  if(!a##_obj)                                   \
+  if(!a##_obj) {                                 \
     handle(shred, "NullPtrException");           \
+    return;                                      \
+  }                                              \
   const m_str a = STRING(a##_obj);               \
 
 static SFUN(std_system) {

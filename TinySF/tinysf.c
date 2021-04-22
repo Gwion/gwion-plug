@@ -32,6 +32,7 @@ static INSTR(TinySFCtor) {
    if(!tiny) {
      gw_err("file '%s' can't opened file for reading", STRING(*(M_Object*)REG(-SZ_INT)));
      handle(shred, "TinySF Exception");
+     return;
    }
    tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
    const M_Object o = new_object(shred->info->vm->gwion->mp, shred, (Type)instr->m_val);

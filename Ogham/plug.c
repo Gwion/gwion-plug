@@ -142,14 +142,18 @@ static MFUN(note_name_str_set) {
   const M_Object arg = *(M_Object*)MEM(SZ_INT);
   const m_str str = STRING(arg);
   const size_t sz = strlen(str);
-  if(sz == 0 || sz > 2 || *str < 'A' || *str > 'G')
+  if(sz == 0 || sz > 2 || *str < 'A' || *str > 'G') {
     handle (shred, "invalid note name");
+    return;
+  }
   NOTE(o).name = *str;
   if(sz == 2) {
     if(str[1] == 'b')
       --NOTE(o).name;
-    else if(str[1] != '#')
+    else if(str[1] != '#') {
       handle (shred, "invalid note alteration");
+      return;
+    }
     NOTE(o).is_sharp = true;
   }
   *(M_Object*)RETURN = arg;
@@ -328,8 +332,10 @@ static OP_EMIT(opem_player_ctor) {
 static SFUN(ogh_open) {
   const m_str filename = STRING(*(M_Object*)MEM(0));
   FILE *file = fopen(filename, "r");
-  if(!file)
+  if(!file) {
     handle(shred, "Ogham can't open file for reading");
+    return;
+  }
   fseek(file, 0, SEEK_END);
   const size_t length = ftell(file);
   ogh_music_t* ogh = _mp_malloc(shred->info->vm->gwion->mp, length);
@@ -344,8 +350,10 @@ static SFUN(ogh_open) {
 static MFUN(ogh_write) {
   const m_str filename = STRING(*(M_Object*)MEM(SZ_INT));
   FILE *file = fopen(filename, "w");
-  if(!file)
+  if(!file) {
     handle(shred, "Ogham can't open file for writing");
+    return;
+  }
   const size_t length = sizeof(ogh_music_t) + OGH(o)->length * sizeof(ogh_packed_t);
   *(m_int*)RETURN = fwrite(OGH(o), length, 1, file);
   fclose(file);

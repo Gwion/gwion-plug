@@ -32,7 +32,10 @@ static INSTR(name##_to_file) {\
   POP_REG(shred, SZ_INT)                                      \
   const type lhs = *(type*)REG(-offset);                      \
   const M_Object o = *(M_Object*)REG(0);                      \
-  if(!IO_FILE(o)) handle(shred, "EmptyFilehandleion");        \
+  if(!IO_FILE(o)) {                                           \
+    handle(shred, "EmptyFilehandleion");                      \
+    return;                                                   \
+  }                                                           \
   fprintf(IO_FILE(o), format, __VA_ARGS__);                   \
   pop;                                                        \
   *(M_Object*)REG(-SZ_INT) = o;                               \
@@ -57,11 +60,15 @@ static INSTR(file_to_int) {
   POP_REG(shred, SZ_INT)
   m_int* ret = *(m_int**)REG(0);
   const M_Object o = *(M_Object*)REG(-SZ_INT);
-  if(!o)
+  if(!o) {
     handle(shred, "EmptyFilehandleion");
+    return;
+  }
   if(IO_FILE(o)) {
-    if(fscanf(IO_FILE(o), "%"INT_F, ret) < 0)
+    if(fscanf(IO_FILE(o), "%"INT_F, ret) < 0) {
       handle(shred, "FileReadhandleion");
+      return;
+    }
     *(m_uint*)REG(-SZ_INT) = *ret;
   } else
     handle(shred, "EmptyFilehandleion");
@@ -71,14 +78,20 @@ static INSTR(file_to_float) {
   POP_REG(shred, SZ_INT)
   float ret;
   const M_Object o = *(M_Object*)REG(-SZ_INT);
-  if(!o)
+  if(!o) {
     handle(shred, "EmptyFilehandleion");
+    return;
+  }
   if(IO_FILE(o)) {
-    if(fscanf(IO_FILE(o), "%f", &ret) < 0)
-      handle(shred, "FileReadhandleion");                                     // LCOV_EXCL_LINE
+    if(fscanf(IO_FILE(o), "%f", &ret) < 0) {
+      handle(shred, "FileReadhandleion");
+      return;
+    }                                  // LCOV_EXCL_LINE
     *(m_float*)REG(- SZ_FLOAT) = (**(m_float**)REG(0) = ret);
-  } else
+  } else {
     handle(shred, "EmptyFilehandleion");
+    return;
+  }
   POP_REG(shred, SZ_FLOAT)
 }
 
@@ -86,14 +99,20 @@ static INSTR(file_to_string) {
   POP_REG(shred, SZ_INT)
   const M_Object o    = *(M_Object*)REG(- SZ_INT);
   const M_Object s    = *(M_Object*)REG(0);
-  if(!o)
-    handle(shred, "EmptyFilehandleion");
-  if(!s)
-    handle(shred, "EmptyStringhandleion");
+  if(!o) {
+    handle(shred, "EmptyFilehandle");
+    return;
+  }
+  if(!s) {
+    handle(shred, "EmptyStringhandle");
+    return;
+  }
   if(IO_FILE(o)) {
     char c[1025];
-    if(fscanf(IO_FILE(o), "%1024s", c) < 0)
-      handle(shred, "FileReadhandleion");                                     // LCOV_EXCL_LINE
+    if(fscanf(IO_FILE(o), "%1024s", c) < 0) {
+      handle(shred, "FileReadhandle");
+      return;
+    }
     STRING(s) = s_name(insert_symbol(shred->info->vm->gwion->st, c));
     *(M_Object*)REG(- SZ_INT) = s;
   }
@@ -106,8 +125,10 @@ static MFUN(file_nl) {
 static MFUN(file_open) {
   const M_Object lhs = *(M_Object*)MEM(SZ_INT * 2);
   const M_Object rhs = *(M_Object*)MEM(SZ_INT);
-  if(!lhs || !rhs)
+  if(!lhs || !rhs) {
     handle(shred, "invalid arguments to FileIO.open()");
+    return;
+  }
   const m_str filename = STRING(rhs);
   const m_str mode = STRING(lhs);
   if(IO_FILE(o)) {

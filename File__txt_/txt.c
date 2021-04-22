@@ -111,8 +111,10 @@ static INSTR(FileTxtCtor) {
   const M_Object mode = *(M_Object*)REG(0);
   const M_Object filename = *(M_Object*)REG(-SZ_INT);
   file_t *f = openf(STRING(filename), STRING(mode), FILE_512_BYTE_BUFFER);
-  if(!f)
+  if(!f) {
     handle(shred, _("can't open file"));
+    return;
+  }
   const M_Object o = new_object(shred->info->vm->gwion->mp, shred, t);
   *(file_t**)(o->data + SZ_INT) = f;
   *(M_Object*)REG(-SZ_INT) = o;

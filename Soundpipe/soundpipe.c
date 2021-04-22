@@ -16,6 +16,7 @@
 #define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)
 #define CHECK_SIZE(size)  if(size <= 0){fprintf(stderr, "'gen_ftbl' size argument must be more than 0");return;}
 
+#define handle(a,b) {handle(a,b); return;}
 static DTOR(ftbl_dtor) {
   if(FTBL(o))
     sp_ftbl_destroy(&FTBL(o));
@@ -137,9 +138,8 @@ static MFUN(allpass_init) {
     ug->osc = NULL;
   }
   m_float looptime = *(m_float*)(shred->mem + gw_offset);
-  if(sp_allpass_create(&ug->osc) == SP_NOT_OK || sp_allpass_init(ug->sp, ug->osc, looptime) == SP_NOT_OK) {
+  if(sp_allpass_create(&ug->osc) == SP_NOT_OK || sp_allpass_init(ug->sp, ug->osc, looptime) == SP_NOT_OK)
     handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
-  }
   ug->is_init = 1;
 }
 

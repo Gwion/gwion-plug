@@ -101,9 +101,12 @@ static DTOR(fft_dtor) {
 static MFUN(fft_init) {
   Fft* ana = (Fft*)UGEN(o)->module.gen.data;
   m_int size = *(m_int*)MEM(SZ_INT);
-  if(size <= 0 || size % 2)handle(shred, "FftInvalidSizehandleion.");
-    if(ana->buf)
-      sp_buffer_destroy(ana->buf);
+  if(size <= 0 || size % 2) {
+    handle(shred, "FftInvalidSizehandleion.");
+    return;
+  }
+  if(ana->buf)
+    sp_buffer_destroy(ana->buf);
   if(ana->frq) {
     deleteFFTFREQS(ana->frq);
     free(ana->frq);
