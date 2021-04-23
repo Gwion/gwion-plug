@@ -13,6 +13,6 @@ slider.callback(258, test);
 slider.callback(259, test);
 slider.callback('\n', test);
 var TUI.Window win;
-win<< slider;
+win << slider;
 while(true)
   second => now;

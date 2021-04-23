@@ -5,7 +5,7 @@ File:[txt]("txt.txt", "cwr") => var auto file;
 file << "Please do not de-reference a NULL pointer\n";
 
 <<< file.length() >>>;
-#!file.flush();
+file.flush();
 
-#!file.rewind();
+file.rewind();
 <<< file.read() >>>;

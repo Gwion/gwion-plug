@@ -1,6 +1,5 @@
 #require Emoji
 
-<<<
-  "This is a ${Emoji(":crab:")} ",
-  "and another ${Emoji("test :tada:")}"
->>>;
+Emoji(":smile:") => const auto str;
+<<< "This is a ${ str }" >>>;
+#!  "and another ${Emoji("test :tada:")}"

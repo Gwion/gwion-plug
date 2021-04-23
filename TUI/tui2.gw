@@ -1,21 +1,24 @@
 #require TUI
 
 var TUI.Window win;
-"Hello TUI" => win.title;
 
 var Event end;
+"${end} Hello TUI" => win.title;
 var int count;
 var TUI.Button exit;
 
 fun void _exit(TUI.Button w) {
-  "jlj" => w.text;
-  if(++count == 2)
+#!  "1" => w.text;
+  if(++count >= 2)
     end.signal();
 }
 
-"Click me" => exit.text;
+"${exit}" => exit.text;
 exit.callback('\n', _exit);
 
 win << exit;
 
+#!while(true) {
+#!end => now;
+#!}
 end => now;
