@@ -59,10 +59,6 @@ static CTOR(${1,,}_ctor) { /*code here */ }
 
 static DTOR(${1,,}_dtor) { /*code here */ }
 
-static m_int o_${1,,}_member_data;
-static m_int o_${1,,}_static_data;
-static m_int* ${1,,}_static_value;
-
 static MFUN(mfun) { /*code here */ }
 static SFUN(sfun) { /*code here */ }
 
@@ -71,10 +67,10 @@ GWION_IMPORT($1) {
   gwi_class_xtor(gwi, ${1,,}_ctor, ${1,,}_dtor);
 
   GWI_BB(gwi_item_ini(gwi, "int", "member"))
-  GWI_BB((o_${1,,}_member_data = gwi_item_end(gwi, ae_flag_none, num, 0)))
+  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0)))
 
   GWI_BB(gwi_item_ini(gwi, "int", "static"))
-  GWI_BB((o_${1,,}_static_data = gwi_item_end(gwi, ae_flag_static, num, 1234)))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 1234)))
 
   GWI_BB(gwi_func_ini(gwi, "int", "mfun"))
   GWI_BB(gwi_func_arg(gwi, "int", "arg"))
