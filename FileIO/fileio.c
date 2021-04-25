@@ -108,14 +108,24 @@ static INSTR(file_to_string) {
     return;
   }
   if(IO_FILE(o)) {
-    char c[1025];
-    if(fscanf(IO_FILE(o), "%1024s", c) < 0) {
-      handle(shred, "FileReadhandle");
-      return;
+    char *line = NULL;
+    size_t sz = 0;
+    const ssize_t ret = getline(&line, &sz, IO_FILE(o));
+    if(ret > 0) {
+      line[ret-1] = '\0';
+      STRING(s) = s_name(insert_symbol(shred->info->vm->gwion->st, line));
+      xfree(line);
     }
-    STRING(s) = s_name(insert_symbol(shred->info->vm->gwion->st, c));
     *(M_Object*)REG(- SZ_INT) = s;
   }
+}
+
+static MFUN(file_eof) {
+  if(!o || !IO_FILE(o)) {
+    handle(shred, "EmptyFilehandle");
+    return;
+  }
+  *(m_int*)RETURN = feof(IO_FILE(o));
 }
 
 static MFUN(file_nl) {
@@ -205,6 +215,8 @@ GWION_IMPORT(fileio) {
   GWI_BB(gwi_func_end(gwi, file_close, ae_flag_none))
   gwi_func_ini(gwi, "int", "fileno");
   GWI_BB(gwi_func_end(gwi, file_fileno, ae_flag_none))
+  gwi_func_ini(gwi, "int", "eof");
+  GWI_BB(gwi_func_end(gwi, file_eof, ae_flag_none))
   gwi_func_ini(gwi, "int", "remove");
   gwi_func_arg(gwi, "string", "filename");
   GWI_BB(gwi_func_end(gwi, file_remove, ae_flag_static))
@@ -239,11 +251,11 @@ GWION_IMPORT(fileio) {
   const M_Object gw_cerr = new_object(gwi->gwion->mp, NULL, t_internal);
   IO_FILE(gw_cerr) = stderr;
   vector_init(&EV_SHREDS(gw_cerr));
-  gwi_item_ini(gwi, "@FileInternal", "cin");
+  gwi_item_ini(gwi, "@FileIOInternal", "cin");
   gwi_item_end(gwi, ae_flag_const, obj, gw_cin);
-  gwi_item_ini(gwi, "@FileInternal", "cout");
+  gwi_item_ini(gwi, "@FileIOInternal", "cout");
   gwi_item_end(gwi, ae_flag_const, obj, gw_cout);
-  gwi_item_ini(gwi, "@FileInternal", "cerr");
+  gwi_item_ini(gwi, "@FileIOInternal", "cerr");
   gwi_item_end(gwi, ae_flag_const, obj, gw_cerr);
   return GW_OK;
 }

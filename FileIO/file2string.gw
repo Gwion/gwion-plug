@@ -1,6 +1,12 @@
 #require FileIO
 var FileIO f;
-var string s;
-f.open("examples/analys.gw", "r");
+#!var string s;
+f.open("file2string.gw", "r");
 <<<f>>>;
-f => s;
+#!f.eof();
+while(true) {
+  f => const string s;
+  <<< s >>>;
+  if(f.eof())
+    break;
+}
