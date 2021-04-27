@@ -31,7 +31,7 @@ static SFUN(sfun3) {
 
 
 GWION_IMPORT(DiscordBot) {
-  DECL_OB(const Type, t_discordbot, = gwi_class_ini(gwi, "DiscordBot", "Object"))
+  DECL_OB(const Type, t_discordbot, = gwi_class_ini(gwi, "DiscordBot", "Object"));
   SET_FLAG(t_discordbot, abstract);
 
   GWI_BB(gwi_func_ini(gwi, "void", "send"))

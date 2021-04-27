@@ -7502,7 +7502,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, ftbl_gen_xline, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_adsr, = gwi_class_ini(gwi, "Adsr", "UGen"))
+  DECL_OB(const Type, t_adsr, = gwi_class_ini(gwi, "Adsr", "UGen"));
   SET_FLAG(t_adsr, final);
   gwi_class_xtor(gwi, adsr_ctor, adsr_dtor);
   gwi_func_ini(gwi, "float", "atk");
@@ -7527,7 +7527,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, adsr_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_allpass, = gwi_class_ini(gwi, "Allpass", "UGen"))
+  DECL_OB(const Type, t_allpass, = gwi_class_ini(gwi, "Allpass", "UGen"));
   SET_FLAG(t_allpass, final);
   gwi_class_xtor(gwi, allpass_ctor, allpass_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -7540,7 +7540,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, allpass_set_revtime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_atone, = gwi_class_ini(gwi, "Atone", "UGen"))
+  DECL_OB(const Type, t_atone, = gwi_class_ini(gwi, "Atone", "UGen"));
   SET_FLAG(t_atone, final);
   gwi_class_xtor(gwi, atone_ctor, atone_dtor);
   gwi_func_ini(gwi, "float", "hp");
@@ -7550,7 +7550,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, atone_set_hp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_autowah, = gwi_class_ini(gwi, "Autowah", "UGen"))
+  DECL_OB(const Type, t_autowah, = gwi_class_ini(gwi, "Autowah", "UGen"));
   SET_FLAG(t_autowah, final);
   gwi_class_xtor(gwi, autowah_ctor, autowah_dtor);
   gwi_func_ini(gwi, "float", "level");
@@ -7570,12 +7570,12 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, autowah_set_mix, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_bal, = gwi_class_ini(gwi, "Bal", "UGen"))
+  DECL_OB(const Type, t_bal, = gwi_class_ini(gwi, "Bal", "UGen"));
   SET_FLAG(t_bal, final);
   gwi_class_xtor(gwi, bal_ctor, bal_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_bar, = gwi_class_ini(gwi, "Bar", "UGen"))
+  DECL_OB(const Type, t_bar, = gwi_class_ini(gwi, "Bar", "UGen"));
   SET_FLAG(t_bar, final);
   gwi_class_xtor(gwi, bar_ctor, bar_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -7619,7 +7619,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, bar_set_wid, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_biquad, = gwi_class_ini(gwi, "Biquad", "UGen"))
+  DECL_OB(const Type, t_biquad, = gwi_class_ini(gwi, "Biquad", "UGen"));
   SET_FLAG(t_biquad, final);
   gwi_class_xtor(gwi, biquad_ctor, biquad_dtor);
   gwi_func_ini(gwi, "float", "b0");
@@ -7654,7 +7654,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, biquad_set_a2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_biscale, = gwi_class_ini(gwi, "Biscale", "UGen"))
+  DECL_OB(const Type, t_biscale, = gwi_class_ini(gwi, "Biscale", "UGen"));
   SET_FLAG(t_biscale, final);
   gwi_class_xtor(gwi, biscale_ctor, biscale_dtor);
   gwi_func_ini(gwi, "float", "min");
@@ -7669,7 +7669,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, biscale_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_bitcrush, = gwi_class_ini(gwi, "Bitcrush", "UGen"))
+  DECL_OB(const Type, t_bitcrush, = gwi_class_ini(gwi, "Bitcrush", "UGen"));
   SET_FLAG(t_bitcrush, final);
   gwi_class_xtor(gwi, bitcrush_ctor, bitcrush_dtor);
   gwi_func_ini(gwi, "float", "bitdepth");
@@ -7684,7 +7684,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, bitcrush_set_srate, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_blsaw, = gwi_class_ini(gwi, "Blsaw", "UGen"))
+  DECL_OB(const Type, t_blsaw, = gwi_class_ini(gwi, "Blsaw", "UGen"));
   SET_FLAG(t_blsaw, final);
   gwi_class_xtor(gwi, blsaw_ctor, blsaw_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7699,7 +7699,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, blsaw_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_blsquare, = gwi_class_ini(gwi, "Blsquare", "UGen"))
+  DECL_OB(const Type, t_blsquare, = gwi_class_ini(gwi, "Blsquare", "UGen"));
   SET_FLAG(t_blsquare, final);
   gwi_class_xtor(gwi, blsquare_ctor, blsquare_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7719,7 +7719,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, blsquare_set_width, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_bltriangle, = gwi_class_ini(gwi, "Bltriangle", "UGen"))
+  DECL_OB(const Type, t_bltriangle, = gwi_class_ini(gwi, "Bltriangle", "UGen"));
   SET_FLAG(t_bltriangle, final);
   gwi_class_xtor(gwi, bltriangle_ctor, bltriangle_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7734,12 +7734,12 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, bltriangle_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_brown, = gwi_class_ini(gwi, "Brown", "UGen"))
+  DECL_OB(const Type, t_brown, = gwi_class_ini(gwi, "Brown", "UGen"));
   SET_FLAG(t_brown, final);
   gwi_class_xtor(gwi, brown_ctor, brown_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_butbp, = gwi_class_ini(gwi, "Butbp", "UGen"))
+  DECL_OB(const Type, t_butbp, = gwi_class_ini(gwi, "Butbp", "UGen"));
   SET_FLAG(t_butbp, final);
   gwi_class_xtor(gwi, butbp_ctor, butbp_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7754,7 +7754,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, butbp_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_butbr, = gwi_class_ini(gwi, "Butbr", "UGen"))
+  DECL_OB(const Type, t_butbr, = gwi_class_ini(gwi, "Butbr", "UGen"));
   SET_FLAG(t_butbr, final);
   gwi_class_xtor(gwi, butbr_ctor, butbr_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7769,7 +7769,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, butbr_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_buthp, = gwi_class_ini(gwi, "Buthp", "UGen"))
+  DECL_OB(const Type, t_buthp, = gwi_class_ini(gwi, "Buthp", "UGen"));
   SET_FLAG(t_buthp, final);
   gwi_class_xtor(gwi, buthp_ctor, buthp_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7779,7 +7779,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, buthp_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_butlp, = gwi_class_ini(gwi, "Butlp", "UGen"))
+  DECL_OB(const Type, t_butlp, = gwi_class_ini(gwi, "Butlp", "UGen"));
   SET_FLAG(t_butlp, final);
   gwi_class_xtor(gwi, butlp_ctor, butlp_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7789,7 +7789,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, butlp_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_clip, = gwi_class_ini(gwi, "Clip", "UGen"))
+  DECL_OB(const Type, t_clip, = gwi_class_ini(gwi, "Clip", "UGen"));
   SET_FLAG(t_clip, final);
   gwi_class_xtor(gwi, clip_ctor, clip_dtor);
   gwi_func_ini(gwi, "float", "lim");
@@ -7799,7 +7799,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, clip_set_lim, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_clock, = gwi_class_ini(gwi, "Clock", "UGen"))
+  DECL_OB(const Type, t_clock, = gwi_class_ini(gwi, "Clock", "UGen"));
   SET_FLAG(t_clock, final);
   gwi_class_xtor(gwi, clock_ctor, clock_dtor);
   gwi_func_ini(gwi, "float", "bpm");
@@ -7814,7 +7814,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, clock_set_subdiv, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_comb, = gwi_class_ini(gwi, "Comb", "UGen"))
+  DECL_OB(const Type, t_comb, = gwi_class_ini(gwi, "Comb", "UGen"));
   SET_FLAG(t_comb, final);
   gwi_class_xtor(gwi, comb_ctor, comb_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -7827,7 +7827,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, comb_set_revtime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_compressor, = gwi_class_ini(gwi, "Compressor", "UGen"))
+  DECL_OB(const Type, t_compressor, = gwi_class_ini(gwi, "Compressor", "UGen"));
   SET_FLAG(t_compressor, final);
   gwi_class_xtor(gwi, compressor_ctor, compressor_dtor);
   gwi_func_ini(gwi, "float", "ratio");
@@ -7852,7 +7852,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, compressor_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_conv, = gwi_class_ini(gwi, "Conv", "UGen"))
+  DECL_OB(const Type, t_conv, = gwi_class_ini(gwi, "Conv", "UGen"));
   SET_FLAG(t_conv, final);
   gwi_class_xtor(gwi, conv_ctor, conv_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -7861,7 +7861,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, conv_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_count, = gwi_class_ini(gwi, "Count", "UGen"))
+  DECL_OB(const Type, t_count, = gwi_class_ini(gwi, "Count", "UGen"));
   SET_FLAG(t_count, final);
   gwi_class_xtor(gwi, count_ctor, count_dtor);
   gwi_func_ini(gwi, "float", "count");
@@ -7876,7 +7876,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, count_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_crossfade, = gwi_class_ini(gwi, "Crossfade", "UGen"))
+  DECL_OB(const Type, t_crossfade, = gwi_class_ini(gwi, "Crossfade", "UGen"));
   SET_FLAG(t_crossfade, final);
   gwi_class_xtor(gwi, crossfade_ctor, crossfade_dtor);
   gwi_func_ini(gwi, "float", "pos");
@@ -7886,12 +7886,12 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, crossfade_set_pos, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_dcblock, = gwi_class_ini(gwi, "Dcblock", "UGen"))
+  DECL_OB(const Type, t_dcblock, = gwi_class_ini(gwi, "Dcblock", "UGen"));
   SET_FLAG(t_dcblock, final);
   gwi_class_xtor(gwi, dcblock_ctor, dcblock_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_delay, = gwi_class_ini(gwi, "Delay", "UGen"))
+  DECL_OB(const Type, t_delay, = gwi_class_ini(gwi, "Delay", "UGen"));
   SET_FLAG(t_delay, final);
   gwi_class_xtor(gwi, delay_ctor, delay_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -7904,7 +7904,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, delay_set_feedback, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_diode, = gwi_class_ini(gwi, "Diode", "UGen"))
+  DECL_OB(const Type, t_diode, = gwi_class_ini(gwi, "Diode", "UGen"));
   SET_FLAG(t_diode, final);
   gwi_class_xtor(gwi, diode_ctor, diode_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -7919,7 +7919,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, diode_set_res, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_diskin, = gwi_class_ini(gwi, "Diskin", "UGen"))
+  DECL_OB(const Type, t_diskin, = gwi_class_ini(gwi, "Diskin", "UGen"));
   SET_FLAG(t_diskin, final);
   gwi_class_xtor(gwi, diskin_ctor, diskin_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -7927,7 +7927,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, diskin_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_dist, = gwi_class_ini(gwi, "Dist", "UGen"))
+  DECL_OB(const Type, t_dist, = gwi_class_ini(gwi, "Dist", "UGen"));
   SET_FLAG(t_dist, final);
   gwi_class_xtor(gwi, dist_ctor, dist_dtor);
   gwi_func_ini(gwi, "float", "pregain");
@@ -7952,7 +7952,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, dist_set_shape2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_dmetro, = gwi_class_ini(gwi, "Dmetro", "UGen"))
+  DECL_OB(const Type, t_dmetro, = gwi_class_ini(gwi, "Dmetro", "UGen"));
   SET_FLAG(t_dmetro, final);
   gwi_class_xtor(gwi, dmetro_ctor, dmetro_dtor);
   gwi_func_ini(gwi, "float", "time");
@@ -7962,7 +7962,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, dmetro_set_time, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_drip, = gwi_class_ini(gwi, "Drip", "UGen"))
+  DECL_OB(const Type, t_drip, = gwi_class_ini(gwi, "Drip", "UGen"));
   SET_FLAG(t_drip, final);
   gwi_class_xtor(gwi, drip_ctor, drip_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8005,7 +8005,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, drip_set_freq2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_dtrig, = gwi_class_ini(gwi, "Dtrig", "UGen"))
+  DECL_OB(const Type, t_dtrig, = gwi_class_ini(gwi, "Dtrig", "UGen"));
   SET_FLAG(t_dtrig, final);
   gwi_class_xtor(gwi, dtrig_ctor, dtrig_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8028,7 +8028,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, dtrig_set_scale, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_dust, = gwi_class_ini(gwi, "Dust", "UGen"))
+  DECL_OB(const Type, t_dust, = gwi_class_ini(gwi, "Dust", "UGen"));
   SET_FLAG(t_dust, final);
   gwi_class_xtor(gwi, dust_ctor, dust_dtor);
   gwi_func_ini(gwi, "float", "amp");
@@ -8048,7 +8048,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, dust_set_bipolar, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_eqfil, = gwi_class_ini(gwi, "Eqfil", "UGen"))
+  DECL_OB(const Type, t_eqfil, = gwi_class_ini(gwi, "Eqfil", "UGen"));
   SET_FLAG(t_eqfil, final);
   gwi_class_xtor(gwi, eqfil_ctor, eqfil_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -8068,7 +8068,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, eqfil_set_gain, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_expon, = gwi_class_ini(gwi, "Expon", "UGen"))
+  DECL_OB(const Type, t_expon, = gwi_class_ini(gwi, "Expon", "UGen"));
   SET_FLAG(t_expon, final);
   gwi_class_xtor(gwi, expon_ctor, expon_dtor);
   gwi_func_ini(gwi, "float", "a");
@@ -8088,7 +8088,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, expon_set_b, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_fof, = gwi_class_ini(gwi, "Fof", "UGen"))
+  DECL_OB(const Type, t_fof, = gwi_class_ini(gwi, "Fof", "UGen"));
   SET_FLAG(t_fof, final);
   gwi_class_xtor(gwi, fof_ctor, fof_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8139,7 +8139,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, fof_set_dur, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_fofilt, = gwi_class_ini(gwi, "Fofilt", "UGen"))
+  DECL_OB(const Type, t_fofilt, = gwi_class_ini(gwi, "Fofilt", "UGen"));
   SET_FLAG(t_fofilt, final);
   gwi_class_xtor(gwi, fofilt_ctor, fofilt_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -8159,7 +8159,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, fofilt_set_dec, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_fog, = gwi_class_ini(gwi, "Fog", "UGen"))
+  DECL_OB(const Type, t_fog, = gwi_class_ini(gwi, "Fog", "UGen"));
   SET_FLAG(t_fog, final);
   gwi_class_xtor(gwi, fog_ctor, fog_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8215,7 +8215,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, fog_set_dur, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_fold, = gwi_class_ini(gwi, "Fold", "UGen"))
+  DECL_OB(const Type, t_fold, = gwi_class_ini(gwi, "Fold", "UGen"));
   SET_FLAG(t_fold, final);
   gwi_class_xtor(gwi, fold_ctor, fold_dtor);
   gwi_func_ini(gwi, "float", "incr");
@@ -8225,7 +8225,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, fold_set_incr, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_fosc, = gwi_class_ini(gwi, "Fosc", "UGen"))
+  DECL_OB(const Type, t_fosc, = gwi_class_ini(gwi, "Fosc", "UGen"));
   SET_FLAG(t_fosc, final);
   gwi_class_xtor(gwi, fosc_ctor, fosc_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8258,7 +8258,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, fosc_set_indx, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_gbuzz, = gwi_class_ini(gwi, "Gbuzz", "UGen"))
+  DECL_OB(const Type, t_gbuzz, = gwi_class_ini(gwi, "Gbuzz", "UGen"));
   SET_FLAG(t_gbuzz, final);
   gwi_class_xtor(gwi, gbuzz_ctor, gbuzz_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8292,17 +8292,17 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, gbuzz_set_mul, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_hilbert, = gwi_class_ini(gwi, "Hilbert", "UGen"))
+  DECL_OB(const Type, t_hilbert, = gwi_class_ini(gwi, "Hilbert", "UGen"));
   SET_FLAG(t_hilbert, final);
   gwi_class_xtor(gwi, hilbert_ctor, hilbert_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_in, = gwi_class_ini(gwi, "In", "UGen"))
+  DECL_OB(const Type, t_in, = gwi_class_ini(gwi, "In", "UGen"));
   SET_FLAG(t_in, final);
   gwi_class_xtor(gwi, in_ctor, in_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_incr, = gwi_class_ini(gwi, "Incr", "UGen"))
+  DECL_OB(const Type, t_incr, = gwi_class_ini(gwi, "Incr", "UGen"));
   SET_FLAG(t_incr, final);
   gwi_class_xtor(gwi, incr_ctor, incr_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8325,12 +8325,12 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, incr_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_jcrev, = gwi_class_ini(gwi, "Jcrev", "UGen"))
+  DECL_OB(const Type, t_jcrev, = gwi_class_ini(gwi, "Jcrev", "UGen"));
   SET_FLAG(t_jcrev, final);
   gwi_class_xtor(gwi, jcrev_ctor, jcrev_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_jitter, = gwi_class_ini(gwi, "Jitter", "UGen"))
+  DECL_OB(const Type, t_jitter, = gwi_class_ini(gwi, "Jitter", "UGen"));
   SET_FLAG(t_jitter, final);
   gwi_class_xtor(gwi, jitter_ctor, jitter_dtor);
   gwi_func_ini(gwi, "float", "amp");
@@ -8350,7 +8350,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, jitter_set_cpsMax, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_line, = gwi_class_ini(gwi, "Line", "UGen"))
+  DECL_OB(const Type, t_line, = gwi_class_ini(gwi, "Line", "UGen"));
   SET_FLAG(t_line, final);
   gwi_class_xtor(gwi, line_ctor, line_dtor);
   gwi_func_ini(gwi, "float", "a");
@@ -8370,7 +8370,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, line_set_b, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_lpc, = gwi_class_ini(gwi, "Lpc", "UGen"))
+  DECL_OB(const Type, t_lpc, = gwi_class_ini(gwi, "Lpc", "UGen"));
   SET_FLAG(t_lpc, final);
   gwi_class_xtor(gwi, lpc_ctor, lpc_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8378,7 +8378,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, lpc_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_lpf18, = gwi_class_ini(gwi, "Lpf18", "UGen"))
+  DECL_OB(const Type, t_lpf18, = gwi_class_ini(gwi, "Lpf18", "UGen"));
   SET_FLAG(t_lpf18, final);
   gwi_class_xtor(gwi, lpf18_ctor, lpf18_dtor);
   gwi_func_ini(gwi, "float", "cutoff");
@@ -8398,7 +8398,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, lpf18_set_dist, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_maygate, = gwi_class_ini(gwi, "Maygate", "UGen"))
+  DECL_OB(const Type, t_maygate, = gwi_class_ini(gwi, "Maygate", "UGen"));
   SET_FLAG(t_maygate, final);
   gwi_class_xtor(gwi, maygate_ctor, maygate_dtor);
   gwi_func_ini(gwi, "float", "prob");
@@ -8413,7 +8413,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, maygate_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_metro, = gwi_class_ini(gwi, "Metro", "UGen"))
+  DECL_OB(const Type, t_metro, = gwi_class_ini(gwi, "Metro", "UGen"));
   SET_FLAG(t_metro, final);
   gwi_class_xtor(gwi, metro_ctor, metro_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -8423,7 +8423,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, metro_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_mincer, = gwi_class_ini(gwi, "Mincer", "UGen"))
+  DECL_OB(const Type, t_mincer, = gwi_class_ini(gwi, "Mincer", "UGen"));
   SET_FLAG(t_mincer, final);
   gwi_class_xtor(gwi, mincer_ctor, mincer_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8447,7 +8447,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, mincer_set_pitch, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_mode, = gwi_class_ini(gwi, "Mode", "UGen"))
+  DECL_OB(const Type, t_mode, = gwi_class_ini(gwi, "Mode", "UGen"));
   SET_FLAG(t_mode, final);
   gwi_class_xtor(gwi, mode_ctor, mode_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -8462,7 +8462,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, mode_set_q, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_moogladder, = gwi_class_ini(gwi, "Moogladder", "UGen"))
+  DECL_OB(const Type, t_moogladder, = gwi_class_ini(gwi, "Moogladder", "UGen"));
   SET_FLAG(t_moogladder, final);
   gwi_class_xtor(gwi, moogladder_ctor, moogladder_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -8477,7 +8477,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, moogladder_set_res, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_noise, = gwi_class_ini(gwi, "Noise", "UGen"))
+  DECL_OB(const Type, t_noise, = gwi_class_ini(gwi, "Noise", "UGen"));
   SET_FLAG(t_noise, final);
   gwi_class_xtor(gwi, noise_ctor, noise_dtor);
   gwi_func_ini(gwi, "float", "amp");
@@ -8487,7 +8487,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, noise_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_nsmp, = gwi_class_ini(gwi, "Nsmp", "UGen"))
+  DECL_OB(const Type, t_nsmp, = gwi_class_ini(gwi, "Nsmp", "UGen"));
   SET_FLAG(t_nsmp, final);
   gwi_class_xtor(gwi, nsmp_ctor, nsmp_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8502,7 +8502,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, nsmp_set_index, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_osc, = gwi_class_ini(gwi, "Osc", "UGen"))
+  DECL_OB(const Type, t_osc, = gwi_class_ini(gwi, "Osc", "UGen"));
   SET_FLAG(t_osc, final);
   gwi_class_xtor(gwi, osc_ctor, osc_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8521,7 +8521,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, osc_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_oscmorph, = gwi_class_ini(gwi, "Oscmorph", "UGen"))
+  DECL_OB(const Type, t_oscmorph, = gwi_class_ini(gwi, "Oscmorph", "UGen"));
   SET_FLAG(t_oscmorph, final);
   gwi_class_xtor(gwi, oscmorph_ctor, oscmorph_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8546,7 +8546,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, oscmorph_set_wtpos, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_pan2, = gwi_class_ini(gwi, "Pan2", "UGen"))
+  DECL_OB(const Type, t_pan2, = gwi_class_ini(gwi, "Pan2", "UGen"));
   SET_FLAG(t_pan2, final);
   gwi_class_xtor(gwi, pan2_ctor, pan2_dtor);
   gwi_func_ini(gwi, "int", "type");
@@ -8561,7 +8561,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pan2_set_pan, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_panst, = gwi_class_ini(gwi, "Panst", "UGen"))
+  DECL_OB(const Type, t_panst, = gwi_class_ini(gwi, "Panst", "UGen"));
   SET_FLAG(t_panst, final);
   gwi_class_xtor(gwi, panst_ctor, panst_dtor);
   gwi_func_ini(gwi, "int", "type");
@@ -8576,7 +8576,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, panst_set_pan, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_pareq, = gwi_class_ini(gwi, "Pareq", "UGen"))
+  DECL_OB(const Type, t_pareq, = gwi_class_ini(gwi, "Pareq", "UGen"));
   SET_FLAG(t_pareq, final);
   gwi_class_xtor(gwi, pareq_ctor, pareq_dtor);
   gwi_func_ini(gwi, "float", "fc");
@@ -8601,7 +8601,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pareq_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_paulstretch, = gwi_class_ini(gwi, "Paulstretch", "UGen"))
+  DECL_OB(const Type, t_paulstretch, = gwi_class_ini(gwi, "Paulstretch", "UGen"));
   SET_FLAG(t_paulstretch, final);
   gwi_class_xtor(gwi, paulstretch_ctor, paulstretch_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8611,7 +8611,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, paulstretch_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_pdhalf, = gwi_class_ini(gwi, "Pdhalf", "UGen"))
+  DECL_OB(const Type, t_pdhalf, = gwi_class_ini(gwi, "Pdhalf", "UGen"));
   SET_FLAG(t_pdhalf, final);
   gwi_class_xtor(gwi, pdhalf_ctor, pdhalf_dtor);
   gwi_func_ini(gwi, "float", "amount");
@@ -8621,7 +8621,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pdhalf_set_amount, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_peaklim, = gwi_class_ini(gwi, "Peaklim", "UGen"))
+  DECL_OB(const Type, t_peaklim, = gwi_class_ini(gwi, "Peaklim", "UGen"));
   SET_FLAG(t_peaklim, final);
   gwi_class_xtor(gwi, peaklim_ctor, peaklim_dtor);
   gwi_func_ini(gwi, "float", "atk");
@@ -8641,7 +8641,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, peaklim_set_thresh, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_phaser, = gwi_class_ini(gwi, "Phaser", "UGen"))
+  DECL_OB(const Type, t_phaser, = gwi_class_ini(gwi, "Phaser", "UGen"));
   SET_FLAG(t_phaser, final);
   gwi_class_xtor(gwi, phaser_ctor, phaser_dtor);
   gwi_func_ini(gwi, "float", "MaxNotch1Freq");
@@ -8696,7 +8696,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, phaser_set_lfobpm, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_phasor, = gwi_class_ini(gwi, "Phasor", "UGen"))
+  DECL_OB(const Type, t_phasor, = gwi_class_ini(gwi, "Phasor", "UGen"));
   SET_FLAG(t_phasor, final);
   gwi_class_xtor(gwi, phasor_ctor, phasor_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8709,7 +8709,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, phasor_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_pinknoise, = gwi_class_ini(gwi, "Pinknoise", "UGen"))
+  DECL_OB(const Type, t_pinknoise, = gwi_class_ini(gwi, "Pinknoise", "UGen"));
   SET_FLAG(t_pinknoise, final);
   gwi_class_xtor(gwi, pinknoise_ctor, pinknoise_dtor);
   gwi_func_ini(gwi, "float", "amp");
@@ -8719,7 +8719,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pinknoise_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_pitchamdf, = gwi_class_ini(gwi, "Pitchamdf", "UGen"))
+  DECL_OB(const Type, t_pitchamdf, = gwi_class_ini(gwi, "Pitchamdf", "UGen"));
   SET_FLAG(t_pitchamdf, final);
   gwi_class_xtor(gwi, pitchamdf_ctor, pitchamdf_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8728,7 +8728,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pitchamdf_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_pluck, = gwi_class_ini(gwi, "Pluck", "UGen"))
+  DECL_OB(const Type, t_pluck, = gwi_class_ini(gwi, "Pluck", "UGen"));
   SET_FLAG(t_pluck, final);
   gwi_class_xtor(gwi, pluck_ctor, pluck_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8746,7 +8746,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pluck_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_port, = gwi_class_ini(gwi, "Port", "UGen"))
+  DECL_OB(const Type, t_port, = gwi_class_ini(gwi, "Port", "UGen"));
   SET_FLAG(t_port, final);
   gwi_class_xtor(gwi, port_ctor, port_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8759,7 +8759,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, port_set_htime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_posc3, = gwi_class_ini(gwi, "Posc3", "UGen"))
+  DECL_OB(const Type, t_posc3, = gwi_class_ini(gwi, "Posc3", "UGen"));
   SET_FLAG(t_posc3, final);
   gwi_class_xtor(gwi, posc3_ctor, posc3_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8777,7 +8777,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, posc3_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_progress, = gwi_class_ini(gwi, "Progress", "UGen"))
+  DECL_OB(const Type, t_progress, = gwi_class_ini(gwi, "Progress", "UGen"));
   SET_FLAG(t_progress, final);
   gwi_class_xtor(gwi, progress_ctor, progress_dtor);
   gwi_func_ini(gwi, "int", "nbars");
@@ -8792,7 +8792,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, progress_set_skip, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_prop, = gwi_class_ini(gwi, "Prop", "UGen"))
+  DECL_OB(const Type, t_prop, = gwi_class_ini(gwi, "Prop", "UGen"));
   SET_FLAG(t_prop, final);
   gwi_class_xtor(gwi, prop_ctor, prop_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8805,7 +8805,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, prop_set_bpm, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_pshift, = gwi_class_ini(gwi, "Pshift", "UGen"))
+  DECL_OB(const Type, t_pshift, = gwi_class_ini(gwi, "Pshift", "UGen"));
   SET_FLAG(t_pshift, final);
   gwi_class_xtor(gwi, pshift_ctor, pshift_dtor);
   gwi_func_ini(gwi, "float", "shift");
@@ -8825,7 +8825,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, pshift_set_xfade, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_ptrack, = gwi_class_ini(gwi, "Ptrack", "UGen"))
+  DECL_OB(const Type, t_ptrack, = gwi_class_ini(gwi, "Ptrack", "UGen"));
   SET_FLAG(t_ptrack, final);
   gwi_class_xtor(gwi, ptrack_ctor, ptrack_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8834,7 +8834,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, ptrack_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_randh, = gwi_class_ini(gwi, "Randh", "UGen"))
+  DECL_OB(const Type, t_randh, = gwi_class_ini(gwi, "Randh", "UGen"));
   SET_FLAG(t_randh, final);
   gwi_class_xtor(gwi, randh_ctor, randh_dtor);
   gwi_func_ini(gwi, "float", "min");
@@ -8854,7 +8854,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, randh_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_randi, = gwi_class_ini(gwi, "Randi", "UGen"))
+  DECL_OB(const Type, t_randi, = gwi_class_ini(gwi, "Randi", "UGen"));
   SET_FLAG(t_randi, final);
   gwi_class_xtor(gwi, randi_ctor, randi_dtor);
   gwi_func_ini(gwi, "float", "min");
@@ -8879,7 +8879,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, randi_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_random, = gwi_class_ini(gwi, "Random", "UGen"))
+  DECL_OB(const Type, t_random, = gwi_class_ini(gwi, "Random", "UGen"));
   SET_FLAG(t_random, final);
   gwi_class_xtor(gwi, random_ctor, random_dtor);
   gwi_func_ini(gwi, "float", "min");
@@ -8894,7 +8894,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, random_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_reson, = gwi_class_ini(gwi, "Reson", "UGen"))
+  DECL_OB(const Type, t_reson, = gwi_class_ini(gwi, "Reson", "UGen"));
   SET_FLAG(t_reson, final);
   gwi_class_xtor(gwi, reson_ctor, reson_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -8909,7 +8909,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, reson_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_reverse, = gwi_class_ini(gwi, "Reverse", "UGen"))
+  DECL_OB(const Type, t_reverse, = gwi_class_ini(gwi, "Reverse", "UGen"));
   SET_FLAG(t_reverse, final);
   gwi_class_xtor(gwi, reverse_ctor, reverse_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8917,7 +8917,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, reverse_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_revsc, = gwi_class_ini(gwi, "Revsc", "UGen"))
+  DECL_OB(const Type, t_revsc, = gwi_class_ini(gwi, "Revsc", "UGen"));
   SET_FLAG(t_revsc, final);
   gwi_class_xtor(gwi, revsc_ctor, revsc_dtor);
   gwi_func_ini(gwi, "float", "feedback");
@@ -8932,7 +8932,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, revsc_set_lpfreq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_rms, = gwi_class_ini(gwi, "Rms", "UGen"))
+  DECL_OB(const Type, t_rms, = gwi_class_ini(gwi, "Rms", "UGen"));
   SET_FLAG(t_rms, final);
   gwi_class_xtor(gwi, rms_ctor, rms_dtor);
   gwi_func_ini(gwi, "float", "ihp");
@@ -8942,7 +8942,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, rms_set_ihp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_rpt, = gwi_class_ini(gwi, "Rpt", "UGen"))
+  DECL_OB(const Type, t_rpt, = gwi_class_ini(gwi, "Rpt", "UGen"));
   SET_FLAG(t_rpt, final);
   gwi_class_xtor(gwi, rpt_ctor, rpt_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -8950,7 +8950,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, rpt_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_rspline, = gwi_class_ini(gwi, "Rspline", "UGen"))
+  DECL_OB(const Type, t_rspline, = gwi_class_ini(gwi, "Rspline", "UGen"));
   SET_FLAG(t_rspline, final);
   gwi_class_xtor(gwi, rspline_ctor, rspline_dtor);
   gwi_func_ini(gwi, "float", "min");
@@ -8975,12 +8975,12 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, rspline_set_cps_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_samphold, = gwi_class_ini(gwi, "Samphold", "UGen"))
+  DECL_OB(const Type, t_samphold, = gwi_class_ini(gwi, "Samphold", "UGen"));
   SET_FLAG(t_samphold, final);
   gwi_class_xtor(gwi, samphold_ctor, samphold_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_saturator, = gwi_class_ini(gwi, "Saturator", "UGen"))
+  DECL_OB(const Type, t_saturator, = gwi_class_ini(gwi, "Saturator", "UGen"));
   SET_FLAG(t_saturator, final);
   gwi_class_xtor(gwi, saturator_ctor, saturator_dtor);
   gwi_func_ini(gwi, "float", "drive");
@@ -8995,7 +8995,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, saturator_set_dcoffset, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_scale, = gwi_class_ini(gwi, "Scale", "UGen"))
+  DECL_OB(const Type, t_scale, = gwi_class_ini(gwi, "Scale", "UGen"));
   SET_FLAG(t_scale, final);
   gwi_class_xtor(gwi, scale_ctor, scale_dtor);
   gwi_func_ini(gwi, "float", "min");
@@ -9010,7 +9010,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, scale_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_sdelay, = gwi_class_ini(gwi, "Sdelay", "UGen"))
+  DECL_OB(const Type, t_sdelay, = gwi_class_ini(gwi, "Sdelay", "UGen"));
   SET_FLAG(t_sdelay, final);
   gwi_class_xtor(gwi, sdelay_ctor, sdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9018,7 +9018,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, sdelay_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_slice, = gwi_class_ini(gwi, "Slice", "UGen"))
+  DECL_OB(const Type, t_slice, = gwi_class_ini(gwi, "Slice", "UGen"));
   SET_FLAG(t_slice, final);
   gwi_class_xtor(gwi, slice_ctor, slice_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9032,7 +9032,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, slice_set_id, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_smoothdelay, = gwi_class_ini(gwi, "Smoothdelay", "UGen"))
+  DECL_OB(const Type, t_smoothdelay, = gwi_class_ini(gwi, "Smoothdelay", "UGen"));
   SET_FLAG(t_smoothdelay, final);
   gwi_class_xtor(gwi, smoothdelay_ctor, smoothdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9051,7 +9051,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, smoothdelay_set_del, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_spa, = gwi_class_ini(gwi, "Spa", "UGen"))
+  DECL_OB(const Type, t_spa, = gwi_class_ini(gwi, "Spa", "UGen"));
   SET_FLAG(t_spa, final);
   gwi_class_xtor(gwi, spa_ctor, spa_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9059,7 +9059,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, spa_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_sparec, = gwi_class_ini(gwi, "Sparec", "UGen"))
+  DECL_OB(const Type, t_sparec, = gwi_class_ini(gwi, "Sparec", "UGen"));
   SET_FLAG(t_sparec, final);
   gwi_class_xtor(gwi, sparec_ctor, sparec_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9067,7 +9067,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, sparec_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_streson, = gwi_class_ini(gwi, "Streson", "UGen"))
+  DECL_OB(const Type, t_streson, = gwi_class_ini(gwi, "Streson", "UGen"));
   SET_FLAG(t_streson, final);
   gwi_class_xtor(gwi, streson_ctor, streson_dtor);
   gwi_func_ini(gwi, "float", "freq");
@@ -9082,12 +9082,12 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, streson_set_fdbgain, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_switch, = gwi_class_ini(gwi, "Switch", "UGen"))
+  DECL_OB(const Type, t_switch, = gwi_class_ini(gwi, "Switch", "UGen"));
   SET_FLAG(t_switch, final);
   gwi_class_xtor(gwi, switch_ctor, switch_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tabread, = gwi_class_ini(gwi, "Tabread", "UGen"))
+  DECL_OB(const Type, t_tabread, = gwi_class_ini(gwi, "Tabread", "UGen"));
   SET_FLAG(t_tabread, final);
   gwi_class_xtor(gwi, tabread_ctor, tabread_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9111,7 +9111,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tabread_set_wrap, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tadsr, = gwi_class_ini(gwi, "Tadsr", "UGen"))
+  DECL_OB(const Type, t_tadsr, = gwi_class_ini(gwi, "Tadsr", "UGen"));
   SET_FLAG(t_tadsr, final);
   gwi_class_xtor(gwi, tadsr_ctor, tadsr_dtor);
   gwi_func_ini(gwi, "float", "atk");
@@ -9136,7 +9136,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tadsr_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_talkbox, = gwi_class_ini(gwi, "Talkbox", "UGen"))
+  DECL_OB(const Type, t_talkbox, = gwi_class_ini(gwi, "Talkbox", "UGen"));
   SET_FLAG(t_talkbox, final);
   gwi_class_xtor(gwi, talkbox_ctor, talkbox_dtor);
   gwi_func_ini(gwi, "float", "quality");
@@ -9146,7 +9146,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, talkbox_set_quality, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tblrec, = gwi_class_ini(gwi, "Tblrec", "UGen"))
+  DECL_OB(const Type, t_tblrec, = gwi_class_ini(gwi, "Tblrec", "UGen"));
   SET_FLAG(t_tblrec, final);
   gwi_class_xtor(gwi, tblrec_ctor, tblrec_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9154,7 +9154,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tblrec_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tbvcf, = gwi_class_ini(gwi, "Tbvcf", "UGen"))
+  DECL_OB(const Type, t_tbvcf, = gwi_class_ini(gwi, "Tbvcf", "UGen"));
   SET_FLAG(t_tbvcf, final);
   gwi_class_xtor(gwi, tbvcf_ctor, tbvcf_dtor);
   gwi_func_ini(gwi, "float", "fco");
@@ -9179,7 +9179,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tbvcf_set_asym, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tdiv, = gwi_class_ini(gwi, "Tdiv", "UGen"))
+  DECL_OB(const Type, t_tdiv, = gwi_class_ini(gwi, "Tdiv", "UGen"));
   SET_FLAG(t_tdiv, final);
   gwi_class_xtor(gwi, tdiv_ctor, tdiv_dtor);
   gwi_func_ini(gwi, "float", "num");
@@ -9194,7 +9194,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tdiv_set_offset, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tenv, = gwi_class_ini(gwi, "Tenv", "UGen"))
+  DECL_OB(const Type, t_tenv, = gwi_class_ini(gwi, "Tenv", "UGen"));
   SET_FLAG(t_tenv, final);
   gwi_class_xtor(gwi, tenv_ctor, tenv_dtor);
   gwi_func_ini(gwi, "float", "atk");
@@ -9214,7 +9214,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tenv_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tenv2, = gwi_class_ini(gwi, "Tenv2", "UGen"))
+  DECL_OB(const Type, t_tenv2, = gwi_class_ini(gwi, "Tenv2", "UGen"));
   SET_FLAG(t_tenv2, final);
   gwi_class_xtor(gwi, tenv2_ctor, tenv2_dtor);
   gwi_func_ini(gwi, "float", "atk");
@@ -9229,7 +9229,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tenv2_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tenvx, = gwi_class_ini(gwi, "Tenvx", "UGen"))
+  DECL_OB(const Type, t_tenvx, = gwi_class_ini(gwi, "Tenvx", "UGen"));
   SET_FLAG(t_tenvx, final);
   gwi_class_xtor(gwi, tenvx_ctor, tenvx_dtor);
   gwi_func_ini(gwi, "float", "atk");
@@ -9249,7 +9249,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tenvx_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tgate, = gwi_class_ini(gwi, "Tgate", "UGen"))
+  DECL_OB(const Type, t_tgate, = gwi_class_ini(gwi, "Tgate", "UGen"));
   SET_FLAG(t_tgate, final);
   gwi_class_xtor(gwi, tgate_ctor, tgate_dtor);
   gwi_func_ini(gwi, "float", "time");
@@ -9259,7 +9259,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tgate_set_time, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_thresh, = gwi_class_ini(gwi, "Thresh", "UGen"))
+  DECL_OB(const Type, t_thresh, = gwi_class_ini(gwi, "Thresh", "UGen"));
   SET_FLAG(t_thresh, final);
   gwi_class_xtor(gwi, thresh_ctor, thresh_dtor);
   gwi_func_ini(gwi, "float", "thresh");
@@ -9274,17 +9274,17 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, thresh_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_timer, = gwi_class_ini(gwi, "Timer", "UGen"))
+  DECL_OB(const Type, t_timer, = gwi_class_ini(gwi, "Timer", "UGen"));
   SET_FLAG(t_timer, final);
   gwi_class_xtor(gwi, timer_ctor, timer_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tin, = gwi_class_ini(gwi, "Tin", "UGen"))
+  DECL_OB(const Type, t_tin, = gwi_class_ini(gwi, "Tin", "UGen"));
   SET_FLAG(t_tin, final);
   gwi_class_xtor(gwi, tin_ctor, tin_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tone, = gwi_class_ini(gwi, "Tone", "UGen"))
+  DECL_OB(const Type, t_tone, = gwi_class_ini(gwi, "Tone", "UGen"));
   SET_FLAG(t_tone, final);
   gwi_class_xtor(gwi, tone_ctor, tone_dtor);
   gwi_func_ini(gwi, "float", "hp");
@@ -9294,7 +9294,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tone_set_hp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_trand, = gwi_class_ini(gwi, "Trand", "UGen"))
+  DECL_OB(const Type, t_trand, = gwi_class_ini(gwi, "Trand", "UGen"));
   SET_FLAG(t_trand, final);
   gwi_class_xtor(gwi, trand_ctor, trand_dtor);
   gwi_func_ini(gwi, "float", "min");
@@ -9309,7 +9309,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, trand_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tseg, = gwi_class_ini(gwi, "Tseg", "UGen"))
+  DECL_OB(const Type, t_tseg, = gwi_class_ini(gwi, "Tseg", "UGen"));
   SET_FLAG(t_tseg, final);
   gwi_class_xtor(gwi, tseg_ctor, tseg_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9332,7 +9332,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tseg_set_type, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_tseq, = gwi_class_ini(gwi, "Tseq", "UGen"))
+  DECL_OB(const Type, t_tseq, = gwi_class_ini(gwi, "Tseq", "UGen"));
   SET_FLAG(t_tseq, final);
   gwi_class_xtor(gwi, tseq_ctor, tseq_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9345,7 +9345,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, tseq_set_shuf, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_vdelay, = gwi_class_ini(gwi, "Vdelay", "UGen"))
+  DECL_OB(const Type, t_vdelay, = gwi_class_ini(gwi, "Vdelay", "UGen"));
   SET_FLAG(t_vdelay, final);
   gwi_class_xtor(gwi, vdelay_ctor, vdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9363,12 +9363,12 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, vdelay_set_feedback, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_voc, = gwi_class_ini(gwi, "Voc", "UGen"))
+  DECL_OB(const Type, t_voc, = gwi_class_ini(gwi, "Voc", "UGen"));
   SET_FLAG(t_voc, final);
   gwi_class_xtor(gwi, voc_ctor, voc_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_vocoder, = gwi_class_ini(gwi, "Vocoder", "UGen"))
+  DECL_OB(const Type, t_vocoder, = gwi_class_ini(gwi, "Vocoder", "UGen"));
   SET_FLAG(t_vocoder, final);
   gwi_class_xtor(gwi, vocoder_ctor, vocoder_dtor);
   gwi_func_ini(gwi, "float", "atk");
@@ -9388,7 +9388,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, vocoder_set_bwratio, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_waveset, = gwi_class_ini(gwi, "Waveset", "UGen"))
+  DECL_OB(const Type, t_waveset, = gwi_class_ini(gwi, "Waveset", "UGen"));
   SET_FLAG(t_waveset, final);
   gwi_class_xtor(gwi, waveset_ctor, waveset_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9401,7 +9401,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, waveset_set_rep, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_wavin, = gwi_class_ini(gwi, "Wavin", "UGen"))
+  DECL_OB(const Type, t_wavin, = gwi_class_ini(gwi, "Wavin", "UGen"));
   SET_FLAG(t_wavin, final);
   gwi_class_xtor(gwi, wavin_ctor, wavin_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9409,7 +9409,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, wavin_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_wavout, = gwi_class_ini(gwi, "Wavout", "UGen"))
+  DECL_OB(const Type, t_wavout, = gwi_class_ini(gwi, "Wavout", "UGen"));
   SET_FLAG(t_wavout, final);
   gwi_class_xtor(gwi, wavout_ctor, wavout_dtor);
   gwi_func_ini(gwi, "void", "init");
@@ -9417,7 +9417,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, wavout_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_wpkorg35, = gwi_class_ini(gwi, "Wpkorg35", "UGen"))
+  DECL_OB(const Type, t_wpkorg35, = gwi_class_ini(gwi, "Wpkorg35", "UGen"));
   SET_FLAG(t_wpkorg35, final);
   gwi_class_xtor(gwi, wpkorg35_ctor, wpkorg35_dtor);
   gwi_func_ini(gwi, "float", "cutoff");
@@ -9437,7 +9437,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, wpkorg35_set_saturation, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_zitarev, = gwi_class_ini(gwi, "Zitarev", "UGen"))
+  DECL_OB(const Type, t_zitarev, = gwi_class_ini(gwi, "Zitarev", "UGen"));
   SET_FLAG(t_zitarev, final);
   gwi_class_xtor(gwi, zitarev_ctor, zitarev_dtor);
   gwi_func_ini(gwi, "float", "in_delay");

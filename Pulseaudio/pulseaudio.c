@@ -29,12 +29,12 @@ static DRVINI(pa_ini) {
   struct PaInfo* info = (struct PaInfo*)xmalloc(sizeof(struct PaInfo));
   if(di->si->in) {
     pa_sample_spec ss_in = { PA_FLOAT, di->si->sr, di->si->in};
-    CHECK_OB((info->in = pa_open(PA_STREAM_RECORD, &ss_in)))
+    CHECK_OB((info->in = pa_open(PA_STREAM_RECORD, &ss_in)));;
   } else
     info->in = NULL;
   if(di->si->out) {
     pa_sample_spec ss_out = { PA_FLOAT, di->si->sr, di->si->out};
-    CHECK_OB((info->out  = pa_open(PA_STREAM_PLAYBACK,   &ss_out)))
+    CHECK_OB((info->out  = pa_open(PA_STREAM_PLAYBACK,   &ss_out)));;
   } else
     info->out = NULL;
   di->driver->data = info;

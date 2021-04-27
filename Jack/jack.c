@@ -88,9 +88,9 @@ static m_bool jack_ini(VM* vm, Driver* di) {
   struct JackInfo* info = (struct JackInfo*)xmalloc(sizeof(struct JackInfo));
   info->iport = (jack_port_t**)xmalloc(sizeof(jack_port_t *) * di->si->in);
   info->oport = (jack_port_t**)xmalloc(sizeof(jack_port_t *) * di->si->out);
-  CHECK_BB(init_client(vm, info))
-  CHECK_BB(set_chan(info, di->si->out, 0))
-  CHECK_BB(set_chan(info, di->si->in,  1))
+  CHECK_BB(init_client(vm, info));;
+  CHECK_BB(set_chan(info, di->si->out, 0));;
+  CHECK_BB(set_chan(info, di->si->in,  1));;
   di->si->sr = jack_get_sample_rate(info->client);
   di->driver->data = info;
   return GW_OK;

@@ -267,13 +267,13 @@ static INSTR(gwbmi_color_assign) {
 }
 
 GWION_IMPORT(BMI) {
-  DECL_OB(const Type, t_bmi, = gwi_class_ini(gwi, "BMI", "Object"))
+  DECL_OB(const Type, t_bmi, = gwi_class_ini(gwi, "BMI", "Object"));
   gwi_class_xtor(gwi, NULL, bmi_dtor);
   t_bmi->nspc->info->offset += SZ_INT; //allocate room for the buffer
   // we don't want to create BMI by other means than provided constructors
   SET_FLAG(t_bmi, abstract);
 
-  DECL_OB(const Type, t_point, = gwi_class_ini(gwi, "Point", "Object"))
+  DECL_OB(const Type, t_point, = gwi_class_ini(gwi, "Point", "Object"));
   gwi_gack(gwi, t_point, bmi_point_gack);
   GWI_BB(gwi_item_ini(gwi, "int", "x"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
@@ -288,7 +288,7 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_enum_add(gwi, "bottom", BMI_RECT_EDGE_BOTTOM))
   GWI_BB(gwi_enum_end(gwi))
 
-  DECL_OB(const Type, t_rect, = gwi_class_ini(gwi, "Rect", "Object"))
+  DECL_OB(const Type, t_rect, = gwi_class_ini(gwi, "Rect", "Object"));
   gwi_gack(gwi, t_rect, bmi_rect_gack);
   GWI_BB(gwi_item_ini(gwi, "int", "x"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
@@ -314,18 +314,18 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_class_end(gwi))
 
 // TODO: should inherit from component
-  DECL_OB(const Type, t_color, = gwi_mk_type(gwi, "Color", sizeof(bmi_component), NULL))
+  DECL_OB(const Type, t_color, = gwi_mk_type(gwi, "Color", sizeof(bmi_component), NULL));
   gwi_add_type(gwi, t_color);
   gwi_gack(gwi, t_color, bmi_component_gack);
 
-  DECL_OB(const Type, t_flag, = gwi_struct_ini(gwi, "Flag"))
+  DECL_OB(const Type, t_flag, = gwi_struct_ini(gwi, "Flag"));
   GWI_BB(gwi_item_ini(gwi, "int", "none"))
   GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 0))
   GWI_BB(gwi_item_ini(gwi, "int", "grayscale"))
   GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_FL_IS_GRAYSCALE))
   GWI_BB(gwi_struct_end(gwi))
 
-  DECL_OB(const Type, t_rgb, = gwi_struct_ini(gwi, "RGB"))
+  DECL_OB(const Type, t_rgb, = gwi_struct_ini(gwi, "RGB"));
 // more colors :)
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "White"))
   GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_WHITE()))
@@ -354,7 +354,7 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "float", "intensity1"))
   GWI_BB(gwi_func_end(gwi, gwbmi_color_blend, ae_flag_static))
 
-  DECL_OB(const Type, t_gry, = gwi_struct_ini(gwi, "Gray"))
+  DECL_OB(const Type, t_gry, = gwi_struct_ini(gwi, "Gray"));
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "White"))
   GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_GRY_WHITE()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Black"))

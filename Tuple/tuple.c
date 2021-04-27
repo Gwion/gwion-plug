@@ -134,8 +134,8 @@ struct Matcher {
 
 ANN static inline m_bool matcher_run(struct Matcher *m) {
   for(m_uint i = 0; i < vector_size(&m->r); ++i) {
-    DECL_OB(const Type, l, = (Type)vector_at(&m->l, i))
-    DECL_OB(const Type, r, = (Type)vector_at(&m->r, i))
+    DECL_OB(const Type, l, = (Type)vector_at(&m->l, i));
+    DECL_OB(const Type, r, = (Type)vector_at(&m->r, i));
     if(r != m->undef)
       CHECK_BB(isa(l, r));
   }
@@ -339,7 +339,7 @@ static OP_CHECK(opck_tuple_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
   const Exp exp = call->args;
   if(exp)
-    CHECK_OO(check_exp(env, exp))
+    CHECK_OO(check_exp(env, exp));
   struct Vector_ v;
   vector_init(&v);
   Exp e = exp;
@@ -419,7 +419,7 @@ static OP_CHECK(opck_at_unpack) {
   int i = 0;
   while(e) {
     if(e->exp_type == ae_exp_decl) {
-      DECL_OO(const Type, t, = (Type)VPTR(&bin->lhs->type->info->tuple->types, i))
+      DECL_OO(const Type, t, = (Type)VPTR(&bin->lhs->type->info->tuple->types, i));
       struct Vector_ v; // hoist?
       vector_init(&v);
       parents(env, t, &v);

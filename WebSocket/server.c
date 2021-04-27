@@ -59,7 +59,7 @@ static DRVINI(ws_ini) {
   struct lws_context_creation_info info =
     { .port=PORT, .protocols=protocols, .user=vm };
 	struct lws_context *context = lws_create_context( &info );
-  CHECK_OB((vm->bbq->driver->data = context))
+  CHECK_OB((vm->bbq->driver->data = context));
   return GW_OK;
 }
 

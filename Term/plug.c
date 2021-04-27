@@ -106,7 +106,7 @@ GWION_IMPORT(Term) {
 #ifndef BUILD_ON_WINDOWS
   signal(SIGWINCH, resize);
 #endif
-  DECL_OB(const Type, t_term, = gwi_class_ini(gwi, "Term", "Object"))
+  DECL_OB(const Type, t_term, = gwi_class_ini(gwi, "Term", "Object"));
 
   GWI_BB(gwi_func_ini(gwi, "int", "cols"))
   GWI_BB(gwi_func_end(gwi, term_dims_cols, ae_flag_static))

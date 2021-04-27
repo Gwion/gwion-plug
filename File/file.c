@@ -57,7 +57,7 @@ GWION_IMPORT(File) {
   const Map map = get_module(gwi->gwion, "File");
   if(!map)
     set_module(gwi->gwion, "File", new_map(gwi->gwion->mp));
-  DECL_OB(const Type, t_file, = gwi_class_ini(gwi, "File", "Event"))
+  DECL_OB(const Type, t_file, = gwi_class_ini(gwi, "File", "Event"));
   SET_FLAG(t_file, abstract);
   GWI_BB(gwi_item_ini(gwi, "@internal", "@data"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))

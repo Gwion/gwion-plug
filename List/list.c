@@ -53,7 +53,7 @@ static INSTR(ListAccess) {
 
 static OP_EMIT(opem_list_array_access) {
   const Array_Sub array = (Array_Sub)data;
-  CHECK_BB(emit_exp(emit, array->exp))// emit_exp_pop_next
+  CHECK_BB(emit_exp(emit, array->exp));;// emit_exp_pop_next
   const Instr access = emit_add_instr(emit, ListAccess);
   access->m_val = vector_front(&array->type->info->tuple->contains);
   return GW_OK;
@@ -225,20 +225,20 @@ exit(3);
 }
 
 GWION_IMPORT(List) {
-  DECL_OB(const Type, t_blist, = gwi_class_ini(gwi, "@List", "Object"))
-  CHECK_BB(gwi_func_ini(gwi, "bool", "removeAt"))
-  CHECK_BB(gwi_func_arg(gwi, "int", "index"))
-  CHECK_BB(gwi_func_end(gwi, list_remove_at, ae_flag_none))
-  CHECK_BB(gwi_func_ini(gwi, "int", "size"))
-  CHECK_BB(gwi_func_end(gwi, list_size, ae_flag_none))
+  DECL_OB(const Type, t_blist, = gwi_class_ini(gwi, "@List", "Object"));
+  CHECK_BB(gwi_func_ini(gwi, "bool", "removeAt"));;
+  CHECK_BB(gwi_func_arg(gwi, "int", "index"));;
+  CHECK_BB(gwi_func_end(gwi, list_remove_at, ae_flag_none));;
+  CHECK_BB(gwi_func_ini(gwi, "int", "size"));;
+  CHECK_BB(gwi_func_end(gwi, list_size, ae_flag_none));;
   GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_list, = gwi_class_ini(gwi, "List:[T]", "@List"))
+  DECL_OB(const Type, t_list, = gwi_class_ini(gwi, "List:[T]", "@List"));
   SET_FLAG(t_list, abstract);
     GWI_BB(gwi_item_ini(gwi, "T", "val"))
-    CHECK_BB((o_list_val_data = gwi_item_end(gwi, ae_flag_none, num, 0)))
+    CHECK_BB((o_list_val_data = gwi_item_end(gwi, ae_flag_none, num, 0)));;
     GWI_BB(gwi_item_ini(gwi, "List:[T]", "@next"))
-    CHECK_BB((o_list_next_data = gwi_item_end(gwi, ae_flag_late, num, 0)))
+    CHECK_BB((o_list_next_data = gwi_item_end(gwi, ae_flag_late, num, 0)));;
 
   GWI_BB(gwi_func_ini(gwi, "bool", "insert"))
   GWI_BB(gwi_func_arg(gwi, "T", "data"))

@@ -36,7 +36,7 @@ static SFUN(sfun) {
 }
 
 GWION_IMPORT(Emoji) {
-  DECL_OB(const Type, t_emoji, = gwi_class_ini(gwi, "Emoji", "string"))
+  DECL_OB(const Type, t_emoji, = gwi_class_ini(gwi, "Emoji", "string"));
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_func_ini(gwi, "string", "@Emojify"))

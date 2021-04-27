@@ -125,7 +125,7 @@ static OP_CHECK(ctor_as_call) {
 }
 
 static inline m_bool _traverse_ffi(const Env env, const Class_Def cdef) {
-  CHECK_BB(scan0_class_def(env, cdef))
+  CHECK_BB(scan0_class_def(env, cdef));;
   return traverse_class_def(env, cdef);
 }
 
@@ -138,7 +138,7 @@ static inline m_bool traverse_ffi(const Env env, const Type ffi, const Class_Def
 
 static inline Type _check_ffi_types(const Env env, const Exp_Call *call) {
   if(call->args->next)
-    CHECK_OO(check_exp(env, call->args->next))
+    CHECK_OO(check_exp(env, call->args->next));;
   return known_type(env, call->tmpl->call->td);
 }
 
@@ -342,7 +342,7 @@ FFI_GACK(complex_longdouble, complex long double, "%p")
 FFI_FUNC(pointer, void*, void*, SZ_INT, "%p")
 
 #define FFI_DECL(name, type)                                                      \
-  DECL_OB(const Type, t_##name, = gwi_mk_type(gwi, #name, sizeof(type), "@CFFI")) \
+  DECL_OB(const Type, t_##name, = gwi_mk_type(gwi, #name, sizeof(type), "@CFFI")); \
   gwi_add_type(gwi, t_##name);                                                    \
   gwi_gack(gwi, t_##name, gack_ffi_##name);
 
@@ -363,10 +363,10 @@ static OP_CHECK(opck2ffi) {
 #define FFI_OPER(gwname, ffiname) FFI_OPER2(gwname, gwname, ffiname)
 
 GWION_IMPORT(FFI) {
-  DECL_OB(const Type, t_ffib, = gwi_class_ini(gwi, "FFIBASE", "Object"))
-    DECL_OB(const Type, t_cif, = gwi_mk_type(gwi, "@cif", sizeof(ffi_cif), NULL))
+  DECL_OB(const Type, t_ffib, = gwi_class_ini(gwi, "FFIBASE", "Object"));
+    DECL_OB(const Type, t_cif, = gwi_mk_type(gwi, "@cif", sizeof(ffi_cif), NULL));
     gwi_add_type(gwi, t_cif);
-    DECL_OB(const Type, t_cffi, = gwi_mk_type(gwi, "@CFFI", 0, NULL))
+    DECL_OB(const Type, t_cffi, = gwi_mk_type(gwi, "@CFFI", 0, NULL));
     gwi_add_type(gwi, t_cffi);
 
     FFI_DECL(int, int)
@@ -398,7 +398,7 @@ GWION_IMPORT(FFI) {
   GWI_BB(gwi_oper_emi(gwi, opem_ffi_ctor))
   GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
 
-  DECL_OB(const Type, t_ffivar, = gwi_class_ini(gwi, "FFIvar:[A]", "FFIBASE"))
+  DECL_OB(const Type, t_ffivar, = gwi_class_ini(gwi, "FFIvar:[A]", "FFIBASE"));
   GWI_BB(gwi_class_end(gwi))
 
   FFI_OPER(int, int)

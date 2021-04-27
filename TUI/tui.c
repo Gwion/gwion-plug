@@ -486,9 +486,9 @@ WIDGET_INT(Row, TUIRowPositioning, positioning)
 //}
 
 #define TUI_INI(name, parent)                                         \
-  DECL_OB(const Type, t_##name, = gwi_class_ini(gwi, #name, #parent)) \
+  DECL_OB(const Type, t_##name, = gwi_class_ini(gwi, #name, #parent)); \
   GWI_BB(gwi_item_ini(gwi, "@internal", "@class name"))               \
-  CHECK_BB(gwi_item_end(gwi, ae_flag_static, num, 0))
+  CHECK_BB(gwi_item_end(gwi, ae_flag_static, num, 0));
 
 #define TUI_FUNC(class, type, name)                             \
   GWI_BB(gwi_func_ini(gwi, #type, #name))                       \
@@ -548,16 +548,16 @@ static SFUN(tui_attr3) {
 }
 
 GWION_IMPORT(TUI) {
-  DECL_OB(const Type, t_tui, = gwi_class_ini(gwi, "TUI", "Object"))
+  DECL_OB(const Type, t_tui, = gwi_class_ini(gwi, "TUI", "Object"));
   t_tui->nspc->info->class_data_size += sizeof(struct TUIMeta);
 
-    DECL_OB(const Type, t_attrs, = gwi_class_ini(gwi, "Attribute", NULL))
+    DECL_OB(const Type, t_attrs, = gwi_class_ini(gwi, "Attribute", NULL));
     t_attrs->nspc->info->offset += sizeof(TUIAttribute);
-    CHECK_BB(attr_object(gwi, t_attrs, "reset", TUIResetAttribute))
-    CHECK_BB(attr_object(gwi, t_attrs, "normal", TUINormalAttribute))
-    CHECK_BB(attr_object(gwi, t_attrs, "selected", TUISelectedAttribute))
-    CHECK_BB(attr_object(gwi, t_attrs, "active", TUIActivatedAttribute))
-    CHECK_BB(attr_object(gwi, t_attrs, "backgroundActive", TUIBackgroundActivatedAttribute))
+    CHECK_BB(attr_object(gwi, t_attrs, "reset", TUIResetAttribute));
+    CHECK_BB(attr_object(gwi, t_attrs, "normal", TUINormalAttribute));
+    CHECK_BB(attr_object(gwi, t_attrs, "selected", TUISelectedAttribute));
+    CHECK_BB(attr_object(gwi, t_attrs, "active", TUIActivatedAttribute));
+    CHECK_BB(attr_object(gwi, t_attrs, "backgroundActive", TUIBackgroundActivatedAttribute));
 
     GWI_BB(gwi_class_end(gwi))
 
@@ -633,7 +633,7 @@ GWION_IMPORT(TUI) {
     GWI_BB(gwi_func_arg(gwi, "Formatting", "format"))
     GWI_BB(gwi_func_end(gwi, tui_attr3, ae_flag_static))
 
-    DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"))
+    DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"));
     SET_FLAG(t_widget, abstract);
     t_widget->nspc->info->offset += sizeof(TUIWidget);
     GWI_BB(gwi_fptr_ini(gwi, "void", "FunType"))
@@ -654,7 +654,7 @@ GWION_IMPORT(TUI) {
 
     GWI_BB(gwi_class_end(gwi))
 
-    DECL_OB(const Type, t_twidget, = gwi_class_ini(gwi, "TuiWidget", "Widget"))
+    DECL_OB(const Type, t_twidget, = gwi_class_ini(gwi, "TuiWidget", "Widget"));
     gwi_class_xtor(gwi, WidgetCtor, NULL);
     GWI_BB(gwi_class_end(gwi))
 
@@ -721,7 +721,7 @@ GWION_IMPORT(TUI) {
       TUI_FUNC(Row, Positioning, positioning) // should be enum
     TUI_END(Row, row)
 
-    DECL_OB(const Type, t_window, = gwi_class_ini(gwi, "Window", "Event"))
+    DECL_OB(const Type, t_window, = gwi_class_ini(gwi, "Window", "Event"));
     t_window->nspc->info->offset += SZ_INT*3;
     TUI_FUNC(Window, string, title)
     GWI_BB(gwi_func_ini(gwi, "void", "size"))
@@ -733,7 +733,7 @@ GWION_IMPORT(TUI) {
     GWI_BB(gwi_class_end(gwi))
 
 //    TUI_INI(User, Widget)
-    DECL_OB(const Type, t_user, = gwi_class_ini(gwi, "User", "Widget"))
+    DECL_OB(const Type, t_user, = gwi_class_ini(gwi, "User", "Widget"));
     gwi_class_xtor(gwi, UserCtor, UserDtor);
     SET_FLAG(t_user, abstract);
        GWI_BB(gwi_func_ini(gwi, "void", "draw"))
@@ -763,12 +763,12 @@ GWION_IMPORT(TUI) {
        GWI_BB(gwi_func_ini(gwi, "bool", "no_select"))
        GWI_BB(gwi_func_end(gwi, user_get_no_select, ae_flag_none))
 /*
-         DECL_OB(const Type, t_buffer, = gwi_mk_type(gwi, "Buffer", SZ_INT, NULL))
+         DECL_OB(const Type, t_buffer, = gwi_mk_type(gwi, "Buffer", SZ_INT, NULL));
          SET_FLAG(t_buffer, abstract);
          gwi_add_type(gwi, t_buffer);
 */
 
-//         DECL_OB(const Type, t_attribute, = gwi_mk_type(gwi, "Attribute", SZ_INT, NULL))
+//         DECL_OB(const Type, t_attribute, = gwi_mk_type(gwi, "Attribute", SZ_INT, NULL));
 //         gwi_add_type(gwi, t_attribute);
 
 

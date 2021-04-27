@@ -335,10 +335,10 @@ static OP_EMIT(opem_record_ctor) {
 }
 
 GWION_IMPORT(Cytosol) {
-  DECL_OB(const Type, t_cytosol, = gwi_class_ini(gwi, "Cytosol", "Object"))
+  DECL_OB(const Type, t_cytosol, = gwi_class_ini(gwi, "Cytosol", "Object"));
   gwi_class_xtor(gwi, cytosol_ctor, cytosol_dtor);
 
-    DECL_OB(const Type, t_fields, = gwi_class_ini(gwi, "Record", "Object"))
+    DECL_OB(const Type, t_fields, = gwi_class_ini(gwi, "Record", "Object"));
     SET_FLAG(t_fields, abstract);
     GWI_BB(gwi_class_end(gwi))
 

@@ -26,10 +26,10 @@ static MFUN(mfun) { /*code here */ }
 static SFUN(sfun) { /*code here */ }
 
 GWION_IMPORT(XML) {
-  DECL_OB(const Type, t_xml, = gwi_class_ini(gwi, "XML", "Object"))
+  DECL_OB(const Type, t_xml, = gwi_class_ini(gwi, "XML", "Object"));
   gwi_class_xtor(gwi, xml_ctor, xml_dtor);
 
-  DECL_OB(const Type, t_attr, = gwi_class_ini(gwi, "Attribute", "Object"))
+  DECL_OB(const Type, t_attr, = gwi_class_ini(gwi, "Attribute", "Object"));
 //  gwi_class_xtor(gwi, attr_ctor, attr_dtor);
   GWI_BB(gwi_item_ini(gwi, "string", "name"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))

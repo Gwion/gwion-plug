@@ -17,7 +17,7 @@ static SFUN(gw_getline) {
 }
 
 GWION_IMPORT(Getline) {
-  DECL_OB(const Type, t_getline, = gwi_struct_ini(gwi, "getline"))
+  DECL_OB(const Type, t_getline, = gwi_struct_ini(gwi, "getline"));
 
   GWI_BB(gwi_func_ini(gwi, "int", "line"))
   GWI_BB(gwi_func_arg(gwi, "Ref:[int]", "n"))

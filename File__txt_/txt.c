@@ -29,7 +29,7 @@ static INSTR(TxtWrite) {
 m_bool emit_interp(const Emitter, const Exp);
 static OP_EMIT(opem_txt_write) {
   Exp_Binary *bin = (Exp_Binary*)data;
-  CHECK_BB(emit_interp(emit, bin->rhs))
+  CHECK_BB(emit_interp(emit, bin->rhs));;
   emit_add_instr(emit, TxtWrite);
   return GW_OK;
 }

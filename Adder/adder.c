@@ -16,7 +16,7 @@ static SFUN(adder_add) {
 GWION_IMPORT(Adder) {
   // DECL_OB will exit the function if gwi_class_ini_fails
   // gwi is the GWion Importer
-  DECL_OB(const Type, t_adder, = gwi_class_ini(gwi, "Adder", "Object")) // gwi_class_ini(gwi, name, parent)
+  DECL_OB(const Type, t_adder, = gwi_class_ini(gwi, "Adder", "Object")); // gwi_class_ini(gwi, name, parent)
 
   // let's create a static function, named `add`
   GWI_BB(gwi_func_ini(gwi, "int", "add"))         // gwi_func_ini(gwi, return_type, name)

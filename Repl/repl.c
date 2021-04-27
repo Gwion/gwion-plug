@@ -93,7 +93,7 @@ ANN static m_bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
   const Gwion gwion = vm->gwion;
   struct AstGetter_ arg = { "repl", f, gwion->st };
   MUTEX_LOCK(gwion->data->mutex);
-  DECL_OB(Ast, ast, = parse(&arg))
+  DECL_OB(Ast, ast, = parse(&arg));
   gwion->env->name = "repl";
   if(traverse_ast(vm->gwion->env, ast) < 0)
     goto close;

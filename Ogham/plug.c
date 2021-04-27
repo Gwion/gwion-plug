@@ -367,10 +367,10 @@ static MFUN(ogh_write) {
   GWI_BB(gwi_func_end(gwi, note_##member##_get, ae_flag_none))
 
 GWION_IMPORT(Ogham) {
-  DECL_OB(const Type, t_ogham, = gwi_class_ini(gwi, "Ogham", "Object"))
+  DECL_OB(const Type, t_ogham, = gwi_class_ini(gwi, "Ogham", "Object"));
   t_ogham->nspc->info->offset += SZ_INT;
 
-    DECL_OB(const Type, t_player, = gwi_class_ini(gwi, "Player", "UGen"))
+    DECL_OB(const Type, t_player, = gwi_class_ini(gwi, "Player", "UGen"));
     gwi_class_xtor(gwi, NULL, player_dtor);
 
       GWI_BB(gwi_class_ini(gwi, "Note", "Object"))
@@ -406,7 +406,7 @@ GWION_IMPORT(Ogham) {
     set_tflag(t_player, tflag_infer);
     GWI_BB(gwi_class_end(gwi))
 
-    DECL_OB(const Type, t_note, = gwi_class_ini(gwi, "Note", "Object"))
+    DECL_OB(const Type, t_note, = gwi_class_ini(gwi, "Note", "Object"));
     t_note->nspc->info->offset += sizeof(ogh_note_t);
     note_import(offset, int)
     note_import(duration, int)
