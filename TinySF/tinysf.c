@@ -49,7 +49,7 @@ static OP_CHECK(opck_tinysf_ctor) {
   if(!call->args || call->args->next ||
      !check_exp(env, call->args) || isa(call->args->type, env->gwion->type[et_string]) < 0)
     ERR_N(call->func->pos, "TinySF constructor requires one "
-         "and only one 'string' argument")
+         "and only one 'string' argument");
   return actual_type(env->gwion, call->func->type);
 }
 

@@ -62,12 +62,12 @@ static OP_EMIT(opem_list_array_access) {
 static OP_CHECK(opck_list_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
   if(!call->tmpl)
-    ERR_N(call->func->pos, _("List needs template"))
+    ERR_N(call->func->pos, _("List needs template"));
   CHECK_BN(check_exp(env, call->func))
   DECL_ON(const Type, t, = known_type(env, call->tmpl->call->td));
   Exp e = call->args;
   if(!e)
-    ERR_N(call->func->pos, _("List needs argument"))
+    ERR_N(call->func->pos, _("List needs argument"));
   CHECK_BN(check_exp(env, call->args))
   do CHECK_BN(check_implicit(env, e, t))
   while((e = e->next));

@@ -304,7 +304,7 @@ static OP_CHECK(opck_record_ctor) {
     const Type t = (Type)vector_at(v, i);
     if(isa(arg->type, t) < 0)
        ERR_N(arg->pos, _("invalid type '%s' in '%s' constructor (expected '%s')"),
-            arg->type->name, call->func->type->name, t->name)
+            arg->type->name, call->func->type->name, t->name);
     i++;
     arg = arg->next;
   }

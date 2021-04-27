@@ -37,11 +37,11 @@ static OP_EMIT(opem_txt_write) {
 static OP_CHECK(opck_txt_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   if(!call->args || !call->args->next || call->args->next->next)
-    ERR_N(exp_self(call)->pos, _("File:[txt] construtor needs two arguments"))
+    ERR_N(exp_self(call)->pos, _("File:[txt] construtor needs two arguments"));
   CHECK_BN(check_exp(env, call->args))
   if(isa(call->args->type, env->gwion->type[et_string]) < 0 ||
      isa(call->args->next->type, env->gwion->type[et_string]) < 0)
-    ERR_N(exp_self(call)->pos, _("File:[txt] construtor arguments must be of type string"))
+    ERR_N(exp_self(call)->pos, _("File:[txt] construtor arguments must be of type string"));
   return actual_type(env->gwion, call->func->type);
 }
 

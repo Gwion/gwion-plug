@@ -204,7 +204,7 @@ static OP_CHECK(opck_player_ctor) {
   if(!call->args || call->args->next ||
      !check_exp(env, call->args) || isa(call->args->type, player->info->value->from->owner_class) < 0)
     ERR_N(call->func->pos, "Ogham.Player constructor requires one "
-         "and only one 'Ogham' argument")
+         "and only one 'Ogham' argument");
   return t; // return event?
 }
 
