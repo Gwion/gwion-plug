@@ -284,7 +284,7 @@ static OP_CHECK(opck_record_check) {
     if (ast->section->section_type != ae_section_stmt)
       ERR_N(cdef->pos, "Invalid section in Cytosol.Field");
     const Type fields = t->info->parent;
-    CHECK_BN(cytosol_stmt_list(env, fields, ast->section->d.stmt_list))
+    CHECK_BN(cytosol_stmt_list(env, fields, ast->section->d.stmt_list));
     while((ast = ast->next)) {
       if (ast->section->section_type == ae_section_stmt)
         ERR_N(cdef->pos, "Declaration must be at the top of Cytosol.Record declaration");
@@ -297,7 +297,7 @@ static OP_CHECK(opck_record_check) {
 static OP_CHECK(opck_record_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   Exp arg = call->args;
-  CHECK_NN(check_exp(env, arg))
+  CHECK_NN(check_exp(env, arg));
   const Vector v = &actual_type(env->gwion, call->func->type)->info->tuple->contains;
   m_uint i = 0;
   while(arg) {

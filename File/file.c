@@ -40,7 +40,7 @@ static OP_CHECK(opck_file_ctor) {
   call->tmpl = NULL; // free tmpl
   call->func->d.prim.d.var = insert_symbol(env->gwion->st, c);
   call->func->type = NULL;
-  CHECK_BN(traverse_exp(env, exp_self(call)))
+  CHECK_BN(traverse_exp(env, exp_self(call)));
   const Type ret = actual_type(env->gwion, call->func->type);
   return ret;
 }

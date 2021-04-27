@@ -54,7 +54,7 @@ static OP_CHECK(opck_bmi_point_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   if(!call->args)
       ERR_N(call->func->pos, POINT_CTOR_ERR);
-  CHECK_BN(check_exp(env, call->args))
+  CHECK_BN(check_exp(env, call->args));
   Exp e = call->args;
   int n = 0;
   while(e) {
@@ -110,7 +110,7 @@ static OP_CHECK(opck_bmi_rect_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   if(!call->args)
     ERR_N(call->func->pos, RECT_CTOR_ERR);
-  CHECK_BN(check_exp(env, call->args))
+  CHECK_BN(check_exp(env, call->args));
   Exp e = call->args;
   int n = 0;
   while(e) {

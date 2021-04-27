@@ -63,17 +63,17 @@ static OP_CHECK(opck_list_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
   if(!call->tmpl)
     ERR_N(call->func->pos, _("List needs template"));
-  CHECK_BN(check_exp(env, call->func))
+  CHECK_BN(check_exp(env, call->func));
   DECL_ON(const Type, t, = known_type(env, call->tmpl->call->td));
   Exp e = call->args;
   if(!e)
     ERR_N(call->func->pos, _("List needs argument"));
-  CHECK_BN(check_exp(env, call->args))
-  do CHECK_BN(check_implicit(env, e, t))
+  CHECK_BN(check_exp(env, call->args));
+  do CHECK_BN(check_implicit(env, e, t));
   while((e = e->next));
   Type_Decl td = { .xid=insert_symbol("List"), .types=call->tmpl->call };
   const Type ret = known_type(env, &td);
-  CHECK_BN(traverse_class_def(env, ret->info->cdef))
+  CHECK_BN(traverse_class_def(env, ret->info->cdef));
   return ret;
 }
 
@@ -120,7 +120,7 @@ static OP_EMIT(opem_list_ctor) {
 static OP_CHECK(opck_list_append_front) {
   Exp_Binary *bin = (Exp_Binary*)data;
   const Type t = (Type)vector_front(&bin->rhs->type->info->tuple->contains);
-  CHECK_BN(check_implicit(env, bin->lhs, t))
+  CHECK_BN(check_implicit(env, bin->lhs, t));
   exp_setvar(bin->rhs, 1);
   return bin->rhs->type;
 }
@@ -147,7 +147,7 @@ static OP_EMIT(opem_list_append_front) {
 static OP_CHECK(opck_list_append_back) {
   Exp_Binary *bin = (Exp_Binary*)data;
   const Type t = (Type)vector_front(&bin->lhs->type->info->tuple->contains);
-  CHECK_BN(check_implicit(env, bin->rhs, t))
+  CHECK_BN(check_implicit(env, bin->rhs, t));
   return bin->lhs->type;
 }
 

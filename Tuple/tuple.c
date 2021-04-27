@@ -166,8 +166,8 @@ static m_bool tuple_match(const Env env, const Type lhs, const Type rhs, const l
 
 static OP_CHECK(opck_at_object_tuple) {
   const Exp_Binary *bin = (Exp_Binary*)data;
-  CHECK_NN(opck_rassign(env, data))
-  CHECK_BN(tuple_match(env, bin->lhs->type, bin->rhs->type, exp_self(bin)->pos))
+  CHECK_NN(opck_rassign(env, data));
+  CHECK_BN(tuple_match(env, bin->lhs->type, bin->rhs->type, exp_self(bin)->pos));
   exp_setvar(bin->rhs, 1);
   return bin->rhs->type;
 }
@@ -189,10 +189,10 @@ static OP_EMIT(opem_at_object_tuple) {
 
 static OP_CHECK(opck_at_tuple_object) {
   const Exp_Binary *bin = (Exp_Binary*)data;
-  CHECK_NN(opck_rassign(env, data))
+  CHECK_NN(opck_rassign(env, data));
   if(!bin->rhs->type->info->tuple)
     return bin->rhs->type;
-  CHECK_BN(tuple_match(env, bin->rhs->type, bin->lhs->type, exp_self(bin)->pos))
+  CHECK_BN(tuple_match(env, bin->rhs->type, bin->lhs->type, exp_self(bin)->pos));
   exp_setvar(bin->rhs, 1);
   set_decl_ref(bin->rhs);
   return bin->rhs->type;
@@ -200,7 +200,7 @@ static OP_CHECK(opck_at_tuple_object) {
 
 static OP_CHECK(opck_cast_tuple_object) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, exp_self(cast)->type, cast->exp->type, exp_self(cast)->pos))
+  CHECK_BN(tuple_match(env, exp_self(cast)->type, cast->exp->type, exp_self(cast)->pos));
   return exp_self(cast)->type;
 }
 
@@ -224,13 +224,13 @@ static OP_EMIT(opem_cast_tuple_object) {
 
 static OP_CHECK(opck_cast_tuple) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, cast->exp->type, exp_self(cast)->type, exp_self(cast)->pos))
+  CHECK_BN(tuple_match(env, cast->exp->type, exp_self(cast)->type, exp_self(cast)->pos));
   return exp_self(cast)->type;
 }
 
 static OP_CHECK(opck_impl_tuple) {
   struct Implicit *imp = (struct Implicit*)data;
-  CHECK_BN(tuple_match(env, imp->e->type, imp->t, imp->e->pos))
+  CHECK_BN(tuple_match(env, imp->e->type, imp->t, imp->e->pos));
   return imp->t;
 }
 

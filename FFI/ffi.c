@@ -152,7 +152,7 @@ static inline Type check_ffi_types(const Env env, const Type ffi, const Exp_Call
 static OP_CHECK(ffi_var_cast) {
   Exp exp = (Exp)data;
   Exp_Call *call = &exp->d.exp_call;
-  CHECK_ON(check_exp(env, call->args))
+  CHECK_ON(check_exp(env, call->args));
   struct loc_t_ loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE.@CFFI", loc);
   Exp arg = call->args->next;
@@ -169,14 +169,14 @@ static OP_CHECK(opck_ffi_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   if(!call->tmpl)
     ERR_N(exp_self(call)->pos, "'FFI' needs a return type as template");
-  CHECK_ON(check_exp(env, call->func)) /* doesn't seem needed */
+  CHECK_ON(check_exp(env, call->func)); /* doesn't seem needed */
   if(!call->args)
     ERR_N(exp_self(call)->pos, "'FFI' needs at least function name");
   struct loc_t_ loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE", loc);
   const Type ffivar = str2type(env->gwion, "FFIvar", loc);
   const m_bool variadic = isa(actual_type(env->gwion, call->func->type), ffivar) > 0;
-  DECL_ON(const Type, ret_type, = check_ffi_types(env, ffi, call))
+  DECL_ON(const Type, ret_type, = check_ffi_types(env, ffi, call));
   Exp exp = call->args;
   if(exp->exp_type != ae_exp_primary || exp->d.prim.prim_type != ae_prim_id)
     ERR_N(exp_self(call)->pos, "'FFI' first argument must be the name of a function");
@@ -238,19 +238,19 @@ static OP_CHECK(opck_ffi_ctor) {
   sprintf(ext_name, "FFI:[FFIBASE.%s]", ret_type->name);
   Type_Decl *const ext = str2td(env->gwion, ext_name, call->func->pos);
   const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, func_sym, ext, body, call->func->pos);
-  CHECK_BN(traverse_ffi(env, ffi, cdef))
+  CHECK_BN(traverse_ffi(env, ffi, cdef));
   const Type t = cdef->base.type;
   const Func func = (Func)vector_front(&t->nspc->info->vtable);
   builtin_func(mp, func, !variadic ? ffi_do_call : ffivar_do_call);
   const struct Op_Func opfunc = { .ck=ctor_as_call };
   const struct Op_Import opi = { .rhs=t, .ret=ret_type,
     .func=&opfunc, .data=(uintptr_t)func, .pos=call->func->pos, .op=insert_symbol(env->gwion->st, "@ctor") };
-  CHECK_BN(add_op(env->gwion, &opi))
+  CHECK_BN(add_op(env->gwion, &opi));
   if(variadic) {
     const struct Op_Func opfunc = { .ck=ffi_var_cast };
     const struct Op_Import opi = { .rhs=func->value_ref->type,
       .func=&opfunc, .data=(uintptr_t)func, .pos=call->func->pos, .op=insert_symbol(env->gwion->st, "@func_check") };
-  CHECK_BN(add_op(env->gwion, &opi))
+  CHECK_BN(add_op(env->gwion, &opi));
   }
   uint n = 0;
   Exp e = call->args->next;
