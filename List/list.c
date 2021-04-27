@@ -37,13 +37,13 @@ static INSTR(ListAccess) {
   shred->reg -= SZ_INT*2 - t->size;
   const m_int idx = *(m_uint*)REG(SZ_INT - t->size);
   if(idx < 0) {
-    handle(shred, "Negative List index");
+    handle(shred, "NegativeListIndex");
     return;
   }
   M_Object o = *(M_Object*)REG(-t->size);
   for(m_uint i = 0; i < idx; ++i) {
     if(!(o = *(M_Object*)(o->data + t->size))) {
-      handle(shred, "No list");
+      handle(shred, "EmptyList");
       return;
     }
   }
@@ -250,6 +250,8 @@ GWION_IMPORT(List) {
   GWI_BB(gwi_oper_ini(gwi, "int", "@List", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_list_array_access))
   GWI_BB(gwi_oper_emi(gwi, opem_list_array_access))
+  gwi_oper_eff(gwi, "NegativeListIndex");
+  gwi_oper_eff(gwi, "EmptyList");
   GWI_BB(gwi_oper_end(gwi, "@array", NULL))
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "@List", NULL))

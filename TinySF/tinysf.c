@@ -31,7 +31,7 @@ static INSTR(TinySFCtor) {
    tsf* tiny = tsf_load_filename(STRING(*(M_Object*)REG(-SZ_INT)));
    if(!tiny) {
      gw_err("file '%s' can't opened file for reading", STRING(*(M_Object*)REG(-SZ_INT)));
-     handle(shred, "TinySF Exception");
+     handle(shred, "TinySFException");
      return;
    }
    tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
@@ -94,6 +94,7 @@ GWION_IMPORT(TinySF) {
   GWI_BB(gwi_oper_ini(gwi, NULL, "TinySF", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_tinysf_ctor))
   GWI_BB(gwi_oper_emi(gwi, opem_tinysf_ctor))
+  gwi_oper_eff(gwi, "TinySFException");
   GWI_BB(gwi_oper_end(gwi, "@ctor", TinySFCtor))
 
   return GW_OK;

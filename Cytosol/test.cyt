@@ -3,18 +3,18 @@ record Person(name: string, age: int)
 extern pp(s: string, i: int)
 extern pp2(p: Person)
 
-gene [x: Person]
+gene (x: Person)
 {
     express Person(name: "Tia", age: 1)
     express Person(name: "Tia", age: 1)
 }
 
-gene [x: Person]
+gene (x: Person)
 {
     call pp2(p: x)
 }
 
-gene [x: Person]
+gene (x: Person)
 {
     call pp(s: x.name, i : x.age + 1)
 }

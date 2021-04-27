@@ -137,7 +137,7 @@ ANN static inline m_bool matcher_run(struct Matcher *m) {
     DECL_OB(const Type, l, = (Type)vector_at(&m->l, i))
     DECL_OB(const Type, r, = (Type)vector_at(&m->r, i))
     if(r != m->undef)
-      CHECK_BB(isa(l, r))
+      CHECK_BB(isa(l, r));
   }
   return GW_OK;
 }
@@ -210,7 +210,7 @@ static INSTR(Tuple2Object) {
   if(o && isa(o->type_ref, t) < 0)
   // TODO: pass position by m_val2
 //    handle(shred, "can't cast %s to %s\n", o->type_ref->name, t->name);
-    handle(shred, _("can't cast\n"));
+    handle(shred, _("TupleCast\n"));
 }
 
 // TODO: do not emit Tuple2Object if full match
@@ -304,11 +304,11 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none,
         sym, td, body, pos);
   SET_FLAG(cdef, abstract | ae_flag_final);
-  CHECK_BO(scan0_class_def(env, cdef))
+  CHECK_BO(scan0_class_def(env, cdef));
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
 //  set_tflag(cdef->base.type, tflag_empty);
 //const m_uint scope = env_push(env, NULL, env->global_nspc);
-  CHECK_BO(traverse_class_def(env, cdef))
+  CHECK_BO(traverse_class_def(env, cdef));
 //env_pop(env, scope);
   return cdef->base.type;
 }
@@ -437,7 +437,7 @@ static OP_CHECK(opck_at_unpack) {
       e->next = NULL;
       const m_bool ret = traverse_exp(env, e);
       e->next = next;
-      CHECK_BO(ret)
+      CHECK_BO(ret);
       exp_setmeta(bin->rhs, 1);
     }
     ++i;
@@ -531,6 +531,7 @@ GWION_IMPORT(tuple) {
   GWI_BB(gwi_oper_add(gwi, opck_at_object_tuple))
   GWI_BB(gwi_oper_end(gwi, "=>", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_cast_tuple))
+  gwi_oper_eff(gwi, "TupleCast");
   GWI_BB(gwi_oper_end(gwi, "$", NoOp))
   GWI_BB(gwi_oper_add(gwi, opck_impl_tuple))
   GWI_BB(gwi_oper_end(gwi, "@implicit", NULL))
