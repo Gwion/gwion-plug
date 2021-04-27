@@ -331,6 +331,7 @@ print('#include <stdlib.h>\
 --print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data + o_ftbl_data)")
 print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)")
 print("#define CHECK_SIZE(size)  if(size <= 0){fprintf(stderr, \"'gen_ftbl' size argument must be more than 0\");return;}")
+print("#define handle(a,b) { handle(a,b); return; }")
 --print("\n/*static*/ sp_data* sp;")
 --print("__attribute__((destructor)) static void sp_end(void) {sp_destroy(&sp);}")
 --print("static DTOR(sp_dtor) {\n  sp_destroy(&sp);\n}")
@@ -403,7 +404,7 @@ for n in ipairs(a) do
   local object = sptbl[mod_name]
   if not string.match(object.modtype, "gen") and not string.match(mod_name, "foo")then
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
-    print("  DECL_OB(const Type, t_"..mod_name..", = gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"))")
+    print("  DECL_OB(const Type, t_"..mod_name..", = gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"));")
     print("  SET_FLAG(t_"..mod_name..", final);")
     print("  gwi_class_xtor(gwi, "..mod_name.."_ctor, "..mod_name.."_dtor);")
     local nmandatory = 0
