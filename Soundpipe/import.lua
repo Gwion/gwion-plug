@@ -155,8 +155,8 @@ function print_mod_func(name, mod)
   else
     --[=====[
     -- check errors
-    print("  if(sp_"..name.."_create(&ug->osc) == SP_NOT_OK) {\n    xfree(ug);\n    Except(shred);\n  }")
-    print("  if(sp_"..name.."_init(ug->sp, ug->osc) == SP_NOT_OK) {\n    xfree(ug);\n    Except(shred);\n  }")
+    print("  if(sp_"..name.."_create(&ug->osc) == SP_NOT_OK) {\n    xfree(ug);\n    handle(shred);\n  }")
+    print("  if(sp_"..name.."_init(ug->sp, ug->osc) == SP_NOT_OK) {\n    xfree(ug);\n    handle(shred);\n  }")
     --]=====]
     print("  sp_"..name.."_create(&ug->osc);")
     print("  sp_"..name.."_init(ug->sp, ug->osc);")
@@ -232,7 +232,7 @@ end
         end
       end
     end
-    print("    Except(shred, \"UgenCreateException\") // LCOV_EXCL_LINE\n  }")
+    print("    handle(shred, \"UgenCreateException\") // LCOV_EXCL_LINE\n  }")
     local tbl = mod.params.mandatory
     if tbl then
       for _, v in pairs(tbl) do
