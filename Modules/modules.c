@@ -277,6 +277,13 @@ GWION_IMPORT(modules) {
   GWI_BB(import_halfrect(gwi))
   GWI_BB(import_step(gwi))
   GWI_BB(import_zerox(gwi))
+
+  GWI_BB(gwi_typedef_ini(gwi, "Bltriangle", "TriOsc"))
+  GWI_OB(gwi_typedef_end(gwi, ae_flag_none))
+  GWI_BB(gwi_typedef_ini(gwi, "Blsquare", "SquareOsc"))
+  GWI_OB(gwi_typedef_end(gwi, ae_flag_none))
+  GWI_BB(gwi_typedef_ini(gwi, "Blsaw", "SawOsc"))
+  GWI_OB(gwi_typedef_end(gwi, ae_flag_none))
   return 1;
 }
 
