@@ -1,4 +1,4 @@
-#require Modules
+#import Modules
 
 var SinOsc s ~> dac;
 #!400 => s.freq;

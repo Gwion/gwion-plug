@@ -1,4 +1,4 @@
-#require Analys
+#import Analys
 var FFT fft;
 var Centroid c;
 1024 => fft.init;

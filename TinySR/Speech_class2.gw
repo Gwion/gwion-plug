@@ -1,4 +1,4 @@
-#require TinySR
+#import TinySR
 
 class Speech extends TinySR {
   var private int try;

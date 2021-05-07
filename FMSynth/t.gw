@@ -1,4 +1,4 @@
-#require FMSynth
+#import FMSynth
 var FMSynth t ~> dac;
 samp => now;
 <<<t.last()>>>;

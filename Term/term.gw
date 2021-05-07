@@ -1,4 +1,4 @@
-#require Term
+#import Term
 
 <<< "Terminal Attributes" >>>;
 <<< "===================" >>>;

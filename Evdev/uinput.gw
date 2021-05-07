@@ -1,4 +1,4 @@
-#require Evdev
+#import Evdev
 var Uinput ui;
 var Evdev  ev;
 <<<ev.index(10)>>>;

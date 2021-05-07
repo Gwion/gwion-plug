@@ -1,4 +1,4 @@
-#require FileIO
+#import FileIO
 
 var FileIO file;
 file.open("examples/analys.gw", "r");

@@ -1,4 +1,4 @@
-#require FileIO
+#import FileIO
 
 var Object o;
 var FileIO f;

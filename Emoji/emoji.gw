@@ -1,4 +1,4 @@
-#require Emoji
+#import Emoji
 
 Emoji(":smile:") => const auto str;
 <<< "This is a ${ str }" >>>;

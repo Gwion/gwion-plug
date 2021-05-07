@@ -1,4 +1,4 @@
-#require List
+#import List
 
 #!var List:[int] l;
 #!<<<l >>>;

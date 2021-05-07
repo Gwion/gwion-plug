@@ -1,4 +1,4 @@
-#require FileIO
+#import FileIO
 var FileIO f;
 #!var string s;
 f.open("file2string.gw", "r");

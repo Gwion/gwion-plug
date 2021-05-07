@@ -1,4 +1,4 @@
-#require Lo
+#import Lo
 var OscIn oin;
 <<< "Created OscIn Object ", oin >>>;
 

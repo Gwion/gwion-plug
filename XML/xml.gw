@@ -1,4 +1,4 @@
-#require XML
+#import XML
 
 var XML xml;
 <<< xml.children.size() >>>;

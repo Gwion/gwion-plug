@@ -1,8 +1,8 @@
-#require Evdev
-#require Std
+#import Evdev
+#import Std
 
-#require Modules
-#require Soundpipe
+#import Modules
+#import Soundpipe
 
 var Evdev dev;
 if(dev.index(4) < 0)

@@ -1,5 +1,5 @@
-#require TUI
-#require Modules
+#import TUI
+#import Modules
 
 var SinOsc s ~> dac;
 

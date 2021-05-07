@@ -1,4 +1,4 @@
-#require TUI
+#import TUI
 
 var TUI.Window win;
 

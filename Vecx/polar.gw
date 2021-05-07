@@ -1,4 +1,4 @@
-#require Vecx
+#import Vecx
 
 polar(1);
 var polar b;

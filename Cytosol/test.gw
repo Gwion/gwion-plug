@@ -1,4 +1,4 @@
-#require Cytosol
+#import Cytosol
 
 class Person extends Cytosol.Record {
   var string name;

@@ -1,4 +1,4 @@
-#require Vecx
+#import Vecx
 
 var Vec4 v, w;
 <<<v>>>;

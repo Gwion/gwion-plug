@@ -1,4 +1,4 @@
-#require Evdev
+#import Evdev
 var AbsInfo abs;
 <<<abs.value(), 12 => abs.value, abs.value()>>>;
 <<<abs.minimum(), 12 => abs.minimum, abs.minimum()>>>;

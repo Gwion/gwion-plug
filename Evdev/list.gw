@@ -1,4 +1,4 @@
-#require Evdev
+#import Evdev
 var Evdev evdev;
 var int i;
 while(true) {

@@ -1,4 +1,4 @@
-#require TUI
+#import TUI
 #!{
 var TUI.Window win;
 "Hello TUI" => win.title;

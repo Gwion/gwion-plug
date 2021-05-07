@@ -1,4 +1,4 @@
-#require File:[txt]
+#import File:[txt]
 
 File:[txt]("txt.txt", "cwr") => var auto file;
 

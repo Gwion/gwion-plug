@@ -1,3 +1,3 @@
-#require Analys
+#import Analys
 var FC fc;
 fc.compute();

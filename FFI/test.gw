@@ -1,4 +1,4 @@
-#require FFI
+#import FFI
 
 FFI:[int](puts, pointer) => var auto puts;
 <<< puts.call("test") >>>;

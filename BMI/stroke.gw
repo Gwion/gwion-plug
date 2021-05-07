@@ -1,4 +1,4 @@
-#require BMI
+#import BMI
 
 BMI.create(256, 256, 0) => const auto bmi;
 

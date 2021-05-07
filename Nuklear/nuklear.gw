@@ -1,5 +1,5 @@
-#require Nuklear
-#require Modules
+#import Nuklear
+#import Modules
 
 var NkPanel panel;
 

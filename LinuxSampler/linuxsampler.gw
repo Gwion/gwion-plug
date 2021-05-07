@@ -1,5 +1,5 @@
-#require LinuxSampler
-#require Math
+#import LinuxSampler
+#import Math
 
 #! simple soundchain
 var LinuxSampler ls ~> dac;

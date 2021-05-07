@@ -1,4 +1,4 @@
-#require Tuple
+#import Tuple
 <<< Tuple("Tom", 6) => var Tuple:[string, int] tup >>>;
 <<< tup >>>;
 <<< tup[0] >>>;

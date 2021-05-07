@@ -1,4 +1,4 @@
-#require Vecx
+#import Vecx
 
 var complex a, b;
 a;

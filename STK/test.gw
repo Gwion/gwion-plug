@@ -1,4 +1,4 @@
-#require STK
+#import STK
 
 var stk.BeeThree b3 ~> dac;
 b3.noteOn(440,.5);

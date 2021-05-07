@@ -1,4 +1,4 @@
-#require Evdev
+#import Evdev
 var Joystick joy;
 joy.index(0);
 <<<joy>>>;

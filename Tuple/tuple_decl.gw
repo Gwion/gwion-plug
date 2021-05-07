@@ -1,2 +1,2 @@
-#require Tuple
+#import Tuple
 var Tuple:[int] a;

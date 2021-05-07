@@ -1,4 +1,4 @@
-#require SndFile
+#import SndFile
 
 adc ~> dac;
 5::second => now;

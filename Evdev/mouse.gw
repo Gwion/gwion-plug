@@ -1,4 +1,4 @@
-#require Evdev
+#import Evdev
 var Mouse mouse;
 mouse.index(-1);
 mouse => now;
