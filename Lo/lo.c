@@ -373,7 +373,7 @@ static MFUN(oscin_get_s) {
   MUTEX_LOCK(MUTEX(o));
   Vector c_arg = CURR(o);
   struct Arg* arg = (struct Arg*)vector_at(c_arg, 0);
-  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, arg->data.s);
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, arg->data.s);
   release_Arg(arg);
   vector_rem(c_arg, 0);
   MUTEX_UNLOCK(MUTEX(o));

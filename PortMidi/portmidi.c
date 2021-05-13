@@ -91,19 +91,19 @@ static MFUN(pm_name)
 {
   const PmDeviceInfo* info = Pm_GetDeviceInfo(ID(o));
   if(!info)
-    *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, "no device");
+    *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, "no device");
   else
-    *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, (m_str)info->name);
+    *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, (m_str)info->name);
 }
 
 static SFUN(pm_error)
 {
-  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion->mp, shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(0)));
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(0)));
 }
 
 static MFUN(pm_close)
 {
-  release_info(shred->info->vm->gwion->mp, ID(o), o);
+  release_info(shred->info->mp, ID(o), o);
   STREAM(o) = NULL;
   ID(o) = -1;
   *(m_uint*)RETURN = 1;
@@ -112,20 +112,20 @@ static MFUN(pm_close)
 static CTOR(pm_ctor)
 {
   ID(o) = -1;
-  MSG(o) = new_vector(shred->info->vm->gwion->mp);
+  MSG(o) = new_vector(shred->info->mp);
 }
 
 static DTOR(pm_dtor)
 {
-  free_vector(shred->info->vm->gwion->mp, MSG(o));
+  free_vector(shred->info->mp, MSG(o));
   if(get(shred->info->vm, ID(o)))
-    release_info(shred->info->vm->gwion->mp, ID(o), o);
+    release_info(shred->info->mp, ID(o), o);
 }
 
 static MFUN(midiout_open)
 {
   if(ID(o) > -1)
-    release_info(shred->info->vm->gwion->mp, ID(o), o);
+    release_info(shred->info->mp, ID(o), o);
   ID(o) = *(m_uint*)MEM(SZ_INT);
   MidiInfo* info = get(shred->info->vm, ID(o));
   vector_add(info->client, (vtype)o);

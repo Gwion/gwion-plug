@@ -40,13 +40,13 @@ term_func(IsLineBuffered)
 static SFUN(term_color1) {
   char c[16];
   sprintf(c, "\e[%lum", 30 + *(m_uint*)MEM(0));
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)RETURN = new_string(shred->info->mp, shred, c);
 }
 
 static SFUN(term_color2) {
   char c[16];
   sprintf(c, "\e[%lu;%lum", 30 + *(m_uint*)MEM(0), 40 + *(m_uint*)MEM(SZ_INT));
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)RETURN = new_string(shred->info->mp, shred, c);
 }
 
 static SFUN(term_color3) {
@@ -54,7 +54,7 @@ static SFUN(term_color3) {
   sprintf(c, "\e[%lu;%lu;%lum", 30 + *(m_uint*)MEM(0),
                             40 + *(m_uint*)MEM(SZ_INT),
                             *(m_uint*)MEM(SZ_INT*2));
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)RETURN = new_string(shred->info->mp, shred, c);
 }
 
 static SFUN(term_color4) {
@@ -62,14 +62,14 @@ static SFUN(term_color4) {
   sprintf(c, "\e[%lu;%lu;%sm", 30 + *(m_uint*)MEM(0),
                             40 + *(m_uint*)MEM(SZ_INT),
                             STRING(*(M_Object*)MEM(SZ_INT*2)));
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)RETURN = new_string(shred->info->mp, shred, c);
 }
 
 static INSTR(term_attr_concat) {
   POP_REG(shred, SZ_INT);
   char c[16];
   sprintf(c, "%lu;%lu", *(m_uint*)REG(-SZ_INT), *(m_uint*)REG(0));
-  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->mp, shred, c);
 }
 
 static INSTR(term_str_attr_concat) {
@@ -78,7 +78,7 @@ static INSTR(term_str_attr_concat) {
   const m_str lhs = STRING(_lhs);
   char c[strlen(lhs) + 16];
   sprintf(c, "%s;%lu", lhs, *(m_uint*)REG(0));
-  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->mp, shred, c);
 }
 
 static INSTR(term_attr_str_concat) {
@@ -87,7 +87,7 @@ static INSTR(term_attr_str_concat) {
   const m_str rhs = STRING(_rhs);
   char c[strlen(rhs) + 16];
   sprintf(c, "%lu;%s", *(m_uint*)REG(-SZ_INT), rhs);
-  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->mp, shred, c);
 }
 
 static INSTR(term_str_str_concat) {
@@ -98,7 +98,7 @@ static INSTR(term_str_str_concat) {
   const m_str rhs = STRING(_rhs);
   char c[strlen(lhs) + strlen(rhs) + 2];
   sprintf(c, "%s;%s", lhs, rhs);
-  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->vm->gwion->mp, shred, c);
+  *(M_Object*)REG(-SZ_INT) = new_string(shred->info->mp, shred, c);
 }
 
 GWION_IMPORT(Term) {

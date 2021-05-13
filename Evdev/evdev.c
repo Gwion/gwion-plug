@@ -123,7 +123,7 @@ static CTOR(evdev_base_ctor) {
   EvdevInfo* info = INFO(o) = (EvdevInfo*)xcalloc(1, sizeof(EvdevInfo));
   info->evdev = libevdev_new();
   info->index = -1;
-  info->args  = new_vector(shred->info->vm->gwion->mp);
+  info->args  = new_vector(shred->info->mp);
 }
 
 static DTOR(evdev_dtor) {
@@ -135,7 +135,7 @@ static DTOR(evdev_dtor) {
     close(info->fd);
   }
   libevdev_free(info->evdev);
-  free_vector(shred->info->vm->gwion->mp, info->args);
+  free_vector(shred->info->mp, info->args);
   free(info);
 }
 static void* evdev_process(void* arg) {
@@ -240,7 +240,7 @@ static MFUN(evdev_##func) {                      \
   const EvdevInfo* info = INFO(o);               \
   const struct libevdev* dev = info->evdev;      \
   m_str str = (m_str)libevdev_get_##func(dev);   \
-  *(M_Object*)RETURN  = new_string(shred->info->vm->gwion->mp, shred, str);  \
+  *(M_Object*)RETURN  = new_string(shred->info->mp, shred, str);  \
 }                                                \
 static MFUN(evdev_set_##func) {                  \
   const EvdevInfo* info = INFO(o);               \
@@ -417,7 +417,7 @@ static MFUN(evdev_get_abs_info) {
   }
   const struct input_absinfo* abs = libevdev_get_abs_info(info->evdev, code);
   if(abs) {
-    M_Object obj = new_object(shred->info->vm->gwion->mp, NULL, t_absinfo);
+    M_Object obj = new_object(shred->info->mp, NULL, t_absinfo);
     ABSINFO(obj) = (struct input_absinfo*)abs;
     ABSINFO_CONST(obj) = 1;
     *(M_Object*)RETURN = obj;
@@ -551,7 +551,7 @@ static MFUN(uinput_create) {
 static MFUN(uinput_##func) {                                                 \
   struct libevdev_uinput* uidev = UINPUT(o);                                 \
   *(M_Object*)RETURN = uidev ?                                               \
-    new_string(shred->info->vm->gwion->mp, shred, (const m_str)libevdev_uinput_get_##func(uidev)): NULL; \
+    new_string(shred->info->mp, shred, (const m_str)libevdev_uinput_get_##func(uidev)): NULL; \
 }
 describe_uinput(syspath)
 describe_uinput(devnode)

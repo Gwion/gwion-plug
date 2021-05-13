@@ -54,7 +54,7 @@ static SFUN(machine_compile) {
 static SFUN(machine_shreds) {
   VM* vm = shred->info->vm;
   const Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
-  const M_Object obj = new_array(shred->info->vm->gwion->mp, t, vector_size(&vm->shreduler->shreds));
+  const M_Object obj = new_array(shred->info->mp, t, vector_size(&vm->shreduler->shreds));
   for(m_uint i = 0; i < vector_size(&vm->shreduler->shreds); i++) {
     const VM_Shred sh = (VM_Shred)vector_at(&vm->shreduler->shreds, i);
     m_vector_set(ARRAY(obj), i, &sh->tick->xid);

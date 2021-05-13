@@ -48,10 +48,10 @@ static OP_CHECK(opck_txt_ctor) {
 static MFUN(fileread) {
   file_t *f = *(file_t**)(o->data + SZ_INT);
   const size_t fsize = file_length(f);
-  char *string = _mp_malloc(shred->info->vm->gwion->mp, fsize + 1);
+  char *string = _mp_malloc(shred->info->mp, fsize + 1);
   readf(f, string, fsize);
   string[fsize] = 0;
-  const M_Object ret = new_object(shred->info->vm->gwion->mp, shred, shred->info->vm->gwion->type[et_string]);
+  const M_Object ret = new_object(shred->info->mp, shred, shred->info->vm->gwion->type[et_string]);
   STRING(ret) = string;
   *(M_Object*)RETURN = ret;
 }
@@ -115,7 +115,7 @@ static INSTR(FileTxtCtor) {
     handle(shred, _("can't open file"));
     return;
   }
-  const M_Object o = new_object(shred->info->vm->gwion->mp, shred, t);
+  const M_Object o = new_object(shred->info->mp, shred, t);
   *(file_t**)(o->data + SZ_INT) = f;
   *(M_Object*)REG(-SZ_INT) = o;
 }

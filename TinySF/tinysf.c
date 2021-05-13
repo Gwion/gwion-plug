@@ -35,7 +35,7 @@ static INSTR(TinySFCtor) {
      return;
    }
    tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
-   const M_Object o = new_object(shred->info->vm->gwion->mp, shred, (Type)instr->m_val);
+   const M_Object o = new_object(shred->info->mp, shred, (Type)instr->m_val);
    UGEN(o) = new_UGen(shred->info->mp);
    UGEN(o)->module.gen.data = TSF(o) = tiny;
    vector_add(&shred->info->vm->ugen, (vtype)UGEN(o));

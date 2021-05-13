@@ -599,10 +599,10 @@ static m_bool import_ass(Gwi gwi) {
 
 static m_int o_fc_vector;
 static CTOR(fc_ctor) {
-  *(Vector*)(o->data + o_fc_vector) = new_vector(shred->info->vm->gwion->mp);
+  *(Vector*)(o->data + o_fc_vector) = new_vector(shred->info->mp);
 }
 static DTOR(fc_dtor) {
-  free_vector(shred->info->vm->gwion->mp, *(Vector*)(o->data + o_fc_vector));
+  free_vector(shred->info->mp, *(Vector*)(o->data + o_fc_vector));
 }
 
 static MFUN(fc_compute) {
@@ -610,7 +610,7 @@ static MFUN(fc_compute) {
   M_Object ret;
   Vector v = *(Vector*)(o->data + o_fc_vector);
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
-  ret = new_array(shred->info->vm->gwion->mp, t, vector_size(v));
+  ret = new_array(shred->info->mp, t, vector_size(v));
   vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
     M_Object obj = (M_Object)vector_at(v, i);

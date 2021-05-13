@@ -253,7 +253,7 @@ static CTOR(nk_ctor) {
   GWindow* gw = (GWindow*)xmalloc(sizeof(GWindow));
   gw->win = (XWindow*)xmalloc(sizeof(XWindow));
   gw->last_widget = NULL;
-  gw->widget = new_vector(shred->info->vm->gwion->mp);
+  gw->widget = new_vector(shred->info->mp);
   gw_nk_init(gw, shred);
   last_window = gw;
   pthread_create(&gw->thread, NULL, &_loop, gw);
@@ -411,11 +411,11 @@ static void group_exec(M_Object o, struct nk_context* ctx)
 }
 static CTOR(group_ctor)
 {
-  LIST(o)= new_vector(shred->info->vm->gwion->mp);
+  LIST(o)= new_vector(shred->info->mp);
   last_window->last_widget = o;
 }
 static DTOR(group_dtor) {
-  free_vector(shred->info->vm->gwion->mp, LIST(o));
+  free_vector(shred->info->mp, LIST(o));
   last_window->last_widget = *(M_Object*)(o->data + o_nk_parent);
 }
 static MFUN(group_end)

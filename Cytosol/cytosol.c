@@ -50,7 +50,7 @@ static DTOR(cytosol_dtor) {
     _release(closure->shred->info->me, shred);
     vmcode_remref(closure->code, shred->info->vm->gwion);
     vector_release(&closure->args);
-    mp_free(shred->info->vm->gwion->mp, CytosolClosure, closure);
+    mp_free(shred->info->mp, CytosolClosure, closure);
   }
   vector_release(&FUNCVEC(o));
 }
@@ -185,7 +185,7 @@ static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
 static void cytosol_fun(void* data, const struct cyt_value_buffer* buf) {
   struct CytosolClosure_ *closure = (struct CytosolClosure_*)data;
   vmcode_addref(closure->code);
-  const VM_Shred shred = new_vm_shred(closure->shred->info->vm->gwion->mp, closure->code);
+  const VM_Shred shred = new_vm_shred(closure->shred->info->mp, closure->code);
   shred->base = closure->shred->base;
   struct CytosolArg args = {
     .shred = shred,
@@ -198,9 +198,9 @@ static void cytosol_fun(void* data, const struct cyt_value_buffer* buf) {
 }
 
 static void cytosol_cb(const M_Object o, const VM_Shred shred, const VM_Code code, const struct Vector_ types, const m_str name) {
-  struct CytosolClosure_ *closure = mp_malloc(shred->info->vm->gwion->mp, CytosolClosure);
+  struct CytosolClosure_ *closure = mp_malloc(shred->info->mp, CytosolClosure);
   closure->shred = shred;
-  closure->code = vmcode_callback(shred->info->vm->gwion->mp, code);
+  closure->code = vmcode_callback(shred->info->mp, code);
   closure->args = types;
   ++closure->shred->info->me->ref;
   vector_add(&FUNCVEC(o), (m_uint)closure);
@@ -313,7 +313,7 @@ static OP_CHECK(opck_record_ctor) {
 
 static INSTR(RecordCtor) {
   POP_REG(shred, instr->m_val);
-  const M_Object o = new_object(shred->info->vm->gwion->mp, shred, (Type)instr->m_val2);
+  const M_Object o = new_object(shred->info->mp, shred, (Type)instr->m_val2);
   memcpy(o->data, REG(-SZ_INT), instr->m_val);
   *(M_Object*)REG(-SZ_INT) = o;
 }

@@ -46,12 +46,12 @@ static double note2freq(int note) {
 }
 
 static CTOR(ogham_ctor) {
-  OGH(o) = mp_calloc2(shred->info->vm->gwion->mp, sizeof(ogh_music_t));
+  OGH(o) = mp_calloc2(shred->info->mp, sizeof(ogh_music_t));
   ogh_music_init(OGH(o));
 }
 
 static DTOR(ogham_dtor) {
-  mp_free2(shred->info->vm->gwion->mp, sizeof(ogh_music_t) + (OGH(o)->length)*sizeof(ogh_packed_t), OGH(o));
+  mp_free2(shred->info->mp, sizeof(ogh_music_t) + (OGH(o)->length)*sizeof(ogh_packed_t), OGH(o));
 }
 
 #define NOTE(o) (*(ogh_note_t*)(o->data))
@@ -67,14 +67,14 @@ typedef struct Runtime_{
 } Runtime;
 
 static DTOR(player_dtor) {
-  free_m_vector(shred->info->vm->gwion->mp, PLAYER_NOTES(o));
+  free_m_vector(shred->info->mp, PLAYER_NOTES(o));
   Runtime *runtime = PLAYER_RUNTIME(o);
   for(m_uint i = 0; i < PLAYER_POLYPHONY(o); i++) {
     shreduler_remove(shred->tick->shreduler, runtime->voice[i].shred, true);
     release(runtime->voice[i].note, shred);
   }
   vmcode_remref(runtime->code, shred->info->vm->gwion);
-  mp_free2(shred->info->vm->gwion->mp, sizeof(Runtime) + PLAYER_POLYPHONY(o) * sizeof(struct Voice),
+  mp_free2(shred->info->mp, sizeof(Runtime) + PLAYER_POLYPHONY(o) * sizeof(struct Voice),
      PLAYER_RUNTIME(o));
 }
 
@@ -177,7 +177,7 @@ static INSTR(ogham_add_notes) {
   const M_Vector array = ARRAY(not);
   const m_uint sz = m_vector_size(array);
   const uint32_t len = OGH(ogh)->length;
-  OGH(ogh) = mp_realloc(shred->info->vm->gwion->mp, OGH(ogh),
+  OGH(ogh) = mp_realloc(shred->info->mp, OGH(ogh),
      sizeof(ogh_music_t) + len*sizeof(ogh_packed_t), sizeof(ogh_music_t) + (len+sz)*sizeof(ogh_packed_t));
   ogh_note_t notes[sz];
   for(m_uint i = 0; i < sz; i++) {
@@ -338,7 +338,7 @@ static SFUN(ogh_open) {
   }
   fseek(file, 0, SEEK_END);
   const size_t length = ftell(file);
-  ogh_music_t* ogh = _mp_malloc(shred->info->vm->gwion->mp, length);
+  ogh_music_t* ogh = _mp_malloc(shred->info->mp, length);
   rewind(file);
   fread(ogh, length, 1, file);
   fclose(file);

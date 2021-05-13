@@ -45,7 +45,7 @@ static SFUN(gw_knn) {
   m_uint* ret = knn_classify_multi(data_x, data_y, data, n_labl, labl, inst_x, inst, k);
 
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
-  M_Object ret_obj = new_array(shred->info->vm->gwion->mp, t, inst_x);
+  M_Object ret_obj = new_array(shred->info->mp, t, inst_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   matrix_release(data);
@@ -66,7 +66,7 @@ static SFUN(gw_kmeans) {
   m_float** cent = gw2c(ARRAY(cent_obj), &cent_x, &cent_y);
   m_uint* ret = kmeans(data_x, data_y, data, k, theta, cent, initial);
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
-  M_Object ret_obj = new_array(shred->info->vm->gwion->mp, t, data_x);
+  M_Object ret_obj = new_array(shred->info->mp, t, data_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   memcpy(ARRAY(ret_obj)->ptr, ret, data_y * sizeof(m_uint));
@@ -86,12 +86,12 @@ static SFUN(gw_kmeans_refine) {
   m_float** data = gw2c(ARRAY(data_obj), &data_x, &data_y);
   m_float** ret = kmeans_refine(data_x, data_y, data, iter, n_points, n_label);
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
-  M_Object ret_obj = new_array(shred->info->vm->gwion->mp, t, data_x);
+  M_Object ret_obj = new_array(shred->info->mp, t, data_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
   vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
-    M_Object obj = new_array(shred->info->vm->gwion->mp, t, data_y);
+    M_Object obj = new_array(shred->info->mp, t, data_y);
     memcpy(ARRAY(obj)->ptr, ret[i], data_y * sizeof(m_float));
     m_vector_set(ARRAY(ret_obj), i, (char*)&obj);
     vector_add(&shred->gc, (vtype)obj);

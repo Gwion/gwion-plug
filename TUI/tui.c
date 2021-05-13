@@ -82,7 +82,7 @@ static CTOR(win_ctor) {
   meta->wstack.count++;
   TUIWindow *win = WINDOW(o) = &meta->wstack.windows[0];
   if(!meta->running) {
-    meta->mp = shred->info->vm->gwion->mp;
+    meta->mp = shred->info->mp;
     meta->vm = new_vm(meta->mp, false);
     meta->vm->gwion = shred->info->vm->gwion;
     if(tui_screen_configure(&meta->buffer, &meta->old_config) == EXIT_FAILURE)
@@ -110,7 +110,7 @@ static DTOR(win_dtor) {
   for(m_uint i = 0; i < vector_size(&v); ++i)
     _release((M_Object)vector_at(&v, i), shred);
   vector_release(&v);
-  _mp_free(shred->info->vm->gwion->mp, 64 * sizeof(TUIWidget), *(TUIWidget**)(o->data + SZ_INT*2));
+  _mp_free(shred->info->mp, 64 * sizeof(TUIWidget), *(TUIWidget**)(o->data + SZ_INT*2));
   tui_window_destroy(win);
 }
 
@@ -121,7 +121,7 @@ static MFUN(Window_title_set) {
 
 static MFUN(Window_title_get) {
   TUIWindow *win = WINDOW(o);
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, (m_str)win->menu.title);
+  *(M_Object*)RETURN = new_string(shred->info->mp, shred, (m_str)win->menu.title);
 }
 
 static MFUN(window_position) {
@@ -310,7 +310,7 @@ static CTOR(WidgetCtor) {
 
 static CTOR(RowCtor) {
   vector_init(&*(struct Vector_*)(o->data + SZ_INT+sizeof(TUIWidget)));
-  *(void**)(o->data + SZ_INT*2+sizeof(TUIWidget)) = _mp_malloc(shred->info->vm->gwion->mp, 64 * sizeof(TUIWidget));
+  *(void**)(o->data + SZ_INT*2+sizeof(TUIWidget)) = _mp_malloc(shred->info->mp, 64 * sizeof(TUIWidget));
   TUIRow *row = (TUIRow*)WIDGET(o).user_data;
   row->widgets = (TUIWidgets){};
 }
@@ -335,7 +335,7 @@ static MFUN(Label_text_set) {
 }
 
 static MFUN(Label_text_get) {                                             \
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, WIDGET(o).user_data); \
+  *(M_Object*)RETURN = new_string(shred->info->mp, shred, WIDGET(o).user_data); \
 }
 
 struct TUIClosure_ {
@@ -346,7 +346,7 @@ struct TUIClosure_ {
 
 ANN static void widget_cb(void* data, TUIEvent event) {
   struct TUIClosure_ *closure = data;
-  const VM_Shred shred = new_vm_shred(closure->shred->info->vm->gwion->mp, closure->code);
+  const VM_Shred shred = new_vm_shred(closure->shred->info->mp, closure->code);
   vmcode_addref(closure->code);
   shred->base = closure->shred->base;
   *(M_Object*)shred->mem = closure->o;
@@ -355,11 +355,11 @@ ANN static void widget_cb(void* data, TUIEvent event) {
 
 // C defined func won't work atm
 static MFUN(WidgetCallback) {
-  struct TUIClosure_ *closure = mp_malloc(shred->info->vm->gwion->mp, TUIClosure);
+  struct TUIClosure_ *closure = mp_malloc(shred->info->mp, TUIClosure);
   const m_int key = *(m_int*)MEM(SZ_INT);
   const VM_Code code = *(VM_Code*)MEM(SZ_INT*2);
   closure->shred = shred;
-  closure->code = vmcode_callback(shred->info->vm->gwion->mp, code);
+  closure->code = vmcode_callback(shred->info->mp, code);
   closure->o = o;
   if(!WIDGET(o).callbacks)
     WIDGET(o).callbacks = tui_alloc(sizeof(TUIWidgetCallback));
@@ -404,7 +404,7 @@ static MFUN(type##_##name##_set) {           \
 static MFUN(type##_##name##_get) {                                             \
   TUIWidget w = WIDGET(o);                                                    \
   TUI##type *a = (TUI##type*)(w.user_data);                                    \
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion->mp, shred, a->name); \
+  *(M_Object*)RETURN = new_string(shred->info->mp, shred, a->name); \
 }
 
 #define WIDGET_SET_STRING_ARRAY(type, name)                           \
@@ -415,10 +415,10 @@ static MFUN(type##_##name##_set) {                                    \
   M_Vector array = ARRAY(array_obj);                                  \
   /* TODO free/realloc */                                             \
   const m_uint n = a->length = m_vector_size(array);                  \
-  m_str *strs = _mp_malloc(shred->info->vm->gwion->mp, n * SZ_INT);   \
+  m_str *strs = _mp_malloc(shred->info->mp, n * SZ_INT);   \
   for(m_uint i = 0; i < n; ++i) {                                     \
     const M_Object str = *(M_Object*)(ARRAY_PTR(array) + i * SZ_INT); \
-    strs[i] = mstrdup(shred->info->vm->gwion->mp, STRING(str));       \
+    strs[i] = mstrdup(shred->info->mp, STRING(str));       \
   }                                                                   \
   a->name = strs;                                                     \
 }

@@ -13,7 +13,7 @@
 
 static CTOR(xml_ctor) {
   const Value v = (Value)map_at(&o->type_ref->nspc->info->value->map, 3);
-  *(M_Object*)(o->data + SZ_INT*2) = new_array(shred->info->vm->gwion->mp, v->type, 0);
+  *(M_Object*)(o->data + SZ_INT*2) = new_array(shred->info->mp, v->type, 0);
 }
 
 static DTOR(xml_dtor) { /*code here */ }

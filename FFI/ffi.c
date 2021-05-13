@@ -286,7 +286,7 @@ static OP_CHECK(opck_ffi_ctor) {
 
 static INSTR(FFICtor) {
   const Type t = (Type)instr->m_val;
-  *(M_Object*)REG(-SZ_INT) = new_object(shred->info->vm->gwion->mp, shred, t);
+  *(M_Object*)REG(-SZ_INT) = new_object(shred->info->mp, shred, t);
 }
 
 static OP_EMIT(opem_ffi_ctor) {

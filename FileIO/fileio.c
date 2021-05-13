@@ -184,10 +184,10 @@ static SFUN(file_list) {
     return;
   }
   const Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_string], 1);
-  const M_Object ret = new_array(shred->info->vm->gwion->mp, t, n);
+  const M_Object ret = new_array(shred->info->mp, t, n);
   vector_add(&shred->gc, (vtype)ret);
   for(m_uint i = 0; i < (m_uint)n; i++) {
-    const M_Object string = new_string(shred->info->vm->gwion->mp, NULL, namelist[i]->d_name);
+    const M_Object string = new_string(shred->info->mp, NULL, namelist[i]->d_name);
     m_vector_set(ARRAY(ret), i, &string);
     free(namelist[i]);
   }

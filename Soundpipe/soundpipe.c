@@ -15,8 +15,8 @@
 #include "array.h"
 #define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)
 #define CHECK_SIZE(size)  if(size <= 0){fprintf(stderr, "'gen_ftbl' size argument must be more than 0");return;}
+#define handle(a,b) { handle(a,b); return; }
 
-#define handle(a,b) {handle(a,b); return;}
 static DTOR(ftbl_dtor) {
   if(FTBL(o))
     sp_ftbl_destroy(&FTBL(o));
@@ -138,8 +138,9 @@ static MFUN(allpass_init) {
     ug->osc = NULL;
   }
   m_float looptime = *(m_float*)(shred->mem + gw_offset);
-  if(sp_allpass_create(&ug->osc) == SP_NOT_OK || sp_allpass_init(ug->sp, ug->osc, looptime) == SP_NOT_OK)
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+  if(sp_allpass_create(&ug->osc) == SP_NOT_OK || sp_allpass_init(ug->sp, ug->osc, looptime) == SP_NOT_OK) {
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
+  }
   ug->is_init = 1;
 }
 
@@ -326,7 +327,7 @@ static MFUN(bar_init) {
   gw_offset +=SZ_FLOAT;
   m_float ib = *(m_float*)(shred->mem + gw_offset);
   if(sp_bar_create(&ug->osc) == SP_NOT_OK || sp_bar_init(ug->sp, ug->osc, iK, ib) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -1108,7 +1109,7 @@ static MFUN(comb_init) {
   }
   m_float looptime = *(m_float*)(shred->mem + gw_offset);
   if(sp_comb_create(&ug->osc) == SP_NOT_OK || sp_comb_init(ug->sp, ug->osc, looptime) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -1252,7 +1253,7 @@ static MFUN(conv_init) {
   m_float iPartLen = *(m_float*)(shred->mem + gw_offset);
   if(sp_conv_create(&ug->osc) == SP_NOT_OK || sp_conv_init(ug->sp, ug->osc, ft, iPartLen) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
   ug->is_init = 1;
@@ -1415,7 +1416,7 @@ static MFUN(delay_init) {
   }
   m_float time = *(m_float*)(shred->mem + gw_offset);
   if(sp_delay_create(&ug->osc) == SP_NOT_OK || sp_delay_init(ug->sp, ug->osc, time) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -1526,7 +1527,7 @@ static MFUN(diskin_init) {
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
   if(sp_diskin_create(&ug->osc) == SP_NOT_OK || sp_diskin_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -1686,7 +1687,7 @@ static MFUN(drip_init) {
   }
   m_float dettack = *(m_float*)(shred->mem + gw_offset);
   if(sp_drip_create(&ug->osc) == SP_NOT_OK || sp_drip_init(ug->sp, ug->osc, dettack) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -1826,7 +1827,7 @@ static MFUN(dtrig_init) {
   ++ft_obj->ref;
   if(sp_dtrig_create(&ug->osc) == SP_NOT_OK || sp_dtrig_init(ug->sp, ug->osc, ft) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
   ug->is_init = 1;
@@ -2119,7 +2120,7 @@ static MFUN(fof_init) {
   if(sp_fof_create(&ug->osc) == SP_NOT_OK || sp_fof_init(ug->sp, ug->osc, sine, win, iolaps, iphs) == SP_NOT_OK) {
     release(sine_obj, shred); // LCOV_EXCL_LINE
     release(win_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->sine_obj = sine_obj;
   ug->win_obj = win_obj;
@@ -2349,7 +2350,7 @@ static MFUN(fog_init) {
   if(sp_fog_create(&ug->osc) == SP_NOT_OK || sp_fog_init(ug->sp, ug->osc, wav, win, iolaps, iphs) == SP_NOT_OK) {
     release(wav_obj, shred); // LCOV_EXCL_LINE
     release(win_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->wav_obj = wav_obj;
   ug->win_obj = win_obj;
@@ -2553,7 +2554,7 @@ static MFUN(fosc_init) {
   ++tbl_obj->ref;
   if(sp_fosc_create(&ug->osc) == SP_NOT_OK || sp_fosc_init(ug->sp, ug->osc, tbl) == SP_NOT_OK) {
     release(tbl_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl_obj = tbl_obj;
   ug->is_init = 1;
@@ -2672,7 +2673,7 @@ static MFUN(gbuzz_init) {
   m_float iphs = *(m_float*)(shred->mem + gw_offset);
   if(sp_gbuzz_create(&ug->osc) == SP_NOT_OK || sp_gbuzz_init(ug->sp, ug->osc, ft, iphs) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
   ug->is_init = 1;
@@ -2998,7 +2999,7 @@ static MFUN(incr_init) {
   }
   m_float val = *(m_float*)(shred->mem + gw_offset);
   if(sp_incr_create(&ug->osc) == SP_NOT_OK || sp_incr_init(ug->sp, ug->osc, val) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -3232,7 +3233,7 @@ static MFUN(lpc_init) {
   }
   m_int framesize = *(m_int*)(shred->mem + gw_offset);
   if(sp_lpc_create(&ug->osc) == SP_NOT_OK || sp_lpc_init(ug->sp, ug->osc, framesize) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -3440,7 +3441,7 @@ static MFUN(mincer_init) {
   m_int winsize = *(m_int*)(shred->mem + gw_offset);
   if(sp_mincer_create(&ug->osc) == SP_NOT_OK || sp_mincer_init(ug->sp, ug->osc, ft, winsize) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
   ug->is_init = 1;
@@ -3670,7 +3671,7 @@ static MFUN(nsmp_init) {
   M_Object init_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str init = STRING(init_obj);
   if(sp_nsmp_create(&ug->osc) == SP_NOT_OK || sp_nsmp_init(ug->sp, ug->osc, ft, sr, init) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -3740,7 +3741,7 @@ static MFUN(osc_init) {
   m_float phase = *(m_float*)(shred->mem + gw_offset);
   if(sp_osc_create(&ug->osc) == SP_NOT_OK || sp_osc_init(ug->sp, ug->osc, tbl, phase) == SP_NOT_OK) {
     release(tbl_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl_obj = tbl_obj;
   ug->is_init = 1;
@@ -3837,7 +3838,7 @@ static MFUN(oscmorph_init) {
   if(sp_oscmorph_create(&ug->osc) == SP_NOT_OK || sp_oscmorph_init(ug->sp, ug->osc, tbl, nft, phase) == SP_NOT_OK) {
     xfree(tbl); // LCOV_EXCL_LINE
     release(tbl_ptr, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl = tbl;
   ug->tbl_ptr = tbl_ptr;
@@ -4109,7 +4110,7 @@ static MFUN(paulstretch_init) {
   m_float stretch = *(m_float*)(shred->mem + gw_offset);
   if(sp_paulstretch_create(&ug->osc) == SP_NOT_OK || sp_paulstretch_init(ug->sp, ug->osc, ft, windowsize, stretch) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
   ug->is_init = 1;
@@ -4404,7 +4405,7 @@ static MFUN(phasor_init) {
   }
   m_float iphs = *(m_float*)(shred->mem + gw_offset);
   if(sp_phasor_create(&ug->osc) == SP_NOT_OK || sp_phasor_init(ug->sp, ug->osc, iphs) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -4504,7 +4505,7 @@ static MFUN(pitchamdf_init) {
   gw_offset +=SZ_FLOAT;
   m_float max = *(m_float*)(shred->mem + gw_offset);
   if(sp_pitchamdf_create(&ug->osc) == SP_NOT_OK || sp_pitchamdf_init(ug->sp, ug->osc, min, max) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -4552,7 +4553,7 @@ static MFUN(pluck_init) {
   }
   m_float ifreq = *(m_float*)(shred->mem + gw_offset);
   if(sp_pluck_create(&ug->osc) == SP_NOT_OK || sp_pluck_init(ug->sp, ug->osc, ifreq) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -4624,7 +4625,7 @@ static MFUN(port_init) {
   }
   m_float htime = *(m_float*)(shred->mem + gw_offset);
   if(sp_port_create(&ug->osc) == SP_NOT_OK || sp_port_init(ug->sp, ug->osc, htime) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -4692,7 +4693,7 @@ static MFUN(posc3_init) {
   ++tbl_obj->ref;
   if(sp_posc3_create(&ug->osc) == SP_NOT_OK || sp_posc3_init(ug->sp, ug->osc, tbl) == SP_NOT_OK) {
     release(tbl_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl_obj = tbl_obj;
   ug->is_init = 1;
@@ -4816,7 +4817,7 @@ static MFUN(prop_init) {
   M_Object str_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str str = STRING(str_obj);
   if(sp_prop_create(&ug->osc) == SP_NOT_OK || sp_prop_init(ug->sp, ug->osc, str) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -4940,7 +4941,7 @@ static MFUN(ptrack_init) {
   gw_offset +=SZ_INT;
   m_int ipeaks = *(m_int*)(shred->mem + gw_offset);
   if(sp_ptrack_create(&ug->osc) == SP_NOT_OK || sp_ptrack_init(ug->sp, ug->osc, ihopsize, ipeaks) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -5224,7 +5225,7 @@ static MFUN(reverse_init) {
   }
   m_float delay = *(m_float*)(shred->mem + gw_offset);
   if(sp_reverse_create(&ug->osc) == SP_NOT_OK || sp_reverse_init(ug->sp, ug->osc, delay) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -5360,7 +5361,7 @@ static MFUN(rpt_init) {
   }
   m_float maxdur = *(m_float*)(shred->mem + gw_offset);
   if(sp_rpt_create(&ug->osc) == SP_NOT_OK || sp_rpt_init(ug->sp, ug->osc, maxdur) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -5608,7 +5609,7 @@ static MFUN(sdelay_init) {
   }
   m_float size = *(m_float*)(shred->mem + gw_offset);
   if(sp_sdelay_create(&ug->osc) == SP_NOT_OK || sp_sdelay_init(ug->sp, ug->osc, size) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -5674,7 +5675,7 @@ static MFUN(slice_init) {
   if(sp_slice_create(&ug->osc) == SP_NOT_OK || sp_slice_init(ug->sp, ug->osc, vals, buf) == SP_NOT_OK) {
     release(vals_obj, shred); // LCOV_EXCL_LINE
     release(buf_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->vals_obj = vals_obj;
   ug->buf_obj = buf_obj;
@@ -5738,7 +5739,7 @@ static MFUN(smoothdelay_init) {
   gw_offset +=SZ_FLOAT;
   m_int interp = *(m_int*)(shred->mem + gw_offset);
   if(sp_smoothdelay_create(&ug->osc) == SP_NOT_OK || sp_smoothdelay_init(ug->sp, ug->osc, maxdel, interp) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -5811,7 +5812,7 @@ static MFUN(spa_init) {
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
   if(sp_spa_create(&ug->osc) == SP_NOT_OK || sp_spa_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -5860,7 +5861,7 @@ static MFUN(sparec_init) {
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
   if(sp_sparec_create(&ug->osc) == SP_NOT_OK || sp_sparec_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -5994,7 +5995,7 @@ static MFUN(tabread_init) {
   m_float mode = *(m_float*)(shred->mem + gw_offset);
   if(sp_tabread_create(&ug->osc) == SP_NOT_OK || sp_tabread_init(ug->sp, ug->osc, ft, mode) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
   ug->is_init = 1;
@@ -6199,7 +6200,7 @@ static MFUN(tblrec_init) {
   ++bar_obj->ref;
   if(sp_tblrec_create(&ug->osc) == SP_NOT_OK || sp_tblrec_init(ug->sp, ug->osc, bar) == SP_NOT_OK) {
     release(bar_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->bar_obj = bar_obj;
   ug->is_init = 1;
@@ -6774,7 +6775,7 @@ static MFUN(tseg_init) {
   }
   m_float ibeg = *(m_float*)(shred->mem + gw_offset);
   if(sp_tseg_create(&ug->osc) == SP_NOT_OK || sp_tseg_init(ug->sp, ug->osc, ibeg) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -6866,7 +6867,7 @@ static MFUN(tseq_init) {
   ++ft_obj->ref;
   if(sp_tseq_create(&ug->osc) == SP_NOT_OK || sp_tseq_init(ug->sp, ug->osc, ft) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
   ug->is_init = 1;
@@ -6927,7 +6928,7 @@ static MFUN(vdelay_init) {
   }
   m_float maxdel = *(m_float*)(shred->mem + gw_offset);
   if(sp_vdelay_create(&ug->osc) == SP_NOT_OK || sp_vdelay_init(ug->sp, ug->osc, maxdel) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -7087,7 +7088,7 @@ static MFUN(waveset_init) {
   }
   m_float ilen = *(m_float*)(shred->mem + gw_offset);
   if(sp_waveset_create(&ug->osc) == SP_NOT_OK || sp_waveset_init(ug->sp, ug->osc, ilen) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -7148,7 +7149,7 @@ static MFUN(wavin_init) {
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
   if(sp_wavin_create(&ug->osc) == SP_NOT_OK || sp_wavin_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -7197,7 +7198,7 @@ static MFUN(wavout_init) {
   M_Object filename_obj = *(M_Object*)(shred->mem + gw_offset);
   m_str filename = STRING(filename_obj);
   if(sp_wavout_create(&ug->osc) == SP_NOT_OK || sp_wavout_init(ug->sp, ug->osc, filename) == SP_NOT_OK) {
-    handle(shred, "UgenCreateException"); // LCOV_EXCL_LINE
+    handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->is_init = 1;
 }
@@ -7457,33 +7458,52 @@ GWION_IMPORT(soundpipe) {
   gwi_item_end(gwi, 0, num, 0);
   gwi_func_ini(gwi, "void", "_gen_composite");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "a string of space-separated parameters, in groups of four:");
+     gwinote(gwi, "");
+     gwinote(gwi, "arg 1 is the partial number. must be positive, but it doesn't need to be a whole number.");
+     gwinote(gwi, "");
+     gwinote(gwi, "arg 2 is the strength.");
+     gwinote(gwi, "");
+     gwinote(gwi, "arg 3 is the initial phase (expressed in degrees)");
+     gwinote(gwi, "");
+     gwinote(gwi, "arg 4 is the dc offset. A dc offset of 2 will put a 2-strength sinusoid in the range");
+     gwinote(gwi, "from (-2,2) to (0, 4)");
      gwi_func_arg(gwi, "string", "_argstring");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_composite, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_file");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "filename");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_file, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_gauss");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "The scale of the distribution, in the range of -/+scale");
      gwi_func_arg(gwi, "float", "_scale");
+     gwinote(gwi, "Random seed.");
      gwi_func_arg(gwi, "int", "_seed");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_gauss, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_line");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "A list of ordered xy pairs. X expects whole number integers, as they correlate to index positions in the ftable.");
      gwi_func_arg(gwi, "string", "_argstring");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_line, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_padsynth");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "ftable of amplitudes to use");
      gwi_func_arg(gwi, "ftbl", "_amps");
+     gwinote(gwi, "Base frequency.");
      gwi_func_arg(gwi, "float", "_f");
+     gwinote(gwi, "Bandwidth.");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_padsynth, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_rand");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "A string of value pairs. The first value is the value, then the probability.");
      gwi_func_arg(gwi, "string", "_argstring");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_rand, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_scrambler");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "destination ftable");
      gwi_func_arg(gwi, "ftbl", "_dest");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_scrambler, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_sine");
@@ -7491,6 +7511,7 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, ftbl_gen_sine, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_sinesum");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "A list of amplitudes, in the range 0-1, separated by spaces.Each position coordinates to their partial number. Position 1 is the fundamental amplitude (1 * freq). Position 2 is the first overtone (2 * freq), 3 is the second (3 * freq), etc...");
      gwi_func_arg(gwi, "string", "_argstring");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_sinesum, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_triangle");
@@ -7498,2001 +7519,2737 @@ GWION_IMPORT(soundpipe) {
   GWI_BB(gwi_func_end(gwi, ftbl_gen_triangle, ae_flag_none))
   gwi_func_ini(gwi, "void", "_gen_xline");
   gwi_func_arg(gwi, "int", "Size");
+     gwinote(gwi, "A list of ordered xy pairs. X expects whole number integers, as they correlate to index positions in the ftable.");
      gwi_func_arg(gwi, "string", "_argstring");
   GWI_BB(gwi_func_end(gwi, ftbl_gen_xline, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "ADSR generator");
+     gwinote(gwi, "This is an ADSR generator whose curves are created using a one-pole low pass filter.");
   DECL_OB(const Type, t_adsr, = gwi_class_ini(gwi, "Adsr", "UGen"));
   SET_FLAG(t_adsr, final);
   gwi_class_xtor(gwi, adsr_ctor, adsr_dtor);
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, adsr_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Attack time (in seconds)");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, adsr_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, adsr_get_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
+     gwinote(gwi, "Decay time (in seconds)");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, adsr_set_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "sus");
   GWI_BB(gwi_func_end(gwi, adsr_get_sus, ae_flag_none))
   gwi_func_ini(gwi, "float", "sus");
+     gwinote(gwi, "Sustain (in range 0-1)");
      gwi_func_arg(gwi, "float", "_sus");
   GWI_BB(gwi_func_end(gwi, adsr_set_sus, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, adsr_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "Release time (in seconds)");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, adsr_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Allpass filter");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Often used for the creation of reverb modules.");
   DECL_OB(const Type, t_allpass, = gwi_class_ini(gwi, "Allpass", "UGen"));
   SET_FLAG(t_allpass, final);
   gwi_class_xtor(gwi, allpass_ctor, allpass_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "The loop time of the filter, in seconds. This can also be thought of as the delay time.");
      gwi_func_arg(gwi, "float", "_looptime");
   GWI_BB(gwi_func_end(gwi, allpass_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "revtime");
   GWI_BB(gwi_func_end(gwi, allpass_get_revtime, ae_flag_none))
   gwi_func_ini(gwi, "float", "revtime");
+     gwinote(gwi, "The reverberation time, in seconds (RT-60).");
      gwi_func_arg(gwi, "float", "_revtime");
   GWI_BB(gwi_func_end(gwi, allpass_set_revtime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "First-order recursive highpass filter");
+     gwinote(gwi, "");
+     gwinote(gwi, "	This is the complement to the tone module.");
   DECL_OB(const Type, t_atone, = gwi_class_ini(gwi, "Atone", "UGen"));
   SET_FLAG(t_atone, final);
   gwi_class_xtor(gwi, atone_ctor, atone_dtor);
   gwi_func_ini(gwi, "float", "hp");
   GWI_BB(gwi_func_end(gwi, atone_get_hp, ae_flag_none))
   gwi_func_ini(gwi, "float", "hp");
+     gwinote(gwi, "The response curve's half power point (cutoff frequency).");
      gwi_func_arg(gwi, "float", "_hp");
   GWI_BB(gwi_func_end(gwi, atone_set_hp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Automatic wah pedal");
+     gwinote(gwi, "	An automatic wah effect, ported from Guitarix via Faust. ");
   DECL_OB(const Type, t_autowah, = gwi_class_ini(gwi, "Autowah", "UGen"));
   SET_FLAG(t_autowah, final);
   gwi_class_xtor(gwi, autowah_ctor, autowah_dtor);
   gwi_func_ini(gwi, "float", "level");
   GWI_BB(gwi_func_end(gwi, autowah_get_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "level");
+     gwinote(gwi, "Overall level (between 0 and 1)");
      gwi_func_arg(gwi, "float", "_level");
   GWI_BB(gwi_func_end(gwi, autowah_set_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "wah");
   GWI_BB(gwi_func_end(gwi, autowah_get_wah, ae_flag_none))
   gwi_func_ini(gwi, "float", "wah");
+     gwinote(gwi, "wah amount");
      gwi_func_arg(gwi, "float", "_wah");
   GWI_BB(gwi_func_end(gwi, autowah_set_wah, ae_flag_none))
   gwi_func_ini(gwi, "float", "mix");
   GWI_BB(gwi_func_end(gwi, autowah_get_mix, ae_flag_none))
   gwi_func_ini(gwi, "float", "mix");
+     gwinote(gwi, "Wet/dry amount (100 = wet, 0 = dry)");
      gwi_func_arg(gwi, "float", "_mix");
   GWI_BB(gwi_func_end(gwi, autowah_set_mix, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Balance the gain of one signal based on another signal");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This is often used to restore gain lost in the output of a filter.");
+     gwinote(gwi, "");
+     gwinote(gwi, "In the source code, the value `ihp` is set to a static 10hz. This is the default value in Csound, and should not often need to be changed.");
   DECL_OB(const Type, t_bal, = gwi_class_ini(gwi, "Bal", "UGen"));
   SET_FLAG(t_bal, final);
   gwi_class_xtor(gwi, bal_ctor, bal_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Physical model approximating the sound of a struck metal bar");
   DECL_OB(const Type, t_bar, = gwi_class_ini(gwi, "Bar", "UGen"));
   SET_FLAG(t_bar, final);
   gwi_class_xtor(gwi, bar_ctor, bar_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Dimensionless stiffness parameter");
      gwi_func_arg(gwi, "float", "_iK");
+     gwinote(gwi, "High-frequency loss parameter. Keep this small");
      gwi_func_arg(gwi, "float", "_ib");
   GWI_BB(gwi_func_end(gwi, bar_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "bcL");
   GWI_BB(gwi_func_end(gwi, bar_get_bcL, ae_flag_none))
   gwi_func_ini(gwi, "float", "bcL");
+     gwinote(gwi, "Boundary condition at left end of bar. 1 = clamped, 2 = pivoting, 3 = free");
      gwi_func_arg(gwi, "float", "_bcL");
   GWI_BB(gwi_func_end(gwi, bar_set_bcL, ae_flag_none))
   gwi_func_ini(gwi, "float", "bcR");
   GWI_BB(gwi_func_end(gwi, bar_get_bcR, ae_flag_none))
   gwi_func_ini(gwi, "float", "bcR");
+     gwinote(gwi, "Boundary condition at right end of bar. 1 = clamped, 2 = pivoting, 3 = free");
      gwi_func_arg(gwi, "float", "_bcR");
   GWI_BB(gwi_func_end(gwi, bar_set_bcR, ae_flag_none))
   gwi_func_ini(gwi, "float", "T30");
   GWI_BB(gwi_func_end(gwi, bar_get_T30, ae_flag_none))
   gwi_func_ini(gwi, "float", "T30");
+     gwinote(gwi, "30db decay time (in seconds).");
      gwi_func_arg(gwi, "float", "_T30");
   GWI_BB(gwi_func_end(gwi, bar_set_T30, ae_flag_none))
   gwi_func_ini(gwi, "float", "scan");
   GWI_BB(gwi_func_end(gwi, bar_get_scan, ae_flag_none))
   gwi_func_ini(gwi, "float", "scan");
+     gwinote(gwi, "Speed of scanning the output location.");
      gwi_func_arg(gwi, "float", "_scan");
   GWI_BB(gwi_func_end(gwi, bar_set_scan, ae_flag_none))
   gwi_func_ini(gwi, "float", "pos");
   GWI_BB(gwi_func_end(gwi, bar_get_pos, ae_flag_none))
   gwi_func_ini(gwi, "float", "pos");
+     gwinote(gwi, "Position along bar that strike occurs.");
      gwi_func_arg(gwi, "float", "_pos");
   GWI_BB(gwi_func_end(gwi, bar_set_pos, ae_flag_none))
   gwi_func_ini(gwi, "float", "vel");
   GWI_BB(gwi_func_end(gwi, bar_get_vel, ae_flag_none))
   gwi_func_ini(gwi, "float", "vel");
+     gwinote(gwi, "Normalized strike velocity");
      gwi_func_arg(gwi, "float", "_vel");
   GWI_BB(gwi_func_end(gwi, bar_set_vel, ae_flag_none))
   gwi_func_ini(gwi, "float", "wid");
   GWI_BB(gwi_func_end(gwi, bar_get_wid, ae_flag_none))
   gwi_func_ini(gwi, "float", "wid");
+     gwinote(gwi, "Spatial width of strike.");
      gwi_func_arg(gwi, "float", "_wid");
   GWI_BB(gwi_func_end(gwi, bar_set_wid, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A sweepable biquadratic general purpose filter");
+     gwinote(gwi, "");
+     gwinote(gwi, "    ");
   DECL_OB(const Type, t_biquad, = gwi_class_ini(gwi, "Biquad", "UGen"));
   SET_FLAG(t_biquad, final);
   gwi_class_xtor(gwi, biquad_ctor, biquad_dtor);
   gwi_func_ini(gwi, "float", "b0");
   GWI_BB(gwi_func_end(gwi, biquad_get_b0, ae_flag_none))
   gwi_func_ini(gwi, "float", "b0");
+     gwinote(gwi, "biquad coefficient.");
      gwi_func_arg(gwi, "float", "_b0");
   GWI_BB(gwi_func_end(gwi, biquad_set_b0, ae_flag_none))
   gwi_func_ini(gwi, "float", "b1");
   GWI_BB(gwi_func_end(gwi, biquad_get_b1, ae_flag_none))
   gwi_func_ini(gwi, "float", "b1");
+     gwinote(gwi, "biquad coefficient.");
      gwi_func_arg(gwi, "float", "_b1");
   GWI_BB(gwi_func_end(gwi, biquad_set_b1, ae_flag_none))
   gwi_func_ini(gwi, "float", "b2");
   GWI_BB(gwi_func_end(gwi, biquad_get_b2, ae_flag_none))
   gwi_func_ini(gwi, "float", "b2");
+     gwinote(gwi, "biquad coefficient.");
      gwi_func_arg(gwi, "float", "_b2");
   GWI_BB(gwi_func_end(gwi, biquad_set_b2, ae_flag_none))
   gwi_func_ini(gwi, "float", "a0");
   GWI_BB(gwi_func_end(gwi, biquad_get_a0, ae_flag_none))
   gwi_func_ini(gwi, "float", "a0");
+     gwinote(gwi, "biquad coefficient.");
      gwi_func_arg(gwi, "float", "_a0");
   GWI_BB(gwi_func_end(gwi, biquad_set_a0, ae_flag_none))
   gwi_func_ini(gwi, "float", "a1");
   GWI_BB(gwi_func_end(gwi, biquad_get_a1, ae_flag_none))
   gwi_func_ini(gwi, "float", "a1");
+     gwinote(gwi, "biquad coefficient.");
      gwi_func_arg(gwi, "float", "_a1");
   GWI_BB(gwi_func_end(gwi, biquad_set_a1, ae_flag_none))
   gwi_func_ini(gwi, "float", "a2");
   GWI_BB(gwi_func_end(gwi, biquad_get_a2, ae_flag_none))
   gwi_func_ini(gwi, "float", "a2");
+     gwinote(gwi, "biquad coefficient.");
      gwi_func_arg(gwi, "float", "_a2");
   GWI_BB(gwi_func_end(gwi, biquad_set_a2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Bipolar Scale");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This module scales from bipolar [-1, 1] to another range defined by min and max.");
   DECL_OB(const Type, t_biscale, = gwi_class_ini(gwi, "Biscale", "UGen"));
   SET_FLAG(t_biscale, final);
   gwi_class_xtor(gwi, biscale_ctor, biscale_dtor);
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, biscale_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum value to scale to.");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, biscale_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, biscale_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum value to scale to.");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, biscale_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Digital signal degradation");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Bitcrusher will digitally degrade a signal by altering the bitdepth and sampling-rate. ");
   DECL_OB(const Type, t_bitcrush, = gwi_class_ini(gwi, "Bitcrush", "UGen"));
   SET_FLAG(t_bitcrush, final);
   gwi_class_xtor(gwi, bitcrush_ctor, bitcrush_dtor);
   gwi_func_ini(gwi, "float", "bitdepth");
   GWI_BB(gwi_func_end(gwi, bitcrush_get_bitdepth, ae_flag_none))
   gwi_func_ini(gwi, "float", "bitdepth");
+     gwinote(gwi, "Bit depth. Expects an integer in the range of 1-16. Fractional values will be truncated.");
      gwi_func_arg(gwi, "float", "_bitdepth");
   GWI_BB(gwi_func_end(gwi, bitcrush_set_bitdepth, ae_flag_none))
   gwi_func_ini(gwi, "float", "srate");
   GWI_BB(gwi_func_end(gwi, bitcrush_get_srate, ae_flag_none))
   gwi_func_ini(gwi, "float", "srate");
+     gwinote(gwi, "Sampling rate.");
      gwi_func_arg(gwi, "float", "_srate");
   GWI_BB(gwi_func_end(gwi, bitcrush_set_srate, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Bandlimited sawtooth oscillator");
+     gwinote(gwi, "This is a bandlimited sawtooth oscillator ported from the `sawtooth` function from the Faust");
+     gwinote(gwi, "programming language.");
   DECL_OB(const Type, t_blsaw, = gwi_class_ini(gwi, "Blsaw", "UGen"));
   SET_FLAG(t_blsaw, final);
   gwi_class_xtor(gwi, blsaw_ctor, blsaw_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, blsaw_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency, (range 0-20000)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, blsaw_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, blsaw_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (range 0-1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, blsaw_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Bandlimited square oscillator");
+     gwinote(gwi, "This is a bandlimited square oscillator ported from the `squaretooth` function from the Faust");
+     gwinote(gwi, "programming language.");
   DECL_OB(const Type, t_blsquare, = gwi_class_ini(gwi, "Blsquare", "UGen"));
   SET_FLAG(t_blsquare, final);
   gwi_class_xtor(gwi, blsquare_ctor, blsquare_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, blsquare_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency, (range 0-20000)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, blsquare_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, blsquare_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (range 0-1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, blsquare_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "width");
   GWI_BB(gwi_func_end(gwi, blsquare_get_width, ae_flag_none))
   gwi_func_ini(gwi, "float", "width");
+     gwinote(gwi, "Duty cycle width (range 0-1).");
      gwi_func_arg(gwi, "float", "_width");
   GWI_BB(gwi_func_end(gwi, blsquare_set_width, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Bandlimited triangle oscillator");
+     gwinote(gwi, "This is a bandlimited triangle oscillator ported from the `triangletooth` function from the Faust");
+     gwinote(gwi, "programming language.");
   DECL_OB(const Type, t_bltriangle, = gwi_class_ini(gwi, "Bltriangle", "UGen"));
   SET_FLAG(t_bltriangle, final);
   gwi_class_xtor(gwi, bltriangle_ctor, bltriangle_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, bltriangle_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency, (range 0-20000)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, bltriangle_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, bltriangle_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (range 0-1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, bltriangle_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Brownian noise generator.");
   DECL_OB(const Type, t_brown, = gwi_class_ini(gwi, "Brown", "UGen"));
   SET_FLAG(t_brown, final);
   gwi_class_xtor(gwi, brown_ctor, brown_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Bandpass Butterworth filter");
   DECL_OB(const Type, t_butbp, = gwi_class_ini(gwi, "Butbp", "UGen"));
   SET_FLAG(t_butbp, final);
   gwi_class_xtor(gwi, butbp_ctor, butbp_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, butbp_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Center Frequency. (in Hertz)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, butbp_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, butbp_get_bw, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
+     gwinote(gwi, "Bandwidth. (in Hertz)");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, butbp_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Band-reject Butterworth filter");
   DECL_OB(const Type, t_butbr, = gwi_class_ini(gwi, "Butbr", "UGen"));
   SET_FLAG(t_butbr, final);
   gwi_class_xtor(gwi, butbr_ctor, butbr_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, butbr_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Center Frequency. (in Hertz)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, butbr_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, butbr_get_bw, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
+     gwinote(gwi, "Bandwidth. (in Hertz)");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, butbr_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Highpass Butterworth filter");
   DECL_OB(const Type, t_buthp, = gwi_class_ini(gwi, "Buthp", "UGen"));
   SET_FLAG(t_buthp, final);
   gwi_class_xtor(gwi, buthp_ctor, buthp_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, buthp_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Cutoff Frequency.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, buthp_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Lowpass Butterworth filter");
   DECL_OB(const Type, t_butlp, = gwi_class_ini(gwi, "Butlp", "UGen"));
   SET_FLAG(t_butlp, final);
   gwi_class_xtor(gwi, butlp_ctor, butlp_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, butlp_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Cutoff Frequency.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, butlp_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Applies clip-limiting to a signal");
   DECL_OB(const Type, t_clip, = gwi_class_ini(gwi, "Clip", "UGen"));
   SET_FLAG(t_clip, final);
   gwi_class_xtor(gwi, clip_ctor, clip_dtor);
   gwi_func_ini(gwi, "float", "lim");
   GWI_BB(gwi_func_end(gwi, clip_get_lim, ae_flag_none))
   gwi_func_ini(gwi, "float", "lim");
+     gwinote(gwi, "threshold / limiting value.");
      gwi_func_arg(gwi, "float", "_lim");
   GWI_BB(gwi_func_end(gwi, clip_set_lim, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Resettable clock with subdivisions");
   DECL_OB(const Type, t_clock, = gwi_class_ini(gwi, "Clock", "UGen"));
   SET_FLAG(t_clock, final);
   gwi_class_xtor(gwi, clock_ctor, clock_dtor);
   gwi_func_ini(gwi, "float", "bpm");
   GWI_BB(gwi_func_end(gwi, clock_get_bpm, ae_flag_none))
   gwi_func_ini(gwi, "float", "bpm");
+     gwinote(gwi, "Clock tempo, in beats per minute.");
      gwi_func_arg(gwi, "float", "_bpm");
   GWI_BB(gwi_func_end(gwi, clock_set_bpm, ae_flag_none))
   gwi_func_ini(gwi, "float", "subdiv");
   GWI_BB(gwi_func_end(gwi, clock_get_subdiv, ae_flag_none))
   gwi_func_ini(gwi, "float", "subdiv");
+     gwinote(gwi, "Clock subdivision. 2 = eighths, 4 = 16ths, etc.");
      gwi_func_arg(gwi, "float", "_subdiv");
   GWI_BB(gwi_func_end(gwi, clock_set_subdiv, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Comb filter");
   DECL_OB(const Type, t_comb, = gwi_class_ini(gwi, "Comb", "UGen"));
   SET_FLAG(t_comb, final);
   gwi_class_xtor(gwi, comb_ctor, comb_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "The loop time of the filter, in seconds. This can also be thought of as the delay time.");
      gwi_func_arg(gwi, "float", "_looptime");
   GWI_BB(gwi_func_end(gwi, comb_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "revtime");
   GWI_BB(gwi_func_end(gwi, comb_get_revtime, ae_flag_none))
   gwi_func_ini(gwi, "float", "revtime");
+     gwinote(gwi, "Reverberation time, in seconds (RT-60).");
      gwi_func_arg(gwi, "float", "_revtime");
   GWI_BB(gwi_func_end(gwi, comb_set_revtime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Compressor");
   DECL_OB(const Type, t_compressor, = gwi_class_ini(gwi, "Compressor", "UGen"));
   SET_FLAG(t_compressor, final);
   gwi_class_xtor(gwi, compressor_ctor, compressor_dtor);
   gwi_func_ini(gwi, "float", "ratio");
   GWI_BB(gwi_func_end(gwi, compressor_get_ratio, ae_flag_none))
   gwi_func_ini(gwi, "float", "ratio");
+     gwinote(gwi, "Ratio to compress with, a value > 1 will compress");
      gwi_func_arg(gwi, "float", "_ratio");
   GWI_BB(gwi_func_end(gwi, compressor_set_ratio, ae_flag_none))
   gwi_func_ini(gwi, "float", "thresh");
   GWI_BB(gwi_func_end(gwi, compressor_get_thresh, ae_flag_none))
   gwi_func_ini(gwi, "float", "thresh");
+     gwinote(gwi, "Threshold (in dB) 0 = max");
      gwi_func_arg(gwi, "float", "_thresh");
   GWI_BB(gwi_func_end(gwi, compressor_set_thresh, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, compressor_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Compressor attack");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, compressor_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, compressor_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "Compressor release");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, compressor_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Partioned convolution. ");
+     gwinote(gwi, "This module will perform partitioned convolution on an input signal using");
+     gwinote(gwi, "an ftable as an impulse response.");
   DECL_OB(const Type, t_conv, = gwi_class_ini(gwi, "Conv", "UGen"));
   SET_FLAG(t_conv, final);
   gwi_class_xtor(gwi, conv_ctor, conv_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Ftable used as the impulse response. ");
      gwi_func_arg(gwi, "ftbl", "_ft");
+     gwinote(gwi, "Partition length (in samples). ");
+     gwinote(gwi, "Must be a power of 2. Lower values will add less latency, at the cost ");
+     gwinote(gwi, "of requiring more CPU power. ");
      gwi_func_arg(gwi, "float", "_iPartLen");
   GWI_BB(gwi_func_end(gwi, conv_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Trigger-based fixed counter");
+     gwinote(gwi, "");
+     gwinote(gwi, "    The signal output will count from 0 to [N-1], and then");
+     gwinote(gwi, "repeat itself. Count will start when it has been triggered, otherwise it will be -1.");
   DECL_OB(const Type, t_count, = gwi_class_ini(gwi, "Count", "UGen"));
   SET_FLAG(t_count, final);
   gwi_class_xtor(gwi, count_ctor, count_dtor);
   gwi_func_ini(gwi, "float", "count");
   GWI_BB(gwi_func_end(gwi, count_get_count, ae_flag_none))
   gwi_func_ini(gwi, "float", "count");
+     gwinote(gwi, "Number to count up to (count - 1). Decimal points will be truncated.");
      gwi_func_arg(gwi, "float", "_count");
   GWI_BB(gwi_func_end(gwi, count_set_count, ae_flag_none))
   gwi_func_ini(gwi, "float", "mode");
   GWI_BB(gwi_func_end(gwi, count_get_mode, ae_flag_none))
   gwi_func_ini(gwi, "float", "mode");
+     gwinote(gwi, "Counting mode. 0 = wrap-around, 1 = count up to N -1, then stop and spit out -1");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, count_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Crossfade two signals. ");
+     gwinote(gwi, "This module will perform a linear crossfade between two input signals.");
   DECL_OB(const Type, t_crossfade, = gwi_class_ini(gwi, "Crossfade", "UGen"));
   SET_FLAG(t_crossfade, final);
   gwi_class_xtor(gwi, crossfade_ctor, crossfade_dtor);
   gwi_func_ini(gwi, "float", "pos");
   GWI_BB(gwi_func_end(gwi, crossfade_get_pos, ae_flag_none))
   gwi_func_ini(gwi, "float", "pos");
+     gwinote(gwi, "Crossfade position. 0 = all signal 1, 1 = all signal 2");
      gwi_func_arg(gwi, "float", "_pos");
   GWI_BB(gwi_func_end(gwi, crossfade_set_pos, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A simple DC block filter");
   DECL_OB(const Type, t_dcblock, = gwi_class_ini(gwi, "Dcblock", "UGen"));
   SET_FLAG(t_dcblock, final);
   gwi_class_xtor(gwi, dcblock_ctor, dcblock_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Adds a delay to an incoming signal with optional feedback.");
   DECL_OB(const Type, t_delay, = gwi_class_ini(gwi, "Delay", "UGen"));
   SET_FLAG(t_delay, final);
   gwi_class_xtor(gwi, delay_ctor, delay_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Delay time, in seconds.");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, delay_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, delay_get_feedback, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback");
+     gwinote(gwi, "Feedback amount. Should be a value between 0-1.");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, delay_set_feedback, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Diode-ladder virtual analogue low-pass filter");
+     gwinote(gwi, "This is a diode-ladder filter designed by Will Pirkle. ");
+     gwinote(gwi, "More information can be found in this paper here: ");
+     gwinote(gwi, "http://www.willpirkle.com/Downloads/AN-6DiodeLadderFilter.pdf");
   DECL_OB(const Type, t_diode, = gwi_class_ini(gwi, "Diode", "UGen"));
   SET_FLAG(t_diode, final);
   gwi_class_xtor(gwi, diode_ctor, diode_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, diode_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, diode_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, diode_get_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, diode_set_res, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Read from an audio file");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Expects a 1-channel file matching the project samplerate. Diskin should be able to read any file format that libsndfile supports.");
   DECL_OB(const Type, t_diskin, = gwi_class_ini(gwi, "Diskin", "UGen"));
   SET_FLAG(t_diskin, final);
   gwi_class_xtor(gwi, diskin_ctor, diskin_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Filename of the audio file.");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, diskin_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Distortion using a modified hyperbolic tangent function");
   DECL_OB(const Type, t_dist, = gwi_class_ini(gwi, "Dist", "UGen"));
   SET_FLAG(t_dist, final);
   gwi_class_xtor(gwi, dist_ctor, dist_dtor);
   gwi_func_ini(gwi, "float", "pregain");
   GWI_BB(gwi_func_end(gwi, dist_get_pregain, ae_flag_none))
   gwi_func_ini(gwi, "float", "pregain");
+     gwinote(gwi, "Gain applied before waveshaping.");
      gwi_func_arg(gwi, "float", "_pregain");
   GWI_BB(gwi_func_end(gwi, dist_set_pregain, ae_flag_none))
   gwi_func_ini(gwi, "float", "postgain");
   GWI_BB(gwi_func_end(gwi, dist_get_postgain, ae_flag_none))
   gwi_func_ini(gwi, "float", "postgain");
+     gwinote(gwi, "Gain applied after waveshaping");
      gwi_func_arg(gwi, "float", "_postgain");
   GWI_BB(gwi_func_end(gwi, dist_set_postgain, ae_flag_none))
   gwi_func_ini(gwi, "float", "shape1");
   GWI_BB(gwi_func_end(gwi, dist_get_shape1, ae_flag_none))
   gwi_func_ini(gwi, "float", "shape1");
+     gwinote(gwi, "Shape of the positive part of the signal. A value of 0 gets a flat clip.");
      gwi_func_arg(gwi, "float", "_shape1");
   GWI_BB(gwi_func_end(gwi, dist_set_shape1, ae_flag_none))
   gwi_func_ini(gwi, "float", "shape2");
   GWI_BB(gwi_func_end(gwi, dist_get_shape2, ae_flag_none))
   gwi_func_ini(gwi, "float", "shape2");
+     gwinote(gwi, "Like shape1, only for the negative part of the signal.");
      gwi_func_arg(gwi, "float", "_shape2");
   GWI_BB(gwi_func_end(gwi, dist_set_shape2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Delta Metro");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Produce a set of triggers spaced apart by time.");
   DECL_OB(const Type, t_dmetro, = gwi_class_ini(gwi, "Dmetro", "UGen"));
   SET_FLAG(t_dmetro, final);
   gwi_class_xtor(gwi, dmetro_ctor, dmetro_dtor);
   gwi_func_ini(gwi, "float", "time");
   GWI_BB(gwi_func_end(gwi, dmetro_get_time, ae_flag_none))
   gwi_func_ini(gwi, "float", "time");
+     gwinote(gwi, "Time between triggers (in seconds). This will update at the start of each trigger.");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, dmetro_set_time, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Water drop physical model");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Physical model of the sound of dripping water. When triggered, it will produce a droplet of water.");
   DECL_OB(const Type, t_drip, = gwi_class_ini(gwi, "Drip", "UGen"));
   SET_FLAG(t_drip, final);
   gwi_class_xtor(gwi, drip_ctor, drip_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Period of time over which all sound is stopped.");
      gwi_func_arg(gwi, "float", "_dettack");
   GWI_BB(gwi_func_end(gwi, drip_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "num_tubes");
   GWI_BB(gwi_func_end(gwi, drip_get_num_tubes, ae_flag_none))
   gwi_func_ini(gwi, "float", "num_tubes");
+     gwinote(gwi, "Number of units.");
      gwi_func_arg(gwi, "float", "_num_tubes");
   GWI_BB(gwi_func_end(gwi, drip_set_num_tubes, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, drip_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude.");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, drip_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "damp");
   GWI_BB(gwi_func_end(gwi, drip_get_damp, ae_flag_none))
   gwi_func_ini(gwi, "float", "damp");
+     gwinote(gwi, "The damping factor. Maximum value is 2.0.");
      gwi_func_arg(gwi, "float", "_damp");
   GWI_BB(gwi_func_end(gwi, drip_set_damp, ae_flag_none))
   gwi_func_ini(gwi, "float", "shake_max");
   GWI_BB(gwi_func_end(gwi, drip_get_shake_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "shake_max");
+     gwinote(gwi, "The amount of energy to add back into the system.");
      gwi_func_arg(gwi, "float", "_shake_max");
   GWI_BB(gwi_func_end(gwi, drip_set_shake_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, drip_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Main resonant frequency.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, drip_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq1");
   GWI_BB(gwi_func_end(gwi, drip_get_freq1, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq1");
+     gwinote(gwi, "The first resonant frequency.");
      gwi_func_arg(gwi, "float", "_freq1");
   GWI_BB(gwi_func_end(gwi, drip_set_freq1, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq2");
   GWI_BB(gwi_func_end(gwi, drip_get_freq2, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq2");
+     gwinote(gwi, "The second resonant frequency.");
      gwi_func_arg(gwi, "float", "_freq2");
   GWI_BB(gwi_func_end(gwi, drip_set_freq2, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, " Delta trigger");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This is able to create spaced out triggers. It is set off by a single trigger.");
   DECL_OB(const Type, t_dtrig, = gwi_class_ini(gwi, "Dtrig", "UGen"));
   SET_FLAG(t_dtrig, final);
   gwi_class_xtor(gwi, dtrig_ctor, dtrig_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "An ftable containing times in seconds.");
      gwi_func_arg(gwi, "ftbl", "_ft");
   GWI_BB(gwi_func_end(gwi, dtrig_init, ae_flag_none))
   gwi_func_ini(gwi, "int", "loop");
   GWI_BB(gwi_func_end(gwi, dtrig_get_loop, ae_flag_none))
   gwi_func_ini(gwi, "int", "loop");
+     gwinote(gwi, "When set to 1, dtrig will wrap around and loop again.");
      gwi_func_arg(gwi, "int", "_loop");
   GWI_BB(gwi_func_end(gwi, dtrig_set_loop, ae_flag_none))
   gwi_func_ini(gwi, "float", "delay");
   GWI_BB(gwi_func_end(gwi, dtrig_get_delay, ae_flag_none))
   gwi_func_ini(gwi, "float", "delay");
+     gwinote(gwi, "This sets a delay (in seconds) on the triggered output when it is initially triggered. This is useful for rhythmic sequences with rests in the beginnings.");
      gwi_func_arg(gwi, "float", "_delay");
   GWI_BB(gwi_func_end(gwi, dtrig_set_delay, ae_flag_none))
   gwi_func_ini(gwi, "float", "scale");
   GWI_BB(gwi_func_end(gwi, dtrig_get_scale, ae_flag_none))
   gwi_func_ini(gwi, "float", "scale");
+     gwinote(gwi, "Scales the timing signal. A scale of 1 is normal, a scale of 2 will double the duration, and a scale of 0.5 will halve it.");
      gwi_func_arg(gwi, "float", "_scale");
   GWI_BB(gwi_func_end(gwi, dtrig_set_scale, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A series of random impulses");
   DECL_OB(const Type, t_dust, = gwi_class_ini(gwi, "Dust", "UGen"));
   SET_FLAG(t_dust, final);
   gwi_class_xtor(gwi, dust_ctor, dust_dtor);
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, dust_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, dust_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "density");
   GWI_BB(gwi_func_end(gwi, dust_get_density, ae_flag_none))
   gwi_func_ini(gwi, "float", "density");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_density");
   GWI_BB(gwi_func_end(gwi, dust_set_density, ae_flag_none))
   gwi_func_ini(gwi, "int", "bipolar");
   GWI_BB(gwi_func_end(gwi, dust_get_bipolar, ae_flag_none))
   gwi_func_ini(gwi, "int", "bipolar");
+     gwinote(gwi, "Bipolar flag. A non-zero makes the signal bipolar as opposed to unipolar. ");
      gwi_func_arg(gwi, "int", "_bipolar");
   GWI_BB(gwi_func_end(gwi, dust_set_bipolar, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "2nd order tunable equalization filter");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This provides a peak/notch filter for building parametric/graphic equalizers. With gain above 1, there will be a peak at the center frequency with a width dependent on bw. If gain is less than 1, a notch is formed around the center frequency (freq).");
+     gwinote(gwi, "    ");
   DECL_OB(const Type, t_eqfil, = gwi_class_ini(gwi, "Eqfil", "UGen"));
   SET_FLAG(t_eqfil, final);
   gwi_class_xtor(gwi, eqfil_ctor, eqfil_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, eqfil_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "The center frequency of the filter");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, eqfil_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, eqfil_get_bw, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
+     gwinote(gwi, "The peak/notch bandwidth in Hertz");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, eqfil_set_bw, ae_flag_none))
   gwi_func_ini(gwi, "float", "gain");
   GWI_BB(gwi_func_end(gwi, eqfil_get_gain, ae_flag_none))
   gwi_func_ini(gwi, "float", "gain");
+     gwinote(gwi, "The peak/notch gain");
      gwi_func_arg(gwi, "float", "_gain");
   GWI_BB(gwi_func_end(gwi, eqfil_set_gain, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Produce a line segment with exponential slope");
+     gwinote(gwi, "This will generate a line from value A to value B in given amount of time. ");
+     gwinote(gwi, "When it reaches it's target, it will stay at that value. ");
   DECL_OB(const Type, t_expon, = gwi_class_ini(gwi, "Expon", "UGen"));
   SET_FLAG(t_expon, final);
   gwi_class_xtor(gwi, expon_ctor, expon_dtor);
   gwi_func_ini(gwi, "float", "a");
   GWI_BB(gwi_func_end(gwi, expon_get_a, ae_flag_none))
   gwi_func_ini(gwi, "float", "a");
+     gwinote(gwi, "Inital point.");
      gwi_func_arg(gwi, "float", "_a");
   GWI_BB(gwi_func_end(gwi, expon_set_a, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, expon_get_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
+     gwinote(gwi, "Duration (in seconds)");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, expon_set_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "b");
   GWI_BB(gwi_func_end(gwi, expon_get_b, ae_flag_none))
   gwi_func_ini(gwi, "float", "b");
+     gwinote(gwi, "End point");
      gwi_func_arg(gwi, "float", "_b");
   GWI_BB(gwi_func_end(gwi, expon_set_b, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Produces sinusoid bursts for granular and formant synthesis");
+     gwinote(gwi, "");
   DECL_OB(const Type, t_fof, = gwi_class_ini(gwi, "Fof", "UGen"));
   SET_FLAG(t_fof, final);
   gwi_class_xtor(gwi, fof_ctor, fof_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "ftable for sine wave.");
      gwi_func_arg(gwi, "ftbl", "_sine");
+     gwinote(gwi, "Ftable for envelope function (use either gen_line or gen_sinecomp)");
      gwi_func_arg(gwi, "ftbl", "_win");
+     gwinote(gwi, "Maximum number of foflet overlaps.");
      gwi_func_arg(gwi, "int", "_iolaps");
+     gwinote(gwi, "Phase");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, fof_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, fof_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Overall amplitude");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, fof_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "fund");
   GWI_BB(gwi_func_end(gwi, fof_get_fund, ae_flag_none))
   gwi_func_ini(gwi, "float", "fund");
+     gwinote(gwi, "Fundamental frequency");
      gwi_func_arg(gwi, "float", "_fund");
   GWI_BB(gwi_func_end(gwi, fof_set_fund, ae_flag_none))
   gwi_func_ini(gwi, "float", "form");
   GWI_BB(gwi_func_end(gwi, fof_get_form, ae_flag_none))
   gwi_func_ini(gwi, "float", "form");
+     gwinote(gwi, "Formant frequency.");
      gwi_func_arg(gwi, "float", "_form");
   GWI_BB(gwi_func_end(gwi, fof_set_form, ae_flag_none))
   gwi_func_ini(gwi, "float", "oct");
   GWI_BB(gwi_func_end(gwi, fof_get_oct, ae_flag_none))
   gwi_func_ini(gwi, "float", "oct");
+     gwinote(gwi, "Octaviation index, if greater than zero, lowers the effective fund frequency by attenuating odd-numbered sine bursts. whole numbers are full octaves. fractions transpositional.");
      gwi_func_arg(gwi, "float", "_oct");
   GWI_BB(gwi_func_end(gwi, fof_set_oct, ae_flag_none))
   gwi_func_ini(gwi, "float", "band");
   GWI_BB(gwi_func_end(gwi, fof_get_band, ae_flag_none))
   gwi_func_ini(gwi, "float", "band");
+     gwinote(gwi, "Bandwidth (in -6db) expressed in Hz. The bandwidth determines the rate of exponential decay throughout the sineburst, before the enveloping is applied.");
      gwi_func_arg(gwi, "float", "_band");
   GWI_BB(gwi_func_end(gwi, fof_set_band, ae_flag_none))
   gwi_func_ini(gwi, "float", "ris");
   GWI_BB(gwi_func_end(gwi, fof_get_ris, ae_flag_none))
   gwi_func_ini(gwi, "float", "ris");
+     gwinote(gwi, "Rise of sinusoid burst (in seconds)");
      gwi_func_arg(gwi, "float", "_ris");
   GWI_BB(gwi_func_end(gwi, fof_set_ris, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, fof_get_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
+     gwinote(gwi, "Decay of the sinusoid burst (in seconds).");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, fof_set_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, fof_get_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
+     gwinote(gwi, "OVerall duration of sinusoid burst (in seconds).");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, fof_set_dur, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Formant filter");
+     gwinote(gwi, "    When fed with a pulse train, it will generate a series of overlapping grains. Overlapping will occur when 1/freq < dec, but there is no upper limit on the number of overlaps. (cited from www.csounds.com/manual/html/fofilter.html)");
   DECL_OB(const Type, t_fofilt, = gwi_class_ini(gwi, "Fofilt", "UGen"));
   SET_FLAG(t_fofilt, final);
   gwi_class_xtor(gwi, fofilt_ctor, fofilt_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, fofilt_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Center frequency.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, fofilt_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, fofilt_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Impulse response attack time (in seconds).");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, fofilt_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, fofilt_get_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
+     gwinote(gwi, "Impulse reponse decay time (in seconds)");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, fofilt_set_dec, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Sucession of grains from data in a stored function table");
   DECL_OB(const Type, t_fog, = gwi_class_ini(gwi, "Fog", "UGen"));
   SET_FLAG(t_fog, final);
   gwi_class_xtor(gwi, fog_ctor, fog_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "ftable for sample.");
      gwi_func_arg(gwi, "ftbl", "_wav");
+     gwinote(gwi, "Ftable for envelope function (use either gen_line or gen_sinecomp)");
      gwi_func_arg(gwi, "ftbl", "_win");
+     gwinote(gwi, "Maximum number of foglet overlaps.");
      gwi_func_arg(gwi, "int", "_iolaps");
+     gwinote(gwi, "Phase");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, fog_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, fog_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Overall amplitude");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, fog_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "dens");
   GWI_BB(gwi_func_end(gwi, fog_get_dens, ae_flag_none))
   gwi_func_ini(gwi, "float", "dens");
+     gwinote(gwi, "Density. The frequency of grains/second.");
      gwi_func_arg(gwi, "float", "_dens");
   GWI_BB(gwi_func_end(gwi, fog_set_dens, ae_flag_none))
   gwi_func_ini(gwi, "float", "trans");
   GWI_BB(gwi_func_end(gwi, fog_get_trans, ae_flag_none))
   gwi_func_ini(gwi, "float", "trans");
+     gwinote(gwi, "Transposition, in terms of playback speed");
      gwi_func_arg(gwi, "float", "_trans");
   GWI_BB(gwi_func_end(gwi, fog_set_trans, ae_flag_none))
   gwi_func_ini(gwi, "float", "spd");
   GWI_BB(gwi_func_end(gwi, fog_get_spd, ae_flag_none))
   gwi_func_ini(gwi, "float", "spd");
+     gwinote(gwi, "Starting sample index, normalized 0-1.");
      gwi_func_arg(gwi, "float", "_spd");
   GWI_BB(gwi_func_end(gwi, fog_set_spd, ae_flag_none))
   gwi_func_ini(gwi, "float", "oct");
   GWI_BB(gwi_func_end(gwi, fog_get_oct, ae_flag_none))
   gwi_func_ini(gwi, "float", "oct");
+     gwinote(gwi, "Octaviation index, if greater than zero, lowers the effective fund frequency by attenuating odd-numbered sine bursts. whole numbers are full octaves. fractions transpositional.");
      gwi_func_arg(gwi, "float", "_oct");
   GWI_BB(gwi_func_end(gwi, fog_set_oct, ae_flag_none))
   gwi_func_ini(gwi, "float", "band");
   GWI_BB(gwi_func_end(gwi, fog_get_band, ae_flag_none))
   gwi_func_ini(gwi, "float", "band");
+     gwinote(gwi, "Bandwidth (in -6db) expressed in Hz. The bandwidth determines the rate of exponential decay throughout the sineburst, before the enveloping is applied.");
      gwi_func_arg(gwi, "float", "_band");
   GWI_BB(gwi_func_end(gwi, fog_set_band, ae_flag_none))
   gwi_func_ini(gwi, "float", "ris");
   GWI_BB(gwi_func_end(gwi, fog_get_ris, ae_flag_none))
   gwi_func_ini(gwi, "float", "ris");
+     gwinote(gwi, "Rise of sinusoid burst (in seconds)");
      gwi_func_arg(gwi, "float", "_ris");
   GWI_BB(gwi_func_end(gwi, fog_set_ris, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, fog_get_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
+     gwinote(gwi, "Decay of the sinusoid burst (in seconds).");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, fog_set_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, fog_get_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
+     gwinote(gwi, "OVerall duration of sinusoid burst (in seconds).");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, fog_set_dur, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Adds artificial foldover to an audio signal");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Primarily created for use with Decimator.");
   DECL_OB(const Type, t_fold, = gwi_class_ini(gwi, "Fold", "UGen"));
   SET_FLAG(t_fold, final);
   gwi_class_xtor(gwi, fold_ctor, fold_dtor);
   gwi_func_ini(gwi, "float", "incr");
   GWI_BB(gwi_func_end(gwi, fold_get_incr, ae_flag_none))
   gwi_func_ini(gwi, "float", "incr");
+     gwinote(gwi, "Increment");
      gwi_func_arg(gwi, "float", "_incr");
   GWI_BB(gwi_func_end(gwi, fold_set_incr, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A short title describing the module");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This is a description of the entire module.  This is not a real module. This description should be a comprehensive sumary of what this function does.");
+     gwinote(gwi, "");
+     gwinote(gwi, "Inside the Lua table, this is expressed as a multiline string, however it does not adhere to the tradtional 80 column rule found in programming.");
+     gwinote(gwi, "");
+     gwinote(gwi, "Write as much text as needed here...");
+     gwinote(gwi, "FM oscilator pair with linear interpolation");
   DECL_OB(const Type, t_fosc, = gwi_class_ini(gwi, "Fosc", "UGen"));
   SET_FLAG(t_fosc, final);
   gwi_class_xtor(gwi, fosc_ctor, fosc_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Wavetable to read from. Note: the size of this table must be a power of 2.");
      gwi_func_arg(gwi, "ftbl", "_tbl");
   GWI_BB(gwi_func_end(gwi, fosc_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, fosc_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency (in Hz)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, fosc_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, fosc_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (typically a value between 0 and 1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, fosc_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "car");
   GWI_BB(gwi_func_end(gwi, fosc_get_car, ae_flag_none))
   gwi_func_ini(gwi, "float", "car");
+     gwinote(gwi, "Carrier frequency, expressed as a ratio number in C:M ratio. Typically an integer.");
      gwi_func_arg(gwi, "float", "_car");
   GWI_BB(gwi_func_end(gwi, fosc_set_car, ae_flag_none))
   gwi_func_ini(gwi, "float", "mod");
   GWI_BB(gwi_func_end(gwi, fosc_get_mod, ae_flag_none))
   gwi_func_ini(gwi, "float", "mod");
+     gwinote(gwi, "Modulator frequency, expressed as a ratio number in C:M ratio. Typically an integer.");
      gwi_func_arg(gwi, "float", "_mod");
   GWI_BB(gwi_func_end(gwi, fosc_set_mod, ae_flag_none))
   gwi_func_ini(gwi, "float", "indx");
   GWI_BB(gwi_func_end(gwi, fosc_get_indx, ae_flag_none))
   gwi_func_ini(gwi, "float", "indx");
+     gwinote(gwi, "Modulation index. Most commercial synthesizers have a range from 0-8, but there's nothing stopping you from going beyond that.");
      gwi_func_arg(gwi, "float", "_indx");
   GWI_BB(gwi_func_end(gwi, fosc_set_indx, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Series of partials from the harmonic series");
+     gwinote(gwi, "");
+     gwinote(gwi, "    GBuzz comes from the `buzz` family of Csound opcodes, and is capable of producing a rich spectrum of harmonic content, useful for subtractive synthesis implementation.");
   DECL_OB(const Type, t_gbuzz, = gwi_class_ini(gwi, "Gbuzz", "UGen"));
   SET_FLAG(t_gbuzz, final);
   gwi_class_xtor(gwi, gbuzz_ctor, gbuzz_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Soundpipe function table used internally. This should be a sine wave.");
      gwi_func_arg(gwi, "ftbl", "_ft");
+     gwinote(gwi, "Phase to start on (in the range 0-1)");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, gbuzz_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency, in Hertz.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (Typically a value between 0 and 1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "nharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_nharm, ae_flag_none))
   gwi_func_ini(gwi, "float", "nharm");
+     gwinote(gwi, "Number of harmonics.");
      gwi_func_arg(gwi, "float", "_nharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_nharm, ae_flag_none))
   gwi_func_ini(gwi, "float", "lharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_lharm, ae_flag_none))
   gwi_func_ini(gwi, "float", "lharm");
+     gwinote(gwi, "Lowest harmonic present. This should be a whole number integer.");
      gwi_func_arg(gwi, "float", "_lharm");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_lharm, ae_flag_none))
   gwi_func_ini(gwi, "float", "mul");
   GWI_BB(gwi_func_end(gwi, gbuzz_get_mul, ae_flag_none))
   gwi_func_ini(gwi, "float", "mul");
+     gwinote(gwi, "Multiplier. This determines the relative strength of each harmonic.");
      gwi_func_arg(gwi, "float", "_mul");
   GWI_BB(gwi_func_end(gwi, gbuzz_set_mul, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Generate a composite waveform of sinusoids");
+     gwinote(gwi, "Reads from a wav file");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This will only load as many samples as the length of the ftable.");
+     gwinote(gwi, "Gaussian distribution");
+     gwinote(gwi, "A series of line segments");
+     gwinote(gwi, "An implementation of the Padsynth Algorithm by Paul Nasca. ");
+     gwinote(gwi, "");
+     gwinote(gwi, "This is a basic implemenation of the padsynth algorithm. More information can be found here:");
+     gwinote(gwi, "");
+     gwinote(gwi, "http://zynaddsubfx.sourceforge.net/doc/PADsynth/PADsynth.htm");
+     gwinote(gwi, "");
+     gwinote(gwi, "This gen routine requires libfftw, and is not compiled by default. See config.mk for more info.");
+     gwinote(gwi, "    ");
+     gwinote(gwi, "    ");
+     gwinote(gwi, "Generates a user defined random number distribution.");
+     gwinote(gwi, "Scrambles phase of ftable.");
+     gwinote(gwi, "This gen routine will copy the ftable, apply an FFT, apply");
+     gwinote(gwi, "a random phase, and then do an inverse FFT. This effect ");
+     gwinote(gwi, "is ideal for creating pad-like sounds. ");
+     gwinote(gwi, "generates a sampled sinusoid");
+     gwinote(gwi, "Waveform as a sum of harmonically related sine waves ");
+     gwinote(gwi, "generates a sampled triangle wave");
+     gwinote(gwi, "A series of exponential segments");
+     gwinote(gwi, "Hilbert transform");
+     gwinote(gwi, "");
   DECL_OB(const Type, t_hilbert, = gwi_class_ini(gwi, "Hilbert", "UGen"));
   SET_FLAG(t_hilbert, final);
   gwi_class_xtor(gwi, hilbert_ctor, hilbert_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Reads from standard input.");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Expects type of SPFLOAT, which by default is a float. If the input data is larger than the number of samples, you will get a complaint about a broken pipe (but it will still work). If there is no input data from STDIN, it will hang.");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "The expected use case of sp_in is to utilize pipes from the commandline, like so:");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "cat /dev/urandom | ./my_program");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "Assuming my_program is using sp_in, this will write /dev/urandom (essentially white noise) to an audio file.");
   DECL_OB(const Type, t_in, = gwi_class_ini(gwi, "In", "UGen"));
   SET_FLAG(t_in, final);
   gwi_class_xtor(gwi, in_ctor, in_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Trigger-based Incrementor");
+     gwinote(gwi, "When triggered, this module will increment and decrement a value bounded between a min");
+     gwinote(gwi, "and max. Initially, this was designed for the specific use case of interfacing with the");
+     gwinote(gwi, "griffin knob. ");
   DECL_OB(const Type, t_incr, = gwi_class_ini(gwi, "Incr", "UGen"));
   SET_FLAG(t_incr, final);
   gwi_class_xtor(gwi, incr_ctor, incr_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Initial value");
      gwi_func_arg(gwi, "float", "_val");
   GWI_BB(gwi_func_end(gwi, incr_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "step");
   GWI_BB(gwi_func_end(gwi, incr_get_step, ae_flag_none))
   gwi_func_ini(gwi, "float", "step");
+     gwinote(gwi, "Step value to increment by.");
      gwi_func_arg(gwi, "float", "_step");
   GWI_BB(gwi_func_end(gwi, incr_set_step, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, incr_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum value");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, incr_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, incr_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum value");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, incr_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "John Chowning reverberator");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This is was built using the JC reverb implentation found in FAUST. According to the source code, the specifications for");
+     gwinote(gwi, "this implementation were found on an old SAIL DART backup tape.");
+     gwinote(gwi, "");
+     gwinote(gwi, "  This class is derived from the CLM JCRev function, which is based on the use of");
+     gwinote(gwi, "  networks of simple allpass and comb delay filters.  This class implements three series");
+     gwinote(gwi, "  allpass units, followed by four parallel comb filters, and two decorrelation delay lines in");
+     gwinote(gwi, "  parallel at the output.");
   DECL_OB(const Type, t_jcrev, = gwi_class_ini(gwi, "Jcrev", "UGen"));
   SET_FLAG(t_jcrev, final);
   gwi_class_xtor(gwi, jcrev_ctor, jcrev_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A signal with random fluctuations");
+     gwinote(gwi, "");
+     gwinote(gwi, "     This is useful for emulating jitter found in analogue equipment. ");
   DECL_OB(const Type, t_jitter, = gwi_class_ini(gwi, "Jitter", "UGen"));
   SET_FLAG(t_jitter, final);
   gwi_class_xtor(gwi, jitter_ctor, jitter_dtor);
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, jitter_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "The amplitude of the line. Will produce values in the range of (+/-)amp.");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, jitter_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "cpsMin");
   GWI_BB(gwi_func_end(gwi, jitter_get_cpsMin, ae_flag_none))
   gwi_func_ini(gwi, "float", "cpsMin");
+     gwinote(gwi, "The minimum frequency of change in Hz.");
      gwi_func_arg(gwi, "float", "_cpsMin");
   GWI_BB(gwi_func_end(gwi, jitter_set_cpsMin, ae_flag_none))
   gwi_func_ini(gwi, "float", "cpsMax");
   GWI_BB(gwi_func_end(gwi, jitter_get_cpsMax, ae_flag_none))
   gwi_func_ini(gwi, "float", "cpsMax");
+     gwinote(gwi, "The maximum frequency of change in Hz.");
      gwi_func_arg(gwi, "float", "_cpsMax");
   GWI_BB(gwi_func_end(gwi, jitter_set_cpsMax, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Produce a line segment with linear slope");
+     gwinote(gwi, "This will generate a line from value A to value B in given amount of time. ");
+     gwinote(gwi, "When it reaches it's target, it will stay at that value. ");
   DECL_OB(const Type, t_line, = gwi_class_ini(gwi, "Line", "UGen"));
   SET_FLAG(t_line, final);
   gwi_class_xtor(gwi, line_ctor, line_dtor);
   gwi_func_ini(gwi, "float", "a");
   GWI_BB(gwi_func_end(gwi, line_get_a, ae_flag_none))
   gwi_func_ini(gwi, "float", "a");
+     gwinote(gwi, "Inital point.");
      gwi_func_arg(gwi, "float", "_a");
   GWI_BB(gwi_func_end(gwi, line_set_a, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, line_get_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
+     gwinote(gwi, "Duration (in seconds)");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, line_set_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "b");
   GWI_BB(gwi_func_end(gwi, line_get_b, ae_flag_none))
   gwi_func_ini(gwi, "float", "b");
+     gwinote(gwi, "End point");
      gwi_func_arg(gwi, "float", "_b");
   GWI_BB(gwi_func_end(gwi, line_set_b, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A linear predictive coding filter.");
+     gwinote(gwi, "This module is a wrapper for the open source library openlpc, which implements");
+     gwinote(gwi, "the LPC10 audio codec optimized for speech signals. This module takes in an");
+     gwinote(gwi, "input signal, downsamples it, and produces a decoded LPC10 audio signal, which");
+     gwinote(gwi, "has a similar sound to that of a speak and spell. In this context, the LPC");
+     gwinote(gwi, "signal is meant to be more of a audio effect rather than a utility for");
+     gwinote(gwi, "communication. ");
+     gwinote(gwi, "");
+     gwinote(gwi, "Because the LPC10 encoder");
+     gwinote(gwi, "relies on frames for encoding, the output signal has a few milliseconds of");
+     gwinote(gwi, "delay. The delay can be calculated in seconds as (framesize * 4) / samplerate.");
+     gwinote(gwi, "");
+     gwinote(gwi, "In addition to using the LPC as a decoder/encoder, this module can also be ");
+     gwinote(gwi, "set to synth mode. Instead of reading from an input signal, the LPC can");
+     gwinote(gwi, "instead read from parameters set directly in a scaled ftable. ");
+     gwinote(gwi, "");
   DECL_OB(const Type, t_lpc, = gwi_class_ini(gwi, "Lpc", "UGen"));
   SET_FLAG(t_lpc, final);
   gwi_class_xtor(gwi, lpc_ctor, lpc_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Sets the frame size for the encoder.");
      gwi_func_arg(gwi, "int", "_framesize");
   GWI_BB(gwi_func_end(gwi, lpc_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "3-pole (18 db/oct slope) Low-Pass filter with resonance and tanh distortion");
   DECL_OB(const Type, t_lpf18, = gwi_class_ini(gwi, "Lpf18", "UGen"));
   SET_FLAG(t_lpf18, final);
   gwi_class_xtor(gwi, lpf18_ctor, lpf18_dtor);
   gwi_func_ini(gwi, "float", "cutoff");
   GWI_BB(gwi_func_end(gwi, lpf18_get_cutoff, ae_flag_none))
   gwi_func_ini(gwi, "float", "cutoff");
+     gwinote(gwi, "Filter cutoff frequency, in Hertz");
      gwi_func_arg(gwi, "float", "_cutoff");
   GWI_BB(gwi_func_end(gwi, lpf18_set_cutoff, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, lpf18_get_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
+     gwinote(gwi, "Resonance. Expects a value in the range 0-1. A value of 1.0 will self oscillate at the cutoff frequency.");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, lpf18_set_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "dist");
   GWI_BB(gwi_func_end(gwi, lpf18_get_dist, ae_flag_none))
   gwi_func_ini(gwi, "float", "dist");
+     gwinote(gwi, "Distortion amount.");
      gwi_func_arg(gwi, "float", "_dist");
   GWI_BB(gwi_func_end(gwi, lpf18_set_dist, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A randomly open or closed `maybe gate`");
+     gwinote(gwi, "");
+     gwinote(gwi, "    It takes in a trigger, and then it will randomly decide to turn the gate on or not. One particular application for maygate is to arbitrarily turn on/off sends to effects. One specific example of this could be a randomized reverb throw on a snare.");
   DECL_OB(const Type, t_maygate, = gwi_class_ini(gwi, "Maygate", "UGen"));
   SET_FLAG(t_maygate, final);
   gwi_class_xtor(gwi, maygate_ctor, maygate_dtor);
   gwi_func_ini(gwi, "float", "prob");
   GWI_BB(gwi_func_end(gwi, maygate_get_prob, ae_flag_none))
   gwi_func_ini(gwi, "float", "prob");
+     gwinote(gwi, "Probability of maygate. This is a value between 0-1. The closer to 1, the more likely the maygate will let a signal through.");
      gwi_func_arg(gwi, "float", "_prob");
   GWI_BB(gwi_func_end(gwi, maygate_set_prob, ae_flag_none))
   gwi_func_ini(gwi, "int", "mode");
   GWI_BB(gwi_func_end(gwi, maygate_get_mode, ae_flag_none))
   gwi_func_ini(gwi, "int", "mode");
+     gwinote(gwi, "If mode is nonzero, maygate will output one sample triggers instead of a gate signal.");
      gwi_func_arg(gwi, "int", "_mode");
   GWI_BB(gwi_func_end(gwi, maygate_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Metronome");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Metro produces a series of 1-sample ticks at a regular rate. Typically, this is used alongside trigger-driven modules.");
   DECL_OB(const Type, t_metro, = gwi_class_ini(gwi, "Metro", "UGen"));
   SET_FLAG(t_metro, final);
   gwi_class_xtor(gwi, metro_ctor, metro_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, metro_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "The frequency to repeat.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, metro_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Phase-locked vocoder.");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Mincer is a phase-locked vocoder. It has the ability to play back an audio ");
+     gwinote(gwi, "file loaded into an ftable like a sampler would. Unlike a typical sampler, mincer allows");
+     gwinote(gwi, "time and pitch to be controlled separately. ");
   DECL_OB(const Type, t_mincer, = gwi_class_ini(gwi, "Mincer", "UGen"));
   SET_FLAG(t_mincer, final);
   gwi_class_xtor(gwi, mincer_ctor, mincer_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "ftable containing an audio file.");
      gwi_func_arg(gwi, "ftbl", "_ft");
+     gwinote(gwi, "FFT window size. Should be a power of 2.");
      gwi_func_arg(gwi, "int", "_winsize");
   GWI_BB(gwi_func_end(gwi, mincer_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "time");
   GWI_BB(gwi_func_end(gwi, mincer_get_time, ae_flag_none))
   gwi_func_ini(gwi, "float", "time");
+     gwinote(gwi, "Position in time. When non-changing it will do a spectral freeze of a the current point in time.");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, mincer_set_time, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, mincer_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude.");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, mincer_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "pitch");
   GWI_BB(gwi_func_end(gwi, mincer_get_pitch, ae_flag_none))
   gwi_func_ini(gwi, "float", "pitch");
+     gwinote(gwi, "Pitch ratio. A value of. 1  normal, 2 is double speed, 0.5 is halfspeed, etc.");
      gwi_func_arg(gwi, "float", "_pitch");
   GWI_BB(gwi_func_end(gwi, mincer_set_pitch, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Resonance filter used for modal synthesis");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Plucked and bell sounds can be created by passing an impulse through a combination of modal filters. ");
   DECL_OB(const Type, t_mode, = gwi_class_ini(gwi, "Mode", "UGen"));
   SET_FLAG(t_mode, final);
   gwi_class_xtor(gwi, mode_ctor, mode_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, mode_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Resonant frequency of the filter.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, mode_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "q");
   GWI_BB(gwi_func_end(gwi, mode_get_q, ae_flag_none))
   gwi_func_ini(gwi, "float", "q");
+     gwinote(gwi, "Quality factor of the filter. Roughly equal to q/freq.");
      gwi_func_arg(gwi, "float", "_q");
   GWI_BB(gwi_func_end(gwi, mode_set_q, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Low pass resonant filter based on the Moogladder filter");
   DECL_OB(const Type, t_moogladder, = gwi_class_ini(gwi, "Moogladder", "UGen"));
   SET_FLAG(t_moogladder, final);
   gwi_class_xtor(gwi, moogladder_ctor, moogladder_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, moogladder_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Filter cutoff frequency.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, moogladder_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, moogladder_get_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
+     gwinote(gwi, "Filter resonance");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, moogladder_set_res, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "White noise generator");
   DECL_OB(const Type, t_noise, = gwi_class_ini(gwi, "Noise", "UGen"));
   SET_FLAG(t_noise, final);
   gwi_class_xtor(gwi, noise_ctor, noise_dtor);
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, noise_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude. (Value between 0-1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, noise_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Nanosamp: a tiny sampler built for Soundpipe");
+     gwinote(gwi, "");
+     gwinote(gwi, "    A nanosamp file is comprised of a mono audio file and an ini file. Nanosamp is geared towards percussive and found sound sample players, and is intended to be combined with soundpipe modules.");
+     gwinote(gwi, "");
+     gwinote(gwi, "The ini file contains mappings that correspond to the audio file. Such an entry would look like this:");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "[keyword]");
+     gwinote(gwi, "");
+     gwinote(gwi, "pos = 2.3");
+     gwinote(gwi, "");
+     gwinote(gwi, "size = 3");
+     gwinote(gwi, "");
+     gwinote(gwi, "");
+     gwinote(gwi, "</pre>");
+     gwinote(gwi, "In this instance, an entry called `keyword` has been made, starting at 2.3 seconds in the");
+     gwinote(gwi, "audio file, with a length of 3 seconds. An example file oneart.ini has been created in the");
+     gwinote(gwi, "examples folder.");
+     gwinote(gwi, "");
+     gwinote(gwi, "The SoundPipe implementation of nanosamp will automatically index the entries");
+     gwinote(gwi, "in the order they appear in the INI file and must be selected this way by changing the index");
+     gwinote(gwi, "parameter. Soundpipe will only select the new entry when the trigger input is a non-zero value.");
+     gwinote(gwi, "");
   DECL_OB(const Type, t_nsmp, = gwi_class_ini(gwi, "Nsmp", "UGen"));
   SET_FLAG(t_nsmp, final);
   gwi_class_xtor(gwi, nsmp_ctor, nsmp_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "ftbl of the audio file. It should be mono.");
      gwi_func_arg(gwi, "ftbl", "_ft");
+     gwinote(gwi, "samplerate.");
      gwi_func_arg(gwi, "int", "_sr");
+     gwinote(gwi, "ini file.");
      gwi_func_arg(gwi, "string", "_init");
   GWI_BB(gwi_func_end(gwi, nsmp_init, ae_flag_none))
   gwi_func_ini(gwi, "int", "index");
   GWI_BB(gwi_func_end(gwi, nsmp_get_index, ae_flag_none))
   gwi_func_ini(gwi, "int", "index");
+     gwinote(gwi, "This is an optional parameter. These values are always set to a value by default, and can be set after the init function has been called.");
      gwi_func_arg(gwi, "int", "_index");
   GWI_BB(gwi_func_end(gwi, nsmp_set_index, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, " Table-lookup oscilator with linear interpolation");
   DECL_OB(const Type, t_osc, = gwi_class_ini(gwi, "Osc", "UGen"));
   SET_FLAG(t_osc, final);
   gwi_class_xtor(gwi, osc_ctor, osc_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Wavetable to read from. Note: the size of this table must be a power of 2.");
      gwi_func_arg(gwi, "ftbl", "_tbl");
+     gwinote(gwi, "Initial phase of waveform, expects a value 0-1");
      gwi_func_arg(gwi, "float", "_phase");
   GWI_BB(gwi_func_end(gwi, osc_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, osc_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency (in Hz)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, osc_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, osc_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (typically a value between 0 and 1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, osc_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Wavetable morphing oscillator");
+     gwinote(gwi, "");
+     gwinote(gwi, "This is an oscillator with linear interpolation that is capable of morphing ");
+     gwinote(gwi, "between an arbitrary number of wavetables. ");
   DECL_OB(const Type, t_oscmorph, = gwi_class_ini(gwi, "Oscmorph", "UGen"));
   SET_FLAG(t_oscmorph, final);
   gwi_class_xtor(gwi, oscmorph_ctor, oscmorph_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "An array of ftables to read from. Note: the size of these tables must be a power of 2 (and the same size as well).");
      gwi_func_arg(gwi, "ftbl[]", "_tbl");
+     gwinote(gwi, "Number of ftbls");
      gwi_func_arg(gwi, "int", "_nft");
+     gwinote(gwi, "Initial phase of waveform, expects a value 0-1");
      gwi_func_arg(gwi, "float", "_phase");
   GWI_BB(gwi_func_end(gwi, oscmorph_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, oscmorph_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency (in Hz)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, oscmorph_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, oscmorph_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (typically a value between 0 and 1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, oscmorph_set_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "wtpos");
   GWI_BB(gwi_func_end(gwi, oscmorph_get_wtpos, ae_flag_none))
   gwi_func_ini(gwi, "float", "wtpos");
+     gwinote(gwi, "Wavetable position. (scaled 0-1)");
      gwi_func_arg(gwi, "float", "_wtpos");
   GWI_BB(gwi_func_end(gwi, oscmorph_set_wtpos, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Panner");
   DECL_OB(const Type, t_pan2, = gwi_class_ini(gwi, "Pan2", "UGen"));
   SET_FLAG(t_pan2, final);
   gwi_class_xtor(gwi, pan2_ctor, pan2_dtor);
   gwi_func_ini(gwi, "int", "type");
   GWI_BB(gwi_func_end(gwi, pan2_get_type, ae_flag_none))
   gwi_func_ini(gwi, "int", "type");
+     gwinote(gwi, "Panning type. 0 = equal power, 1 = square root, 2 = linear,");
+     gwinote(gwi, "3 = alternative equal power. Values outside this range will wrap. ");
      gwi_func_arg(gwi, "int", "_type");
   GWI_BB(gwi_func_end(gwi, pan2_set_type, ae_flag_none))
   gwi_func_ini(gwi, "float", "pan");
   GWI_BB(gwi_func_end(gwi, pan2_get_pan, ae_flag_none))
   gwi_func_ini(gwi, "float", "pan");
+     gwinote(gwi, "Panning. A value of -1 is hard left, and a value of 1 is hard right, and 0 is center.");
      gwi_func_arg(gwi, "float", "_pan");
   GWI_BB(gwi_func_end(gwi, pan2_set_pan, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Stereo Panner");
   DECL_OB(const Type, t_panst, = gwi_class_ini(gwi, "Panst", "UGen"));
   SET_FLAG(t_panst, final);
   gwi_class_xtor(gwi, panst_ctor, panst_dtor);
   gwi_func_ini(gwi, "int", "type");
   GWI_BB(gwi_func_end(gwi, panst_get_type, ae_flag_none))
   gwi_func_ini(gwi, "int", "type");
+     gwinote(gwi, "Panning type. 0 = equal power, 1 = square root, 2 = linear,");
+     gwinote(gwi, "3 = alternative equal power. Values outside this range will wrap. ");
      gwi_func_arg(gwi, "int", "_type");
   GWI_BB(gwi_func_end(gwi, panst_set_type, ae_flag_none))
   gwi_func_ini(gwi, "float", "pan");
   GWI_BB(gwi_func_end(gwi, panst_get_pan, ae_flag_none))
   gwi_func_ini(gwi, "float", "pan");
+     gwinote(gwi, "Panning. A value of -1 is hard left, and a value of 1 is hard right.");
      gwi_func_arg(gwi, "float", "_pan");
   GWI_BB(gwi_func_end(gwi, panst_set_pan, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Parametric Equalizer");
+     gwinote(gwi, "This is an implementation of Zoelzer's parametric equalizer filter.");
   DECL_OB(const Type, t_pareq, = gwi_class_ini(gwi, "Pareq", "UGen"));
   SET_FLAG(t_pareq, final);
   gwi_class_xtor(gwi, pareq_ctor, pareq_dtor);
   gwi_func_ini(gwi, "float", "fc");
   GWI_BB(gwi_func_end(gwi, pareq_get_fc, ae_flag_none))
   gwi_func_ini(gwi, "float", "fc");
+     gwinote(gwi, "Center frequency in peak mode, corner frequency in shelving mode.");
      gwi_func_arg(gwi, "float", "_fc");
   GWI_BB(gwi_func_end(gwi, pareq_set_fc, ae_flag_none))
   gwi_func_ini(gwi, "float", "v");
   GWI_BB(gwi_func_end(gwi, pareq_get_v, ae_flag_none))
   gwi_func_ini(gwi, "float", "v");
+     gwinote(gwi, "Amount at which the center frequency value shall be increased or decreased. A value of 1 is a flat response.");
      gwi_func_arg(gwi, "float", "_v");
   GWI_BB(gwi_func_end(gwi, pareq_set_v, ae_flag_none))
   gwi_func_ini(gwi, "float", "q");
   GWI_BB(gwi_func_end(gwi, pareq_get_q, ae_flag_none))
   gwi_func_ini(gwi, "float", "q");
+     gwinote(gwi, "Q of the filter. sqrt(0.5) is no resonance.");
      gwi_func_arg(gwi, "float", "_q");
   GWI_BB(gwi_func_end(gwi, pareq_set_q, ae_flag_none))
   gwi_func_ini(gwi, "float", "mode");
   GWI_BB(gwi_func_end(gwi, pareq_get_mode, ae_flag_none))
   gwi_func_ini(gwi, "float", "mode");
+     gwinote(gwi, "EQ mode. 0 = peak, 1 = low shelving, 2 = high shelving");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, pareq_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "An extreme time-stretching algorithm by Paul Nasca Octavian");
+     gwinote(gwi, "This is an implementation of the popular paulstretch algorithm used for time");
+     gwinote(gwi, "stretching an audio signal to create ambient textures. Ideally, this algorithm ");
+     gwinote(gwi, "is best used for stretching signals by very very long amounts. ");
+     gwinote(gwi, "");
+     gwinote(gwi, "This version of paulstretch will take an ftable and loop through it, make");
+     gwinote(gwi, "it an ideal means for creating sustained pads. ");
   DECL_OB(const Type, t_paulstretch, = gwi_class_ini(gwi, "Paulstretch", "UGen"));
   SET_FLAG(t_paulstretch, final);
   gwi_class_xtor(gwi, paulstretch_ctor, paulstretch_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "ftable containing audio data");
      gwi_func_arg(gwi, "ftbl", "_ft");
+     gwinote(gwi, "Window size, in seconds.");
      gwi_func_arg(gwi, "float", "_windowsize");
+     gwinote(gwi, "Stretch factor, 1.0 is no stretch.");
      gwi_func_arg(gwi, "float", "_stretch");
   GWI_BB(gwi_func_end(gwi, paulstretch_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Casio-style phase distortion with `pivot point` on the X axis");
+     gwinote(gwi, "This module is designed to emulate the classic phase distortion synthesis technique.");
+     gwinote(gwi, "From the mid 90's. The technique reads the first and second halves of the ftbl");
+     gwinote(gwi, "at different rates in order to warp the waveform. For example, pdhalf can ");
+     gwinote(gwi, "smoothly transition a sinewave into something approximating a sawtooth wave.");
   DECL_OB(const Type, t_pdhalf, = gwi_class_ini(gwi, "Pdhalf", "UGen"));
   SET_FLAG(t_pdhalf, final);
   gwi_class_xtor(gwi, pdhalf_ctor, pdhalf_dtor);
   gwi_func_ini(gwi, "float", "amount");
   GWI_BB(gwi_func_end(gwi, pdhalf_get_amount, ae_flag_none))
   gwi_func_ini(gwi, "float", "amount");
+     gwinote(gwi, "Amount of distortion, within the range [-1, 1]. 0 is no distortion.");
      gwi_func_arg(gwi, "float", "_amount");
   GWI_BB(gwi_func_end(gwi, pdhalf_set_amount, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Peak limiter ");
+     gwinote(gwi, "This is a simple peak limiting algorithm, based off code from the Stanford");
+     gwinote(gwi, "Music-424 class.");
   DECL_OB(const Type, t_peaklim, = gwi_class_ini(gwi, "Peaklim", "UGen"));
   SET_FLAG(t_peaklim, final);
   gwi_class_xtor(gwi, peaklim_ctor, peaklim_dtor);
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, peaklim_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Attack time, in seconds");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, peaklim_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, peaklim_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "Release time, in seconds");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, peaklim_set_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "thresh");
   GWI_BB(gwi_func_end(gwi, peaklim_get_thresh, ae_flag_none))
   gwi_func_ini(gwi, "float", "thresh");
+     gwinote(gwi, "Threshold, in dB");
      gwi_func_arg(gwi, "float", "_thresh");
   GWI_BB(gwi_func_end(gwi, peaklim_set_thresh, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A stereo phaser");
+     gwinote(gwi, "");
+     gwinote(gwi, "	This is a stereo phaser, generated from Faust code taken from the ");
+     gwinote(gwi, "Guitarix project.");
   DECL_OB(const Type, t_phaser, = gwi_class_ini(gwi, "Phaser", "UGen"));
   SET_FLAG(t_phaser, final);
   gwi_class_xtor(gwi, phaser_ctor, phaser_dtor);
   gwi_func_ini(gwi, "float", "MaxNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_get_MaxNotch1Freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "MaxNotch1Freq");
+     gwinote(gwi, "Between 20 and 10000");
      gwi_func_arg(gwi, "float", "_MaxNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_set_MaxNotch1Freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "MinNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_get_MinNotch1Freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "MinNotch1Freq");
+     gwinote(gwi, "Between 20 and 5000");
      gwi_func_arg(gwi, "float", "_MinNotch1Freq");
   GWI_BB(gwi_func_end(gwi, phaser_set_MinNotch1Freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "Notch_width");
   GWI_BB(gwi_func_end(gwi, phaser_get_Notch_width, ae_flag_none))
   gwi_func_ini(gwi, "float", "Notch_width");
+     gwinote(gwi, "Between 10 and 5000");
      gwi_func_arg(gwi, "float", "_Notch_width");
   GWI_BB(gwi_func_end(gwi, phaser_set_Notch_width, ae_flag_none))
   gwi_func_ini(gwi, "float", "NotchFreq");
   GWI_BB(gwi_func_end(gwi, phaser_get_NotchFreq, ae_flag_none))
   gwi_func_ini(gwi, "float", "NotchFreq");
+     gwinote(gwi, "Between 1.1 and 4");
      gwi_func_arg(gwi, "float", "_NotchFreq");
   GWI_BB(gwi_func_end(gwi, phaser_set_NotchFreq, ae_flag_none))
   gwi_func_ini(gwi, "float", "VibratoMode");
   GWI_BB(gwi_func_end(gwi, phaser_get_VibratoMode, ae_flag_none))
   gwi_func_ini(gwi, "float", "VibratoMode");
+     gwinote(gwi, "1 or 0");
      gwi_func_arg(gwi, "float", "_VibratoMode");
   GWI_BB(gwi_func_end(gwi, phaser_set_VibratoMode, ae_flag_none))
   gwi_func_ini(gwi, "float", "depth");
   GWI_BB(gwi_func_end(gwi, phaser_get_depth, ae_flag_none))
   gwi_func_ini(gwi, "float", "depth");
+     gwinote(gwi, "Between 0 and 1");
      gwi_func_arg(gwi, "float", "_depth");
   GWI_BB(gwi_func_end(gwi, phaser_set_depth, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback_gain");
   GWI_BB(gwi_func_end(gwi, phaser_get_feedback_gain, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback_gain");
+     gwinote(gwi, "Between 0 and 1");
      gwi_func_arg(gwi, "float", "_feedback_gain");
   GWI_BB(gwi_func_end(gwi, phaser_set_feedback_gain, ae_flag_none))
   gwi_func_ini(gwi, "float", "invert");
   GWI_BB(gwi_func_end(gwi, phaser_get_invert, ae_flag_none))
   gwi_func_ini(gwi, "float", "invert");
+     gwinote(gwi, "1 or 0");
      gwi_func_arg(gwi, "float", "_invert");
   GWI_BB(gwi_func_end(gwi, phaser_set_invert, ae_flag_none))
   gwi_func_ini(gwi, "float", "level");
   GWI_BB(gwi_func_end(gwi, phaser_get_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "level");
+     gwinote(gwi, "-60 to 10 dB");
      gwi_func_arg(gwi, "float", "_level");
   GWI_BB(gwi_func_end(gwi, phaser_set_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "lfobpm");
   GWI_BB(gwi_func_end(gwi, phaser_get_lfobpm, ae_flag_none))
   gwi_func_ini(gwi, "float", "lfobpm");
+     gwinote(gwi, "Between 24 and 360");
      gwi_func_arg(gwi, "float", "_lfobpm");
   GWI_BB(gwi_func_end(gwi, phaser_set_lfobpm, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Normalized sawtooth wave from 0 to 1");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Phasors are often used when building table-lookup oscillators.");
   DECL_OB(const Type, t_phasor, = gwi_class_ini(gwi, "Phasor", "UGen"));
   SET_FLAG(t_phasor, final);
   gwi_class_xtor(gwi, phasor_ctor, phasor_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "initial phase");
      gwi_func_arg(gwi, "float", "_iphs");
   GWI_BB(gwi_func_end(gwi, phasor_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, phasor_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, phasor_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Pink pinknoise generator");
   DECL_OB(const Type, t_pinknoise, = gwi_class_ini(gwi, "Pinknoise", "UGen"));
   SET_FLAG(t_pinknoise, final);
   gwi_class_xtor(gwi, pinknoise_ctor, pinknoise_dtor);
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, pinknoise_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude. (Value between 0-1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, pinknoise_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Pitch detection using AMDF method.");
+     gwinote(gwi, "Pitchamdf tracks the pitch of signal using the AMDF (Average Magnitude Difference Function) method of ");
+     gwinote(gwi, "Pitch following. ");
   DECL_OB(const Type, t_pitchamdf, = gwi_class_ini(gwi, "Pitchamdf", "UGen"));
   SET_FLAG(t_pitchamdf, final);
   gwi_class_xtor(gwi, pitchamdf_ctor, pitchamdf_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Minimum expected frequency to detect");
      gwi_func_arg(gwi, "float", "_min");
+     gwinote(gwi, "Maximum expected frequency to detect");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, pitchamdf_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Karplus-Strong plucked string instrument.");
   DECL_OB(const Type, t_pluck, = gwi_class_ini(gwi, "Pluck", "UGen"));
   SET_FLAG(t_pluck, final);
   gwi_class_xtor(gwi, pluck_ctor, pluck_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Sets the initial frequency. This frequency is used to allocate all the buffers needed for the delay. This should be the lowest frequency you plan on using.");
      gwi_func_arg(gwi, "float", "_ifreq");
   GWI_BB(gwi_func_end(gwi, pluck_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, pluck_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Variable frequency. Values less than the initial ");
+     gwinote(gwi, "frequency (ifreq) will be doubled until it is greater than or equal to ifreq.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, pluck_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, pluck_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, pluck_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, " Portamento-style control signal smoothing");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Useful for smoothing out low-resolution signals and applying glissando to filters.");
   DECL_OB(const Type, t_port, = gwi_class_ini(gwi, "Port", "UGen"));
   SET_FLAG(t_port, final);
   gwi_class_xtor(gwi, port_ctor, port_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_htime");
   GWI_BB(gwi_func_end(gwi, port_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "htime");
   GWI_BB(gwi_func_end(gwi, port_get_htime, ae_flag_none))
   gwi_func_ini(gwi, "float", "htime");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_htime");
   GWI_BB(gwi_func_end(gwi, port_set_htime, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, " High-precision table-lookup posc3ilator with cubic interpolation");
   DECL_OB(const Type, t_posc3, = gwi_class_ini(gwi, "Posc3", "UGen"));
   SET_FLAG(t_posc3, final);
   gwi_class_xtor(gwi, posc3_ctor, posc3_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Wavetable to read from. Note: the size of this table must be a power of 2.");
      gwi_func_arg(gwi, "ftbl", "_tbl");
   GWI_BB(gwi_func_end(gwi, posc3_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, posc3_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency (in Hz)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, posc3_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, posc3_get_amp, ae_flag_none))
   gwi_func_ini(gwi, "float", "amp");
+     gwinote(gwi, "Amplitude (typically a value between 0 and 1).");
      gwi_func_arg(gwi, "float", "_amp");
   GWI_BB(gwi_func_end(gwi, posc3_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A simple progress bar for the commandline");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Mostly ideal for offline renderings and programs with finite length. Escape characters are used to show/hide the cursor. Interruption before finishing may cause the cursor to disappear.");
   DECL_OB(const Type, t_progress, = gwi_class_ini(gwi, "Progress", "UGen"));
   SET_FLAG(t_progress, final);
   gwi_class_xtor(gwi, progress_ctor, progress_dtor);
   gwi_func_ini(gwi, "int", "nbars");
   GWI_BB(gwi_func_end(gwi, progress_get_nbars, ae_flag_none))
   gwi_func_ini(gwi, "int", "nbars");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "int", "_nbars");
   GWI_BB(gwi_func_end(gwi, progress_set_nbars, ae_flag_none))
   gwi_func_ini(gwi, "int", "skip");
   GWI_BB(gwi_func_end(gwi, progress_get_skip, ae_flag_none))
   gwi_func_ini(gwi, "int", "skip");
+     gwinote(gwi, "How many samples to skip before checking");
      gwi_func_arg(gwi, "int", "_skip");
   GWI_BB(gwi_func_end(gwi, progress_set_skip, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Simple rhythmic notation gate generator");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Creates a gate using a simple rhythmic notation system called prop. When it reaches the end of the prop string, it will loop back to the beginning.");
+     gwinote(gwi, "");
+     gwinote(gwi, "Prop has a few basic rules:");
+     gwinote(gwi, "");
+     gwinote(gwi, "1. A '+' denotes a on. A '-' denotes an off (rest). They each have an equal duration of a quarter note.");
+     gwinote(gwi, "");
+     gwinote(gwi, "2. On and off values can be strung together to create equally spaced gates: +-+--");
+     gwinote(gwi, "");
+     gwinote(gwi, "3. When notes are enclosed in parantheses '()' following a positive integer N, their duration is reduced N times: ++2(+-)");
+     gwinote(gwi, "");
+     gwinote(gwi, "4. When notes are enclosed in brackets '[]' following a positive integer N, their duration is scaled by a factor of N: ++2[++]");
+     gwinote(gwi, "");
+     gwinote(gwi, "5. Parenthesis and brackets can be nested: +- 2[3(+2(++)+)]2(++)");
+     gwinote(gwi, "");
   DECL_OB(const Type, t_prop, = gwi_class_ini(gwi, "Prop", "UGen"));
   SET_FLAG(t_prop, final);
   gwi_class_xtor(gwi, prop_ctor, prop_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Prop string to be parsed.");
      gwi_func_arg(gwi, "string", "_str");
   GWI_BB(gwi_func_end(gwi, prop_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "bpm");
   GWI_BB(gwi_func_end(gwi, prop_get_bpm, ae_flag_none))
   gwi_func_ini(gwi, "float", "bpm");
+     gwinote(gwi, "Beats per minute of the prop string.");
      gwi_func_arg(gwi, "float", "_bpm");
   GWI_BB(gwi_func_end(gwi, prop_set_bpm, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Time-domain pitch shifter.");
   DECL_OB(const Type, t_pshift, = gwi_class_ini(gwi, "Pshift", "UGen"));
   SET_FLAG(t_pshift, final);
   gwi_class_xtor(gwi, pshift_ctor, pshift_dtor);
   gwi_func_ini(gwi, "float", "shift");
   GWI_BB(gwi_func_end(gwi, pshift_get_shift, ae_flag_none))
   gwi_func_ini(gwi, "float", "shift");
+     gwinote(gwi, "Pitch shift (in semitones), range -24/24.");
      gwi_func_arg(gwi, "float", "_shift");
   GWI_BB(gwi_func_end(gwi, pshift_set_shift, ae_flag_none))
   gwi_func_ini(gwi, "float", "window");
   GWI_BB(gwi_func_end(gwi, pshift_get_window, ae_flag_none))
   gwi_func_ini(gwi, "float", "window");
+     gwinote(gwi, "Window size (in samples), max 10000");
      gwi_func_arg(gwi, "float", "_window");
   GWI_BB(gwi_func_end(gwi, pshift_set_window, ae_flag_none))
   gwi_func_ini(gwi, "float", "xfade");
   GWI_BB(gwi_func_end(gwi, pshift_get_xfade, ae_flag_none))
   gwi_func_ini(gwi, "float", "xfade");
+     gwinote(gwi, "Crossfade (in samples), max 10000");
      gwi_func_arg(gwi, "float", "_xfade");
   GWI_BB(gwi_func_end(gwi, pshift_set_xfade, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Track pitch of a signal.");
+     gwinote(gwi, "Ptrack is a pitch tracker, based on an algorithm originally created by");
+     gwinote(gwi, "Miller Puckette.");
   DECL_OB(const Type, t_ptrack, = gwi_class_ini(gwi, "Ptrack", "UGen"));
   SET_FLAG(t_ptrack, final);
   gwi_class_xtor(gwi, ptrack_ctor, ptrack_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "hop size.");
      gwi_func_arg(gwi, "int", "_ihopsize");
+     gwinote(gwi, "Number of peaks.");
      gwi_func_arg(gwi, "int", "_ipeaks");
   GWI_BB(gwi_func_end(gwi, ptrack_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Random number generator with hold time.");
+     gwinote(gwi, "Randh is loosely based off of the Csound opcode randomh. The design is equivalent");
+     gwinote(gwi, "to scaled noise sent through a classic sample and hold module.");
   DECL_OB(const Type, t_randh, = gwi_class_ini(gwi, "Randh", "UGen"));
   SET_FLAG(t_randh, final);
   gwi_class_xtor(gwi, randh_ctor, randh_dtor);
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, randh_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum value to use.");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, randh_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, randh_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum value to use.");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, randh_set_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, randh_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Frequency of randomization (in Hz)");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, randh_set_freq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Line segments between random values within a range");
   DECL_OB(const Type, t_randi, = gwi_class_ini(gwi, "Randi", "UGen"));
   SET_FLAG(t_randi, final);
   gwi_class_xtor(gwi, randi_ctor, randi_dtor);
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, randi_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum value");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, randi_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, randi_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum value");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, randi_set_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "cps");
   GWI_BB(gwi_func_end(gwi, randi_get_cps, ae_flag_none))
   gwi_func_ini(gwi, "float", "cps");
+     gwinote(gwi, "Frequency to change values.");
      gwi_func_arg(gwi, "float", "_cps");
   GWI_BB(gwi_func_end(gwi, randi_set_cps, ae_flag_none))
   gwi_func_ini(gwi, "float", "mode");
   GWI_BB(gwi_func_end(gwi, randi_get_mode, ae_flag_none))
   gwi_func_ini(gwi, "float", "mode");
+     gwinote(gwi, "Randi mode (not yet implemented yet.)");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, randi_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Random values within a range");
   DECL_OB(const Type, t_random, = gwi_class_ini(gwi, "Random", "UGen"));
   SET_FLAG(t_random, final);
   gwi_class_xtor(gwi, random_ctor, random_dtor);
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, random_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum value.");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, random_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, random_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum value.");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, random_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A second-order resonant filter. NOTE: The output for reson appears to be very hot, so take caution when using this module.");
   DECL_OB(const Type, t_reson, = gwi_class_ini(gwi, "Reson", "UGen"));
   SET_FLAG(t_reson, final);
   gwi_class_xtor(gwi, reson_ctor, reson_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, reson_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Center frequency of the filter, or frequency position of the peak response.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, reson_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
   GWI_BB(gwi_func_end(gwi, reson_get_bw, ae_flag_none))
   gwi_func_ini(gwi, "float", "bw");
+     gwinote(gwi, "Bandwidth of the filter.");
      gwi_func_arg(gwi, "float", "_bw");
   GWI_BB(gwi_func_end(gwi, reson_set_bw, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Signal reverser");
+     gwinote(gwi, "");
+     gwinote(gwi, "	Reverse will store a signal inside a buffer and play it back reversed.");
   DECL_OB(const Type, t_reverse, = gwi_class_ini(gwi, "Reverse", "UGen"));
   SET_FLAG(t_reverse, final);
   gwi_class_xtor(gwi, reverse_ctor, reverse_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Delay time in seconds.");
      gwi_func_arg(gwi, "float", "_delay");
   GWI_BB(gwi_func_end(gwi, reverse_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, " 8 FDN stereo reverb");
   DECL_OB(const Type, t_revsc, = gwi_class_ini(gwi, "Revsc", "UGen"));
   SET_FLAG(t_revsc, final);
   gwi_class_xtor(gwi, revsc_ctor, revsc_dtor);
   gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, revsc_get_feedback, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback");
+     gwinote(gwi, "Value between 0-1 that sets feedback value. The larger the value, the longer the decay.");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, revsc_set_feedback, ae_flag_none))
   gwi_func_ini(gwi, "float", "lpfreq");
   GWI_BB(gwi_func_end(gwi, revsc_get_lpfreq, ae_flag_none))
   gwi_func_ini(gwi, "float", "lpfreq");
+     gwinote(gwi, "low pass cutoff frequency.");
      gwi_func_arg(gwi, "float", "_lpfreq");
   GWI_BB(gwi_func_end(gwi, revsc_set_lpfreq, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "RMS-averaged signal amplitude");
+     gwinote(gwi, "");
+     gwinote(gwi, "    Perform `root-mean-square` on a signal to get overall amplitude of a signal. The output signal looks similar to that of a classic VU meter.");
   DECL_OB(const Type, t_rms, = gwi_class_ini(gwi, "Rms", "UGen"));
   SET_FLAG(t_rms, final);
   gwi_class_xtor(gwi, rms_ctor, rms_dtor);
   gwi_func_ini(gwi, "float", "ihp");
   GWI_BB(gwi_func_end(gwi, rms_get_ihp, ae_flag_none))
   gwi_func_ini(gwi, "float", "ihp");
+     gwinote(gwi, "Half-power point (in Hz) of internal lowpass filter. This parameter is fixed at 10Hz and is not yet mutable.");
      gwi_func_arg(gwi, "float", "_ihp");
   GWI_BB(gwi_func_end(gwi, rms_set_ihp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Trigger based beat-repeat stuttering effect");
+     gwinote(gwi, "");
+     gwinote(gwi, "    When the input is a non-zero value, rpt will load up the buffer and loop a certain number of times. Speed and repeat amounts can be set with the sp_rpt_set function.");
   DECL_OB(const Type, t_rpt, = gwi_class_ini(gwi, "Rpt", "UGen"));
   SET_FLAG(t_rpt, final);
   gwi_class_xtor(gwi, rpt_ctor, rpt_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Maximum delay duration in seconds. This will set the buffer size.");
      gwi_func_arg(gwi, "float", "_maxdur");
   GWI_BB(gwi_func_end(gwi, rpt_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Random spline curve generator");
+     gwinote(gwi, "This is a function that generates random spline curves. This signal generator");
+     gwinote(gwi, "is ideal for control signals. Curves are quite smooth when cps_min is not");
+     gwinote(gwi, "too different from cps_max. When the range of these two is big, ");
+     gwinote(gwi, "some discontinuity may occur. Due to the interpolation, the output ");
+     gwinote(gwi, "may be greater than the range values. ");
   DECL_OB(const Type, t_rspline, = gwi_class_ini(gwi, "Rspline", "UGen"));
   SET_FLAG(t_rspline, final);
   gwi_class_xtor(gwi, rspline_ctor, rspline_dtor);
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, rspline_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum range.");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, rspline_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, rspline_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum range");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, rspline_set_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "cps_min");
   GWI_BB(gwi_func_end(gwi, rspline_get_cps_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "cps_min");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_cps_min");
   GWI_BB(gwi_func_end(gwi, rspline_set_cps_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "cps_max");
   GWI_BB(gwi_func_end(gwi, rspline_get_cps_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "cps_max");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_cps_max");
   GWI_BB(gwi_func_end(gwi, rspline_set_cps_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Classic sample and hold");
   DECL_OB(const Type, t_samphold, = gwi_class_ini(gwi, "Samphold", "UGen"));
   SET_FLAG(t_samphold, final);
   gwi_class_xtor(gwi, samphold_ctor, samphold_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Soft clip saturating distortion, based on examples from Abel/Berners' Music 424 course at Stanford.");
   DECL_OB(const Type, t_saturator, = gwi_class_ini(gwi, "Saturator", "UGen"));
   SET_FLAG(t_saturator, final);
   gwi_class_xtor(gwi, saturator_ctor, saturator_dtor);
   gwi_func_ini(gwi, "float", "drive");
   GWI_BB(gwi_func_end(gwi, saturator_get_drive, ae_flag_none))
   gwi_func_ini(gwi, "float", "drive");
+     gwinote(gwi, "Input gain into the distortion section, in decibels. Controls overall amount of distortion.");
      gwi_func_arg(gwi, "float", "_drive");
   GWI_BB(gwi_func_end(gwi, saturator_set_drive, ae_flag_none))
   gwi_func_ini(gwi, "float", "dcoffset");
   GWI_BB(gwi_func_end(gwi, saturator_get_dcoffset, ae_flag_none))
   gwi_func_ini(gwi, "float", "dcoffset");
+     gwinote(gwi, "Constant linear offset applied to the signal. A small offset will introduce odd harmonics into the distoration spectrum, whereas a zero offset will have only even harmonics.");
      gwi_func_arg(gwi, "float", "_dcoffset");
   GWI_BB(gwi_func_end(gwi, saturator_set_dcoffset, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Bipolar Scale");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This module scales from unipolar [0, 1] to another range defined by min and max.");
   DECL_OB(const Type, t_scale, = gwi_class_ini(gwi, "Scale", "UGen"));
   SET_FLAG(t_scale, final);
   gwi_class_xtor(gwi, scale_ctor, scale_dtor);
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, scale_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum value to scale to.");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, scale_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, scale_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum value to scale to.");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, scale_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Delays a signal by a number of samples.");
   DECL_OB(const Type, t_sdelay, = gwi_class_ini(gwi, "Sdelay", "UGen"));
   SET_FLAG(t_sdelay, final);
   gwi_class_xtor(gwi, sdelay_ctor, sdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Size of delay (in samples)");
      gwi_func_arg(gwi, "float", "_size");
   GWI_BB(gwi_func_end(gwi, sdelay_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Yet another slice-based sample player.");
+     gwinote(gwi, "This module takes in an audio buffer and a table with slice points. ");
   DECL_OB(const Type, t_slice, = gwi_class_ini(gwi, "Slice", "UGen"));
   SET_FLAG(t_slice, final);
   gwi_class_xtor(gwi, slice_ctor, slice_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "A table containing slice points, in samples");
      gwi_func_arg(gwi, "ftbl", "_vals");
+     gwinote(gwi, "The buffer containing the audio samples.");
      gwi_func_arg(gwi, "ftbl", "_buf");
   GWI_BB(gwi_func_end(gwi, slice_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "id");
   GWI_BB(gwi_func_end(gwi, slice_get_id, ae_flag_none))
   gwi_func_ini(gwi, "float", "id");
+     gwinote(gwi, "Value position.");
      gwi_func_arg(gwi, "float", "_id");
   GWI_BB(gwi_func_end(gwi, slice_set_id, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Smooth variable delay line without varispeed pitch.");
+     gwinote(gwi, "Smooth delay is based off the sdelay module in Faust. The smooth delay ");
+     gwinote(gwi, "algorithm involves a double delay line. Any time the delay time changes, ");
+     gwinote(gwi, "the delay time of buffer not heard changes, then is crossfaded to ");
+     gwinote(gwi, "that buffer.");
   DECL_OB(const Type, t_smoothdelay, = gwi_class_ini(gwi, "Smoothdelay", "UGen"));
   SET_FLAG(t_smoothdelay, final);
   gwi_class_xtor(gwi, smoothdelay_ctor, smoothdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Maximum delay time (in seconds)");
      gwi_func_arg(gwi, "float", "_maxdel");
+     gwinote(gwi, "interpolation time (in samples)");
      gwi_func_arg(gwi, "int", "_interp");
   GWI_BB(gwi_func_end(gwi, smoothdelay_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, smoothdelay_get_feedback, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, smoothdelay_set_feedback, ae_flag_none))
   gwi_func_ini(gwi, "float", "del");
   GWI_BB(gwi_func_end(gwi, smoothdelay_get_del, ae_flag_none))
   gwi_func_ini(gwi, "float", "del");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "float", "_del");
   GWI_BB(gwi_func_end(gwi, smoothdelay_set_del, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Stream a Soundpipe Audio File");
+     gwinote(gwi, "Similar to sp_diskin, sp_spa will stream a file in the internal soundpipe");
+     gwinote(gwi, "audio format. Such a format is useful for instances where you need to read");
+     gwinote(gwi, "audio files, but can't use libsndfile. ");
   DECL_OB(const Type, t_spa, = gwi_class_ini(gwi, "Spa", "UGen"));
   SET_FLAG(t_spa, final);
   gwi_class_xtor(gwi, spa_ctor, spa_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Filename of SPA file");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, spa_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Writes signal to spa file.");
   DECL_OB(const Type, t_sparec, = gwi_class_ini(gwi, "Sparec", "UGen"));
   SET_FLAG(t_sparec, final);
   gwi_class_xtor(gwi, sparec_ctor, sparec_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Filename to write to");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, sparec_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "String resonator filter");
   DECL_OB(const Type, t_streson, = gwi_class_ini(gwi, "Streson", "UGen"));
   SET_FLAG(t_streson, final);
   gwi_class_xtor(gwi, streson_ctor, streson_dtor);
   gwi_func_ini(gwi, "float", "freq");
   GWI_BB(gwi_func_end(gwi, streson_get_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "freq");
+     gwinote(gwi, "Fundamental frequency of string.");
      gwi_func_arg(gwi, "float", "_freq");
   GWI_BB(gwi_func_end(gwi, streson_set_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "fdbgain");
   GWI_BB(gwi_func_end(gwi, streson_get_fdbgain, ae_flag_none))
   gwi_func_ini(gwi, "float", "fdbgain");
+     gwinote(gwi, "Feedback amount (value between 0-1)");
      gwi_func_arg(gwi, "float", "_fdbgain");
   GWI_BB(gwi_func_end(gwi, streson_set_fdbgain, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Switch between two signals");
+     gwinote(gwi, "");
+     gwinote(gwi, "    By default, the incoming first signal is selected. When triggered, the output signal will switch to the other signal.");
   DECL_OB(const Type, t_switch, = gwi_class_ini(gwi, "Switch", "UGen"));
   SET_FLAG(t_switch, final);
   gwi_class_xtor(gwi, switch_ctor, switch_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Table ");
+     gwinote(gwi, "        Read through an sp_ftbl with linear interpolation.");
+     gwinote(gwi, "    ");
   DECL_OB(const Type, t_tabread, = gwi_class_ini(gwi, "Tabread", "UGen"));
   SET_FLAG(t_tabread, final);
   gwi_class_xtor(gwi, tabread_ctor, tabread_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "A properly allocated table (using a function like sp_gen_file).");
      gwi_func_arg(gwi, "ftbl", "_ft");
+     gwinote(gwi, "1 = scaled index, 0 = unscaled index");
      gwi_func_arg(gwi, "float", "_mode");
   GWI_BB(gwi_func_end(gwi, tabread_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "index");
   GWI_BB(gwi_func_end(gwi, tabread_get_index, ae_flag_none))
   gwi_func_ini(gwi, "float", "index");
+     gwinote(gwi, "index position, either scaled or unscaled with mode parameter");
      gwi_func_arg(gwi, "float", "_index");
   GWI_BB(gwi_func_end(gwi, tabread_set_index, ae_flag_none))
   gwi_func_ini(gwi, "float", "offset");
   GWI_BB(gwi_func_end(gwi, tabread_get_offset, ae_flag_none))
   gwi_func_ini(gwi, "float", "offset");
+     gwinote(gwi, "Offset from beginning of ftable. If the mode is scaled, then it is in range 0-1, other wise it is the index position.");
      gwi_func_arg(gwi, "float", "_offset");
   GWI_BB(gwi_func_end(gwi, tabread_set_offset, ae_flag_none))
   gwi_func_ini(gwi, "float", "wrap");
   GWI_BB(gwi_func_end(gwi, tabread_get_wrap, ae_flag_none))
   gwi_func_ini(gwi, "float", "wrap");
+     gwinote(gwi, "Enable wraparound. 1 = on; 0 = 0ff.");
      gwi_func_arg(gwi, "float", "_wrap");
   GWI_BB(gwi_func_end(gwi, tabread_set_wrap, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Triggerable classic ADSR envelope");
   DECL_OB(const Type, t_tadsr, = gwi_class_ini(gwi, "Tadsr", "UGen"));
   SET_FLAG(t_tadsr, final);
   gwi_class_xtor(gwi, tadsr_ctor, tadsr_dtor);
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tadsr_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Attack time");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tadsr_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
   GWI_BB(gwi_func_end(gwi, tadsr_get_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "dec");
+     gwinote(gwi, "Decay time");
      gwi_func_arg(gwi, "float", "_dec");
   GWI_BB(gwi_func_end(gwi, tadsr_set_dec, ae_flag_none))
   gwi_func_ini(gwi, "float", "sus");
   GWI_BB(gwi_func_end(gwi, tadsr_get_sus, ae_flag_none))
   gwi_func_ini(gwi, "float", "sus");
+     gwinote(gwi, "Sustain Level");
      gwi_func_arg(gwi, "float", "_sus");
   GWI_BB(gwi_func_end(gwi, tadsr_set_sus, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tadsr_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "release");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tadsr_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A high talkbox emulation, simular to a vocoder.");
+     gwinote(gwi, "This is the talkbox plugin ported from the MDA plugin suite. In many ways,");
+     gwinote(gwi, "this Talkbox functions like a vocoder: it takes in a source signal (usually");
+     gwinote(gwi, "speech), which then excites an excitation signal ");
+     gwinote(gwi, "(usually a harmonically rich signal like a saw wave). This particular algorithm");
+     gwinote(gwi, "uses linear-predictive coding (LPC), making speech intelligibility better ");
+     gwinote(gwi, "than most vocoder implementations.");
   DECL_OB(const Type, t_talkbox, = gwi_class_ini(gwi, "Talkbox", "UGen"));
   SET_FLAG(t_talkbox, final);
   gwi_class_xtor(gwi, talkbox_ctor, talkbox_dtor);
   gwi_func_ini(gwi, "float", "quality");
   GWI_BB(gwi_func_end(gwi, talkbox_get_quality, ae_flag_none))
   gwi_func_ini(gwi, "float", "quality");
+     gwinote(gwi, "Quality of the talkbox sound. 0=lowest fidelity. 1=highest fidelity");
      gwi_func_arg(gwi, "float", "_quality");
   GWI_BB(gwi_func_end(gwi, talkbox_set_quality, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Record a signal to an ftable.");
+     gwinote(gwi, "This module will write audio-rate signals to a preallocated soundpipe ftable. ");
+     gwinote(gwi, "Every time record is enabled, it will got back to index 0 overwrite any");
+     gwinote(gwi, "previous information that was on it. ");
   DECL_OB(const Type, t_tblrec, = gwi_class_ini(gwi, "Tblrec", "UGen"));
   SET_FLAG(t_tblrec, final);
   gwi_class_xtor(gwi, tblrec_ctor, tblrec_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "");
      gwi_func_arg(gwi, "ftbl", "_bar");
   GWI_BB(gwi_func_end(gwi, tblrec_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Emulation of the Roland TB-303 filter");
   DECL_OB(const Type, t_tbvcf, = gwi_class_ini(gwi, "Tbvcf", "UGen"));
   SET_FLAG(t_tbvcf, final);
   gwi_class_xtor(gwi, tbvcf_ctor, tbvcf_dtor);
   gwi_func_ini(gwi, "float", "fco");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_fco, ae_flag_none))
   gwi_func_ini(gwi, "float", "fco");
+     gwinote(gwi, "Filter cutoff frequency");
      gwi_func_arg(gwi, "float", "_fco");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_fco, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
+     gwinote(gwi, "Resonance");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "dist");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_dist, ae_flag_none))
   gwi_func_ini(gwi, "float", "dist");
+     gwinote(gwi, "Distortion. Value is typically 2.0; deviation from this can cause stability issues. ");
      gwi_func_arg(gwi, "float", "_dist");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_dist, ae_flag_none))
   gwi_func_ini(gwi, "float", "asym");
   GWI_BB(gwi_func_end(gwi, tbvcf_get_asym, ae_flag_none))
   gwi_func_ini(gwi, "float", "asym");
+     gwinote(gwi, "Asymmetry of resonance. Value is between 0-1");
      gwi_func_arg(gwi, "float", "_asym");
   GWI_BB(gwi_func_end(gwi, tbvcf_set_asym, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Trigger divider.");
+     gwinote(gwi, "This module will take in a trigger signal, and output a trigger signal");
+     gwinote(gwi, "every N times.");
+     gwinote(gwi, "");
+     gwinote(gwi, "For instance, when N = 3:");
+     gwinote(gwi, "");
+     gwinote(gwi, "in: * * * * * * * * *");
+     gwinote(gwi, "");
+     gwinote(gwi, "out *     *     *   ");
+     gwinote(gwi, "");
   DECL_OB(const Type, t_tdiv, = gwi_class_ini(gwi, "Tdiv", "UGen"));
   SET_FLAG(t_tdiv, final);
   gwi_class_xtor(gwi, tdiv_ctor, tdiv_dtor);
   gwi_func_ini(gwi, "float", "num");
   GWI_BB(gwi_func_end(gwi, tdiv_get_num, ae_flag_none))
   gwi_func_ini(gwi, "float", "num");
+     gwinote(gwi, "Triggers every N times.");
      gwi_func_arg(gwi, "float", "_num");
   GWI_BB(gwi_func_end(gwi, tdiv_set_num, ae_flag_none))
   gwi_func_ini(gwi, "float", "offset");
   GWI_BB(gwi_func_end(gwi, tdiv_get_offset, ae_flag_none))
   gwi_func_ini(gwi, "float", "offset");
+     gwinote(gwi, "Offset amoutn.");
      gwi_func_arg(gwi, "float", "_offset");
   GWI_BB(gwi_func_end(gwi, tdiv_set_offset, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Trigger based linear AHD envelope generator");
   DECL_OB(const Type, t_tenv, = gwi_class_ini(gwi, "Tenv", "UGen"));
   SET_FLAG(t_tenv, final);
   gwi_class_xtor(gwi, tenv_ctor, tenv_dtor);
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tenv_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Attack time, in seconds.");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tenv_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "hold");
   GWI_BB(gwi_func_end(gwi, tenv_get_hold, ae_flag_none))
   gwi_func_ini(gwi, "float", "hold");
+     gwinote(gwi, "Hold time, in seconds.");
      gwi_func_arg(gwi, "float", "_hold");
   GWI_BB(gwi_func_end(gwi, tenv_set_hold, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tenv_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "Release time, in seconds.");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tenv_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Linear 2-stage Attack/Release envelope generator");
+     gwinote(gwi, "");
+     gwinote(gwi, "    This envelope takes 2 triggers. When triggered once,");
+     gwinote(gwi, "the envelope will rise to 1 according to the attack time. When triggered again, it will decay to 0 according to");
+     gwinote(gwi, "the decay time.");
   DECL_OB(const Type, t_tenv2, = gwi_class_ini(gwi, "Tenv2", "UGen"));
   SET_FLAG(t_tenv2, final);
   gwi_class_xtor(gwi, tenv2_ctor, tenv2_dtor);
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tenv2_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Attack time (in seconds).");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tenv2_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tenv2_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "Release time (in seconds).");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tenv2_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Trigger based exponential AHD envelope generator.");
+     gwinote(gwi, "    This envelope generator emulates the exponential behavior of analogue ");
+     gwinote(gwi, "envelope generators by passing a gate signal (whose duration is specified via");
+     gwinote(gwi, "the hold parameter) through a one-pole filter, whose filter coefficeints are");
+     gwinote(gwi, "calculated in terms of tau.  ");
+     gwinote(gwi, "    ");
   DECL_OB(const Type, t_tenvx, = gwi_class_ini(gwi, "Tenvx", "UGen"));
   SET_FLAG(t_tenvx, final);
   gwi_class_xtor(gwi, tenvx_ctor, tenvx_dtor);
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, tenvx_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Tau attack time, in seconds. Must be non-zero.");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, tenvx_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "hold");
   GWI_BB(gwi_func_end(gwi, tenvx_get_hold, ae_flag_none))
   gwi_func_ini(gwi, "float", "hold");
+     gwinote(gwi, "Hold time, in seconds. The duration of the gate signal.");
      gwi_func_arg(gwi, "float", "_hold");
   GWI_BB(gwi_func_end(gwi, tenvx_set_hold, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, tenvx_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "Tau release time, in seconds. Must be non-zero.");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, tenvx_set_rel, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A triggerable gate.");
   DECL_OB(const Type, t_tgate, = gwi_class_ini(gwi, "Tgate", "UGen"));
   SET_FLAG(t_tgate, final);
   gwi_class_xtor(gwi, tgate_ctor, tgate_dtor);
   gwi_func_ini(gwi, "float", "time");
   GWI_BB(gwi_func_end(gwi, tgate_get_time, ae_flag_none))
   gwi_func_ini(gwi, "float", "time");
+     gwinote(gwi, "Duration of the gate (in seconds)");
      gwi_func_arg(gwi, "float", "_time");
   GWI_BB(gwi_func_end(gwi, tgate_set_time, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Trigger generator for signals that cross a given threshold. ");
   DECL_OB(const Type, t_thresh, = gwi_class_ini(gwi, "Thresh", "UGen"));
   SET_FLAG(t_thresh, final);
   gwi_class_xtor(gwi, thresh_ctor, thresh_dtor);
   gwi_func_ini(gwi, "float", "thresh");
   GWI_BB(gwi_func_end(gwi, thresh_get_thresh, ae_flag_none))
   gwi_func_ini(gwi, "float", "thresh");
+     gwinote(gwi, "Threshold level");
      gwi_func_arg(gwi, "float", "_thresh");
   GWI_BB(gwi_func_end(gwi, thresh_set_thresh, ae_flag_none))
   gwi_func_ini(gwi, "int", "mode");
   GWI_BB(gwi_func_end(gwi, thresh_get_mode, ae_flag_none))
   gwi_func_ini(gwi, "int", "mode");
+     gwinote(gwi, "Sets when to detect theshold crossings. 0 = from below. 1 = from above. 2 = from above/below");
      gwi_func_arg(gwi, "int", "_mode");
   GWI_BB(gwi_func_end(gwi, thresh_set_mode, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Tap-tempo like timer");
+     gwinote(gwi, "");
+     gwinote(gwi, "When triggered, timer will begin an internal stopwatch until it is triggered again.");
+     gwinote(gwi, "The output of the timer will be the time elapsed in seconds.");
   DECL_OB(const Type, t_timer, = gwi_class_ini(gwi, "Timer", "UGen"));
   SET_FLAG(t_timer, final);
   gwi_class_xtor(gwi, timer_ctor, timer_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Similar to in, tin reads SPFLOATs (by default, this is a 4 byte binary float) from standard input every time it is triggered. behaves like a sample and hold, retaining the previous value (initial set to 0) until triggered. ");
   DECL_OB(const Type, t_tin, = gwi_class_ini(gwi, "Tin", "UGen"));
   SET_FLAG(t_tin, final);
   gwi_class_xtor(gwi, tin_ctor, tin_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "First-order recursive lowpass filter");
   DECL_OB(const Type, t_tone, = gwi_class_ini(gwi, "Tone", "UGen"));
   SET_FLAG(t_tone, final);
   gwi_class_xtor(gwi, tone_ctor, tone_dtor);
   gwi_func_ini(gwi, "float", "hp");
   GWI_BB(gwi_func_end(gwi, tone_get_hp, ae_flag_none))
   gwi_func_ini(gwi, "float", "hp");
+     gwinote(gwi, "The response curve's half power point (aka cutoff frequency).");
      gwi_func_arg(gwi, "float", "_hp");
   GWI_BB(gwi_func_end(gwi, tone_set_hp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Triggered random number generator.");
   DECL_OB(const Type, t_trand, = gwi_class_ini(gwi, "Trand", "UGen"));
   SET_FLAG(t_trand, final);
   gwi_class_xtor(gwi, trand_ctor, trand_dtor);
   gwi_func_ini(gwi, "float", "min");
   GWI_BB(gwi_func_end(gwi, trand_get_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "min");
+     gwinote(gwi, "Minimum value to use.");
      gwi_func_arg(gwi, "float", "_min");
   GWI_BB(gwi_func_end(gwi, trand_set_min, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
   GWI_BB(gwi_func_end(gwi, trand_get_max, ae_flag_none))
   gwi_func_ini(gwi, "float", "max");
+     gwinote(gwi, "Maximum value to use.");
      gwi_func_arg(gwi, "float", "_max");
   GWI_BB(gwi_func_end(gwi, trand_set_max, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "This module creates a series of line segments. ");
   DECL_OB(const Type, t_tseg, = gwi_class_ini(gwi, "Tseg", "UGen"));
   SET_FLAG(t_tseg, final);
   gwi_class_xtor(gwi, tseg_ctor, tseg_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Beginning value.");
      gwi_func_arg(gwi, "float", "_ibeg");
   GWI_BB(gwi_func_end(gwi, tseg_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "end");
   GWI_BB(gwi_func_end(gwi, tseg_get_end, ae_flag_none))
   gwi_func_ini(gwi, "float", "end");
+     gwinote(gwi, "End parameter to go to.");
      gwi_func_arg(gwi, "float", "_end");
   GWI_BB(gwi_func_end(gwi, tseg_set_end, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
   GWI_BB(gwi_func_end(gwi, tseg_get_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "dur");
+     gwinote(gwi, "duration to rise to (in seconds).");
      gwi_func_arg(gwi, "float", "_dur");
   GWI_BB(gwi_func_end(gwi, tseg_set_dur, ae_flag_none))
   gwi_func_ini(gwi, "float", "type");
   GWI_BB(gwi_func_end(gwi, tseg_get_type, ae_flag_none))
   gwi_func_ini(gwi, "float", "type");
+     gwinote(gwi, "The type of line, which determines slope of line");
      gwi_func_arg(gwi, "float", "_type");
   GWI_BB(gwi_func_end(gwi, tseg_set_type, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Function table looper");
+     gwinote(gwi, "");
+     gwinote(gwi, "    TSeq runs through values in an ftable. It will change values when the trigger input is a non-zero value, and wrap around when it reaches the end.");
   DECL_OB(const Type, t_tseq, = gwi_class_ini(gwi, "Tseq", "UGen"));
   SET_FLAG(t_tseq, final);
   gwi_class_xtor(gwi, tseq_ctor, tseq_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "An ftable of values");
      gwi_func_arg(gwi, "ftbl", "_ft");
   GWI_BB(gwi_func_end(gwi, tseq_init, ae_flag_none))
   gwi_func_ini(gwi, "int", "shuf");
   GWI_BB(gwi_func_end(gwi, tseq_get_shuf, ae_flag_none))
   gwi_func_ini(gwi, "int", "shuf");
+     gwinote(gwi, "When shuf is non-zero, randomly pick a value rather than cycle through sequentially.");
      gwi_func_arg(gwi, "int", "_shuf");
   GWI_BB(gwi_func_end(gwi, tseq_set_shuf, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Delay line with cubic interpolation");
   DECL_OB(const Type, t_vdelay, = gwi_class_ini(gwi, "Vdelay", "UGen"));
   SET_FLAG(t_vdelay, final);
   gwi_class_xtor(gwi, vdelay_ctor, vdelay_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "The maximum delay time, in seconds.");
      gwi_func_arg(gwi, "float", "_maxdel");
   GWI_BB(gwi_func_end(gwi, vdelay_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "del");
   GWI_BB(gwi_func_end(gwi, vdelay_get_del, ae_flag_none))
   gwi_func_ini(gwi, "float", "del");
+     gwinote(gwi, "Delay time (in seconds) that can be changed during performance. This value must not exceed the maximum delay time.");
      gwi_func_arg(gwi, "float", "_del");
   GWI_BB(gwi_func_end(gwi, vdelay_set_del, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback");
   GWI_BB(gwi_func_end(gwi, vdelay_get_feedback, ae_flag_none))
   gwi_func_ini(gwi, "float", "feedback");
+     gwinote(gwi, "Amount of feedback in delay line. Should be in range 0-1.");
      gwi_func_arg(gwi, "float", "_feedback");
   GWI_BB(gwi_func_end(gwi, vdelay_set_feedback, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "A vocal tract physical model.");
+     gwinote(gwi, "");
+     gwinote(gwi, "Based on the Pink Trombone algorithm by Neil Thapen, Voc implements a physical ");
+     gwinote(gwi, "model of the vocal tract glottal pulse wave. The tract model is based on the ");
+     gwinote(gwi, "classic Kelly-Lochbaum");
+     gwinote(gwi, "segmented cylindrical 1d waveguide model, and the glottal pulse wave is a");
+     gwinote(gwi, "LF glottal pulse model. ");
+     gwinote(gwi, "");
+     gwinote(gwi, "The soundpipe source code for Voc is generated via ctangle, one half of the");
+     gwinote(gwi, "literate documentation system known CWEB. The CWEB are maintained in a ");
+     gwinote(gwi, "separate repository. They are hosted on github here: ");
+     gwinote(gwi, "http://www.github.com/paulbatchelor/voc");
+     gwinote(gwi, "");
+     gwinote(gwi, "This documentation is a stub. For a full overview on proper usage, consult");
+     gwinote(gwi, "the `Top-level functions` section of the documented code, a copy of which");
+     gwinote(gwi, "can be found at the Voc project page pbat.ch/proj/voc, or generate the PDF");
+     gwinote(gwi, "from the github page described above.");
   DECL_OB(const Type, t_voc, = gwi_class_ini(gwi, "Voc", "UGen"));
   SET_FLAG(t_voc, final);
   gwi_class_xtor(gwi, voc_ctor, voc_dtor);
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "16-band channel vocoder");
   DECL_OB(const Type, t_vocoder, = gwi_class_ini(gwi, "Vocoder", "UGen"));
   SET_FLAG(t_vocoder, final);
   gwi_class_xtor(gwi, vocoder_ctor, vocoder_dtor);
   gwi_func_ini(gwi, "float", "atk");
   GWI_BB(gwi_func_end(gwi, vocoder_get_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "atk");
+     gwinote(gwi, "Attack time . (Range 0.001 and 0.5 seconds)");
      gwi_func_arg(gwi, "float", "_atk");
   GWI_BB(gwi_func_end(gwi, vocoder_set_atk, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
   GWI_BB(gwi_func_end(gwi, vocoder_get_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "rel");
+     gwinote(gwi, "Release time");
      gwi_func_arg(gwi, "float", "_rel");
   GWI_BB(gwi_func_end(gwi, vocoder_set_rel, ae_flag_none))
   gwi_func_ini(gwi, "float", "bwratio");
   GWI_BB(gwi_func_end(gwi, vocoder_get_bwratio, ae_flag_none))
   gwi_func_ini(gwi, "float", "bwratio");
+     gwinote(gwi, "Coeffecient to adjust the bandwidth of each band (0.1 - 2)");
      gwi_func_arg(gwi, "float", "_bwratio");
   GWI_BB(gwi_func_end(gwi, vocoder_set_bwratio, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Simple Time-stretching from repeating wavecyles");
+     gwinote(gwi, "This module looks for zero-crossings and repeats them by a integer factor.");
+     gwinote(gwi, "While a crude means for time stretching, it is a very aesthetically pleasing");
+     gwinote(gwi, "effect to use on sounds and often produces a `wet` sound.");
+     gwinote(gwi, "");
+     gwinote(gwi, "The waveset algorithm was originally created by Trevor Wishart for the Composer");
+     gwinote(gwi, "Desktop Project (CDP), and was then ported to Csound. ");
   DECL_OB(const Type, t_waveset, = gwi_class_ini(gwi, "Waveset", "UGen"));
   SET_FLAG(t_waveset, final);
   gwi_class_xtor(gwi, waveset_ctor, waveset_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Length of buffer (in seconds).");
      gwi_func_arg(gwi, "float", "_ilen");
   GWI_BB(gwi_func_end(gwi, waveset_init, ae_flag_none))
   gwi_func_ini(gwi, "float", "rep");
   GWI_BB(gwi_func_end(gwi, waveset_get_rep, ae_flag_none))
   gwi_func_ini(gwi, "float", "rep");
+     gwinote(gwi, "Number of repeats.");
      gwi_func_arg(gwi, "float", "_rep");
   GWI_BB(gwi_func_end(gwi, waveset_set_rep, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Reads a mono WAV file.");
+     gwinote(gwi, "");
+     gwinote(gwi, "This module reads a mono WAV file from disk. It uses the public-domain ");
+     gwinote(gwi, "dr_wav library for decoding, so it can be a good substitute for libsndfile.");
   DECL_OB(const Type, t_wavin, = gwi_class_ini(gwi, "Wavin", "UGen"));
   SET_FLAG(t_wavin, final);
   gwi_class_xtor(gwi, wavin_ctor, wavin_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "Filename");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, wavin_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "Writes a mono signal to a WAV file.");
+     gwinote(gwi, "This module uses the public-domain dr_wav library to write WAV files");
+     gwinote(gwi, "to disk. This module is ideal for instances where GPL-licensed libsndfile ");
+     gwinote(gwi, "cannot be used for legal reasons.");
   DECL_OB(const Type, t_wavout, = gwi_class_ini(gwi, "Wavout", "UGen"));
   SET_FLAG(t_wavout, final);
   gwi_class_xtor(gwi, wavout_ctor, wavout_dtor);
   gwi_func_ini(gwi, "void", "init");
+     gwinote(gwi, "The filename of the output file.");
      gwi_func_arg(gwi, "string", "_filename");
   GWI_BB(gwi_func_end(gwi, wavout_init, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, " Analogue model of the Korg 35 Lowpass Filter");
+     gwinote(gwi, "");
+     gwinote(gwi, "Original port done by Will Pirkle:");
+     gwinote(gwi, "http://www.willpirkle.com/Downloads/AN-5Korg35_V3.pdf");
+     gwinote(gwi, "");
   DECL_OB(const Type, t_wpkorg35, = gwi_class_ini(gwi, "Wpkorg35", "UGen"));
   SET_FLAG(t_wpkorg35, final);
   gwi_class_xtor(gwi, wpkorg35_ctor, wpkorg35_dtor);
   gwi_func_ini(gwi, "float", "cutoff");
   GWI_BB(gwi_func_end(gwi, wpkorg35_get_cutoff, ae_flag_none))
   gwi_func_ini(gwi, "float", "cutoff");
+     gwinote(gwi, "Filter cutoff");
      gwi_func_arg(gwi, "float", "_cutoff");
   GWI_BB(gwi_func_end(gwi, wpkorg35_set_cutoff, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
   GWI_BB(gwi_func_end(gwi, wpkorg35_get_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "res");
+     gwinote(gwi, "Filter resonance (should be between 0-2)");
      gwi_func_arg(gwi, "float", "_res");
   GWI_BB(gwi_func_end(gwi, wpkorg35_set_res, ae_flag_none))
   gwi_func_ini(gwi, "float", "saturation");
   GWI_BB(gwi_func_end(gwi, wpkorg35_get_saturation, ae_flag_none))
   gwi_func_ini(gwi, "float", "saturation");
+     gwinote(gwi, "Filter saturation.");
      gwi_func_arg(gwi, "float", "_saturation");
   GWI_BB(gwi_func_end(gwi, wpkorg35_set_saturation, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
+     gwinote(gwi, "8 FDN stereo zitareverb algorithm, imported from Faust.");
   DECL_OB(const Type, t_zitarev, = gwi_class_ini(gwi, "Zitarev", "UGen"));
   SET_FLAG(t_zitarev, final);
   gwi_class_xtor(gwi, zitarev_ctor, zitarev_dtor);
   gwi_func_ini(gwi, "float", "in_delay");
   GWI_BB(gwi_func_end(gwi, zitarev_get_in_delay, ae_flag_none))
   gwi_func_ini(gwi, "float", "in_delay");
+     gwinote(gwi, "Delay in ms before reverberation begins.");
      gwi_func_arg(gwi, "float", "_in_delay");
   GWI_BB(gwi_func_end(gwi, zitarev_set_in_delay, ae_flag_none))
   gwi_func_ini(gwi, "float", "lf_x");
   GWI_BB(gwi_func_end(gwi, zitarev_get_lf_x, ae_flag_none))
   gwi_func_ini(gwi, "float", "lf_x");
+     gwinote(gwi, "Crossover frequency separating low and middle frequencies (Hz).");
      gwi_func_arg(gwi, "float", "_lf_x");
   GWI_BB(gwi_func_end(gwi, zitarev_set_lf_x, ae_flag_none))
   gwi_func_ini(gwi, "float", "rt60_low");
   GWI_BB(gwi_func_end(gwi, zitarev_get_rt60_low, ae_flag_none))
   gwi_func_ini(gwi, "float", "rt60_low");
+     gwinote(gwi, "Time (in seconds) to decay 60db in low-frequency band.");
      gwi_func_arg(gwi, "float", "_rt60_low");
   GWI_BB(gwi_func_end(gwi, zitarev_set_rt60_low, ae_flag_none))
   gwi_func_ini(gwi, "float", "rt60_mid");
   GWI_BB(gwi_func_end(gwi, zitarev_get_rt60_mid, ae_flag_none))
   gwi_func_ini(gwi, "float", "rt60_mid");
+     gwinote(gwi, "Time (in seconds) to decay 60db in mid-frequency band.");
      gwi_func_arg(gwi, "float", "_rt60_mid");
   GWI_BB(gwi_func_end(gwi, zitarev_set_rt60_mid, ae_flag_none))
   gwi_func_ini(gwi, "float", "hf_damping");
   GWI_BB(gwi_func_end(gwi, zitarev_get_hf_damping, ae_flag_none))
   gwi_func_ini(gwi, "float", "hf_damping");
+     gwinote(gwi, "Frequency (Hz) at which the high-frequency T60 is half the middle-band's T60.");
      gwi_func_arg(gwi, "float", "_hf_damping");
   GWI_BB(gwi_func_end(gwi, zitarev_set_hf_damping, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq1_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq1_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq1_freq");
+     gwinote(gwi, "Center frequency of second-order Regalia Mitra peaking equalizer section 1.");
      gwi_func_arg(gwi, "float", "_eq1_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq1_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq1_level");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq1_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq1_level");
+     gwinote(gwi, "Peak level in dB of second-order Regalia-Mitra peaking equalizer section 1");
      gwi_func_arg(gwi, "float", "_eq1_level");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq1_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq2_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq2_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq2_freq");
+     gwinote(gwi, "Center frequency of second-order Regalia Mitra peaking equalizer section 2.");
      gwi_func_arg(gwi, "float", "_eq2_freq");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq2_freq, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq2_level");
   GWI_BB(gwi_func_end(gwi, zitarev_get_eq2_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "eq2_level");
+     gwinote(gwi, "Peak level in dB of second-order Regalia-Mitra peaking equalizer section 2");
      gwi_func_arg(gwi, "float", "_eq2_level");
   GWI_BB(gwi_func_end(gwi, zitarev_set_eq2_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "mix");
   GWI_BB(gwi_func_end(gwi, zitarev_get_mix, ae_flag_none))
   gwi_func_ini(gwi, "float", "mix");
+     gwinote(gwi, "0 = all dry, 1 = all wet");
      gwi_func_arg(gwi, "float", "_mix");
   GWI_BB(gwi_func_end(gwi, zitarev_set_mix, ae_flag_none))
   gwi_func_ini(gwi, "float", "level");
   GWI_BB(gwi_func_end(gwi, zitarev_get_level, ae_flag_none))
   gwi_func_ini(gwi, "float", "level");
+     gwinote(gwi, "Output scale factor (in dB).");
      gwi_func_arg(gwi, "float", "_level");
   GWI_BB(gwi_func_end(gwi, zitarev_set_level, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
