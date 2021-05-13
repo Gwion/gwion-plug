@@ -36,7 +36,18 @@ function declare_c_param(param, offset)
   end
 end
 
+function mkdoc(param) 
+  if param.description then
+    description = param.description:gmatch("([^\n]*)\n?")
+--    description = description:gsub("\"", "`")
+    for desc in description do
+    print("     gwinote(gwi, \""..desc:gsub("\"", "`").."\");")
+    end
+  end
+end
+
 function declare_gw_param(param)
+  mkdoc(param)
   local pname = "_"..param.name
   if string.match(param.type, "int") then
     print("     gwi_func_arg(gwi, \"int\", \""..pname.."\");")
@@ -402,6 +413,7 @@ print("  GWI_BB(gwi_class_end(gwi))\n")
 for n in ipairs(a) do
   local mod_name = a[n]
   local object = sptbl[mod_name]
+  mkdoc(object)
   if not string.match(object.modtype, "gen") and not string.match(mod_name, "foo")then
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
     print("  DECL_OB(const Type, t_"..mod_name..", = gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"));")
