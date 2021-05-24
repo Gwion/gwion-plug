@@ -3,10 +3,7 @@ runs:
   steps:
 
   - run: |
-      git clone --depth=1 https://github.com/Gwion/Gwion
+      git clone --recursive https://github.com/Gwion/Gwion
       cd Gwion
-      git submodule update --init util ast libcmdapp
-      cd util; git submodule update --init; cd ..
-      cd ast; git submodule update --init; cd ..
       make
     shell: bash
