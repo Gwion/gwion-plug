@@ -3,6 +3,7 @@
 #include <jack/jack.h>
 
 #include <unistd.h> // for sleep
+#include <signal.h>
 
 #include "gwion_util.h"
 #include "gwion_ast.h"
@@ -19,10 +20,12 @@ struct JackInfo {
   VM* vm;
 };
 
+static bool run = true;
 static void gwion_shutdown(void *arg) {
   VM *vm = (VM *)arg;
   vm->bbq->is_running = 0;
 }
+
 
 static void inner_cb(struct JackInfo* info, jack_default_audio_sample_t** in,
     jack_default_audio_sample_t** out, jack_nframes_t nframes) {
@@ -122,15 +125,22 @@ static m_bool init_ports(struct JackInfo* info, m_uint nchan, m_bool input) {
   return ret;
 }
 
+
+static void sig(int unused NUSED) {
+  run = false;
+}
+
 static void jack_run(VM* vm, Driver* di) {
   struct JackInfo* info = (struct JackInfo*)di->driver->data;
   if(jack_activate(info->client)) {
     gw_err("cannot activate client\n");
     return;
   }
+  signal(SIGINT, sig);
+  signal(SIGTERM, sig);
   if(init_ports(info, di->si->out, 0) < 0 || init_ports(info, di->si->in,  1) < 0)
     return;
-  while(vm->bbq->is_running)
+  while(vm->bbq->is_running && run)
     usleep(10);
   jack_deactivate(info->client);
   jack_client_close(info->client);
