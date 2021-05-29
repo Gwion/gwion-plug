@@ -66,7 +66,7 @@ static MFUN(ffivar_do_call) {
   const Type t = o->type_ref;
   ffi_cif cif = FFI_CIF(t);
   const void*  func = FFI_DL(t);
-  const Func f = (Func)vector_front(&t->nspc->info->vtable);
+  const Func f = (Func)vector_front(&t->nspc->vtable);
   M_Object varobj  = *(M_Object*)MEM(f->code->stack_depth - SZ_INT);
   struct Vararg_ *v = *(struct Vararg_**)varobj->data;
   const m_uint nvariadic = vector_size(&v->t);
@@ -240,7 +240,7 @@ static OP_CHECK(opck_ffi_ctor) {
   const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, func_sym, ext, body, call->func->pos);
   CHECK_BN(traverse_ffi(env, ffi, cdef));
   const Type t = cdef->base.type;
-  const Func func = (Func)vector_front(&t->nspc->info->vtable);
+  const Func func = (Func)vector_front(&t->nspc->vtable);
   builtin_func(mp, func, !variadic ? ffi_do_call : ffivar_do_call);
   const struct Op_Func opfunc = { .ck=ctor_as_call };
   const struct Op_Import opi = { .rhs=t, .ret=ret_type,
