@@ -38,7 +38,8 @@ int terminal_get_attr(terminal_attr_t* attr) {
     // Use `icotl` to get the window size. Since `struct winsize`'s members are
     // `unsigned short`, they can be safely implicitly casted to `usize`.
     struct winsize winsize;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize);
+    if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize) == -1)
+      return EXIT_FAILURE;
     attr->size.cols = winsize.ws_col;
     attr->size.rows = winsize.ws_row;
     attr->size.width = winsize.ws_xpixel;
@@ -52,7 +53,7 @@ int terminal_get_attr(terminal_attr_t* attr) {
         attr->flags |= TerminalFlagSupportsUTF8;
     }
     const char* term = secure_getenv_nongnu("TERM");
-    if (term != NULL && strstr(lang, "color")) {
+    if (term != NULL && strstr(term, "color")) {
         attr->flags |= TerminalFlagSupportsColor;
     }
 
@@ -61,7 +62,8 @@ int terminal_get_attr(terminal_attr_t* attr) {
     }
 
     struct termios term_info;
-    tcgetattr(STDIN_FILENO, &term_info);
+    if(tcgetattr(STDIN_FILENO, &term_info))
+      return EXIT_FAILURE;
     if (term_info.c_lflag & ICANON) {
         attr->flags |= TerminalFlagIsLineBuffered;
     }
