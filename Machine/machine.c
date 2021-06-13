@@ -17,9 +17,6 @@
 #include "array.h"
 #include "pass.h"
 
-#ifdef JIT
-#include "jitter.h"
-#endif
 static SFUN(machine_add) {
   const M_Object obj = *(M_Object*)MEM(0);
   if(!obj)
@@ -28,6 +25,27 @@ static SFUN(machine_add) {
   if(!str)
     return;
   *(m_uint*)RETURN = compile_filename(shred->info->vm->gwion, str);
+}
+
+static SFUN(machine_remove) {
+  VM* vm = shred->info->vm;
+  const m_int xid = *(m_int*)MEM(0);
+  for(m_uint i = 0; i < vector_size(&vm->shreduler->shreds); i++) {
+    const VM_Shred sh = (VM_Shred)vector_at(&vm->shreduler->shreds, i);
+    if(sh->tick->xid != xid)
+      continue;
+    vm_shred_exit(sh);
+    *(m_int*)RETURN = xid;
+    return;
+  }
+  *(m_int*)RETURN = 0;
+}
+
+static SFUN(machine_replace) {
+  machine_remove(o, RETURN, shred);
+  const m_int xid = *(m_int*)MEM(0);
+  const M_Object str = *(M_Object*)MEM(SZ_INT);
+  *(m_uint*)RETURN = compile_filename_xid(shred->info->vm->gwion, STRING(str), xid);
 }
 
 static SFUN(machine_check) {
@@ -49,6 +67,16 @@ static SFUN(machine_compile) {
   const m_str line = code_obj ? STRING(code_obj) : NULL;
   if(!line)return;
   *(m_uint*)RETURN = compile_string(shred->info->vm->gwion, "Machine.compile", line);
+}
+
+static SFUN(machine_compile_replace) {
+  *(m_uint*)RETURN = -1;
+  machine_remove(o, RETURN, shred);
+  const m_int xid = *(m_int*)MEM(0);
+  const M_Object code_obj = *(M_Object*)MEM(SZ_INT);
+  const m_str line = code_obj ? STRING(code_obj) : NULL;
+  if(!line)return;
+  *(m_uint*)RETURN = compile_string_xid(shred->info->vm->gwion, "Machine.compile", line, xid);
 }
 
 static SFUN(machine_shreds) {
@@ -78,23 +106,37 @@ static SFUN(machine_pass) {
 
 GWION_IMPORT(machine) {
   GWI_BB(gwi_struct_ini(gwi, "Machine"))
-  gwi_func_ini(gwi, "void",  "add");
-  gwi_func_arg(gwi,       "string",  "filename");
+  gwi_func_ini(gwi, "int",  "add");
+  gwi_func_arg(gwi, "string",  "filename");
   GWI_BB(gwi_func_end(gwi, machine_add, ae_flag_static))
+
+  gwi_func_ini(gwi, "int",  "remove");
+  gwi_func_arg(gwi, "int", "id");
+  GWI_BB(gwi_func_end(gwi, machine_remove, ae_flag_static))
+
+  gwi_func_ini(gwi, "int",  "replace");
+  gwi_func_arg(gwi, "int", "id");
+  gwi_func_arg(gwi, "string", "filename");
+  GWI_BB(gwi_func_end(gwi, machine_remove, ae_flag_static))
 
   gwi_func_ini(gwi, "int[]", "shreds");
   GWI_BB(gwi_func_end(gwi, machine_shreds, ae_flag_static))
 
   gwi_func_ini(gwi, "int",  "check");
-  gwi_func_arg(gwi,      "string",  "code");
+  gwi_func_arg(gwi, "string", "code");
   GWI_BB(gwi_func_end(gwi, machine_check, ae_flag_static))
 
-  gwi_func_ini(gwi, "void", "compile");
-  gwi_func_arg(gwi,      "string",  "filename");
+  gwi_func_ini(gwi, "int", "compile");
+  gwi_func_arg(gwi, "string", "code");
+  GWI_BB(gwi_func_end(gwi, machine_compile, ae_flag_static))
+
+  gwi_func_ini(gwi, "int", "compile_replace");
+  gwi_func_arg(gwi, "string", "code");
+  gwi_func_arg(gwi, "string", "filename");
   GWI_BB(gwi_func_end(gwi, machine_compile, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "pass");
-  gwi_func_arg(gwi,      "string[]",  "passes");
+  gwi_func_arg(gwi, "string[]", "passes");
   GWI_BB(gwi_func_end(gwi, machine_pass, ae_flag_static))
 
   GWI_BB(gwi_class_end(gwi))
