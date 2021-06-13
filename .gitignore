@@ -1,11 +1,4 @@
 *.o
 *.so
-Soundpipe/gwion-soundpipe/
-Sporth/gwion-sporth/
-FMSynth/libfmsynth
-Nuklear/nuklear
-Emoji/cmojify
 File__txt_/file
 list.txt
-STK/stk
-TinySF/TinySoundFont/
