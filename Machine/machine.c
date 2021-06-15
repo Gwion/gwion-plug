@@ -28,24 +28,17 @@ static SFUN(machine_add) {
 }
 
 static SFUN(machine_remove) {
-  VM* vm = shred->info->vm;
+  const VM* vm = shred->info->vm;
   const m_int xid = *(m_int*)MEM(0);
-  for(m_uint i = 0; i < vector_size(&vm->shreduler->shreds); i++) {
-    const VM_Shred sh = (VM_Shred)vector_at(&vm->shreduler->shreds, i);
-    if(sh->tick->xid != xid)
-      continue;
-    vm_shred_exit(sh);
-    *(m_int*)RETURN = xid;
-    return;
-  }
-  *(m_int*)RETURN = 0;
+  *(m_int*)RETURN = vm_remove(vm, xid);
 }
 
 static SFUN(machine_replace) {
-  machine_remove(o, RETURN, shred);
+  const VM* vm = shred->info->vm;
   const m_int xid = *(m_int*)MEM(0);
+  *(m_int*)RETURN = vm_remove(vm, xid);
   const M_Object str = *(M_Object*)MEM(SZ_INT);
-  *(m_uint*)RETURN = compile_filename_xid(shred->info->vm->gwion, STRING(str), xid);
+  compile_filename_xid(shred->info->vm->gwion, STRING(str), xid);
 }
 
 static SFUN(machine_check) {
@@ -117,7 +110,7 @@ GWION_IMPORT(machine) {
   gwi_func_ini(gwi, "int",  "replace");
   gwi_func_arg(gwi, "int", "id");
   gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, machine_remove, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, machine_replace, ae_flag_static))
 
   gwi_func_ini(gwi, "int[]", "shreds");
   GWI_BB(gwi_func_end(gwi, machine_shreds, ae_flag_static))
