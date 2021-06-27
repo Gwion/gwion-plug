@@ -7,8 +7,10 @@ CC       ?= gcc
 PLUG_DIR ?= $(shell ${GWION} -c 2>&1 | head -n 1 | cut -d '"' -f 2)
 SRC      += $(wildcard *.c)
 CPP_SRC  += $(wildcard *.cpp)
+CXX_SRC  += $(wildcard *.cc)
 OBJ       = $(SRC:.c=.o)
 OBJ      += $(CPP_SRC:.cpp=.o)
+OBJ      += $(CXX_SRC:.cc=.o)
 CFLAGS   += -I${INC}
 CFLAGS   += -I.. -g
 LDFLAGS   = -shared -fPIC

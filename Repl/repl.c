@@ -78,7 +78,7 @@ static inline VM_Shred repl_shred(MemPool p) {
 }
 
 INSTR(EOC2) {
-  shreduler_remove(shred->info->vm->shreduler, shred, false);
+  shreduler_remove(shred->tick->shreduler, shred, false);
   shred->pc = 0;
   vmcode_remref(shred->code, shred->info->vm->gwion);
 }

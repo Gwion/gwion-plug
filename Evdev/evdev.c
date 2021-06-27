@@ -412,7 +412,7 @@ static MFUN(evdev_get_abs_info) {
   const EvdevInfo* info = INFO(o);
   const m_int code = *(m_int*)MEM(SZ_INT);
   if(!info->fd == -1) {
-    *(M_Object*)RETURN = NULL;
+    handle(shred, "InvalidEvdevRequest");
     return;
   }
   const struct input_absinfo* abs = libevdev_get_abs_info(info->evdev, code);
@@ -422,7 +422,7 @@ static MFUN(evdev_get_abs_info) {
     ABSINFO_CONST(obj) = 1;
     *(M_Object*)RETURN = obj;
   } else
-    *(M_Object*)RETURN = NULL;
+    handle(shred, "InvalidEvdevInfoRequest");
 }
 
 #define import_abs(name)                                                  \

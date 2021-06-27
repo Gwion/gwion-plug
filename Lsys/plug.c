@@ -98,7 +98,7 @@ static MFUN(gw_lsys_get) {
   Lsys*  ptr   = LSYS(o);
   if(!ptr->is_init)
   {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "LSysNotInitiated");
     return;
   }
   char str[ptr->lst.size];

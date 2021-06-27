@@ -133,6 +133,7 @@ static MFUN(fft_compute) {
     smps2freqs(ana->fft, smp, ana->frq);
   free(smp);
   ana->last = ana->sp->pos;
+  *(m_uint*)RETURN = 1;
 }
 
 static m_bool import_fft(Gwi gwi) {

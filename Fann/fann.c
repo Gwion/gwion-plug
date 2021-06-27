@@ -163,7 +163,7 @@ static MFUN(layer) {
 
 static MFUN(layers) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFANN");
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
@@ -177,7 +177,7 @@ static MFUN(layers) {
 }
 static MFUN(bias) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFANN");
     return;
   }
   m_uint i, size = fann_get_num_layers(FANN(o));
@@ -208,7 +208,7 @@ static M_Object from_fann(const VM_Shred shred, struct fann_connection c) {
 
 static MFUN(connection_array){
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFann");
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
@@ -246,7 +246,7 @@ static MFUN(weigth) {
 
 static MFUN(get_weigths) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFann");
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
@@ -261,7 +261,7 @@ static MFUN(get_weigths) {
 
 static MFUN(set_weigths) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFann");
     return;
   }
   m_uint i, size = fann_get_total_connections(FANN(o));
@@ -269,7 +269,7 @@ static MFUN(set_weigths) {
   if(m_vector_size(ARRAY(ret)) < size)
   if(!FANN(o)) {
     gw_err("invalid array size for weights (%i). should be %i", m_vector_size(ARRAY(ret)), size);
-    *(m_uint*)RETURN = 0;
+    handle(shred, "FannSizeError");
     return;
   }
   m_float f[size];
@@ -303,7 +303,7 @@ MFUN(multiplier)
 static SFUN(type_str) {
   m_int i = *(m_int*)MEM(0);
   if(i < 0 || i > 1) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "FannInvalidName");
     return;
   }
   *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, (m_str)FANN_NETTYPE_NAMES[i]);
@@ -366,8 +366,12 @@ static MFUN(reset_MSE) {
 
 static MFUN(run) {
   m_uint i, size;
-  if(!FANN(o) || !DATA(o)) {
-    *(m_uint*)RETURN = 0;
+  if(!FANN(o)) {
+    handle(shred, "NoFann");
+    return;
+  }
+  if(!DATA(o)) {
+    handle(shred, "NoFannData");
     return;
   }
   M_Object array    = *(M_Object*)MEM(SZ_INT);
@@ -542,7 +546,7 @@ static MFUN(train_create) {
 
 static MFUN(train_input) {
   if(!DATA(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFannData");
     return;
   }
   m_float* f = fann_get_train_input(DATA(o), *(m_uint*)MEM(SZ_INT));
@@ -556,7 +560,7 @@ static MFUN(train_input) {
 
 static MFUN(train_output) {
   if(!DATA(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFannData");
     return;
   }
   m_float* f = fann_get_train_output(DATA(o), *(m_uint*)MEM(SZ_INT));
@@ -973,7 +977,7 @@ MFUN(get_cascade_activation_functions_count) {
 
 MFUN(get_cascade_activation_functions) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFann");
     return;
   }
   m_uint i, size = fann_get_cascade_activation_functions_count(FANN(o));
@@ -987,7 +991,7 @@ MFUN(get_cascade_activation_functions) {
 
 MFUN(set_cascade_activation_functions) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFann");
     return;
   }
   M_Object ret = *(M_Object*)MEM(SZ_INT);
@@ -1006,7 +1010,7 @@ MFUN(get_cascade_activation_steepnesses_count) {
 
 MFUN(get_cascade_activation_steepnesses) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFann");
     return;
   }
   m_uint i, size = fann_get_cascade_activation_steepnesses_count(FANN(o));
@@ -1020,7 +1024,7 @@ MFUN(get_cascade_activation_steepnesses) {
 
 MFUN(set_cascade_activation_steepnesses) {
   if(!FANN(o)) {
-    *(m_uint*)RETURN = 0;
+    handle(shred, "NoFann");
     return;
   }
   M_Object ret = *(M_Object*)MEM(SZ_INT);

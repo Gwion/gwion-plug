@@ -1,0 +1,10 @@
+#import Modules
+#import Faust
+
+"../faust2gw/test/freeverb.dsp" => Faust.compile => var Faust faust;
+
+var SinOsc s ~> faust ~> dac;
+
+second => now;
+#!s ~< faust;
+second => now;

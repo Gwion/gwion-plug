@@ -15,6 +15,9 @@ clean:
 .cpp.o:
 	${CC} -lstdc++ -fPIC ${CFLAGS} -c $< -o $(<:.cpp=.o)
 
+.cc.o:
+	${CC} -lstdc++ -fPIC ${CFLAGS} -c $< -o $(<:.cc=.o)
+
 install: ${NAME}.so
 	install ${NAME}.so ${PLUG_DIR}
 
