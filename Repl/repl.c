@@ -72,7 +72,7 @@ static inline int _bind_sys(int count __attribute__((unused)), int key __attribu
 }
 
 static inline VM_Shred repl_shred(MemPool p) {
-  const VM_Code code = new_vmcode(p, NULL, NULL, "repl", 0, false);
+  const VM_Code code = new_vmcode(p, NULL, NULL, "repl", 0, false, false);
   const VM_Shred shred = new_vm_shred(p, code);
   return shred;
 }
