@@ -81,14 +81,14 @@ ANN inline static LoArg new_arg(const MemPool mp) {
   static INSTR(oscsend_add_##name) {                                           \
     POP_REG(shred, SZ_INT);                                                    \
     const LoArg    arg   = new_arg(shred->info->mp);                           \
-    struct LoOut loout = LOOUT((**(M_Object **)REG(0)));                       \
+    struct LoOut loout = LOOUT((*(M_Object *)REG(0)));                       \
     vector_add(&loout.args, (m_uint)arg);                                      \
     arg->t          = type;                                                    \
     arg->data.input = _data;                                                   \
   }
 
 lo_setter(int, 'i', i, *(m_int *)REG(-SZ_INT));
-lo_setter(float, 'd', f, *(m_float *)REG(-SZ_INT));
+lo_setter(float, 'd', f, *(m_float *)REG(-SZ_FLOAT));
 lo_setter(string, 's', s, strdup(STRING(*(M_Object *)REG(-SZ_INT))));
 
 static DTOR(loout_dtor) {

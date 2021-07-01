@@ -19,7 +19,7 @@ static void send_data(struct lws *wsi) {
   float*data = (void*)&_c[ LWS_SEND_BUFFER_PRE_PADDING];
   for(m_uint i = 0; i < BUFLEN; ++i) {
     vm->bbq->run(vm);
-    ++vm->bbq->pos;
+    next_bbq_pos(vm);
     for(int chan = 0; chan < NCHAN; ++chan)
       data[i + BUFLEN*chan] = vm->bbq->out[chan];
   }
