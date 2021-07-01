@@ -143,7 +143,7 @@ static void alsa_run_init_non_interleaved(Driver* di) {
     info->_in_buf[i]  = info->in_buf[i];
   }
 }
-
+#include "shreduler_private.h"
 static void alsa_run_non_interleaved(VM *vm, Driver *di) {
   struct AlsaInfo* info = (struct AlsaInfo*) di->driver->data;
   while(di->is_running) {
@@ -155,7 +155,7 @@ static void alsa_run_non_interleaved(VM *vm, Driver *di) {
       di->run(vm);
       for(m_uint chan = 0; chan < (m_uint)di->si->out; chan++)
         info->out_buf[chan][i] = di->out[chan];
-      ++di->pos;
+      next_bbq_pos(vm);
     }
     if(snd_pcm_writen(info->pcm_out, info->_out_buf, info->bufsize) < 0)
       snd_pcm_prepare(info->pcm_out);
@@ -176,7 +176,17 @@ static void alsa_run_interleaved(VM* vm, Driver* di) {
       LOOP_OPTIM
       for(m_uint chan = 0; chan < (m_uint)di->si->out; chan++)
         ((m_float*)info->out_bufi)[k++] = di->out[chan];
-      ++di->pos;
+    if(++di->pos == 16777216-1) {
+//exit(3);
+//exit(5);
+for(m_uint i = 0; i < vector_size(&vm->shreduler->shreds); i++) {
+printf("set shred wake_time %lu\n", i);
+((VM_Shred)vector_at(&vm->shreduler->shreds, i))->tick->wake_time -= 16777216.0000;
+}
+puts("set pos to zero");
+      di->pos = 0;
+    }
+//      ++di->pos;
     }
     if(snd_pcm_writei(info->pcm_out, info->out_bufi, info->bufsize) < 0)
       snd_pcm_prepare(info->pcm_out);

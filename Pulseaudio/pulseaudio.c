@@ -57,7 +57,7 @@ static DRVRUN(pa_run) {
       di->run(vm);
       for(uint chan = 0; chan < (m_uint)vm->bbq->si->out; chan++)
         out_data[frame * vm->bbq->si->out + chan] = vm->bbq->out[chan];
-      ++vm->bbq->pos;
+      next_bbq_pos(vm);
     }
     if(info->out && pa_simple_write(info->out, out_data, out_sz, &error) < 0)
       break;

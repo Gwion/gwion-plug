@@ -38,7 +38,7 @@ static void inner_cb(struct JackInfo* info, jack_default_audio_sample_t** in,
     vm->bbq->run(vm);
     for(chan = 0; chan < (m_uint)vm->bbq->si->out; chan++)
       out[chan][frame] = vm->bbq->out[chan];
-    ++vm->bbq->pos;
+    next_bbq_pos(vm);
   }
 }
 

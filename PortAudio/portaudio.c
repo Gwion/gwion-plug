@@ -28,7 +28,7 @@ static int callback(const void *inputBuffer, void *outputBuffer,
     vm->bbq->run(vm);
     for(j = 0; j < (m_uint)vm->bbq->si->out; j++)
       *out++ = vm->bbq->out[j];
-    ++vm->bbq->pos;
+    next_bbq_pos(vm);
   }
   return paContinue;
 }

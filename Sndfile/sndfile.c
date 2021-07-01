@@ -37,7 +37,7 @@ DRVRUN(sndfile_run) {
       di->run(vm);
       for(m_uint chan = 0; chan < di->si->out; ++chan)
         buf[2*i + chan] = vm->bbq->out[chan];
-      ++vm->bbq->pos;
+      next_bbq_pos(vm);
     }
     sf_write(sf, buf, di->si->out * BUFSIZE);
   }
