@@ -10,14 +10,11 @@
 #include "emit.h"
 #include "operator.h"
 #include "import.h"
-#include "traverse.h"
-#include "parse.h"
-#include "gwi.h"
-#include "emit.h"
-
 #include "escape.h"
 #include "gwgcc.h"
 #include "gccjit_pass.h"
+
+#define insert_symbol(b) insert_symbol(a->jitter->gwion->st, (b))
 
 #define EXPAND(v, t) (v)->ptr ? vector_size((v)) : 0, (t)((v)->ptr ? ((v)->ptr + OFFSET) : NULL)
 
@@ -28,7 +25,6 @@ ANN static void cmangle(const Func func, char name[256]) {
 ANN static gcc_jit_function* get_func(GwGccJit *a, const Func func) {
   char name[256];
   cmangle(func, name);
-  const Env env = a->jitter->gwion->env;
   const Symbol sym = insert_symbol(name);
   const m_uint ret = map_get(&a->funcs, (m_uint)sym) ?:
              map_get(&a->jitter->funcs, (m_uint)sym);
@@ -42,24 +38,6 @@ ANN static gcc_jit_function* get_func(GwGccJit *a, const Func func) {
 */
   return NULL;
 }
-
-ANN static inline enum gcc_jit_types _jit_type(const Gwion gwion, const Type t) {
-  if(!t->size)
-    return GCC_JIT_TYPE_VOID;
-  if(isa(t, gwion->type[et_object]) > 0 || is_func(gwion, t))
-    return GCC_JIT_TYPE_VOID_PTR;
-  if(isa(t, gwion->type[et_bool]) > 0)
-    return GCC_JIT_TYPE_BOOL;
-  if(isa(t, gwion->type[et_int]) > 0)
-    return GCC_JIT_TYPE_LONG;
-}
-
-//! get a gcc_jit_type from a gwion type
-ANN static inline gcc_jit_type* jit_type(GwGccJit *a, const Type t) {
-  const enum gcc_jit_types jt = _jit_type(a->jitter->gwion, t);
-  return gcc_jit_context_get_type(a->ctx, jt);
-}
-
 
 ANN static inline void add_value(GwGccJit *a, const Symbol sym, const void *value) {
   scope_add(&a->value, (m_uint)sym, (m_uint)value);
@@ -149,6 +127,7 @@ ANN static gcc_jit_rvalue* gwgcc_prim_float(GwGccJit *a, m_float *b) {
 }
 
 ANN static gcc_jit_rvalue* gwgcc_prim_str(GwGccJit *a, m_str *b) {
+  // WRONG: use the Object
   return gcc_jit_context_new_rvalue_from_ptr (a->ctx,
               gcc_jit_context_get_type (a->ctx, GCC_JIT_TYPE_CONST_CHAR_PTR), *(m_str*)b);
 }
@@ -219,7 +198,6 @@ ANN static gcc_jit_rvalue* gwgcc_exp_decl(GwGccJit *a, Exp_Decl *b) {
   gwgcc_var_decl_list(a, b->list);
 }
 
-void *op_get(const Env, struct Op_Import*);
 typedef gcc_jit_rvalue*  (*jit_op_func_t )(GwGccJit*, void*);
 
 ANN static gcc_jit_rvalue* gwgcc_exp_binary(GwGccJit *a, Exp_Binary *b) {
@@ -490,7 +468,7 @@ ANN static enum gcc_jit_function_kind jit_func_kind(const Value value) {
 ANN static void func_def_args(GwGccJit *a, const Func_Base *base, const Vector v) {
   if(!base->args)
     return;
-  vector_init(v);
+  vector_init(v); // could use last vector scope
   Arg_List arg = base->args;
   do {
     gcc_jit_type *arg_type = jit_type(a, arg->type);
@@ -515,7 +493,6 @@ ANN static bool gwgcc_func_def(GwGccJit *a, Func_Def b) {
   a->func = gcc_jit_context_new_function (a->ctx, loc, kind, ret_type,
     c, EXPAND(&args, gcc_jit_param**), 0);
   if(args.ptr)vector_release(&args);
-  const Env env = a->jitter->gwion->env; // we could use the mpool instead of symbols here
   map_set(&a->funcs, (m_uint)insert_symbol(c), (m_uint)a->func);
   gcc_jit_block *block = gcc_jit_function_new_block(a->func, "body");
   vector_add(&a->block, (m_uint)block);
@@ -585,9 +562,9 @@ ANN bool gwgcc_ast(GwGccJit *a, Ast b) {
     gwgcc_ast(a, b->next);
 }
 
+#undef insert_symbol
 ANN2(1,3,5) void jit_add_op(Jitter *jitter, const m_str slhs, const m_str sop, const m_str srhs, void *func) {
-  const Env env = jitter->gwion->env;
-  const Symbol op = insert_symbol(sop);
+  const Symbol op = insert_symbol(jitter->gwion->st, sop);
   const Type lhs = slhs ? str2type(jitter->gwion, slhs, (loc_t){}) : NULL;
   const Type rhs = srhs ? str2type(jitter->gwion, srhs, (loc_t){}) : NULL;
   struct Op_Import opi = { .lhs = lhs, .rhs = rhs, .op = op };

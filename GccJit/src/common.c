@@ -4,22 +4,10 @@
 #include "gwion_env.h"
 #include "vm.h"
 #include "gwion.h"
-#include "instr.h"
-#include "object.h"
-#include "array.h"
-#include "emit.h"
-#include "operator.h"
-#include "import.h"
-#include "traverse.h"
-#include "parse.h"
-#include "gwi.h"
-#include "emit.h"
-
-#include "escape.h"
 #include "gwgcc.h"
 #include "gccjit_pass.h"
 
-ANN static inline enum gcc_jit_types _jit_type(const Gwion gwion, const Type t) {
+ANN enum gcc_jit_types _jit_type(const Gwion gwion, const Type t) {
   if(!t->size)
     return GCC_JIT_TYPE_VOID;
   if(isa(t, gwion->type[et_object]) > 0 || is_func(gwion, t))
@@ -31,7 +19,7 @@ ANN static inline enum gcc_jit_types _jit_type(const Gwion gwion, const Type t) 
 }
 
 //! get a gcc_jit_type from a gwion type
-ANN static inline gcc_jit_type* jit_type(GwGccJit *a, const Type t) {
+ANN gcc_jit_type* jit_type(GwGccJit *a, const Type t) {
   const enum gcc_jit_types jt = _jit_type(a->jitter->gwion, t);
   return gcc_jit_context_get_type(a->ctx, jt);
 }

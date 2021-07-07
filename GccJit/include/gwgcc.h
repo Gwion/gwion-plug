@@ -15,6 +15,7 @@ typedef struct {
   struct Map_ funcs;
 } GwGccJit;
 
+ANN gcc_jit_rvalue* gwgcc_exp(GwGccJit *a, Exp b);
 ANN bool gwgcc_ast(GwGccJit *a, Ast b);
 
 
@@ -61,4 +62,4 @@ ANN static inline gcc_jit_block *get_block(GwGccJit *a) {
 }
 
 //! get a gcc_jit_type from a gwion type
-ANN static inline gcc_jit_type* jit_type(GwGccJit *a, const Type t);
+ANN gcc_jit_type* jit_type(GwGccJit *a, const Type t);

@@ -33,9 +33,6 @@ ANN static gcc_jit_rvalue* gwgcc_exp_if(GwGccJit *a, Exp_If *b);
 ANN static gcc_jit_rvalue* gwgcc_exp_dot(GwGccJit *a, Exp_Dot *b);
 ANN static gcc_jit_rvalue* gwgcc_exp_lambda(GwGccJit *a, Exp_Lambda *b);
 ANN static gcc_jit_rvalue* gwgcc_exp_td(GwGccJit *a, Type_Decl *b);
-
-ANN gcc_jit_rvalue* gwgcc_exp(GwGccJit *a, Exp b);
-
 ANN static gcc_jit_rvalue* gwgcc_exp1(GwGccJit *a, Exp b);
 ANN static bool gwgcc_stmt_exp(GwGccJit *a, Stmt_Exp b);
 ANN static bool gwgcc_stmt_while(GwGccJit *a, Stmt_Flow b);
@@ -71,5 +68,3 @@ ANN static bool gwgcc_fptr_def(GwGccJit *a, Fptr_Def b);
 ANN static bool gwgcc_type_def(GwGccJit *a, Type_Def b);
 ANN static bool gwgcc_extend_def(GwGccJit *a, Extend_Def b);
 ANN static bool gwgcc_section(GwGccJit *a, Section *b);
-
-ANN bool gwgcc_ast(GwGccJit *a, Ast b);
