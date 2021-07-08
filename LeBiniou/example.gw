@@ -1,0 +1,10 @@
+#import Math
+#import LeBiniou
+#import Modules
+
+var SinOsc s ~> var LeBiniou biniou ~> dac;
+while(true) {
+  Math.rand2f(200, 400) => s.freq;
+  .1::second => now;
+}
+minute => now;
