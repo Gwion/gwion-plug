@@ -173,7 +173,6 @@ typedef struct LoMethod_ {
   MemPool        p;
 } * LoMethod;
 
-static struct Map_ map;
 typedef struct LoServer_ {
   m_uint           port, ref;
   lo_server_thread thread;
@@ -189,14 +188,10 @@ ANN static void release_lomethod(const LoServer s, const LoMethod m) {
   mp_free(s->p, LoMethod, m);
 }
 
-ANN static void release_loserver(const LoServer s) {
+ANN static void release_loserver(const Map map, const LoServer s) {
   if (--s->ref)
     return;
-  map_remove(&map, (vtype)s->port);
-  if (!map_size(&map)) {
-    map_release(&map);
-    map.ptr = NULL;
-  }
+  map_remove(map, (vtype)s->port);
   for (m_uint i = 0; i < vector_size(&s->method); i++)
     release_lomethod(s, (LoMethod)vector_at(&s->method, i));
   vector_release(&s->method);
@@ -340,7 +335,7 @@ static DTOR(loin_dtor) {
   if (loin.curr.ptr)
     clear_curr(shred->info->mp, &loin.curr);
   vector_release(&loin.args);
-  release_loserver(loin.server);
+  release_loserver(*(Map*)(o->type_ref->nspc->info->class_data), loin.server);
   MUTEX_CLEANUP(loin.mutex);
 }
 
@@ -399,7 +394,7 @@ lo_getter(int, m_int, arg->data.i);
 lo_getter(float, m_float, arg->data.f);
 lo_getter(string, M_Object, new_string(shred->info->mp, shred, arg->data.s));
 
-ANEW ANN static LoServer new_loserver(const MemPool mp, const m_int port) {
+ANEW ANN static LoServer new_loserver(const Map map, const MemPool mp, const m_int port) {
   char c[256];
   snprintf(c, 256, "%" INT_F, port);
   lo_server_thread lserv = lo_server_thread_new(c, osc_error_handler);
@@ -415,29 +410,27 @@ ANEW ANN static LoServer new_loserver(const MemPool mp, const m_int port) {
   lo_server_enable_coercion(lo_server_thread_get_server(s->thread), 0);
   vector_init(&s->method);
   s->ref = 0;
-  if (!map.ptr) map_init(&map);
-  map_set(&map, (vtype)port, (vtype)s);
+  map_set(map, (vtype)port, (vtype)s);
   return s;
 }
 
-ANN static inline LoServer get_server(const MemPool mp, const m_int port) {
-  if (map.ptr) {
-    const LoServer s = (LoServer)map_get(&map, (vtype)port);
-    if (s) return s;
-  }
-  return new_loserver(mp, port);
+ANN static inline LoServer get_server(const Map map, const MemPool mp, const m_int port) {
+  const LoServer s = (LoServer)map_get(map, (vtype)port);
+  if (s) return s;
+  return new_loserver(map, mp, port);
 }
 
 static INSTR(oscin_ctor) {
   POP_REG(shred, SZ_INT);
-  const M_Object o    = new_object(shred->info->mp, shred, (Type)instr->m_val);
+  const Type t = (Type)instr->m_val;
+  const M_Object o    = new_object(shred->info->mp, shred, t);
   struct LoIn *  loin = &LOIN(o);
   vector_init(&EV_SHREDS(o));
   vector_init(&loin->args);
   vector_init(&loin->methods);
   MUTEX_SETUP(loin->mutex);
   const m_int  port = *(m_int *)REG(-SZ_INT);
-  const LoServer s  = get_server(shred->info->mp, port);
+  const LoServer s  = get_server(*(Map*)t->nspc->info->class_data, shred->info->mp, port);
   if (s) {
     *(M_Object *)REG(-SZ_INT) = o;
     s->ref++;
@@ -466,12 +459,18 @@ static OP_EMIT(opem_oscin_ctor) {
   return GW_OK;
 }
 
+GWMODINI(lo) { return new_map(gwion->mp); }
+GWMODEND(lo) { return free_map(gwion->mp, (Map)self); }
+
 static ANN m_bool import_oscin(const Gwi gwi) {
   gwidoc(gwi, "A type to receive OSC events");
   const Type t_loin = gwi_class_ini(gwi, "OscIn", "Event");
+
+
   gwi_class_xtor(gwi, NULL, loin_dtor);
   SET_FLAG(t_loin, final | ae_flag_abstract);
   t_loin->nspc->info->offset += sizeof(struct LoIn);
+  t_loin->nspc->info->class_data_size += SZ_INT;
 
   gwidoc(gwi, "add a new method");
   gwi_func_ini(gwi, "void", "add");
@@ -488,6 +487,13 @@ static ANN m_bool import_oscin(const Gwi gwi) {
   GWI_BB(gwi_func_end(gwi, osc_recv, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
+
+  if(!get_module(gwi->gwion, "lo")) {
+  const Map map = GWMODINI_NAME(gwi->gwion, NULL);
+    set_module(gwi->gwion, "lo", map);
+    *(Map*)t_loin->nspc->info->class_data = map;
+  } else
+    *(Map*)t_loin->nspc->info->class_data = get_module(gwi->gwion, "lo");
 
   gwidoc(gwi, "OscIn constructor");
   GWI_BB(gwi_oper_ini(gwi, NULL, "OscIn", NULL))
@@ -512,4 +518,3 @@ GWION_IMPORT(lo) {
   GWI_BB(import_oscout(gwi));
   GWI_BB(import_oscin(gwi));
 }
-
