@@ -19,8 +19,8 @@ typedef struct LoArg_ {
     m_float f;
     m_str   s;
   } data;
-  m_uint     ref;
   MUTEX_TYPE mutex;
+  uint32_t   ref;
   char       t;
 } * LoArg;
 
@@ -39,7 +39,7 @@ struct LoOut {
   struct Vector_ args;
   lo_address     addr;
 };
-#define LOOUT(o) (*(struct LoOut *)((o)->data + SZ_INT))
+#define LOOUT(o) (*(struct LoOut *)((o)->data))
 
 static MFUN(osc_send) {
   struct LoOut *loout = &LOOUT(o);
@@ -97,10 +97,9 @@ static DTOR(loout_dtor) {
   lo_address_free(loout.addr);
 }
 
-static INSTR(oscout_ctor) {
-  POP_REG(shred, SZ_INT*2);
-  const m_str host  = STRING(*(M_Object *)REG(-SZ_INT));
-  const m_int port  = *(m_uint *)REG(0);
+static MFUN(oscout_new) {
+  const m_str host  = STRING(*(M_Object *)MEM(SZ_INT));
+  const m_int port  = *(m_uint *)MEM(SZ_INT*2);
   char c[256];
   snprintf(c, 256, "%" INT_F, port);
   const lo_address addr = lo_address_new(host, c);
@@ -108,51 +107,29 @@ static INSTR(oscout_ctor) {
     handle(shred, "wut?");
     return;
   }
-  const M_Object o    = new_object(shred->info->mp, shred, (Type)instr->m_val);
   struct LoOut *  loout = &LOOUT(o);
-  vector_init(&EV_SHREDS(o));
   vector_init(&loout->args);
   loout->addr = addr;
-  *(M_Object*)REG(-SZ_INT) = o;
-}
-
-static OP_CHECK(opck_oscout_ctor) {
-  const Exp_Call *call = (Exp_Call *)data;
-  CHECK_ON(check_exp(env, call->func));
-  if (!call->args || !call->args->next || call->args->next->next)
-    ERR_N(call->func->pos, "OscIn constructor takes two argument");
-  CHECK_ON(check_exp(env, call->args));
-  if (isa(call->args->type, env->gwion->type[et_string]) < 0)
-    ERR_N(call->func->pos, "OscIn constructor's first argument must be `string`");
-  if (isa(call->args->next->type, env->gwion->type[et_int]) < 0)
-    ERR_N(call->func->pos, "OscIn constructor's second argument must be `int`");
-  return call->func->type->info->base_type;
-}
-
-static OP_EMIT(opem_oscout_ctor) {
-  const Exp_Call *call  = (Exp_Call *)data;
-  const Instr     instr = emit_add_instr(emit, oscout_ctor);
-  instr->m_val          = (m_uint)exp_self(call)->type;
-  return GW_OK;
+  *(M_Object*)RETURN = o;
 }
 
 static ANN m_bool import_oscout(const Gwi gwi) {
   gwidoc(gwi, "A type to send Osc events");
-  const Type t_loout = gwi_class_ini(gwi, "OscOut", "Event");
+  const Type t_loout = gwi_class_ini(gwi, "OscOut", "Object");
   gwi_class_xtor(gwi, NULL, loout_dtor);
   SET_FLAG(t_loout, final);
   t_loout->nspc->info->offset += sizeof(struct LoOut); // reserve
     gwidoc(gwi, "Send a message to `path`");
+
+    gwi_func_ini(gwi, "auto", "new");
+      gwi_func_arg(gwi, "string", "host");
+      gwi_func_arg(gwi, "int", "port");
+    GWI_BB(gwi_func_end(gwi, oscout_new, ae_flag_none))
+
     gwi_func_ini(gwi, "bool", "send");
       gwi_func_arg(gwi, "string", "path");
     GWI_BB(gwi_func_end(gwi, osc_send, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
-
-  gwidoc(gwi, "OscOut constructor");
-  GWI_BB(gwi_oper_ini(gwi, NULL, "OscOut", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_oscout_ctor));
-  GWI_BB(gwi_oper_emi(gwi, opem_oscout_ctor));
-  GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
 
 #define oscout_oper(name)                                                      \
   gwidoc(gwi, "Add an `" #name "` to the message");                            \
@@ -192,6 +169,10 @@ ANN static void release_loserver(const Map map, const LoServer s) {
   if (--s->ref)
     return;
   map_remove(map, (vtype)s->port);
+  if (!map_size(map)) {
+    map_release(map);
+    map->ptr = NULL;
+  }
   for (m_uint i = 0; i < vector_size(&s->method); i++)
     release_lomethod(s, (LoMethod)vector_at(&s->method, i));
   vector_release(&s->method);
@@ -237,6 +218,9 @@ static int osc_method_handler(const char *path, const char *type, lo_arg **argv,
       arg->data.s = strdup((m_str)argv[i]);
       break;
     default:
+      for(m_uint i = 0; i < vector_size(&v); i++)
+        release_loarg(m->p, (LoArg)vector_at(&v, i));
+      vector_release(&v);
       gw_err("unhandled osc arg type '%c'", type[i]);
       // leaks vector, at least
       return GW_OK;
@@ -335,7 +319,8 @@ static DTOR(loin_dtor) {
   if (loin.curr.ptr)
     clear_curr(shred->info->mp, &loin.curr);
   vector_release(&loin.args);
-  release_loserver(*(Map*)(o->type_ref->nspc->info->class_data), loin.server);
+  const Map map = get_module(shred->info->vm->gwion, "Lo");
+  release_loserver(map, loin.server);
   MUTEX_CLEANUP(loin.mutex);
 }
 
@@ -394,7 +379,7 @@ lo_getter(int, m_int, arg->data.i);
 lo_getter(float, m_float, arg->data.f);
 lo_getter(string, M_Object, new_string(shred->info->mp, shred, arg->data.s));
 
-ANEW ANN static LoServer new_loserver(const Map map, const MemPool mp, const m_int port) {
+ANEW ANN static LoServer new_loserver(const MemPool mp, const Map map, const m_int port) {
   char c[256];
   snprintf(c, 256, "%" INT_F, port);
   lo_server_thread lserv = lo_server_thread_new(c, osc_error_handler);
@@ -410,67 +395,51 @@ ANEW ANN static LoServer new_loserver(const Map map, const MemPool mp, const m_i
   lo_server_enable_coercion(lo_server_thread_get_server(s->thread), 0);
   vector_init(&s->method);
   s->ref = 0;
+  if (!map->ptr) map_init(map);
   map_set(map, (vtype)port, (vtype)s);
   return s;
 }
 
-ANN static inline LoServer get_server(const Map map, const MemPool mp, const m_int port) {
-  const LoServer s = (LoServer)map_get(map, (vtype)port);
-  if (s) return s;
-  return new_loserver(map, mp, port);
-}
-
-static INSTR(oscin_ctor) {
-  POP_REG(shred, SZ_INT);
-  const Type t = (Type)instr->m_val;
-  const M_Object o    = new_object(shred->info->mp, shred, t);
-  struct LoIn *  loin = &LOIN(o);
-  vector_init(&EV_SHREDS(o));
-  vector_init(&loin->args);
-  vector_init(&loin->methods);
-  MUTEX_SETUP(loin->mutex);
-  const m_int  port = *(m_int *)REG(-SZ_INT);
-  const LoServer s  = get_server(*(Map*)t->nspc->info->class_data, shred->info->mp, port);
-  if (s) {
-    *(M_Object *)REG(-SZ_INT) = o;
-    s->ref++;
-    loin->server = s;
-    return;
+ANN static inline LoServer get_server(const MemPool mp, const Map map, const m_int port) {
+  if (map->ptr) {
+    const LoServer s = (LoServer)map_get(map, (vtype)port);
+    if (s) return s;
   }
-  mp_free(s->p, LoServer, s);
-  handle(shred, "OscError");
+  return new_loserver(mp, map, port);
 }
 
-static OP_CHECK(opck_oscin_ctor) {
-  const Exp_Call *call = (Exp_Call *)data;
-  CHECK_ON(check_exp(env, call->func));
-  if (!call->args || call->args->next)
-    ERR_N(call->func->pos, "OscIn constructor takes one argument");
-  CHECK_ON(check_exp(env, call->args));
-  if (isa(call->args->type, env->gwion->type[et_int]) < 0)
-    ERR_N(call->func->pos, "OscIn constructor's argument must be `int`");
-  return call->func->type->info->base_type;
+static MFUN(osc_new) {
+   struct LoIn *  loin = &LOIN(o);
+   vector_init(&loin->args);
+   vector_init(&loin->methods);
+   MUTEX_SETUP(loin->mutex);
+   const m_int  port = *(m_int *)MEM(SZ_INT);
+   const Map _map = get_module(shred->info->vm->gwion, "Lo");
+   const LoServer s  = get_server(shred->info->mp, _map, port);
+   if (s) {
+     *(M_Object *)RETURN = o;
+     s->ref++;
+     loin->server = s;
+     return;
+   }
+   handle(shred, "OscError");
 }
 
-static OP_EMIT(opem_oscin_ctor) {
-  const Exp_Call *call  = (Exp_Call *)data;
-  const Instr     instr = emit_add_instr(emit, oscin_ctor);
-  instr->m_val          = (m_uint)exp_self(call)->type;
-  return GW_OK;
-}
-
-GWMODINI(lo) { return new_map(gwion->mp); }
-GWMODEND(lo) { return free_map(gwion->mp, (Map)self); }
+GWMODINI(Lo) { return new_map(gwion->mp); }
+GWMODEND(Lo) { if(self)return free_map(gwion->mp, (Map)self); }
 
 static ANN m_bool import_oscin(const Gwi gwi) {
   gwidoc(gwi, "A type to receive OSC events");
   const Type t_loin = gwi_class_ini(gwi, "OscIn", "Event");
-
-
   gwi_class_xtor(gwi, NULL, loin_dtor);
   SET_FLAG(t_loin, final | ae_flag_abstract);
   t_loin->nspc->info->offset += sizeof(struct LoIn);
-  t_loin->nspc->info->class_data_size += SZ_INT;
+
+
+  gwidoc(gwi, "constructor");
+  gwi_func_ini(gwi, "auto", "new");
+  gwi_func_arg(gwi, "int", "port");
+  GWI_BB(gwi_func_end(gwi, osc_new, ae_flag_none))
 
   gwidoc(gwi, "add a new method");
   gwi_func_ini(gwi, "void", "add");
@@ -488,19 +457,6 @@ static ANN m_bool import_oscin(const Gwi gwi) {
 
   GWI_BB(gwi_class_end(gwi))
 
-  if(!get_module(gwi->gwion, "lo")) {
-  const Map map = GWMODINI_NAME(gwi->gwion, NULL);
-    set_module(gwi->gwion, "lo", map);
-    *(Map*)t_loin->nspc->info->class_data = map;
-  } else
-    *(Map*)t_loin->nspc->info->class_data = get_module(gwi->gwion, "lo");
-
-  gwidoc(gwi, "OscIn constructor");
-  GWI_BB(gwi_oper_ini(gwi, NULL, "OscIn", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_oscin_ctor));
-  GWI_BB(gwi_oper_emi(gwi, opem_oscin_ctor));
-  GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
-
 #define oscin_oper(name)                                                       \
   gwidoc(gwi, "Get an `" #name "` from the message");                          \
   GWI_BB(gwi_oper_ini(gwi, "OscIn", #name, #name))                             \
@@ -511,6 +467,9 @@ static ANN m_bool import_oscin(const Gwi gwi) {
   oscin_oper(string);
 #undef oscin_oper
 
+  if(!get_module(gwi->gwion, "Lo")) {
+    set_module(gwi->gwion, "Lo", GWMODINI_NAME(gwi->gwion, NULL));
+  }
   return GW_OK;
 }
 
@@ -518,3 +477,4 @@ GWION_IMPORT(lo) {
   GWI_BB(import_oscout(gwi));
   GWI_BB(import_oscin(gwi));
 }
+

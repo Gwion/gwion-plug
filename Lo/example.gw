@@ -1,7 +1,6 @@
 #import Lo
 
-#!OscIn(7777) => var OscIn oin;
-7777 => OscIn => var OscIn oin;
+new OscIn(7777) => var OscIn oin;
 <<< "Created OscIn Object ", oin >>>;
 
 oin.add("/name", "d");

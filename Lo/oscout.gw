@@ -1,4 +1,4 @@
 #import Lo
 
-OscOut("localhost", 7777) => const auto oout;
+new OscOut("localhost", 7777) => const auto oout;
 oout.send("test");
