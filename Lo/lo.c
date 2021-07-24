@@ -97,12 +97,42 @@ static DTOR(loout_dtor) {
   lo_address_free(loout.addr);
 }
 
-static MFUN(oscout_new) {
+static MFUN(oscout_new0) {
+  const m_str url  = STRING(*(M_Object *)MEM(SZ_INT));
+  const lo_address addr = lo_address_new_from_url(url);
+  if(!addr) {
+    handle(shred, "wut?");
+    return;
+  }
+  struct LoOut *  loout = &LOOUT(o);
+  vector_init(&loout->args);
+  loout->addr = addr;
+  *(M_Object*)RETURN = o;
+}
+
+static MFUN(oscout_new1) {
   const m_str host  = STRING(*(M_Object *)MEM(SZ_INT));
   const m_int port  = *(m_uint *)MEM(SZ_INT*2);
   char c[256];
   snprintf(c, 256, "%" INT_F, port);
   const lo_address addr = lo_address_new(host, c);
+  if(!addr) {
+    handle(shred, "wut?");
+    return;
+  }
+  struct LoOut *  loout = &LOOUT(o);
+  vector_init(&loout->args);
+  loout->addr = addr;
+  *(M_Object*)RETURN = o;
+}
+
+static MFUN(oscout_new2) {
+  const m_uint proto  = *(m_uint *)MEM(SZ_INT);
+  const m_str  host   = STRING(*(M_Object *)MEM(SZ_INT*2));
+  const m_int  port   = *(m_uint *)MEM(SZ_INT*3);
+  char c[256];
+  snprintf(c, 256, "%" INT_F, port);
+  const lo_address addr = lo_address_new_with_proto(proto, host, c);
   if(!addr) {
     handle(shred, "wut?");
     return;
@@ -121,14 +151,32 @@ static ANN m_bool import_oscout(const Gwi gwi) {
   t_loout->nspc->info->offset += sizeof(struct LoOut); // reserve
     gwidoc(gwi, "Send a message to `path`");
 
+    GWI_BB(gwi_enum_ini(gwi, "Proto"));
+    GWI_BB(gwi_enum_add(gwi, "UDP",  LO_UDP));
+    GWI_BB(gwi_enum_add(gwi, "TCP",  LO_TCP));
+    GWI_BB(gwi_enum_add(gwi, "UNIX", LO_UNIX));
+    GWI_BB(gwi_enum_end(gwi));
+
+    gwi_func_ini(gwi, "auto", "new");
+      gwi_func_arg(gwi, "string", "url");
+    GWI_BB(gwi_func_end(gwi, oscout_new0, ae_flag_none))
+
+
     gwi_func_ini(gwi, "auto", "new");
       gwi_func_arg(gwi, "string", "host");
       gwi_func_arg(gwi, "int", "port");
-    GWI_BB(gwi_func_end(gwi, oscout_new, ae_flag_none))
+    GWI_BB(gwi_func_end(gwi, oscout_new1, ae_flag_none))
+
+    gwi_func_ini(gwi, "auto", "new");
+      gwi_func_arg(gwi, "Proto", "proto");
+      gwi_func_arg(gwi, "string", "host");
+      gwi_func_arg(gwi, "int", "port");
+    GWI_BB(gwi_func_end(gwi, oscout_new2, ae_flag_none))
 
     gwi_func_ini(gwi, "bool", "send");
       gwi_func_arg(gwi, "string", "path");
     GWI_BB(gwi_func_end(gwi, osc_send, ae_flag_none))
+
   GWI_BB(gwi_class_end(gwi))
 
 #define oscout_oper(name)                                                      \
