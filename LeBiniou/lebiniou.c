@@ -11,7 +11,6 @@
 #include "import.h"
 #include "ugen.h"
 #include "array.h"
-#include "gwi.h"
 
 #define BINIOU_ADDR(o) (*(lo_address*)((o)->data + SZ_INT))
 
@@ -43,12 +42,8 @@ static DTOR(lebiniou_dtor) {
 GWION_IMPORT(LeBiniou) {
   DECL_OB(const Type, t_lebiniou, = gwi_class_ini(gwi, "LeBiniou", "UGen"));
   gwi_class_xtor(gwi, lebiniou_ctor, lebiniou_dtor);
-  SET_FLAG(t_lebiniou, abstract);
   t_lebiniou->nspc->info->offset += SZ_INT; // room for the lo_thread
   GWI_BB(gwi_class_end(gwi))
-  const M_Object o = new_object(gwi->gwion->mp, NULL, t_lebiniou);
-  GWI_BB(gwi_item_ini(gwi, "LeBiniou", "LeBiniou"));
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, obj, o));
   return GW_OK;
 }
 
