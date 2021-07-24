@@ -3,8 +3,8 @@
 #import Modules
 
 var SinOsc s ~> LeBiniou ~> dac;
+
 while(true) {
   Math.rand2f(200, 400) => s.freq;
   .1::second => now;
 }
-minute => now;
