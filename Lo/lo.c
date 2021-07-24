@@ -363,11 +363,12 @@ static MFUN(oscin_rem) {
 //! function factory for getters
 #define lo_getter(name, type, ret)                                             \
   static INSTR(oscin_get_##name) {                                             \
-    POP_REG(shred, SZ_INT);                                                    \
+    POP_REG(shred, SZ_INT*2 - sizeof(type));                                   \
     struct LoIn *loin = &LOIN(*(M_Object *)REG(-sizeof(type)));                \
     MUTEX_LOCK(loin->mutex);                                                   \
     const Vector c_arg          = &loin->curr;                                 \
     const LoArg  arg            = (LoArg)vector_front(c_arg);                  \
+    **(type **)REG(SZ_INT - sizeof(type)) = ret;                               \
     *(type *)REG(-sizeof(type)) = ret;                                         \
     release_loarg(shred->info->mp, arg);                                       \
     vector_rem(c_arg, 0);                                                      \
@@ -460,6 +461,7 @@ static ANN m_bool import_oscin(const Gwi gwi) {
 #define oscin_oper(name)                                                       \
   gwidoc(gwi, "Get an `" #name "` from the message");                          \
   GWI_BB(gwi_oper_ini(gwi, "OscIn", #name, #name))                             \
+  GWI_BB(gwi_oper_add(gwi, opck_rassign))                             \
   GWI_BB(gwi_oper_end(gwi, "=>", oscin_get_##name))
 
   oscin_oper(int);
