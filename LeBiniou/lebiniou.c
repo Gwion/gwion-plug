@@ -11,6 +11,7 @@
 #include "import.h"
 #include "ugen.h"
 #include "array.h"
+#include "gwi.h"
 
 #define BINIOU_ADDR(o) (*(lo_address*)((o)->data + SZ_INT))
 
@@ -28,22 +29,26 @@ static TICK(lebiniou_tick) {
   UGEN(u->connect.multi->channel[1])->out = right;
 }
 
-static CTOR(lebiniou_ctor) {
-  BINIOU_ADDR(o) = lo_address_new("localhost", "9999");
-  ugen_ini(shred->info->vm->gwion, UGEN(o), 2, 2);
-  ugen_gen(shred->info->vm->gwion, UGEN(o), lebiniou_tick,
-           o->data + SZ_INT, 0);
-}
-
 static DTOR(lebiniou_dtor) {
   lo_address_free(BINIOU_ADDR(o));
 }
 
 GWION_IMPORT(LeBiniou) {
-  DECL_OB(const Type, t_lebiniou, = gwi_class_ini(gwi, "LeBiniou", "UGen"));
-  gwi_class_xtor(gwi, lebiniou_ctor, lebiniou_dtor);
+  DECL_OB(const Type, t_lebiniou, = gwi_class_ini(gwi, "@LeBiniou", "UGen"));
+  gwi_class_xtor(gwi, NULL, lebiniou_dtor);
   t_lebiniou->nspc->info->offset += SZ_INT; // room for the lo_thread
   GWI_BB(gwi_class_end(gwi))
+
+
+  const M_Object o = new_object(gwi->gwion->mp, NULL, t_lebiniou);
+  UGEN(o) = new_UGen(gwi->gwion->mp);
+  ugen_ini(gwi->gwion, UGEN(o), 2, 2);
+  ugen_gen(gwi->gwion, UGEN(o), lebiniou_tick,
+           o->data + SZ_INT, 0);
+  vector_add(&gwi->gwion->vm->ugen, (m_uint)UGEN(o));
+  BINIOU_ADDR(o) = lo_address_new("localhost", "9999");
+  gwi_item_ini(gwi, "@LeBiniou", "LeBiniou");
+  gwi_item_end(gwi, ae_flag_const, obj, o);
   return GW_OK;
 }
 
