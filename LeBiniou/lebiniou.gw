@@ -1,0 +1,23 @@
+#! import the needed modules
+#import Lo
+#import Modules
+
+#! create a sine generator and connect it to the dac
+const SinOsc s ~> dac;
+
+#! create an osc sender object
+new OscOut("localhost", 9999) => const auto osc;
+
+#! every sample we send the audio data
+spork {
+  while(true) {
+    s.last() => const float f;
+    f => osc;
+    f => osc;
+    osc.send("/lebiniou/audioinput");
+    samp => now;
+  }
+};
+
+#! let one minute pass
+second => now;
