@@ -1,12 +1,12 @@
 # LeBiniou
   a [Gwion](https://github.com/Gwion/Gwion) plugin.  
 ## Description
-use [LeBiniou](https://github.com/.../LeBiniou)
+use [LeBiniou](https://biniou.net/)
 ## Configuration
 check your [Gwion-plug](https://github.com/Gwion/gwion-plug) configuration. (e.g. edit config.mk)  
 edit Makefile
 ## Building
-ensure [LeBiniou](https://github.com/.../LeBiniou) is installed
+ensure [LeBiniou](https://biniou.net/) is installed
 ```
 make
 # optionnal
