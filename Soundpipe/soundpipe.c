@@ -7436,12 +7436,13 @@ GWMODINI(Soundpipe) {
 GWMODEND(Soundpipe) {
   sp_destroy((sp_data**)&self);
 }
-GWION_IMPORT(soundpipe) {
+GWION_IMPORT(Soundpipe) {
 
   VM* vm = gwi_vm(gwi);
   sp_data *sp = get_module(vm->gwion, "Soundpipe");
   if(!sp) {
-    sp = GWMODINI_NAME(vm->gwion, NULL);
+    sp_createn(&sp, gwi->gwion->vm->bbq->si->out); 
+    sp->sr = gwi->gwion->vm->bbq->si->sr;
     set_module(vm->gwion, "Soundpipe", sp);
   }
   const uint8_t nchan = vm->bbq->si->out;
