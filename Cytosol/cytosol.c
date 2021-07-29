@@ -279,7 +279,7 @@ static OP_CHECK(opck_record_check) {
   const Class_Def cdef = (Class_Def)data;
   const Type t = cdef->base.type;
   Ast ast = cdef->body;
-  nspc_allocdata(env->gwion->mp, t->nspc);
+//  nspc_allocdata(env->gwion->mp, t->nspc);
   if(ast) {
     if (ast->section->section_type != ae_section_stmt)
       ERR_N(cdef->pos, "Invalid section in Cytosol.Field");

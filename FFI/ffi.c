@@ -260,7 +260,7 @@ static OP_CHECK(opck_ffi_ctor) {
     arg_sz += e->type->size;
   } while((e = e->next));
   t->nspc->info->class_data_size += n * SZ_INT;
-  nspc_allocdata(mp, t->nspc);
+//  nspc_allocdata(mp, t->nspc);
 {
   ffi_type** types = FFI_TYPES(t);
   Exp exp = call->args->next;
