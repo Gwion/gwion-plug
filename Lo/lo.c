@@ -217,10 +217,6 @@ ANN static void release_loserver(const Map map, const LoServer s) {
   if (--s->ref)
     return;
   map_remove(map, (vtype)s->port);
-  if (!map_size(map)) {
-    map_release(map);
-    map->ptr = NULL;
-  }
   for (m_uint i = 0; i < vector_size(&s->method); i++)
     release_lomethod(s, (LoMethod)vector_at(&s->method, i));
   vector_release(&s->method);
@@ -270,7 +266,6 @@ static int osc_method_handler(const char *path, const char *type, lo_arg **argv,
         release_loarg(m->p, (LoArg)vector_at(&v, i));
       vector_release(&v);
       gw_err("unhandled osc arg type '%c'", type[i]);
-      // leaks vector, at least
       return GW_OK;
     }
     vector_add(&v, (vtype)arg);
@@ -282,15 +277,15 @@ static int osc_method_handler(const char *path, const char *type, lo_arg **argv,
       MUTEX_LOCK(arg->mutex);
     }
     const M_Object o    = (M_Object)vector_at(&m->client, i);
-    struct LoIn    loin = LOIN(o);
-    MUTEX_LOCK(loin.mutex);
+    struct LoIn    *loin = &LOIN(o);
+    MUTEX_LOCK(loin->mutex);
 
     struct Vector_ vec = {};
     vector_copy2(&v, &vec);
-    vector_add(&loin.args, (m_uint)vec.ptr);
+    vector_add(&loin->args, (m_uint)vec.ptr);
 
     broadcast(o);
-    MUTEX_UNLOCK(loin.mutex);
+    MUTEX_UNLOCK(loin->mutex);
     for (m_uint j = 0; j < argc; j++) {
       const LoArg arg = (LoArg)vector_at(&v, j);
       MUTEX_UNLOCK(arg->mutex);
@@ -362,6 +357,7 @@ ANN static inline void clear_curr(const MemPool mp, const Vector v) {
 }
 
 static DTOR(loin_dtor) {
+puts(__func__);
   struct LoIn loin = LOIN(o);
   vector_release(&loin.methods);
   if (loin.curr.ptr)
@@ -381,8 +377,10 @@ static MFUN(osc_recv) {
     MUTEX_UNLOCK(loin->mutex);
     return;
   }
-  if (loin->curr.ptr)
+  if (loin->curr.ptr) {
     clear_curr(shred->info->mp, &loin->curr);
+    loin->curr.ptr = NULL;
+  }
   loin->curr.ptr    = (m_uint*)vector_front(c_arg);
   *(m_uint *)RETURN = true;
   vector_rem(c_arg, 0);
@@ -450,6 +448,7 @@ ANEW ANN static LoServer new_loserver(const MemPool mp, const Map map, const m_i
 }
 
 ANN static inline LoServer get_server(const MemPool mp, const Map map, const m_int port) {
+printf("[%s] %p\n", __func__, map->ptr);
   if (map->ptr) {
     const LoServer s = (LoServer)map_get(map, (vtype)port);
     if (s) return s;
