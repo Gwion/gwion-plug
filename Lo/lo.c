@@ -448,7 +448,6 @@ ANEW ANN static LoServer new_loserver(const MemPool mp, const Map map, const m_i
 }
 
 ANN static inline LoServer get_server(const MemPool mp, const Map map, const m_int port) {
-printf("[%s] %p\n", __func__, map->ptr);
   if (map->ptr) {
     const LoServer s = (LoServer)map_get(map, (vtype)port);
     if (s) return s;
