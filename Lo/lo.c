@@ -357,7 +357,6 @@ ANN static inline void clear_curr(const MemPool mp, const Vector v) {
 }
 
 static DTOR(loin_dtor) {
-puts(__func__);
   struct LoIn loin = LOIN(o);
   vector_release(&loin.methods);
   if (loin.curr.ptr)
