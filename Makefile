@@ -14,6 +14,10 @@ all:
 install:
 	 +@ $(foreach dir, $(DIR), ${MAKE} -s install   -C $(dir);)
 
+local-install: clean _list
+	+@ mkdir -p ~/.gwplug
+	 +@ $(foreach dir, $(shell cat list.txt), cp $(dir)/*.so ~/.gwplug;)
+
 clean:
 	 +@ $(foreach dir, $(DIR), ${MAKE} -s clean     -C $(dir);)
 

@@ -1,5 +1,5 @@
 #import Emoji
 
-Emoji(":smile:") => const auto str;
+new Emoji(":smile:") => const auto str;
 <<< "This is a ${ str }" >>>;
 #!  "and another ${Emoji("test :tada:")}"
