@@ -72,7 +72,7 @@ signal(SIGINT, ctrlc);
   return NULL;
 }
 
-#define GET_META(o) (&*(struct TUIMeta*)(o->type_ref->info->value->from->owner_class->nspc->info->class_data))
+#define GET_META(o) (&*(struct TUIMeta*)(o->type_ref->info->value->from->owner_class->nspc->class_data))
 
 #define WINDOW(a) (*(TUIWindow**)(a->data + SZ_INT*3))
 #define WIDGET(a) (*(TUIWidget*)(a->data + SZ_INT))
@@ -238,7 +238,7 @@ static CTOR(UserCtor) {
   // construct the widget
   const Gwion gwion = shred->info->vm->gwion;
   const Type tui = str2type(gwion, "TUI", (loc_t){});
-  struct TUIMeta* meta = (&*(struct TUIMeta*)(tui->nspc->info->class_data));
+  struct TUIMeta* meta = (&*(struct TUIMeta*)(tui->nspc->class_data));
   USER_WIDGET(o)->vm = meta->vm;
   USER_WIDGET(o)->buffer = &meta->buffer;
   // catch the *draw* function
@@ -304,7 +304,7 @@ static MFUN(user_get_no_select) {
 }
 
 static CTOR(WidgetCtor) {
-  tui_widget_init(&WIDGET(o), *(m_str*)o->type_ref->nspc->info->class_data);
+  tui_widget_init(&WIDGET(o), *(m_str*)o->type_ref->nspc->class_data);
   WIDGET(o).init(&WIDGET(o));
 }
 
@@ -498,9 +498,9 @@ WIDGET_INT(Row, TUIRowPositioning, positioning)
   GWI_BB(gwi_func_end(gwi, class##_##name##_set, ae_flag_none)) \
 
 
-#define TUI_END(name, tuiclass)                          \
-  GWI_BB(gwi_class_end(gwi))                             \
-  *(m_str*)t_##name->nspc->info->class_data = #tuiclass; \
+#define TUI_END(name, tuiclass)                    \
+  GWI_BB(gwi_class_end(gwi))                       \
+  *(m_str*)t_##name->nspc->class_data = #tuiclass; \
 
 ANN static m_bool attr_object(const Gwi gwi, const Type t, const m_str name, const TUIAttribute attr) {
   const M_Object o = new_object(gwi->gwion->mp, NULL, t);
@@ -549,10 +549,10 @@ static SFUN(tui_attr3) {
 
 GWION_IMPORT(TUI) {
   DECL_OB(const Type, t_tui, = gwi_class_ini(gwi, "TUI", "Object"));
-  t_tui->nspc->info->class_data_size += sizeof(struct TUIMeta);
+  t_tui->nspc->class_data_size += sizeof(struct TUIMeta);
 
     DECL_OB(const Type, t_attrs, = gwi_class_ini(gwi, "Attribute", NULL));
-    t_attrs->nspc->info->offset += sizeof(TUIAttribute);
+    t_attrs->nspc->offset += sizeof(TUIAttribute);
     CHECK_BB(attr_object(gwi, t_attrs, "reset", TUIResetAttribute));
     CHECK_BB(attr_object(gwi, t_attrs, "normal", TUINormalAttribute));
     CHECK_BB(attr_object(gwi, t_attrs, "selected", TUISelectedAttribute));
@@ -635,7 +635,7 @@ GWION_IMPORT(TUI) {
 
     DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"));
     SET_FLAG(t_widget, abstract);
-    t_widget->nspc->info->offset += sizeof(TUIWidget);
+    t_widget->nspc->offset += sizeof(TUIWidget);
     GWI_BB(gwi_fptr_ini(gwi, "void", "FunType"))
     GWI_BB(gwi_func_arg(gwi, "TUI.Widget", "widget"))
     GWI_BB(gwi_fptr_end(gwi, ae_flag_global))
@@ -710,7 +710,7 @@ GWION_IMPORT(TUI) {
     TUI_END(Options, options)
 
     TUI_INI(Row, TuiWidget)
-    t_Row->nspc->info->offset += SZ_INT*2;
+    t_Row->nspc->offset += SZ_INT*2;
     gwi_class_xtor(gwi, RowCtor, NULL);
     TUI_FUNC(Row, int, spacing)
     GWI_BB(gwi_enum_ini(gwi, "Positioning"))
@@ -722,7 +722,7 @@ GWION_IMPORT(TUI) {
     TUI_END(Row, row)
 
     DECL_OB(const Type, t_window, = gwi_class_ini(gwi, "Window", "Event"));
-    t_window->nspc->info->offset += SZ_INT*3;
+    t_window->nspc->offset += SZ_INT*3;
     TUI_FUNC(Window, string, title)
     GWI_BB(gwi_func_ini(gwi, "void", "size"))
     GWI_BB(gwi_func_arg(gwi, "int", "x"))
@@ -785,7 +785,7 @@ GWION_IMPORT(TUI) {
        GWI_BB(gwi_func_arg(gwi, "int", "height"))
        GWI_BB(gwi_func_end(gwi, user_markup, ae_flag_protect))
 
-//    t_user->nspc->info->offset += SZ_INT*3;
+//    t_user->nspc->offset += SZ_INT*3;
 //    TUI_FUNC(Window, string, title)
 //    gwi_class_xtor(gwi, win_ctor, win_dtor);
 //    set_tflag(t_user, tflag_abstract);

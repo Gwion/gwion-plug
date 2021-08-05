@@ -36,7 +36,7 @@ static DTOR(lebiniou_dtor) {
 GWION_IMPORT(LeBiniou) {
   DECL_OB(const Type, t_lebiniou, = gwi_class_ini(gwi, "@LeBiniou", "UGen"));
   gwi_class_xtor(gwi, NULL, lebiniou_dtor);
-  t_lebiniou->nspc->info->offset += SZ_INT; // room for the lo_thread
+  t_lebiniou->nspc->offset += SZ_INT; // room for the lo_thread
   GWI_BB(gwi_class_end(gwi))
 
 

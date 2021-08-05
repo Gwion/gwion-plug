@@ -120,9 +120,27 @@ static INSTR(FileTxtCtor) {
   *(M_Object*)REG(-SZ_INT) = o;
 }
 
+static MFUN(filetxt_ctor) {
+  const M_Object mode = *(M_Object*)MEM(SZ_INT*2);
+  const M_Object filename = *(M_Object*)MEM(SZ_INT);
+  file_t *f = openf(STRING(filename), STRING(mode), FILE_512_BYTE_BUFFER);
+  if(!f) {
+    handle(shred, _("can't open file"));
+    return;
+  }
+  *(file_t**)(o->data + SZ_INT) = f;
+  *(M_Object*)REG(-SZ_INT) = o;
+}
+
 GWION_IMPORT(File:[text]) {
   const Type t = gwi_class_ini(gwi, "@Filetxt", "File:[@internal]");
   gwi_class_xtor(gwi, NULL, filetxt_dtor);
+
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
+  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
+  GWI_BB(gwi_func_arg(gwi, "string", "mode"))
+  GWI_BB(gwi_func_end(gwi, filetxt_ctor, ae_flag_none))
+
   GWI_BB(gwi_func_ini(gwi, "string", "read"))
   GWI_BB(gwi_func_end(gwi, fileread, ae_flag_none))
 

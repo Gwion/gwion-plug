@@ -238,7 +238,7 @@ INSTR(TupleCtor) {
 // most of this could be expressed with regular instructions
   const Type t = (Type)instr->m_val;
   const M_Object o = new_object(shred->info->mp, shred, t);
-  const m_uint sz = t->nspc->info->offset;
+  const m_uint sz = t->nspc->offset;
   memcpy(o->data, shred->reg - sz - SZ_INT, sz);
   shred->reg -= (sz);
   *(M_Object*)(shred->reg - SZ_INT) = o;
@@ -353,7 +353,7 @@ static OP_CHECK(opck_tuple_ctor) {
 static OP_EMIT(opem_tuple_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
   Exp exp = call->args;
-  m_int sz = -exp_self(call)->type->nspc->info->offset;
+  m_int sz = -exp_self(call)->type->nspc->offset;
   while(exp) {
     const Type t = exp->cast_to ?: exp->type;
 //    if(isa(t, emit->gwion->type[et_compound]) > 0)
@@ -512,8 +512,11 @@ static OP_EMIT(opem_tuple_access) {
 }
 
 GWION_IMPORT(tuple) {
-  const Type t_tuple = gwi_mk_type(gwi, TUPLE_NAME, SZ_INT, "Object");
-  gwi_add_type(gwi, t_tuple);
+//  const Type t_tuple = gwi_mk_type(gwi, TUPLE_NAME, SZ_INT, "Object");
+//  gwi_add_type(gwi, t_tuple);
+  const Type t_tuple = gwi_class_ini(gwi, TUPLE_NAME, "Object");
+  gwi_class_end(gwi);
+//t_tuple->base.tmpl = new_tmpl(gwi->gwion->mp, NULL);
   const Type t_undef = gwi_mk_type(gwi, "@Undefined", SZ_INT, NULL);
   gwi_add_type(gwi, t_undef);
   SET_FLAG(t_tuple, abstract);

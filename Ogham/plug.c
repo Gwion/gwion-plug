@@ -104,6 +104,28 @@ void dbg_on_note(void *data, ogh_note_t* n) {
   adjust(ARRAY_NOTE(dec->array, dec->idx++), n, dec->tempo);
 }
 
+void dbg_on_loop(void *data, ogh_loop_dir_t* l_dir) {
+puts(__func__);
+  Decoder *dec = (Decoder*)data;
+printf("idx %lu\n", dec->idx);
+  const ogh_adjusted_note_t *last = ARRAY_NOTE(dec->array, dec->idx-1);
+  float offset = last->real_offset + last->real_duration;
+  for(ogh_offset_t repeat = 0; repeat < l_dir->count; repeat++) {
+    for(ogh_offset_t i = l_dir->previous; i >= 0; i--) {
+      ogh_adjusted_note_t *base = ARRAY_NOTE(dec->array, dec->idx - i);
+      ogh_adjusted_note_t note = {
+        .index = base->index,
+        .freq = base->freq,
+        .volume = base->volume,
+        .real_duration = base->real_duration,
+        .real_offset = offset
+      };
+      offset += note.real_duration;
+      m_vector_add(dec->array, &note);
+    }
+  }
+}
+
 void dbg_on_tempo_change(void *data, ogh_tc_dir_t* tc_dir) {
   Decoder *dec = (Decoder*)data;
   dec->tempo = (double)tc_dir->numer / (double)tc_dir->denom;
@@ -120,6 +142,13 @@ static int compare_end(const void *a, const void *b) {
 
 static MFUN(ogh_tc) {
   ogh_tempo_change(OGH(o), *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2));
+}
+
+static MFUN(ogh_l) {
+  const uint32_t len = OGH(o)->length;
+  OGH(o) = mp_realloc(shred->info->mp, OGH(o),
+     sizeof(ogh_music_t) + len*sizeof(ogh_packed_t), sizeof(ogh_music_t) + (len+1)*sizeof(ogh_packed_t));
+  ogh_loop(OGH(o), *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2));
 }
 
 
@@ -223,8 +252,8 @@ debug(__func__, note);
   (*(ogh_adjusted_note_t*)player_note->data).real_duration = note->real_duration * PLAYER_DUR(o) - 1;
   *(M_Object*)(shred->mem) = o;
   *(M_Object*)(shred->mem + SZ_INT) = player_note;
-  shreduler_remove(shred->info->vm->shreduler, shred, false);
-  shredule(shred->info->vm->shreduler, shred, GWION_EPSILON);
+  shreduler_remove(shred->tick->shreduler, shred, false);
+  shredule(shred->tick->shreduler, shred, GWION_EPSILON);
 }
 
 static TICK(player_tick) {
@@ -277,7 +306,7 @@ static INSTR(PlayerCtor) {
   const M_Object o = *(M_Object*)REG(-SZ_INT);
   const M_Vector array = new_m_vector(gwion->mp, sizeof(ogh_adjusted_note_t), OGH(o)->length);
   Decoder dec = { .array=array, .tempo=DEFAULT_TEMPO };
-  ogh_music_decode(OGH(o), dbg_on_note, NULL, &dec);
+  ogh_music_decode(OGH(o), dbg_on_note, dbg_on_tempo_change, dbg_on_loop, &dec);
   qsort(ARRAY_PTR(dec.array), m_vector_size(dec.array), sizeof(ogh_adjusted_note_t), compare);
   const Type t = (Type)instr->m_val;
   const M_Object ret = new_object(gwion->mp, shred, t);
@@ -293,7 +322,7 @@ static INSTR(PlayerCtor) {
 
   Runtime * runtime = PLAYER_RUNTIME(ret) = (Runtime*)_mp_malloc(gwion->mp, sizeof(Runtime) +
     polyphony * sizeof(struct Voice));
-  const Func play = (Func)vector_at((Vector)&t->nspc->info->vtable, 6);
+  const Func play = (Func)vector_at((Vector)&t->nspc->vtable, 6);
   runtime->code = vmcode_callback(gwion->mp, play->code);
   const Type note_type = (Type)map_at(&((Type)instr->m_val2)->nspc->info->type->map, 0);
   for(m_uint i = 0; i < polyphony; i++) {
@@ -307,6 +336,7 @@ static INSTR(PlayerCtor) {
   const VM_Code ctor_code = t->nspc->pre_ctor;
   register const m_uint push = *(m_uint*)REG(SZ_INT) + *(m_uint*)MEM(-SZ_INT);
   shred->mem += push;
+// this is to be updated. use frame_t
   *(m_uint*)  shred->mem = push; shred->mem += SZ_INT;
   *(VM_Code*) shred->mem = shred->code; shred->mem += SZ_INT;
   *(m_uint*)  shred->mem = shred->pc; shred->mem += SZ_INT;
@@ -368,7 +398,7 @@ static MFUN(ogh_write) {
 
 GWION_IMPORT(Ogham) {
   DECL_OB(const Type, t_ogham, = gwi_class_ini(gwi, "Ogham", "Object"));
-  t_ogham->nspc->info->offset += SZ_INT;
+  t_ogham->nspc->offset += SZ_INT;
 
     DECL_OB(const Type, t_player, = gwi_class_ini(gwi, "Player", "UGen"));
     gwi_class_xtor(gwi, NULL, player_dtor);
@@ -388,7 +418,7 @@ GWION_IMPORT(Ogham) {
 
     GWI_BB(gwi_item_ini(gwi, "int", "polyphony"))
     GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0))
-    t_player->nspc->info->offset += SZ_INT*4;//6
+    t_player->nspc->offset += SZ_INT*4;//6
     GWI_BB(gwi_item_ini(gwi, "dur", "speed"))
     GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
 
@@ -407,7 +437,7 @@ GWION_IMPORT(Ogham) {
     GWI_BB(gwi_class_end(gwi))
 
     DECL_OB(const Type, t_note, = gwi_class_ini(gwi, "Note", "Object"));
-    t_note->nspc->info->offset += sizeof(ogh_note_t);
+    t_note->nspc->offset += sizeof(ogh_note_t);
     note_import(offset, int)
     note_import(duration, int)
     note_import(volume, int)
@@ -424,6 +454,11 @@ GWION_IMPORT(Ogham) {
   GWI_BB(gwi_func_arg(gwi, "int", "denum"))
   GWI_BB(gwi_func_end(gwi, ogh_tc, ae_flag_none))
 
+  GWI_BB(gwi_func_ini(gwi, "void", "loop"))
+  GWI_BB(gwi_func_arg(gwi, "int", "previous"))
+  GWI_BB(gwi_func_arg(gwi, "int", "count"))
+  GWI_BB(gwi_func_end(gwi, ogh_l, ae_flag_none))
+
   GWI_BB(gwi_func_ini(gwi, "void", "write"))
   GWI_BB(gwi_func_arg(gwi, "string", "filename"))
   GWI_BB(gwi_func_end(gwi, ogh_write, ae_flag_none))
@@ -435,7 +470,7 @@ GWION_IMPORT(Ogham) {
   gwi_class_xtor(gwi, ogham_ctor, ogham_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "Ogham", "Array:[Ogham.Note]", "Ogham"))
+  GWI_BB(gwi_oper_ini(gwi, "Ogham", "Ogham.Note[]", "Ogham"))
   GWI_BB(gwi_oper_end(gwi, "<<", ogham_add_notes))
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "Ogham.Player", NULL))

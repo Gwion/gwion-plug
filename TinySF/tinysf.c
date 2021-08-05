@@ -26,38 +26,21 @@ static TICK(tsf_tick) {
   UGEN(u->connect.multi->channel[1])->out = f[1];
 }
 
-static INSTR(TinySFCtor) {
-   POP_REG(shred, SZ_INT);
-   tsf* tiny = tsf_load_filename(STRING(*(M_Object*)REG(-SZ_INT)));
+static MFUN(tinysf_new) {
+   tsf* tiny = tsf_load_filename(STRING(*(M_Object*)MEM(SZ_INT)));
    if(!tiny) {
-     gw_err("file '%s' can't opened file for reading", STRING(*(M_Object*)REG(-SZ_INT)));
+     gw_err("file '%s' can't opened file for reading", STRING(*(M_Object*)MEM(SZ_INT)));
      handle(shred, "TinySFException");
      return;
    }
    tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
-   const M_Object o = new_object(shred->info->mp, shred, (Type)instr->m_val);
+//   const M_Object o = new_object(shred->info->mp, shred, (Type)instr->m_val);
    UGEN(o) = new_UGen(shred->info->mp);
    UGEN(o)->module.gen.data = TSF(o) = tiny;
    vector_add(&shred->info->vm->ugen, (vtype)UGEN(o));
    ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
    ugen_gen(shred->info->vm->gwion, UGEN(o), tsf_tick, tiny, 0);
-   *(M_Object*)REG(-SZ_INT) = o;
-}
-
-static OP_CHECK(opck_tinysf_ctor) {
-  Exp_Call *call = (Exp_Call*)data;
-  if(!call->args || call->args->next ||
-     !check_exp(env, call->args) || isa(call->args->type, env->gwion->type[et_string]) < 0)
-    ERR_N(call->func->pos, "TinySF constructor requires one "
-         "and only one 'string' argument");
-  return actual_type(env->gwion, call->func->type);
-}
-
-static OP_EMIT(opem_tinysf_ctor) {
-  Exp_Call *call = (Exp_Call*)data;
-  const Instr instr = emit_add_instr(emit, TinySFCtor);
-  instr->m_val = (m_uint) exp_self(call)->type;
-  return GW_OK;
+   *(M_Object*)RETURN = o;
 }
 
 static DTOR(tinysf_dtor) { tsf_close(TSF(o)); }
@@ -76,9 +59,14 @@ static MFUN(note_off) {
 
 GWION_IMPORT(TinySF) {
   DECL_OB(const Type, t_tinysf, = gwi_class_ini(gwi, "TinySF", "UGen"));
-  t_tinysf->nspc->info->offset += sizeof(struct tsf);
+  t_tinysf->nspc->offset += sizeof(struct tsf);
   gwi_class_xtor(gwi, NULL, tinysf_dtor);
   SET_FLAG(t_tinysf, abstract);
+
+// missing effect
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
+  GWI_BB(gwi_func_arg(gwi, "string", "file"))
+  GWI_BB(gwi_func_end(gwi, tinysf_new, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "void", "noteOn"))
   GWI_BB(gwi_func_arg(gwi, "int", "note"))
@@ -90,12 +78,6 @@ GWION_IMPORT(TinySF) {
   GWI_BB(gwi_func_end(gwi, note_off, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
-
-  GWI_BB(gwi_oper_ini(gwi, NULL, "TinySF", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_tinysf_ctor))
-  GWI_BB(gwi_oper_emi(gwi, opem_tinysf_ctor))
-  gwi_oper_eff(gwi, "TinySFException");
-  GWI_BB(gwi_oper_end(gwi, "@ctor", TinySFCtor))
 
   return GW_OK;
 }

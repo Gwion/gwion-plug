@@ -42,10 +42,10 @@ static ffi_type* str2ffitype(const m_str name) {
   return NULL;
 }
 
-#define FFI_CIF(t)   (*(ffi_cif*)t->nspc->info->class_data)
-#define FFI_DL(t)    (*(void**)(t->nspc->info->class_data + sizeof(ffi_cif)))
-#define FFI_SZ(t)    (*(m_uint*)(t->nspc->info->class_data + sizeof(ffi_cif) + SZ_INT))
-#define FFI_TYPES(t) ( (ffi_type**)(t->nspc->info->class_data + sizeof(ffi_cif) + SZ_INT * 2))
+#define FFI_CIF(t)   (*(ffi_cif*)t->nspc->class_data)
+#define FFI_DL(t)    (*(void**)(t->nspc->class_data + sizeof(ffi_cif)))
+#define FFI_SZ(t)    (*(m_uint*)(t->nspc->class_data + sizeof(ffi_cif) + SZ_INT))
+#define FFI_TYPES(t) ( (ffi_type**)(t->nspc->class_data + sizeof(ffi_cif) + SZ_INT * 2))
 
 static MFUN(ffi_do_call) {
   const Type t = o->type_ref;
@@ -259,7 +259,7 @@ static OP_CHECK(opck_ffi_ctor) {
     ++n;
     arg_sz += e->type->size;
   } while((e = e->next));
-  t->nspc->info->class_data_size += n * SZ_INT;
+  t->nspc->class_data_size += n * SZ_INT;
 //  nspc_allocdata(mp, t->nspc);
 {
   ffi_type** types = FFI_TYPES(t);

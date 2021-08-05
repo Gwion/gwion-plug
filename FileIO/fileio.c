@@ -180,7 +180,9 @@ static SFUN(file_list) {
     return;
   const m_int n = scandir(str, &namelist, NULL, alphasort);
   if(n < 0) {
-    *(m_uint*)RETURN = 0;
+    const Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_string], 0);
+    const M_Object ret = new_array(shred->info->mp, t, n);
+    *(M_Object*)RETURN = ret;
     return;
   }
   const Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_string], 1);
@@ -192,7 +194,7 @@ static SFUN(file_list) {
     free(namelist[i]);
   }
   free(namelist);
-  *(m_uint*)RETURN = (m_uint)ret;
+  *(M_Object*)RETURN = ret;
 }
 
 GWION_IMPORT(fileio) {

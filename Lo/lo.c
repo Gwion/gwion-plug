@@ -148,7 +148,7 @@ static ANN m_bool import_oscout(const Gwi gwi) {
   const Type t_loout = gwi_class_ini(gwi, "OscOut", "Object");
   gwi_class_xtor(gwi, NULL, loout_dtor);
   SET_FLAG(t_loout, final);
-  t_loout->nspc->info->offset += sizeof(struct LoOut); // reserve
+  t_loout->nspc->offset += sizeof(struct LoOut); // reserve
     gwidoc(gwi, "Send a message to `path`");
 
     GWI_BB(gwi_enum_ini(gwi, "Proto"));
@@ -479,7 +479,7 @@ static ANN m_bool import_oscin(const Gwi gwi) {
   const Type t_loin = gwi_class_ini(gwi, "OscIn", "Event");
   gwi_class_xtor(gwi, NULL, loin_dtor);
   SET_FLAG(t_loin, final | ae_flag_abstract);
-  t_loin->nspc->info->offset += sizeof(struct LoIn);
+  t_loin->nspc->offset += sizeof(struct LoIn);
 
 
   gwidoc(gwi, "constructor");

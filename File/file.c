@@ -13,6 +13,7 @@
 typedef Type (*filemodule)(const Gwion);
 
 static OP_CHECK(opck_file_scan) {
+exit(3);
   struct TemplateScan *ts = (struct TemplateScan*)data;
   if(!ts->td->types || ts->td->types->next)
     ERR_N(ts->td->pos, _("File needs one template argument"));
@@ -57,7 +58,7 @@ GWION_IMPORT(File) {
   const Map map = get_module(gwi->gwion, "File");
   if(!map)
     set_module(gwi->gwion, "File", new_map(gwi->gwion->mp));
-  DECL_OB(const Type, t_file, = gwi_class_ini(gwi, "File", "Event"));
+  DECL_OB(const Type, t_file, = gwi_class_ini(gwi, "File:[module]", "Event"));
   SET_FLAG(t_file, abstract);
   GWI_BB(gwi_item_ini(gwi, "@internal", "@data"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))

@@ -33,7 +33,7 @@ MFUN(midifile_add_track);
 MFUN(midifile_add_note);
 MFUN(midifile_write);
 GWION_IMPORT(portsmf) {
-  GWI_BB(gwi_class_ini(gwi, "MidiFileEv", "Event"))
+  GWI_OB(gwi_class_ini(gwi, "MidiFileEv", "Event"))
 	gwi_item_ini(gwi,"int", "type");
   o_midiev_type = gwi_item_end(gwi, ae_flag_const, num, 0);
   GWI_BB(o_midiev_type);
@@ -54,7 +54,7 @@ GWION_IMPORT(portsmf) {
   GWI_BB(o_midiev_dur);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "MidiFile", NULL))
+  GWI_OB(gwi_class_ini(gwi, "MidiFile", NULL))
   gwi_class_xtor(gwi, ctor, dtor);
 	gwi_item_ini(gwi,"int", "@seq");
   o_midifile_seq = gwi_item_end(gwi, ae_flag_none, num, 0);
