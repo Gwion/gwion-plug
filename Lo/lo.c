@@ -12,6 +12,7 @@
 #include "traverse.h"
 #include "parse.h"
 #include "emit.h"
+#include "shreduler_private.h"
 
 typedef struct LoArg_ {
   union {
@@ -19,20 +20,14 @@ typedef struct LoArg_ {
     m_float f;
     m_str   s;
   } data;
-  MUTEX_TYPE mutex;
-  uint32_t   ref;
+  volatile uint32_t   ref;
   char       t;
 } * LoArg;
 
 ANN static inline void release_loarg(const MemPool mp, const LoArg arg) {
-  MUTEX_LOCK(arg->mutex);
-  if (!--arg->ref) {
-    if (arg->t == 's') xfree(arg->data.s);
-    MUTEX_UNLOCK(arg->mutex);
-    MUTEX_CLEANUP(arg->mutex);
-    mp_free(mp, LoArg, arg);
-  } else
-    MUTEX_UNLOCK(arg->mutex);
+  if (--arg->ref) return;
+  if (arg->t == 's') free_mstr(mp, arg->data.s);
+  mp_free(mp, LoArg, arg);
 }
 
 struct LoOut {
@@ -72,7 +67,6 @@ static MFUN(osc_send) {
 ANN inline static LoArg new_arg(const MemPool mp) {
   const LoArg arg = (LoArg)mp_malloc(mp, LoArg);
   arg->ref      = 1;
-  MUTEX_SETUP(arg->mutex);
   return arg;
 }
 
@@ -161,7 +155,6 @@ static ANN m_bool import_oscout(const Gwi gwi) {
       gwi_func_arg(gwi, "string", "url");
     GWI_BB(gwi_func_end(gwi, oscout_new0, ae_flag_none))
 
-
     gwi_func_ini(gwi, "auto", "new");
       gwi_func_arg(gwi, "string", "host");
       gwi_func_arg(gwi, "int", "port");
@@ -231,6 +224,7 @@ struct LoIn {
   struct Vector_ methods;
   struct Vector_ curr;
   MUTEX_TYPE     mutex;
+  MUTEX_TYPE     bbq;
 };
 #define LOIN(o) (*(struct LoIn *)((o)->data + SZ_INT))
 
@@ -259,7 +253,7 @@ static int osc_method_handler(const char *path, const char *type, lo_arg **argv,
       arg->t      = 'f';
       break;
     case 's':
-      arg->data.s = strdup((m_str)argv[i]);
+      arg->data.s = mstrdup(m->p, (m_str)argv[i]);
       break;
     default:
       for(m_uint i = 0; i < vector_size(&v); i++)
@@ -270,31 +264,25 @@ static int osc_method_handler(const char *path, const char *type, lo_arg **argv,
     }
     vector_add(&v, (vtype)arg);
   }
+
   for (m_uint i = 0; i < vector_size(&m->client); i++) {
-    for (m_uint j = 0; j < argc; j++) {
+    for (m_uint j = 1; j < argc; j++) {
       const LoArg arg = (LoArg)vector_at(&v, j);
       arg->ref++;
-      MUTEX_LOCK(arg->mutex);
     }
     const M_Object o    = (M_Object)vector_at(&m->client, i);
     struct LoIn    *loin = &LOIN(o);
-    MUTEX_LOCK(loin->mutex);
-
     struct Vector_ vec = {};
     vector_copy2(&v, &vec);
+    MUTEX_LOCK(loin->mutex);
     vector_add(&loin->args, (m_uint)vec.ptr);
-
-    broadcast(o);
     MUTEX_UNLOCK(loin->mutex);
-    for (m_uint j = 0; j < argc; j++) {
-      const LoArg arg = (LoArg)vector_at(&v, j);
-      MUTEX_UNLOCK(arg->mutex);
-    }
+    MUTEX_LOCK(loin->bbq);
+    broadcast(o);
+    MUTEX_UNLOCK(loin->bbq);
+
   }
-  for (m_uint j = 0; j < argc; j++) {
-    const LoArg arg = (LoArg)vector_at(&v, j);
-    release_loarg(m->p, arg);
-  }
+
   vector_release(&v);
   return 0;
 }
@@ -376,10 +364,8 @@ static MFUN(osc_recv) {
     MUTEX_UNLOCK(loin->mutex);
     return;
   }
-  if (loin->curr.ptr) {
+  if (loin->curr.ptr)
     clear_curr(shred->info->mp, &loin->curr);
-    loin->curr.ptr = NULL;
-  }
   loin->curr.ptr    = (m_uint*)vector_front(c_arg);
   *(m_uint *)RETURN = true;
   vector_rem(c_arg, 0);
@@ -410,15 +396,13 @@ static MFUN(oscin_rem) {
   static INSTR(oscin_get_##name) {                                             \
     POP_REG(shred, SZ_INT*2 - sizeof(type));                                   \
     struct LoIn *loin = &LOIN(*(M_Object *)REG(-sizeof(type)));                \
-    MUTEX_LOCK(loin->mutex);                                                   \
     const Vector c_arg          = &loin->curr;                                 \
     const LoArg  arg            = (LoArg)vector_front(c_arg);                  \
+    vector_rem(c_arg, 0);                                                      \
     **(type **)REG(SZ_INT - sizeof(type)) = ret;                               \
     *(type *)REG(-sizeof(type)) = ret;                                         \
     release_loarg(shred->info->mp, arg);                                       \
-    vector_rem(c_arg, 0);                                                      \
     if (!vector_size(c_arg)) { vector_release(c_arg); c_arg->ptr = NULL;}      \
-    MUTEX_UNLOCK(loin->mutex);                                                 \
   }
 
 lo_getter(int, m_int, arg->data.i);
@@ -459,6 +443,7 @@ static MFUN(osc_new) {
    vector_init(&loin->args);
    vector_init(&loin->methods);
    MUTEX_SETUP(loin->mutex);
+   loin->bbq = shred->info->vm->shreduler->mutex;
    const m_int  port = *(m_int *)MEM(SZ_INT);
    const Map _map = get_module(shred->info->vm->gwion, "Lo");
    const LoServer s  = get_server(shred->info->mp, _map, port);
@@ -470,9 +455,6 @@ static MFUN(osc_new) {
    }
    handle(shred, "OscError");
 }
-
-GWMODINI(Lo) { return new_map(gwion->mp); }
-GWMODEND(Lo) { if(self)return free_map(gwion->mp, (Map)self); }
 
 static ANN m_bool import_oscin(const Gwi gwi) {
   gwidoc(gwi, "A type to receive OSC events");
@@ -514,14 +496,17 @@ static ANN m_bool import_oscin(const Gwi gwi) {
   oscin_oper(string);
 #undef oscin_oper
 
-  if(!get_module(gwi->gwion, "Lo")) {
-    set_module(gwi->gwion, "Lo", GWMODINI_NAME(gwi->gwion, NULL));
-  }
   return GW_OK;
 }
+
+GWMODINI(Lo) { return new_map(gwion->mp); }
+GWMODEND(Lo) { if(self)return free_map(gwion->mp, (Map)self); }
 
 GWION_IMPORT(lo) {
   GWI_BB(import_oscout(gwi));
   GWI_BB(import_oscin(gwi));
+  if(!get_module(gwi->gwion, "Lo"))
+    set_module(gwi->gwion, "Lo", GWMODINI_NAME(gwi->gwion, NULL));
+  return GW_OK;
 }
 
