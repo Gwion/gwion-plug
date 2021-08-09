@@ -83,7 +83,7 @@ ANN inline static LoArg new_arg(const MemPool mp) {
 
 lo_setter(int, 'i', i, *(m_int *)REG(-SZ_INT));
 lo_setter(float, 'd', f, *(m_float *)REG(-SZ_FLOAT));
-lo_setter(string, 's', s, strdup(STRING(*(M_Object *)REG(-SZ_INT))));
+lo_setter(string, 's', s, mstrdup(shred->info->mp, STRING(*(M_Object *)REG(-SZ_INT))));
 
 static DTOR(loout_dtor) {
   struct LoOut loout = LOOUT(o);
