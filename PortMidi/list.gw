@@ -1,0 +1,11 @@
+#import PortMidi
+
+for (var int i; i < PortMidi.count(); i++) {
+  new PortMidi.Info(i) => const  auto info;
+  <<< info.structVersion>>>;
+  <<< info.interf >>>;
+  <<< info.name >>>;
+  <<< info.input >>>;
+  <<< info.output >>>;
+  <<< info.opened >>>;
+}

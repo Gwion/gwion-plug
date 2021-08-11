@@ -10,112 +10,74 @@
 #include "plug.h"
 #include "operator.h"
 #include "import.h"
+#include "gwi.h"
+#include "shreduler_private.h"
 
-typedef struct {
-  PmStream* stream;
-  THREAD_TYPE thread; // in only
-  MUTEX_TYPE mutex; // in only
-  MUTEX_TYPE bbq; // only needed for in
-  struct M_Vector_ msg;
-} MidiInfo;
-
-typedef struct {
-  m_uint status;
-  m_uint data1;
-  m_uint data2;
-} MidiMsg;
-
-ANN static void release_info(MemPool p, MidiInfo *info) {
-  if(info->thread)
-    pthread_cancel(info->thread);
-  Pm_Close(info->stream);
+static MFUN(pm_info) {
+  const PmDeviceInfo* info = Pm_GetDeviceInfo(*(m_int*)MEM(SZ_INT));
+  if(!info) {
+    handle(shred, "InvalidPortMidiInfo");
+    return;
+  }
+  *(m_int*)   (o->data)            = info->structVersion;
+  *(M_Object*)(o->data + SZ_INT)   = new_string2(shred->info->vm->gwion, NULL, (m_str)info->interf);
+  *(M_Object*)(o->data + SZ_INT*2) = new_string2(shred->info->vm->gwion, NULL, (m_str)info->name);
+  *(m_int*)   (o->data + SZ_INT*3) = info->input;
+  *(m_int*)   (o->data + SZ_INT*4) = info->output;
+  *(m_int*)   (o->data + SZ_INT*5) = info->opened;
+  *(M_Object*)RETURN = o;
 }
 
-static m_int o_pm_id;
-static m_int o_pm_status;
-static m_int o_pm_data1;
-static m_int o_pm_data2;
-
-//#define OUT(o)   (&*(MidiInfo*)(o->data + SZ_INT))
-#define IN_INFO(o)   (&*(MidiInfo*)(o->data + SZ_INT))
-#define ID(o)     *(m_int*)    (o->data + o_pm_id)
-#define MSG(o) *(MidiMsg*)   (o->data + o_pm_status)
-#define STATUS(o) *(m_uint*)   (o->data + o_pm_status)
-#define DATA1(o) *(m_uint*)    (o->data + o_pm_data1)
-#define DATA2(o) *(m_uint*)    (o->data + o_pm_data2)
-
-
-// should be static
-// and return deviceInfo
-static MFUN(pm_name) {
-  const PmDeviceInfo* info = Pm_GetDeviceInfo(ID(o));
-  if(!info)
-    *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, "no device");
-  else
-    *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, (m_str)info->name);
-}
 
 static SFUN(pm_count) {
   *(m_uint*)RETURN = Pm_CountDevices();
 }
 
-static SFUN(pm_error) {
-  *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, (m_str)Pm_GetErrorText(*(m_int*)MEM(0)));
+static MFUN(pm_channel) {
+  Pm_SetChannelMask(*(PortMidiStream **)(o->data + SZ_INT), Pm_Channel(*(m_uint*)MEM(SZ_INT)));
 }
 
-static MFUN(pm_close) {
-  release_info(shred->info->mp, IN_INFO(o));
-  ID(o) = -1;
-  *(m_uint*)RETURN = 1;
+static MFUN(pm_channels) {
+  int chan = 0;
+  M_Object arg = *(M_Object*)MEM(SZ_INT);
+  for(m_uint i = 0; i < m_vector_size(ARRAY(arg)); i++) {
+    chan |= Pm_Channel(*(m_uint*)(ARRAY(arg)->ptr + ARRAY_OFFSET + SZ_INT * i));
+  }
+  Pm_SetChannelMask(*(PortMidiStream **)(o->data + SZ_INT), chan);
 }
 
-static CTOR(pm_ctor) {
-  ID(o) = -1;
+#define OUT_INFO(o)  (*(PmStream**)(o->data + SZ_INT))
+
+static DTOR(pmout_dtor) {
+  Pm_Close(OUT_INFO(o));
 }
 
-static CTOR(pmin_ctor) {
-  const MidiInfo *info = IN_INFO(o);
-  m_vector_init(&info->msg, sizeof(PmMessage), 0);
-}
-
-static DTOR(pm_dtor) {
-  if (IN_INFO(o)) // beware
-    release_info(shred->info->mp,IN_INFO(o));
-}
-
-static DTOR(pmin_dtor) {
-  const MidiInfo *info = IN_INFO(o);
-  m_vector_release(&info->msg);
-}
-
-#include "shreduler_private.h"
-static MFUN(midiout_open) {
-  if(ID(o) > -1)
-    release_info(shred->info->mp, IN_INFO(o));
-  ID(o) = *(m_uint*)MEM(SZ_INT);
-  MidiInfo* info = IN_INFO(o);
-  Pm_OpenOutput(&info->stream, ID(o), 0, 0, NULL, NULL, 0);
-  *(m_uint*)RETURN = 1;
-}
-
-// remove this?
-static MFUN(midiout_send_self) {
-  MidiInfo* info = IN_INFO(o);
-  MidiMsg msg = MSG(o);
-  *(m_uint*)RETURN = Pm_WriteShort(info->stream, 0,
-    Pm_Message(msg.status, msg.data1, msg.data2));
+static MFUN(midiout_new) {
+  if(Pm_OpenOutput(&OUT_INFO(o), *(m_uint*)MEM(SZ_INT), 0, 0, NULL, NULL, 0)) {
+    handle(shred, "InvalidMidiOut");
+    return;
+  }
+  *(M_Object*)RETURN = o;
 }
 
 static MFUN(midiout_send) {
-  MidiInfo* info = IN_INFO(o);
-  MidiMsg msg = *(MidiMsg*)MEM(SZ_INT);
-  *(m_uint*)RETURN = Pm_WriteShort(info->stream, 0,
-    Pm_Message(msg.status, msg.data1, msg.data2));
+  *(m_uint*)RETURN = Pm_WriteShort(OUT_INFO(o), 0,
+    Pm_Message(*(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2), *(m_int*)MEM(SZ_INT*3)));
 }
+
+typedef struct {
+  PmStream* stream;
+  THREAD_TYPE thread;
+  MUTEX_TYPE mutex;
+  MUTEX_TYPE bbq;
+  struct M_Vector_ msg;
+} MidiIn;
+
+#define IN_INFO(o)   (&*(MidiIn*)(o->data + SZ_INT))
 
 ANN static void* pm_recv(void* data) {
   const M_Object o = (M_Object)data;
-  MidiInfo* info = IN_INFO(o);
+  MidiIn *const info = IN_INFO(o);
 
   while(true) {
     while(Pm_Poll(info->stream) == 1) {
@@ -138,98 +100,125 @@ ANN static void* pm_recv(void* data) {
   return NULL;
 }
 
-// should be the constructor
-static MFUN(midiin_open) {
-  ID(o) = *(m_uint*)MEM(SZ_INT);
-  MidiInfo* info = IN_INFO(o);
+static MFUN(midiin_new) {
+  MidiIn* info = IN_INFO(o);
+  if(Pm_OpenInput(&info->stream, *(m_uint*)MEM(SZ_INT), 0, 0, NULL, NULL)) {
+    handle(shred, "InvalidMidiIn");
+    return;
+  }
+  m_vector_init(&info->msg, sizeof(PmMessage), 0);
   info->bbq = shred->info->vm->shreduler->mutex;
-  Pm_OpenInput(&info->stream, ID(o), 0, 0, NULL, NULL);
   MUTEX_SETUP(info->mutex);
   THREAD_CREATE(info->thread, pm_recv, o);
+  *(M_Object*)RETURN = o;
+}
+
+static DTOR(pmin_dtor) {
+  const MidiIn *info = IN_INFO(o);
+  m_vector_release(&info->msg);
+  if(info->thread) // find a better way
+    pthread_cancel(info->thread);
+  Pm_Close(info->stream);
 }
 
 static MFUN(midiin_recv) {
-  MidiInfo* info = IN_INFO(o);
+  MidiIn *const info = IN_INFO(o);
   MUTEX_LOCK(info->mutex);
   *(m_uint*)RETURN = m_vector_size(&info->msg) ? 1 : 0;
   MUTEX_UNLOCK(info->mutex);
 }
 
 static MFUN(midiin_read) {
-  MidiInfo* info = IN_INFO(o);
+  MidiIn *const info = IN_INFO(o);
   MUTEX_LOCK(info->mutex);
   const PmMessage pmsg = *(PmMessage*)(info->msg.ptr + ARRAY_OFFSET);
   m_vector_rem(&info->msg, 0);
   MUTEX_UNLOCK(info->mutex);
-  MidiMsg *mmsg = &MSG(o);
-  mmsg->status = Pm_MessageStatus(pmsg);
-  mmsg->data1  = Pm_MessageData1(pmsg);
-  mmsg->data2  = Pm_MessageData2(pmsg);
+  **(m_int**)MEM(SZ_INT)   = Pm_MessageStatus(pmsg);
+  **(m_int**)MEM(SZ_INT*2) = Pm_MessageData1(pmsg);
+  **(m_int**)MEM(SZ_INT*3) = Pm_MessageData2(pmsg);
 }
 
-GWION_IMPORT(portmidi) {
+
+GWMODINI(PortMidi) { Pm_Initialize(); return (void*)1; }
+GWMODEND(PortMidi) { Pm_Terminate(); }
+
+GWION_IMPORT(PortMidi) {
   const Type t_portmidi = gwi_class_ini(gwi, "PortMidi", "Event");
   SET_FLAG(t_portmidi, abstract);
-  gwi_class_xtor(gwi, pm_ctor, pm_dtor);
-  t_portmidi->nspc->offset += sizeof(MidiInfo);
 
-  gwi_item_ini(gwi,"int",  "id");
-  o_pm_id = gwi_item_end(gwi, ae_flag_const, num, 0);
+  GWI_BB(gwi_func_ini(gwi, "void", "channel"));
+  GWI_BB(gwi_func_arg(gwi, "int", "channels"));
+  GWI_BB(gwi_func_end(gwi, pm_channel, ae_flag_none));
 
-  GWI_BB(o_pm_id)
-  gwi_item_ini(gwi,"int",  "status");
-  o_pm_status  = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_pm_status)
-  gwi_item_ini(gwi,"int",  "data1");
-  o_pm_data1 = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_pm_data1)
-  gwi_item_ini(gwi,"int",  "data2");
-  o_pm_data2 = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_pm_data2)
+  GWI_BB(gwi_func_ini(gwi, "void", "channel"));
+  GWI_BB(gwi_func_arg(gwi, "int[]", "channels"));
+  GWI_BB(gwi_func_end(gwi, pm_channels, ae_flag_none));
 
-  gwi_func_ini(gwi, "int", "count");
-  GWI_BB(gwi_func_end(gwi, pm_count, ae_flag_static))
+  GWI_BB(gwi_func_ini(gwi, "int", "count"));
+  GWI_BB(gwi_func_end(gwi, pm_count, ae_flag_static));
 
-  gwi_func_ini(gwi, "string", "name");
-  GWI_BB(gwi_func_end(gwi, pm_name, ae_flag_none))
+    const Type t_info = gwi_class_ini(gwi, "Info", "Object");
+    SET_FLAG(t_info, abstract);
+    GWI_BB(gwi_item_ini(gwi,"int",  "structVersion"));
+    GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
+    GWI_BB(gwi_item_ini(gwi,"string",  "interf"));
+    GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
+    GWI_BB(gwi_item_ini(gwi,"string",  "name"));
+    GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
+    GWI_BB(gwi_item_ini(gwi,"int",  "input"));
+    GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
+    GWI_BB(gwi_item_ini(gwi,"int",  "output"));
+    GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
+    GWI_BB(gwi_item_ini(gwi,"int",  "opened"));
+    GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
 
-  gwi_func_ini(gwi, "string", "error");
-    gwi_func_arg(gwi, "int", "id");
-  GWI_BB(gwi_func_end(gwi, pm_error, ae_flag_static))
-  gwi_func_ini(gwi, "int", "close");
-  GWI_BB(gwi_func_end(gwi, pm_close, ae_flag_none))
+    GWI_BB(gwi_func_ini(gwi, "auto", "new"));
+    GWI_BB(gwi_func_arg(gwi, "int", "id"));
+    GWI_BB(gwi_func_end(gwi, pm_info, ae_flag_none))
+
+    GWI_BB(gwi_class_end(gwi))
+
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "MidiOut", "PortMidi"))
-  gwi_func_ini(gwi, "int", "open");
-    gwi_func_arg(gwi, "int", "id");
-  GWI_BB(gwi_func_end(gwi, midiout_open, ae_flag_none))
-  gwi_func_ini(gwi, "int", "send");
-  GWI_BB(gwi_func_end(gwi, midiout_send_self, ae_flag_none))
-  gwi_func_ini(gwi, "int", "send");
-    gwi_func_arg(gwi, "int", "status");
-    gwi_func_arg(gwi, "int", "data1");
-    gwi_func_arg(gwi, "int", "data2");
-  GWI_BB(gwi_func_end(gwi, midiout_send, ae_flag_none))
+  DECL_BB(const Type, t_midiout, = gwi_class_ini(gwi, "MidiOut", "PortMidi"));
+  gwi_class_xtor(gwi, NULL, pmout_dtor);
+  t_midiout->nspc->offset += sizeof(PmStream*);
+
+    GWI_BB(gwi_func_ini(gwi, "auto", "new"));
+    GWI_BB(gwi_func_arg(gwi, "int", "device"));
+    GWI_BB(gwi_func_end(gwi, midiout_new, ae_flag_none))
+
+    GWI_BB(gwi_func_ini(gwi, "int", "send"));
+    GWI_BB(gwi_func_arg(gwi, "int", "status"));
+    GWI_BB(gwi_func_arg(gwi, "int", "data1"));
+    GWI_BB(gwi_func_arg(gwi, "int", "data2"));
+    GWI_BB(gwi_func_end(gwi, midiout_send, ae_flag_none))
+
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "MidiIn", "PortMidi"))
-  gwi_class_xtor(gwi, pmin_ctor, pmin_dtor);
-  gwi_func_ini(gwi, "int", "open");
-    gwi_func_arg(gwi, "int", "id");
-  GWI_BB(gwi_func_end(gwi, midiin_open, ae_flag_none))
-  gwi_func_ini(gwi, "int", "recv");
+  DECL_OB(const Type, t_midiin, = gwi_class_ini(gwi, "MidiIn", "PortMidi"));
+  t_midiin->nspc->offset += sizeof(MidiIn);
+  gwi_class_xtor(gwi, NULL, pmin_dtor);
+  SET_FLAG(t_midiin, abstract);
+
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"));
+  GWI_BB(gwi_func_arg(gwi, "int", "device"));
+  GWI_BB(gwi_func_end(gwi, midiin_new, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "int", "recv"));
   GWI_BB(gwi_func_end(gwi, midiin_recv, ae_flag_none))
+
   gwi_func_ini(gwi, "int", "read");
+    gwi_func_arg(gwi, "&int", "status");
+    gwi_func_arg(gwi, "&int", "data1");
+    gwi_func_arg(gwi, "&int", "data2");
   GWI_BB(gwi_func_end(gwi, midiin_read, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-Pm_Initialize(); // to put in module
+  if(!get_module(gwi->gwion, "PortMidi"))
+    set_module(gwi->gwion, "PortMidi", GWMODINI_NAME(gwi->gwion, NULL));
   return GW_OK;
 }
 
 // channels
-// modules
-// device info
-// new
-// remove msg

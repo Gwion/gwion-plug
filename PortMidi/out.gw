@@ -1,0 +1,4 @@
+#import PortMidi
+
+new MidiOut(0) => const auto out;
+out.send(1,2,3);

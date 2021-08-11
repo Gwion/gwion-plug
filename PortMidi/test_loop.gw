@@ -1,7 +1,7 @@
 #import PortMidi
 
 var MidiIn min;
-min.open(3);
+min.open(4);
 
 while(true) {
   min => now;
