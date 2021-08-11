@@ -114,7 +114,7 @@ static MFUN(midiin_new) {
 }
 
 static DTOR(pmin_dtor) {
-  const MidiIn *info = IN_INFO(o);
+  MidiIn *const info = IN_INFO(o);
   m_vector_release(&info->msg);
   if(info->thread) // find a better way
     pthread_cancel(info->thread);
