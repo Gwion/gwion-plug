@@ -3,8 +3,7 @@
 new MidiIn(1) => const auto min;
 min => now;
 
-while(min.recv()) {
     var int status, data1, data2;
-    min.read(status, data1, data2);
+while(min.read(status, data1, data2)) {
     <<<status, " ", data1, " ", data2>>>;
 }

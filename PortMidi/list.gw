@@ -2,7 +2,7 @@
 
 for (var int i; i < PortMidi.count(); i++) {
   new PortMidi.Info(i) => const  auto info;
-  <<< info.structVersion>>>;
+  <<< "${i} ${info.structVersion}">>>;
   <<< info.interf >>>;
   <<< info.name >>>;
   <<< info.input >>>;

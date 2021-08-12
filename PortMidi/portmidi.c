@@ -120,22 +120,21 @@ static DTOR(pmin_dtor) {
   Pm_Close(info->stream);
 }
 
-static MFUN(midiin_recv) {
-  MidiIn *const info = IN_INFO(o);
-  MUTEX_LOCK(info->mutex);
-  *(m_uint*)RETURN = m_vector_size(&info->msg) ? 1 : 0;
-  MUTEX_UNLOCK(info->mutex);
-}
-
 static MFUN(midiin_read) {
   MidiIn *const info = IN_INFO(o);
   MUTEX_LOCK(info->mutex);
+  const m_uint sz = m_vector_size(&info->msg);
   const PmMessage pmsg = *(PmMessage*)(info->msg.ptr + ARRAY_OFFSET);
-  m_vector_rem(&info->msg, 0);
+  if(sz)
+    m_vector_rem(&info->msg, 0);
   MUTEX_UNLOCK(info->mutex);
-  **(m_int**)MEM(SZ_INT)   = Pm_MessageStatus(pmsg);
-  **(m_int**)MEM(SZ_INT*2) = Pm_MessageData1(pmsg);
-  **(m_int**)MEM(SZ_INT*3) = Pm_MessageData2(pmsg);
+  if(sz) {
+    **(m_int**)MEM(SZ_INT)   = Pm_MessageStatus(pmsg);
+    **(m_int**)MEM(SZ_INT*2) = Pm_MessageData1(pmsg);
+    **(m_int**)MEM(SZ_INT*3) = Pm_MessageData2(pmsg);
+    *(m_uint*)RETURN = true;
+  } else
+    *(m_uint*)RETURN = false;
 }
 
 
@@ -216,12 +215,8 @@ GWION_IMPORT(PortMidi) {
   GWI_BB(gwi_func_arg(gwi, "int", "device"));
   GWI_BB(gwi_func_end(gwi, midiin_new, ae_flag_none))
 
-  gwidoc(gwi, "receive a MIDI message");
-  GWI_BB(gwi_func_ini(gwi, "int", "recv"));
-  GWI_BB(gwi_func_end(gwi, midiin_recv, ae_flag_none))
-
   gwidoc(gwi, "read a MIDI message");
-  gwi_func_ini(gwi, "int", "read");
+  gwi_func_ini(gwi, "bool", "read");
     gwi_func_arg(gwi, "&int", "status");
     gwi_func_arg(gwi, "&int", "data1");
     gwi_func_arg(gwi, "&int", "data2");

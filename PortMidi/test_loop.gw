@@ -1,12 +1,11 @@
 #import PortMidi
 
-var MidiIn min;
-min.open(4);
+new MidiIn(1) => var auto min;
 
 while(true) {
   min => now;
-  while(min.recv()) {
-    min.read();
-    <<<min.status, " ", min.data1, " ",min.data2>>>;
+  var int status, data1, data2;
+  while(min.read(status, data1, data2)) {
+    <<<status, " ", data1, " ", data2>>>;
   }
 }
