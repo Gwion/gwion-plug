@@ -95,7 +95,6 @@ ANN static void* pm_recv(void* data) {
 
     }
 
-    usleep(100000); // one millisecond
   }
   return NULL;
 }
