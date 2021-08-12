@@ -17,6 +17,7 @@
 #include "plug.h"
 #include "operator.h"
 #include "import.h"
+#include "shreduler_private.h"
 
 #define EVDEV_PREFIX "/dev/input/event"
 
@@ -61,6 +62,7 @@ typedef struct {
   int fd;
   pthread_t thread;
   pthread_mutex_t mutex;
+  MUTEX_TYPE bbq;
   Vector args;
   m_bool block;
 } EvdevInfo;
@@ -124,6 +126,7 @@ static CTOR(evdev_base_ctor) {
   info->evdev = libevdev_new();
   info->index = -1;
   info->args  = new_vector(shred->info->mp);
+  info->bbq = shred->info->vm->shreduler->mutex;
 }
 
 static DTOR(evdev_dtor) {
@@ -138,6 +141,7 @@ static DTOR(evdev_dtor) {
   free_vector(shred->info->mp, info->args);
   free(info);
 }
+
 static void* evdev_process(void* arg) {
   int rc;
   struct input_event event;
