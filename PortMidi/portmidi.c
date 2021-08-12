@@ -144,20 +144,25 @@ GWMODINI(PortMidi) { Pm_Initialize(); return (void*)1; }
 GWMODEND(PortMidi) { Pm_Terminate(); }
 
 GWION_IMPORT(PortMidi) {
+  gwidoc(gwi, "base MIDI class");
   const Type t_portmidi = gwi_class_ini(gwi, "PortMidi", "Event");
   SET_FLAG(t_portmidi, abstract);
 
+  gwidoc(gwi, "set channel for an object");
   GWI_BB(gwi_func_ini(gwi, "void", "channel"));
   GWI_BB(gwi_func_arg(gwi, "int", "channels"));
   GWI_BB(gwi_func_end(gwi, pm_channel, ae_flag_none));
 
+  gwidoc(gwi, "set channels for an object");
   GWI_BB(gwi_func_ini(gwi, "void", "channel"));
   GWI_BB(gwi_func_arg(gwi, "int[]", "channels"));
   GWI_BB(gwi_func_end(gwi, pm_channels, ae_flag_none));
 
+  gwidoc(gwi, "count number of devices");
   GWI_BB(gwi_func_ini(gwi, "int", "count"));
   GWI_BB(gwi_func_end(gwi, pm_count, ae_flag_static));
 
+    gwidoc(gwi, "Handle MIDI output");
     const Type t_info = gwi_class_ini(gwi, "Info", "Object");
     SET_FLAG(t_info, abstract);
     GWI_BB(gwi_item_ini(gwi,"int",  "structVersion"));
@@ -173,6 +178,7 @@ GWION_IMPORT(PortMidi) {
     GWI_BB(gwi_item_ini(gwi,"int",  "opened"));
     GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
 
+    gwidoc(gwi, "constructor");
     GWI_BB(gwi_func_ini(gwi, "auto", "new"));
     GWI_BB(gwi_func_arg(gwi, "int", "id"));
     GWI_BB(gwi_func_end(gwi, pm_info, ae_flag_none))
@@ -181,14 +187,17 @@ GWION_IMPORT(PortMidi) {
 
   GWI_BB(gwi_class_end(gwi))
 
+  gwidoc(gwi, "Handle MIDI output");
   DECL_BB(const Type, t_midiout, = gwi_class_ini(gwi, "MidiOut", "PortMidi"));
   gwi_class_xtor(gwi, NULL, pmout_dtor);
   t_midiout->nspc->offset += sizeof(PmStream*);
 
+    gwidoc(gwi, "constructor");
     GWI_BB(gwi_func_ini(gwi, "auto", "new"));
     GWI_BB(gwi_func_arg(gwi, "int", "device"));
     GWI_BB(gwi_func_end(gwi, midiout_new, ae_flag_none))
 
+    gwidoc(gwi, "send a MIDI message");
     GWI_BB(gwi_func_ini(gwi, "int", "send"));
     GWI_BB(gwi_func_arg(gwi, "int", "status"));
     GWI_BB(gwi_func_arg(gwi, "int", "data1"));
@@ -197,18 +206,22 @@ GWION_IMPORT(PortMidi) {
 
   GWI_BB(gwi_class_end(gwi))
 
+  gwidoc(gwi, "Handle MIDI input");
   DECL_OB(const Type, t_midiin, = gwi_class_ini(gwi, "MidiIn", "PortMidi"));
   t_midiin->nspc->offset += sizeof(MidiIn);
   gwi_class_xtor(gwi, NULL, pmin_dtor);
   SET_FLAG(t_midiin, abstract);
 
+  gwidoc(gwi, "constructor");
   GWI_BB(gwi_func_ini(gwi, "auto", "new"));
   GWI_BB(gwi_func_arg(gwi, "int", "device"));
   GWI_BB(gwi_func_end(gwi, midiin_new, ae_flag_none))
 
+  gwidoc(gwi, "receive a MIDI message");
   GWI_BB(gwi_func_ini(gwi, "int", "recv"));
   GWI_BB(gwi_func_end(gwi, midiin_recv, ae_flag_none))
 
+  gwidoc(gwi, "read a MIDI message");
   gwi_func_ini(gwi, "int", "read");
     gwi_func_arg(gwi, "&int", "status");
     gwi_func_arg(gwi, "&int", "data1");
