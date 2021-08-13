@@ -253,6 +253,10 @@ GWION_IMPORT(SimdJSON) {
 
     GWI_BB(gwi_class_end(gwi))
 
+  GWI_BB(gwi_oper_ini(gwi, (m_str)"SimdJSON.Get", (m_str)OP_ANY_TYPE, NULL));
+  GWI_BB(gwi_oper_add(gwi, opck_simdjson_get_at));
+  GWI_BB(gwi_oper_end(gwi, (m_str)"=>", NULL));
+
   GWI_BB(gwi_func_ini(gwi, "Get", "get"))
   GWI_BB(gwi_func_arg(gwi, "string", "name"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_none))

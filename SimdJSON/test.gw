@@ -11,4 +11,4 @@ json.get_s("s") => var auto s;
 <<< b >>>;
 <<< s >>>;
 <<< o >>>;
-<<< o.get_s("bar") >>>;
+<<< o.get("bar") => var string baz>>>;
