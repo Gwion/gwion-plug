@@ -1,0 +1,11 @@
+#import SimdJSON
+
+<<< SimdJSON.load("test.json") => var auto json >>>;
+json.get_i("x") => var auto x;
+json.get_f("y") => var auto y;
+json.get_b("b") => var auto b;
+json.get_s("s") => var auto s;
+<<< x >>>;
+<<< y >>>;
+<<< b >>>;
+<<< s >>>;
