@@ -1,0 +1,15 @@
+#import SimdJSON
+
+new SimdJSON(
+#"{
+  "x": 1,
+  "y": 1.1,
+  "b": true,
+  "s": "foo",
+}"#
+) => var auto json;
+
+<<< json.get_i("x") >>>;
+<<< json.get_f("y") >>>;
+<<< json.get_b("b") >>>;
+<<< json.get_s("s") >>>;

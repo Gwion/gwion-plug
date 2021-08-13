@@ -37,8 +37,7 @@ static SFUN(simdjson_load) {
 }
 
 static MFUN(simdjson_new) {
-  const M_Object arg = *(M_Object *)MEM(0);
-  const VM_Code code = *(VM_Code *)REG(SZ_INT);
+  const M_Object arg = *(M_Object *)MEM(SZ_INT);
   *(M_Object *)RETURN = o;
   try {
     auto s = &SIMDJSON(o);
@@ -134,7 +133,7 @@ GWION_IMPORT(SimdJSON) {
 
   GWI_BB(gwi_func_ini(gwi, "SimdJSON", "new"))
   GWI_BB(gwi_func_arg(gwi, "string", "data"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_new, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_new, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
 /*

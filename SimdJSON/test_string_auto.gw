@@ -1,0 +1,22 @@
+#import SimdJSON
+
+new SimdJSON(
+#"{
+  "x": 1,
+  "y": 1.1,
+  "b": true,
+  "s": "foo",
+}"#
+) => var auto json;
+
+json.get("x") => const int    x;
+json.get("y") => const float  y;
+json.get("b") => const bool   b;
+json.get("s") => const string s;
+
+<<< #"{
+  "x": ${x},
+  "y": ${y},
+  "b": ${b},
+  "s": ${s}
+}"# >>>;
