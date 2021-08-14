@@ -57,33 +57,38 @@ ANN static void element_pp(std::string *str, dom::element value, uint indent) {
         break;
      }
 }
-ANN static void object_pp(std::string *str, dom::object elem, uint indent);
+
+ANN static void do_indent(std::string *str, const uint indent) {
+  str->append(indent * 2, ' ');
+}
+
 ANN static void array_pp(std::string *str, dom::array elem, uint indent) {
-  str->append(indent, ' ');
+  do_indent(str, indent);
   str->append("[\n");
   indent++;
   const size_t sz = elem.size();
-  size_t i;
+  size_t i = 0;
   for(auto a : elem) {
-    str->append(indent, ' ');
+    do_indent(str, indent);
     element_pp(str, a, indent);
     if(++i < sz)
       str->append(",");
     str->append("\n");
   }
   indent--;
-  str->append(indent, ' ');
+  do_indent(str, indent);
   str->append("]\n");
 }
 
 ANN static void object_pp(std::string *str, dom::object elem, uint indent) {
-  str->append(indent, ' ');
+  if(indent > 1)
+    do_indent(str, indent);
   str->append("{\n");
   indent++;
   const size_t sz = elem.size();
-  size_t i;
+  size_t i = 0;
   for(auto a : elem) {
-    str->append(indent, ' ');
+    do_indent(str, indent);
     str->append("\"");
     str->append(a.key);
     str->append("\": ");
@@ -93,8 +98,9 @@ ANN static void object_pp(std::string *str, dom::object elem, uint indent) {
      str->append("\n");
   }
   indent--;
-  str->append(indent, ' ');
-  str->append("}\n");
+  do_indent(str, indent);
+//  str->append("}\n");
+  str->append("}");
 }
 
 static MFUN(simdjson_pp) {
