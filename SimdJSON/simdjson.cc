@@ -77,7 +77,7 @@ ANN static void array_pp(std::string *str, dom::array elem, uint indent) {
   }
   indent--;
   do_indent(str, indent);
-  str->append("]\n");
+  str->append("]");
 }
 
 ANN static void object_pp(std::string *str, dom::object elem, uint indent) {
