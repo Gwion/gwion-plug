@@ -9,28 +9,77 @@ extern "C" {
 using namespace simdjson;
 
 struct GwSimdJson {
-  ondemand::parser *parser;
-  ondemand::document document;
-  padded_string *str;
+  dom::parser *parser;
+  dom::element element;
 };
-#define SIMDJSON(a)     (*(struct GwSimdJson*)((a)->data))
-#define SIMDJSON_OBJ(a) (**(ondemand::object**)((a)->data))
-#define SIMDJSON_ARR(a) ( *(ondemand::array**)((a)->data))
+#define SIMDJSON(a)     (&*(struct GwSimdJson*)((a)->data))
+#define SIMDJSON_OBJ(a) (**(dom::object**)((a)->data))
+#define SIMDJSON_ARR(a) ( *(dom::array**)((a)->data))
 
 static DTOR(simdjson_dtor) {
-  delete SIMDJSON(o).parser;
-  delete SIMDJSON(o).str;
+  delete SIMDJSON(o)->parser;
 }
 
 static DTOR(simdjson_obj_dtor) {
-  delete *(ondemand::object**)o->data;
+  delete *(dom::object**)o->data;
 }
 
-static GACK(simdjson_obj_gack) {
-  const M_Object o = *(M_Object*)VALUE;
-  ondemand::object obj = **(ondemand::object**)o->data;
-  INTERP_PRINTF("json object");
+static DTOR(simdjson_arr_dtor) {
+  delete *(dom::array**)o->data;
 }
+/*
+ANN static void element_pp(GwText *txt, dom::object elem) {
+  for(auto a : elem) {
+    switch (a.value.type()) {
+      case dom::element_type::INT64:
+      case dom::element_type::UINT64:
+        char c[256];
+        sprintf(c, "%li", a.value.get_int64());
+//        sprintf(c, "%li", uint64_t(a.value());
+        text_add(txt, c);
+//puts("kllkjl");
+break;
+      case dom::element_type::BOOL:
+break;
+      case dom::element_type::DOUBLE:
+break;
+      case dom::element_type::STRING:
+{
+        const char *_str = a.value.get_c_str();
+        char str[strlen(_str) + 1];
+        strcpy(c, _str);
+        text_add(txt, a.key);
+        text_add(txt, ": ");
+        text_add(txt, c);
+//        puts("kllkjl");
+        break;
+      }
+      case dom::element_type::ARRAY:
+;
+        text_add(txt, "array");
+//print array
+break;
+      case dom::element_type::OBJECT:
+//        const char *_str = a.value.get_c_str();
+element_pp(txt, a.value);
+//print array
+break;
+      case dom::element_type::NULL_VALUE:
+//print array
+break;
+
+     }
+  }
+}
+
+static MFUN(simdjson_obj_pp) {
+  GwText txt = { .mp = shred->info->mp };
+  element_pp(&txt, SIMDJSON_OBJ(o));
+if(txt.str)
+printf("%s\n", txt.str);
+  text_release(&txt);
+}
+*/
 static SFUN(simdjson_load) {
   const M_Object arg = *(M_Object *)MEM(0);
   const VM_Code code = *(VM_Code *)REG(SZ_INT);
@@ -38,11 +87,9 @@ static SFUN(simdjson_load) {
   *(M_Object *)RETURN = ret;
   vector_add(&shred->gc, (m_uint)ret);
   try {
-    auto s = &SIMDJSON(ret);
-    s->parser = new ondemand::parser();
-    padded_string base = padded_string::load(STRING(arg));
-    s->str = new padded_string(std::string_view(base));
-    s->document = s->parser->iterate(*s->str);
+    auto s = SIMDJSON(ret);
+    s->parser = new dom::parser();
+    s->element = s->parser->load(STRING(arg));
   } catch (const simdjson_error &e) {
     handle(shred, (m_str)"SimdJSONOpen");
   }
@@ -52,13 +99,13 @@ static MFUN(simdjson_new) {
   const M_Object arg = *(M_Object *)MEM(SZ_INT);
   *(M_Object *)RETURN = o;
   try {
-    auto s = &SIMDJSON(o);
-    s->parser = new ondemand::parser();
-    s->str = new padded_string(std::string_view(STRING(arg)));
-    s->document = s->parser->iterate(*s->str);
+    auto s = SIMDJSON(o);
+    s->parser = new dom::parser();
+    s->element = s->parser->parse(STRING(arg), strlen(STRING(arg)));
   } catch (const simdjson_error &e) {
     handle(shred, (m_str)"SimdJSONOpen");
   }
+
 }
 
 #define getx(name, body)                         \
@@ -68,34 +115,34 @@ static MFUN(simdjson_get##name) {                \
   try {                                          \
     body                                         \
   } catch (const simdjson_error &e) {            \
-    handle(shred, (m_str)"SimdJSONInvalid");     \
+    handle(shred, (m_str)"SimdJSONDocumentInvalid");     \
   }                                              \
 }
 
 getx(i,
-    int64_t value = SIMDJSON(o).document[str];
+    int64_t value = SIMDJSON(o)->element[str];
     *(m_int*)RETURN = value;);
 getx(b,
-    bool value = SIMDJSON(o).document[str];
+    bool value = SIMDJSON(o)->element[str];
     *(m_int*)RETURN = value;);
 getx(f,
-    double value = SIMDJSON(o).document[str];
+    double value = SIMDJSON(o)->element[str];
     *(m_float*)RETURN = value;);
 getx(s,
-    std::string_view view = SIMDJSON(o).document[str];
+    std::string_view view = SIMDJSON(o)->element[str];
     std::string value(view);
     *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)value.data()););
 getx(o,
-   ondemand::object value = value = SIMDJSON(o).document[str];
-   ondemand::object *val = new ondemand::object(value);
+   dom::object value = SIMDJSON(o)->element[str];
+   dom::object *val = new dom::object(value);
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
-   *(ondemand::object**)ret->data = val;
+   *(dom::object**)ret->data = val;
    *(M_Object*)RETURN = ret;);
 getx(a,
-   ondemand::array value = value = SIMDJSON(o).document[str];
-   ondemand::array *val = new ondemand::array(value);
+   dom::array value = SIMDJSON(o)->element[str];
+   dom::array *val = new dom::array(value);
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
-   *(ondemand::array**)ret->data = val;
+   *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
 
 #define obj_getx(name, body)                     \
@@ -105,7 +152,7 @@ static MFUN(simdjson_obj_get##name) {            \
   try {                                          \
     body                                         \
   } catch (const simdjson_error &e) {            \
-    handle(shred, (m_str)"SimdJSONInvalid");     \
+    handle(shred, (m_str)"SimdJSONObjectInvalid");     \
   }                                              \
 }
 
@@ -123,59 +170,62 @@ obj_getx(s,
     std::string value(view);
     *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)value.data()););
 obj_getx(o,
-   ondemand::object value = value = SIMDJSON_OBJ(o)[str];
-   ondemand::object *val = new ondemand::object(value);
+   dom::object value = SIMDJSON_OBJ(o)[str];
+   dom::object *val = new dom::object(value);
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
-   *(ondemand::object**)ret->data = val;
+   *(dom::object**)ret->data = val;
    *(M_Object*)RETURN = ret;);
 obj_getx(a,
-   ondemand::array value = value = SIMDJSON_OBJ(o)[str];
-   ondemand::array *val = new ondemand::array(value);
+   dom::array value = SIMDJSON_OBJ(o)[str];
+   dom::array *val = new dom::array(value);
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
-   *(ondemand::array**)ret->data = val;
+   *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
 
-/*
-#define arr_getx(name, body)                     \
-static MFUN(simdjson_arr_get##name) {            \
-  const size_t idx = *(m_int *)MEM(SZ_INT);      \
-  try {                                          \
-    body                                         \
-  } catch (const simdjson_error &e) {            \
-    handle(shred, (m_str)"SimdJSONInvalid");     \
-  }                                              \
+#define arr_getx(name, body)                      \
+static MFUN(simdjson_arr_get##name) {             \
+  const size_t idx = *(m_int *)MEM(SZ_INT);       \
+  try {                                           \
+    auto iter = SIMDJSON_ARR(o)->begin();         \
+    m_uint i = 0;                                 \
+    while(iter != SIMDJSON_ARR(o)->end()) {       \
+      if(i == idx) {                              \
+        body                                      \
+      }                                           \
+      i++;                                        \
+      ++iter;                                     \
+    }                                             \
+  } catch (simdjson_error &e) {                   \
+    handle(shred, (m_str)"SimdJSONArrayInvalid"); \
+  }                                               \
 }
 
 arr_getx(i,
-   for(auto a : SIMDJSON_ARR(o)) {
-//     if()
-   }
-//    int64_t value = SIMDJSON_ARR(o)[idx];
+    const int64_t value = *iter;
     *(m_int*)RETURN = value;);
 arr_getx(b,
-    bool value = SIMDJSON_ARR(o)->at(idx);
+    const bool value = *iter;
     *(m_int*)RETURN = value;);
 arr_getx(f,
-    double value = SIMDJSON_ARR(o)->at(idx);
+    const double value = *iter;
     *(m_float*)RETURN = value;);
 arr_getx(s,
-    std::string_view view = SIMDJSON_ARR(o).at(idx);
+    std::string_view view = *iter;
     std::string value(view);
     *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)value.data()););
 arr_getx(o,
-   ondemand::object value = value = SIMDJSON_ARR(o)[idx];
-   ondemand::object *val = new ondemand::object(value);
+   dom::object value = *iter;
+   dom::object *val = new dom::object(value);
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
-   *(ondemand::object**)ret->data = val;
+   *(dom::object**)ret->data = val;
    *(M_Object*)RETURN = ret;);
 arr_getx(a,
-//   ondemand::array value = value = SIMDJSON_ARR(o)[idx];
-   ondemand::array value = value = SIMDJSON_ARR(o)->at(idx);
-   ondemand::array *val = new ondemand::array(value);
+   dom::array value = *iter;
+   dom::array *val = new dom::array(value);
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
-   *(ondemand::array**)ret->data = val;
+   *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
-*/
+
 extern "C" {
 static OP_CHECK(opck_simdjson_get_at) {
   Exp_Binary *bin = (Exp_Binary*)data;
@@ -212,17 +262,19 @@ GWION_IMPORT(SimdJSON) {
     set_tflag(t_simdjson_get, tflag_infer);
     GWI_BB(gwi_class_end(gwi))
 
-    DECL_OB(const Type, t_simdjson_array, = gwi_class_ini(gwi, "array", "Object"));
-    set_tflag(t_simdjson_array, tflag_infer);
+    DECL_OB(const Type, t_simdjson_arr, = gwi_class_ini(gwi, "array", "Object"));
+    t_simdjson_arr->nspc->offset += SZ_INT;
+    SET_FLAG(t_simdjson_arr, abstract);
+  gwi_class_xtor(gwi, NULL, simdjson_arr_dtor);
     GWI_BB(gwi_class_end(gwi))
 
 // make it a struct or a type
     DECL_OB(const Type, t_simdjson_obj, = gwi_class_ini(gwi, "object", "Object"));
-  t_simdjson_obj->nspc->offset += SZ_INT;
+    t_simdjson_obj->nspc->offset += SZ_INT;
     SET_FLAG(t_simdjson_obj, abstract);
+
 //    set_tflag(t_simdjson_obj, tflag_infer);
   gwi_class_xtor(gwi, NULL, simdjson_obj_dtor);
-  gwi_gack(gwi, t_simdjson_obj, simdjson_obj_gack);
   GWI_BB(gwi_func_ini(gwi, "Get", "get"))
   GWI_BB(gwi_func_arg(gwi, "string", "name"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_none))
@@ -250,12 +302,11 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_func_ini(gwi, "array", "get_a"))
   GWI_BB(gwi_func_arg(gwi, "string", "name"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_obj_geta, ae_flag_none))
-
+/*
+  GWI_BB(gwi_func_ini(gwi, "string", "pp"))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_obj_pp, ae_flag_none))
+*/
     GWI_BB(gwi_class_end(gwi))
-
-  GWI_BB(gwi_oper_ini(gwi, (m_str)"SimdJSON.Get", (m_str)OP_ANY_TYPE, NULL));
-  GWI_BB(gwi_oper_add(gwi, opck_simdjson_get_at));
-  GWI_BB(gwi_oper_end(gwi, (m_str)"=>", NULL));
 
   GWI_BB(gwi_func_ini(gwi, "Get", "get"))
   GWI_BB(gwi_func_arg(gwi, "string", "name"))
@@ -292,20 +343,20 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_func_ini(gwi, "SimdJSON", "new"))
   GWI_BB(gwi_func_arg(gwi, "string", "data"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_new, ae_flag_none))
-/*
+
   // now extending array
-  const m_uint scope = env_push_type(gwi->gwion->env, t_simdjson_array);
+  const m_uint scope = env_push_type(gwi->gwion->env, t_simdjson_arr);
   GWI_BB(gwi_func_ini(gwi, "Get", "get"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "bool", "get_b"))
-  GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_arr_getb, ae_flag_none))
-
   GWI_BB(gwi_func_ini(gwi, "int", "get_i"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_arr_geti, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "bool", "get_b"))
+  GWI_BB(gwi_func_arg(gwi, "int", "index"))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_arr_getb, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "float", "get_f"))
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
@@ -324,12 +375,13 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_arr_geta, ae_flag_none))
 
   env_pop(gwi->gwion->env, scope);
-*/
+
   GWI_BB(gwi_class_end(gwi))
 // could be a type
 
 /*
-// maybe we can use it to check get()B
+// maybe we can use it to check get()
+// where it is incorrect
   const Func             f      = (Func)vector_front(&t_simdjson->nspc->vtable);
   const struct Op_Func   opfunc = {.ck = opck_simdjson_get};
   const struct Op_Import opi    = {
