@@ -347,20 +347,7 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_enum_add(gwi, "string_t", 0))
   GWI_BB(gwi_enum_add(gwi, "record_t", 0))
   GWI_BB(gwi_enum_end(gwi))
-  GWI_BB(gwi_item_ini(gwi, "@internal", "program"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-
-  GWI_BB(gwi_item_ini(gwi, "@internal", "runner"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-
-  GWI_BB(gwi_item_ini(gwi, "@internal", "cell_env"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-
-  GWI_BB(gwi_item_ini(gwi, "@internal", "exec_state"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-
-  GWI_BB(gwi_item_ini(gwi, "@internal", "func_vector"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
+  t_fields->nspc->offset += SZ_INT*5;
 
   GWI_BB(gwi_func_ini(gwi, "void", "add_string"))
   GWI_BB(gwi_func_arg(gwi, "string", "name"))

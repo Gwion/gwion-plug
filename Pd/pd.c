@@ -44,10 +44,10 @@ static MFUN(gwpd_close) {
 }
 
 GWION_IMPORT(pd) {
-  GWI_BB(gwi_class_ini(gwi, "PD", "UGen"))
+  DECL_OB(const Type, t_pd, = gwi_class_ini(gwi, "PD", "UGen"));
   gwi_class_xtor(gwi, pd_ctor, pd_dtor);
-  GWI_BB(gwi_item_ini(gwi, "@internal", "@file"))
-  GWI_BB((o_pd_file = gwi_item_end(gwi, ae_flag_none, num, 0)))
+  o_pd_file = t_pd->nspc->offset;
+  t_pd->nspc->offset += SZ_INT;
   GWI_BB(gwi_func_ini(gwi, "int", "open"))
   GWI_BB(gwi_func_arg(gwi, "string", "basename"))
   GWI_BB(gwi_func_arg(gwi, "string", "dirname"))

@@ -487,8 +487,7 @@ WIDGET_INT(Row, TUIRowPositioning, positioning)
 
 #define TUI_INI(name, parent)                                         \
   DECL_OB(const Type, t_##name, = gwi_class_ini(gwi, #name, #parent)); \
-  GWI_BB(gwi_item_ini(gwi, "@internal", "@class name"))               \
-  CHECK_BB(gwi_item_end(gwi, ae_flag_static, num, 0));
+  t_##name->nspc->offset +=SZ_INT;
 
 #define TUI_FUNC(class, type, name)                             \
   GWI_BB(gwi_func_ini(gwi, #type, #name))                       \

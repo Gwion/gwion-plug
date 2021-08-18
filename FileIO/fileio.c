@@ -198,13 +198,11 @@ static SFUN(file_list) {
 }
 
 GWION_IMPORT(fileio) {
-  GWI_BB(gwi_class_ini(gwi, "FileIO", "Event"))
+  DECL_OB(const Type, t_fileio, = gwi_class_ini(gwi, "FileIO", "Event"));
   gwi_class_xtor(gwi, NULL, fileio_dtor);
-
+  o_fileio_file = t_fileio->nspc->offset;
+  t_fileio->nspc->offset += SZ_INT;
   // import vars
-  gwi_item_ini(gwi, "@internal", "@file");
-  o_fileio_file = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_fileio_file)
 
   // import funcs
   gwi_func_ini(gwi, "int", "nl");

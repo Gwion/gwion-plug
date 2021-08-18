@@ -158,12 +158,10 @@ static m_int o_amp, o_pan, o_freq_mod, o_freq_offset,
   o_ok, o_busy, o_small, o_nonul, o_format, o_unknown;
 
 GWION_IMPORT(fmsynth) {
-  Type t_fmsynth;
-  GWI_BB(gwi_class_ini(gwi, "FMSynth", "UGen"))
+  DECL_OB(const Type, t_fmsynth, = gwi_class_ini(gwi, "FMSynth", "UGen"))
   gwi_class_xtor(gwi, ctor, dtor);
-  gwi_item_ini(gwi,"@internal", "@synth");
-  o_fmsynth_data = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_fmsynth_data)
+  o_fmsynth_data = t_fmsynth->nspc->offset;
+  t_fmsynth->nspc->offset += SZ_INT;
   gwi_item_ini(gwi,"string", "name");
   o_fmsynth_name = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fmsynth_name)

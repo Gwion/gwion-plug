@@ -5396,8 +5396,10 @@ m_bool CPPIMPORT(Gwi gwi) {
   stk::Stk::setSampleRate(gwi->gwion->vm->bbq->si->sr);
   /*const Type*/ t_Stk = gwi_class_ini(gwi, "Stk", "UGen");
   SET_FLAG(t_Stk, abstract);
-  CHECK_BB(gwi_item_ini(gwi, "@internal", "@Swig_Stk_Object"));
-  CHECK_BB((o_Stk_swig = gwi_item_end(gwi, ae_flag_none, num, 0)));
+  o_Stk_swig = t_Stk->nspc->offset;
+  t_Stk->nspc->offset += SZ_INT;
+//  CHECK_BB(gwi_item_ini(gwi, "@internal", "@Swig_Stk_Object"));
+//  CHECK_BB((o_Stk_swig = gwi_item_end(gwi, ae_flag_none, num, 0)));
   
   CHECK_BB(gwi_func_ini(gwi, "int", "STK_SINT8"));
   CHECK_BB(gwi_func_end(gwi, gw_Stk_STK_SINT8_get, ae_flag_static));
@@ -5582,7 +5584,8 @@ m_bool CPPIMPORT(Gwi gwi) {
   CHECK_BB(gwi_class_end(gwi));;// Sampler;
   
   /*const Type*/ t_ADSR = gwi_class_ini(gwi, "ADSR", "Generator");
-  gwi_class_xtor(gwi, gw_ADSR_ctor, gw_ADSR_dtor);CHECK_BB(gwi_enum_ini(gwi, NULL));
+  gwi_class_xtor(gwi, gw_ADSR_ctor, gw_ADSR_dtor);
+  CHECK_BB(gwi_enum_ini(gwi, (m_str)"@0"));
   CHECK_BB(gwi_enum_add(gwi, (m_str)"ATTACK", (m_uint)stk::ADSR::ATTACK));
   CHECK_BB(gwi_enum_add(gwi, (m_str)"DECAY", (m_uint)stk::ADSR::DECAY));
   CHECK_BB(gwi_enum_add(gwi, (m_str)"SUSTAIN", (m_uint)stk::ADSR::SUSTAIN));
