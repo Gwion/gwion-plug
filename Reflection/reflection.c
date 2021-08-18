@@ -102,7 +102,7 @@ static OP_CHECK(opck_reflection_cast) {
 
 static INSTR(reflection_cast) {
   const M_Object o = *(M_Object*)(shred->reg - SZ_INT);
-  if(isa(*(Type*)o->data, (Type)instr->m_val) > 0) {
+  if(isa((*(Type*)o->data)->info->base_type, ((Type)instr->m_val)->info->base_type) > 0) {
     const m_bit *base  = *(m_bit**)(o->data + SZ_INT*5);
     shred->reg += instr->m_val2 - SZ_INT;
     memcpy(shred->reg - instr->m_val2, base, instr->m_val2);
