@@ -335,13 +335,19 @@ static MFUN(Hydrate) {
   }
 }
 
+ANN static inline bool is_base_array(const Type t) {
+  return t->array_depth && !tflag(t, tflag_empty);
+}
+
 static void tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init);
 static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init) {
   if(t->info->parent)
     _tojson(gwion, str, o, t->info->parent, init);
   if(!t->nspc)return;
   if(t->array_depth) {
-    *str << "\"array\":[";
+    if(!is_base_array(o->type_ref))
+      *str << "\"array\":";
+    *str << "[";
     const M_Vector array = ARRAY(o);
     const Type base = array_base(t);
     bool _init = false;
@@ -388,9 +394,11 @@ static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o,
 }
 
 static void tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init) {
-  *str << "{";
+  if(!is_base_array(o->type_ref))
+    *str << "{";
   _tojson(gwion, str, o, t, init);
-  *str << "}";
+  if(!is_base_array(o->type_ref))
+    *str << "}";
 
 }
 static SFUN(ToJson) {
