@@ -329,7 +329,7 @@ static SFUN(ToJson) {
   std::stringstream str;
   bool init = false;
   tojson(shred->info->vm->gwion, &str, *(M_Object*)MEM(0), o->type_ref, &init);
-  std::cout << str.str() << "\n";
+  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.str().data());
 }
 
 extern "C" {
@@ -489,7 +489,7 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_func_ini(gwi, "string", "pp"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_pp, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "tojson"))
+  GWI_BB(gwi_func_ini(gwi, "string", "tojson"))
   GWI_BB(gwi_func_arg(gwi, "Object", "o"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)ToJson, ae_flag_static))
 
