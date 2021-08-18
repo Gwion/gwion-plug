@@ -133,6 +133,16 @@ static OP_EMIT(opem_reflection_cast) {
   instr->m_val2 = t->size;
   return GW_OK;
 }
+
+static INSTR(reflection_eq) {
+  shred->reg -= SZ_INT;
+  const Type lhs = (*(Type*)REG(-SZ_INT))->info->base_type;
+  const Type rhs = (*(Type*)REG(0))->info->base_type;
+  *(m_uint*)REG(-SZ_INT) =
+      get_depth(lhs) == get_depth(rhs) &&
+      isa(array_base(lhs), array_base(rhs)) > 0;
+}
+
 GWION_IMPORT(Reflection) {
   const Type t_dynclass = gwi_mk_type(gwi, "DynClass", SZ_INT, NULL);
   gwi_add_type(gwi, t_dynclass);
@@ -207,15 +217,15 @@ GWION_IMPORT(Reflection) {
 
   gwidoc(gwi, "compare DynClass and DynClass");
   GWI_BB(gwi_oper_ini(gwi, "DynClass", "DynClass", "bool"))
-  GWI_BB(gwi_oper_end(gwi, "==", int_eq))
+  GWI_BB(gwi_oper_end(gwi, "==", reflection_eq))
 
   gwidoc(gwi, "compare DynClass and Class");
   GWI_BB(gwi_oper_ini(gwi, "DynClass", "Class", "bool"))
-  GWI_BB(gwi_oper_end(gwi, "==", int_eq))
+  GWI_BB(gwi_oper_end(gwi, "==", reflection_eq))
 
   gwidoc(gwi, "compare Class and DynClass");
   GWI_BB(gwi_oper_ini(gwi, "Class", "DynClass", "bool"))
-  GWI_BB(gwi_oper_end(gwi, "==", int_eq))
+  GWI_BB(gwi_oper_end(gwi, "==", reflection_eq))
 
   gwidoc(gwi, "allow casting a Reflection.Instance to any type");
   GWI_BB(gwi_oper_ini(gwi, "Reflection.Instance", (m_str)OP_ANY_TYPE, NULL))
