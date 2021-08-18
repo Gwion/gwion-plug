@@ -267,7 +267,73 @@ arr_getx(a,
    *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
 
+static void tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init);
+static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init) {
+  if(t->info->parent)
+    _tojson(gwion, str, o, t->info->parent, init);
+  if(!t->nspc)return;
+  if(t->array_depth) {
+    *str << "\"array\":[";
+    const M_Vector array = ARRAY(o);
+    const Type base = array_base(t);
+    bool _init = false;
+    for(m_uint i = 0; i < m_vector_size(array); i++) {
+    if(is_func(gwion, base))continue;
+    if(_init)*str << ",";
+    if(isa(base, gwion->type[et_int]) > 0)
+      *str << *(m_int*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
+    else if(tflag(base, tflag_float) > 0)
+      *str << *(m_float*)(array->ptr + ARRAY_OFFSET + SZ_FLOAT*i);
+    else if(base == gwion->type[et_string])
+      *str << "\"" << STRING(*(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i)) << "\"" ;
+    else if(isa(base, gwion->type[et_object]) > 0) {
+      const M_Object obj = *(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
+      bool _init = false;
+      tojson(gwion, str, obj, obj->type_ref, &_init);
+    }
+    else exit(12);
+// ...
+    _init = true;
+    }
+    *str << "]";
+  }
+  const Map m = &t->nspc->info->value->map;
+  for(m_uint i = 0; i < map_size(m); i++) {
+    const Value value = (Value)map_at(m, i);
+    if(is_func(gwion, value->type))continue;
+    if(!vflag(value, vflag_member))continue;
+    if(*init)
+      *str << ",";
+    *str << "\"" << value->name << "\":";
+    if(isa(value->type, gwion->type[et_int]) > 0) {
+      *str << *(m_int*)(o->data + value->from->offset);
+    } else if(tflag(value->type, tflag_float) > 0)
+      *str << *(m_float*)(o->data + value->from->offset);
+    else if(value->type == gwion->type[et_string])
+      *str << "\"" << STRING(*(M_Object*)(o->data + value->from->offset)) << "\"";
+    else if(isa(value->type, gwion->type[et_object]) > 0) {
+      bool _init = false;
+      tojson(gwion, str, (*(M_Object*)(o->data + value->from->offset)), value->type, &_init);
+    } else exit(12);
+    *init = true;
+  }
+}
+
+static void tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init) {
+  *str << "{";
+  _tojson(gwion, str, o, t, init);
+  *str << "}";
+
+}
+static SFUN(ToJson) {
+  std::stringstream str;
+  bool init = false;
+  tojson(shred->info->vm->gwion, &str, *(M_Object*)MEM(0), o->type_ref, &init);
+  std::cout << str.str() << "\n";
+}
+
 extern "C" {
+
 static OP_CHECK(opck_simdjson_get_at) {
   Exp_Binary *bin = (Exp_Binary*)data;
   CHECK_NN(opck_rassign(env, data));
@@ -423,6 +489,10 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_func_ini(gwi, "string", "pp"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_pp, ae_flag_none))
 
+  GWI_BB(gwi_func_ini(gwi, "void", "tojson"))
+  GWI_BB(gwi_func_arg(gwi, "Object", "o"))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)ToJson, ae_flag_static))
+
   GWI_BB(gwi_class_end(gwi))
 // could be a type
 
@@ -450,6 +520,9 @@ GWION_IMPORT(SimdJSON) {
   return GW_OK;
 }
 }
-
+// T hydrate:[T : Codable]() or smth
+//   then we need a @trait_check operator
+//   could be used in Cytosol too
 // error messages
 // effects
+// use func_check_post?
