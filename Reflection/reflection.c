@@ -19,12 +19,18 @@ static GACK(gack_dynclass) {
   INTERP_PRINTF("%s", (*(Type*)VALUE)->name);
 }
 
-static void fill_values(const VM_Shred shred, const Type base, const M_Vector v, const Type t, const M_Object data) {
+static m_uint safe_map_size(const Map m) {
+  return m ? map_size(m) : 0;
+}
+
+static m_uint fill_values(const VM_Shred shred, const Type base, const M_Vector v, const Type t, const M_Object data, const m_uint offset) {
   const Map m = base->nspc ? &base->nspc->info->value->map : NULL;
   const Gwion gwion = shred->info->vm->gwion;
-  for(m_uint i = 0; i < map_size(m); i++) {
+  const m_uint new_offset = ((base->info->parent ? fill_values(shred, base->info->parent, v, t, data, offset) : 0)) + offset;
+  const m_uint sz = safe_map_size(m);
+  for(m_uint i = 0; i < sz; i++) {
     const Value value = (Value)map_at(m, i);
-    M_Object o = *(M_Object*)(ARRAY_PTR(v) + i * ARRAY_SIZE(v)) = new_object(shred->info->mp, NULL, t);
+    M_Object o = *(M_Object*)(ARRAY_PTR(v) + (i + new_offset) * ARRAY_SIZE(v)) = new_object(shred->info->mp, NULL, t);
     *(Type*)o->data = type_class(gwion, value->type);
     *(M_Object*)(o->data + SZ_INT) = new_string2(gwion, NULL, value->type->name);
     *(M_Object*)(o->data + SZ_INT*2) = new_string2(gwion, NULL, value->name);
@@ -41,21 +47,29 @@ static void fill_values(const VM_Shred shred, const Type base, const M_Vector v,
       } else
         *(m_uint**)(o->data + SZ_INT*5) = &*(m_uint*)(t->nspc->vtable.ptr + value->from->offset);
     }
-
   }
+  return new_offset + sz;
 }
 
+ANN static m_uint count_values(const Type t, const m_uint base) {
+  const Map m = t->nspc ? &t->nspc->info->value->map : NULL;
+  const m_uint new_base = safe_map_size(m) + base;
+  if(t->info->parent)
+    return count_values(t->info->parent, new_base);
+  return new_base;
+}
 
 static SFUN(reflection) {
   const VM_Code code = *(VM_Code*)REG(SZ_INT);
   const Type t = (*(Type*)MEM(0));
   const Map m = t->nspc ? &t->nspc->info->value->map : NULL;
-  const m_uint sz = map_size(m);
+//  const m_uint sz = map_size(m);
+  const m_uint sz = count_values(t, 0);
   const M_Object ret = new_array(shred->info->mp, code->ret_type, sz);
   vector_add(&shred->gc, (m_uint)ret);
   *(M_Object*)RETURN = ret;
   if(!sz)return;
-  fill_values(shred, t, ARRAY(ret), code->ret_type->info->base_type, NULL);
+  fill_values(shred, t, ARRAY(ret), code->ret_type->info->base_type, NULL, 0);
 }
 
 static SFUN(reflection_object) {
@@ -63,12 +77,13 @@ static SFUN(reflection_object) {
   const M_Object arg = *(M_Object*)MEM(0);
   const Type t = arg->type_ref;
   const Map m = t->nspc ? &t->nspc->info->value->map : NULL;
-  const m_uint sz = map_size(m);
+  const m_uint sz = count_values(t, 0);
+//  const m_uint sz = map_size(m);
   const M_Object ret = new_array(shred->info->mp, code->ret_type, sz);
   vector_add(&shred->gc, (m_uint)ret);
   *(M_Object*)RETURN = ret;
   if(!sz)return;
-  fill_values(shred, t, ARRAY(ret), code->ret_type->info->base_type, arg);
+  fill_values(shred, t, ARRAY(ret), code->ret_type->info->base_type, arg, 0);
 }
 
 
