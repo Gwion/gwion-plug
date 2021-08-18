@@ -267,6 +267,74 @@ arr_getx(a,
    *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
 
+//static void hydrate(const Gwion gwion, dom::object json, const M_Object o, const Type t) {
+// think about the cleaning
+static void hydrate(const Gwion gwion, dom::element elem, const M_Object o, const Type t) {
+  if(!t->nspc)return;
+  if(t->array_depth) {
+    dom::array dom_array = elem.get_array();
+    const Type btype = t->info->base_type;
+    const Type atype = array_type(gwion->env, btype, t->array_depth);
+    const M_Vector array = ARRAY(o) = new_m_vector(gwion->mp, t->info->base_type->size, 0);
+    m_uint i = 0;
+    for(auto a : dom_array) {
+      if(isa(btype, gwion->type[et_int]) > 0) {
+        int64_t i = a.get_int64();
+        m_vector_add(array, &i);
+      } else if(tflag(btype, tflag_float) > 0) {
+        double f = a.get_double();
+        m_float val  = a.get_double();
+        m_vector_add(array, &val);
+      } else if(btype == gwion->type[et_string]) { // what about string extended?
+        std::string_view s = a.get_string();
+        const M_Object str = new_string2(gwion, NULL, (m_str)s.data());
+        m_vector_add(array, &str);
+      } else if(isa(btype, gwion->type[et_object]) > 0) {
+        const M_Object tmp = new_object(gwion->mp, NULL, btype);
+        m_vector_add(array, &tmp);
+        hydrate(gwion, a, tmp, btype);
+      } else exit(12);
+      i++;
+    }
+    return;
+  }
+  if(t->info->parent)
+    hydrate(gwion, elem, o, t->info->parent);
+  dom::object json = elem.get_object();
+  const Map m = &t->nspc->info->value->map;
+  for(m_uint i = 0; i < map_size(m); i++) {
+    const Value value = (Value)map_at(m, i);
+    if(is_func(gwion, value->type))continue;
+    if(!vflag(value, vflag_member))continue;
+    if(isa(value->type, gwion->type[et_int]) > 0) {
+      int64_t i = (json)[value->name];
+      *(m_int*)(o->data + value->from->offset) = i;
+    } else if(tflag(value->type, tflag_float) > 0) {
+      double f = (json)[value->name];
+      *(m_float*)(o->data + value->from->offset) = f;
+    } else if(value->type == gwion->type[et_string]) { // what about string extended?
+      std::string_view s = (json)[value->name];
+      *(M_Object*)(o->data + value->from->offset) = new_string2(gwion, NULL, (m_str)s.data());
+    } else if(isa(value->type, gwion->type[et_object]) > 0) {
+      const M_Object tmp = new_object(gwion->mp, NULL, value->type);
+      *(M_Object*)(o->data + value->from->offset) = tmp;
+      dom::element dom = (json)[value->name];
+      hydrate(gwion, dom, tmp, value->type);
+    } else exit(12);
+  }
+}
+
+static MFUN(Hydrate) {
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  const M_Object ret = new_object(shred->info->mp, shred, code->ret_type);
+  *(M_Object*)RETURN = ret;
+  try {
+    hydrate(shred->info->vm->gwion, SIMDJSON(o)->element, ret, ret->type_ref);
+  } catch (const simdjson_error &e) {
+    handle(shred, "JsonHydrateError");
+  }
+}
+
 static void tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init);
 static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init) {
   if(t->info->parent)
@@ -488,6 +556,9 @@ GWION_IMPORT(SimdJSON) {
 
   GWI_BB(gwi_func_ini(gwi, "string", "pp"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_pp, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "T", "hydrate:[T]"))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)Hydrate, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "string", "tojson"))
   GWI_BB(gwi_func_arg(gwi, "Object", "o"))
