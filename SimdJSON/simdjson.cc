@@ -278,24 +278,24 @@ static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o,
     const Type base = array_base(t);
     bool _init = false;
     for(m_uint i = 0; i < m_vector_size(array); i++) {
-    if(is_func(gwion, base))continue;
-    if(_init)*str << ",";
-    if(isa(base, gwion->type[et_int]) > 0)
-      *str << *(m_int*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
-    else if(tflag(base, tflag_float) > 0)
-      *str << *(m_float*)(array->ptr + ARRAY_OFFSET + SZ_FLOAT*i);
-    else if(base == gwion->type[et_string])
-      *str << "\"" << STRING(*(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i)) << "\"" ;
-    else if(isa(base, gwion->type[et_object]) > 0) {
-      const M_Object obj = *(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
-      bool _init = false;
-      tojson(gwion, str, obj, obj->type_ref, &_init);
-    }
-    else exit(12);
+      if(is_func(gwion, base))continue;
+      if(_init)*str << ",";
+      if(isa(base, gwion->type[et_int]) > 0)
+        *str << *(m_int*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
+      else if(tflag(base, tflag_float) > 0)
+        *str << *(m_float*)(array->ptr + ARRAY_OFFSET + SZ_FLOAT*i);
+      else if(base == gwion->type[et_string])
+        *str << "\"" << STRING(*(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i)) << "\"" ;
+      else if(isa(base, gwion->type[et_object]) > 0) {
+        const M_Object obj = *(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
+        bool _init = false;
+        tojson(gwion, str, obj, obj->type_ref, &_init);
+      } else exit(12);
 // ...
-    _init = true;
+      _init = true;
     }
     *str << "]";
+    *init = true;
   }
   const Map m = &t->nspc->info->value->map;
   for(m_uint i = 0; i < map_size(m); i++) {
