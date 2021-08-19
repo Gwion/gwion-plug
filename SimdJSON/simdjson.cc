@@ -313,13 +313,17 @@ static void hydrate(const Gwion gwion, dom::element elem, const M_Object o, cons
       double f = (json)[value->name];
       *(m_float*)(o->data + value->from->offset) = f;
     } else if(value->type == gwion->type[et_string]) { // what about string extended?
-      std::string_view s = (json)[value->name];
-      *(M_Object*)(o->data + value->from->offset) = new_string2(gwion, NULL, (m_str)s.data());
+      if(elem.is_string()) { // skipping if not string (bad?)
+        std::string_view s = (json)[value->name];
+        *(M_Object*)(o->data + value->from->offset) = new_string2(gwion, NULL, (m_str)s.data());
+      }
     } else if(isa(value->type, gwion->type[et_object]) > 0) {
-      const M_Object tmp = new_object(gwion->mp, NULL, value->type);
-      *(M_Object*)(o->data + value->from->offset) = tmp;
-      dom::element dom = (json)[value->name];
-      hydrate(gwion, dom, tmp, value->type);
+      if(elem.is_object()) { // same as string
+        const M_Object tmp = new_object(gwion->mp, NULL, value->type);
+        *(M_Object*)(o->data + value->from->offset) = tmp;
+        dom::element dom = (json)[value->name];
+        hydrate(gwion, dom, tmp, value->type);
+      }
     } else exit(12);
   }
 }
@@ -369,6 +373,8 @@ static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o,
       _init = true;
     }
     *str << "]";
+//    if(is_base_array(o->type_ref))
+//      return;
     *init = true;
   }
   const Map m = &t->nspc->info->value->map;
@@ -383,11 +389,19 @@ static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o,
       *str << *(m_int*)(o->data + value->from->offset);
     } else if(tflag(value->type, tflag_float) > 0)
       *str << *(m_float*)(o->data + value->from->offset);
-    else if(value->type == gwion->type[et_string])
-      *str << "\"" << STRING(*(M_Object*)(o->data + value->from->offset)) << "\"";
-    else if(isa(value->type, gwion->type[et_object]) > 0) {
+    else if(value->type == gwion->type[et_string]) {
+      const M_Object obj = *(M_Object*)(o->data + value->from->offset);
+      if(obj)
+        *str << "\"" << STRING(obj) << "\"";
+      else
+        *str << "null";
+    } else if(isa(value->type, gwion->type[et_object]) > 0) {
       bool _init = false;
-      tojson(gwion, str, (*(M_Object*)(o->data + value->from->offset)), value->type, &_init);
+      const M_Object obj = *(M_Object*)(o->data + value->from->offset);
+      if(obj)
+        tojson(gwion, str, obj, obj->type_ref, &_init);
+      else
+        *str << "null";
     } else exit(12);
     *init = true;
   }
