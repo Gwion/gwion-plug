@@ -8,6 +8,10 @@ extern "C" {
 
 using namespace simdjson;
 
+// should go in a module
+static Gwion local_gwion;
+//static VM_Shred local_shred;
+
 struct GwSimdJson {
   dom::parser *parser;
   dom::element element;
@@ -266,10 +270,25 @@ arr_getx(a,
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
+#include "shreduler_private.h"
+static void hydrate_ctor(const VM_Shred shred, const M_Object o) {
+  Type t = o->type_ref;
+  do {
+    if(tflag(t, tflag_ctor) && t->nspc->pre_ctor) {
+      const VM_Code cb = vmcode_callback(shred->info->mp, t->nspc->pre_ctor);
+      const VM_Shred sh = new_vm_shred(shred->info->mp, cb);
+      sh->base = shred->base;
+      *(M_Object*)sh->mem = o;
+      vm_add_shred(local_gwion->vm, sh);
+      vm_run(local_gwion->vm);
+      local_gwion->vm->shreduler->bbq->is_running = 1;
+    }
+  } while((t = t->info->parent));
+}
 
 //static void hydrate(const Gwion gwion, dom::object json, const M_Object o, const Type t) {
 // think about the cleaning
-static void hydrate(const Gwion gwion, dom::element elem, const M_Object o, const Type t) {
+static void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, const M_Object o, const Type t) {
   if(!t->nspc)return;
   if(t->array_depth) {
     dom::array dom_array = elem.get_array();
@@ -291,15 +310,18 @@ static void hydrate(const Gwion gwion, dom::element elem, const M_Object o, cons
         m_vector_add(array, &str);
       } else if(isa(btype, gwion->type[et_object]) > 0) {
         const M_Object tmp = new_object(gwion->mp, NULL, btype);
+if(isa(btype, gwion->type[et_event]) > 0)
+vector_init(&EV_SHREDS(tmp));
+        hydrate_ctor(shred, tmp);
         m_vector_add(array, &tmp);
-        hydrate(gwion, a, tmp, btype);
+        hydrate(gwion, shred, a, tmp, btype);
       } else exit(12);
       i++;
     }
     return;
   }
   if(t->info->parent)
-    hydrate(gwion, elem, o, t->info->parent);
+    hydrate(gwion, shred, elem, o, t->info->parent);
   dom::object json = elem.get_object();
   const Map m = &t->nspc->info->value->map;
   for(m_uint i = 0; i < map_size(m); i++) {
@@ -320,9 +342,12 @@ static void hydrate(const Gwion gwion, dom::element elem, const M_Object o, cons
     } else if(isa(value->type, gwion->type[et_object]) > 0) {
       if(elem.is_object()) { // same as string
         const M_Object tmp = new_object(gwion->mp, NULL, value->type);
+if(isa(value->type, gwion->type[et_event]) > 0)
+vector_init(&EV_SHREDS(tmp));
+        hydrate_ctor(shred, tmp);
         *(M_Object*)(o->data + value->from->offset) = tmp;
         dom::element dom = (json)[value->name];
-        hydrate(gwion, dom, tmp, value->type);
+        hydrate(gwion, shred, dom, tmp, value->type);
       }
     } else exit(12);
   }
@@ -332,8 +357,23 @@ static MFUN(Hydrate) {
   const VM_Code code = *(VM_Code*)REG(SZ_INT);
   const M_Object ret = new_object(shred->info->mp, shred, code->ret_type);
   *(M_Object*)RETURN = ret;
+// pre ctor
+  hydrate_ctor(shred, ret);
+/*
+  Type t = code->ret_type;
+  do {
+    if(tflag(t, tflag_ctor) && t->nspc->pre_ctor) {
+      const VM_Code cb = vmcode_callback(shred->info->mp, t->nspc->pre_ctor);
+      const VM_Shred sh = new_vm_shred(shred->info->mp, cb);
+      sh->base = shred->base;
+      *(M_Object*)sh->mem = ret;
+      vm_add_shred(local_gwion->vm, sh);
+      vm_run(local_gwion->vm);
+    }
+  } while((t = t->info->parent));
+*/
   try {
-    hydrate(shred->info->vm->gwion, SIMDJSON(o)->element, ret, ret->type_ref);
+    hydrate(shred->info->vm->gwion, shred, SIMDJSON(o)->element, ret, ret->type_ref);
   } catch (const simdjson_error &e) {
     handle(shred, "JsonHydrateError");
   }
@@ -373,8 +413,8 @@ static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o,
       _init = true;
     }
     *str << "]";
-//    if(is_base_array(o->type_ref))
-//      return;
+    if(is_base_array(o->type_ref))
+      return;
     *init = true;
   }
   const Map m = &t->nspc->info->value->map;
@@ -421,6 +461,15 @@ static SFUN(ToJson) {
   tojson(shred->info->vm->gwion, &str, *(M_Object*)MEM(0), o->type_ref, &init);
   *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.str().data());
 }
+
+// return an Event:[T]
+// we need to shreduler_remove false
+// when creating an object
+// get the constructor code (emit all that?)
+// reshredule shred at the end of code
+// when back to original shred broadcast the event
+// what to do about the result?
+// it should only be available at the end of operations
 
 extern "C" {
 
@@ -610,6 +659,10 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_oper_ini(gwi, (m_str)"SimdJSON.Get", (m_str)OP_ANY_TYPE, NULL));
   GWI_BB(gwi_oper_add(gwi, opck_simdjson_get_at));
   GWI_BB(gwi_oper_end(gwi, (m_str)"=>", NULL));
+
+
+local_gwion = gwion_cpy(gwi->gwion->vm)->gwion;
+
   return GW_OK;
 }
 }
