@@ -270,6 +270,7 @@ arr_getx(a,
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
+/*
 #include "shreduler_private.h"
 static void hydrate_ctor(const VM_Shred shred, const M_Object o) {
   Type t = o->type_ref;
@@ -285,7 +286,7 @@ static void hydrate_ctor(const VM_Shred shred, const M_Object o) {
     }
   } while((t = t->info->parent));
 }
-
+*/
 //static void hydrate(const Gwion gwion, dom::object json, const M_Object o, const Type t) {
 // think about the cleaning
 static void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, const M_Object o, const Type t) {
@@ -312,7 +313,7 @@ static void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, 
         const M_Object tmp = new_object(gwion->mp, NULL, btype);
 if(isa(btype, gwion->type[et_event]) > 0)
 vector_init(&EV_SHREDS(tmp));
-        hydrate_ctor(shred, tmp);
+//        hydrate_ctor(shred, tmp);
         m_vector_add(array, &tmp);
         hydrate(gwion, shred, a, tmp, btype);
       } else exit(12);
@@ -344,7 +345,7 @@ vector_init(&EV_SHREDS(tmp));
         const M_Object tmp = new_object(gwion->mp, NULL, value->type);
 if(isa(value->type, gwion->type[et_event]) > 0)
 vector_init(&EV_SHREDS(tmp));
-        hydrate_ctor(shred, tmp);
+//        hydrate_ctor(shred, tmp);
         *(M_Object*)(o->data + value->from->offset) = tmp;
         dom::element dom = (json)[value->name];
         hydrate(gwion, shred, dom, tmp, value->type);
@@ -358,7 +359,7 @@ static MFUN(Hydrate) {
   const M_Object ret = new_object(shred->info->mp, shred, code->ret_type);
   *(M_Object*)RETURN = ret;
 // pre ctor
-  hydrate_ctor(shred, ret);
+//  hydrate_ctor(shred, ret);
 /*
   Type t = code->ret_type;
   do {
