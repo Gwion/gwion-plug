@@ -136,20 +136,24 @@ static void jack_run(VM* vm, Driver* di) {
     gw_err("cannot activate client\n");
     return;
   }
-  signal(SIGINT, sig);
-  signal(SIGTERM, sig);
+//  signal(SIGINT, sig);
+//  signal(SIGTERM, sig);
   if(init_ports(info, di->si->out, 0) < 0 || init_ports(info, di->si->in,  1) < 0)
     return;
-  while(vm->bbq->is_running && run)
-    usleep(10);
-  jack_deactivate(info->client);
-  jack_client_close(info->client);
+//  while(vm->bbq->is_running && run)
+//    usleep(10);
+  while(vm->bbq->is_running)
+    usleep(100);
+//  jack_deactivate(info->client);
+//  jack_client_close(info->client);
 }
 
 static void jack_del(VM* vm __attribute__((unused)), Driver* di) {
   struct JackInfo* info = (struct JackInfo*)di->driver->data;
   if(!info)
     return;
+  jack_deactivate(info->client);
+  jack_client_close(info->client);
   free(info->iport);
   free(info->oport);
   xfree(info);
