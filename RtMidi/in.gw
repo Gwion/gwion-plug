@@ -1,0 +1,34 @@
+#import RtMidi
+
+#! open a MIDI output device
+fun RtMidi.In open(const string name) {
+
+  #! get names of all available devices
+  RtMidi.In.names() => const auto names;
+
+  #! check full match
+  foreach(i, a: names) {
+    if(name == a)
+      return new RtMidi.In(i);
+  }
+
+  #! check partial match
+  foreach(i, a: names) {
+    if(a.find(name) > -1)
+      return new RtMidi.In(i);
+  }
+
+  <<< "${ name } not found. Opening virtual device" >>>;
+  return new RtMidi.In(name);
+}
+
+#! read incoming messages
+fun void read(const RtMidi.In min) {
+  min => now;
+  var int status, data1, data2;
+  while(min.read(status, data1, data2))
+    <<< "${status} ${data1} ${data2}" >>>;
+}
+
+"Launch" => open => const auto min => read;
+

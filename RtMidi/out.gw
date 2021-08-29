@@ -1,0 +1,31 @@
+#import RtMidi
+
+#! open a MIDI output device
+fun RtMidi.Out open(const string name) {
+
+  #! get names of all available devices
+  RtMidi.Out.names() => const auto names;
+
+  #! check full match
+  foreach(i, a: names) {
+    if(name == a)
+      return new RtMidi.Out(i);
+  }
+
+  #! check partial match
+  foreach(i, a: names) {
+    if(a.find(name) > -1)
+      return new RtMidi.Out(i);
+  }
+
+  <<< "${ name } not found. Opening virtual device" >>>;
+  return new RtMidi.Out(name);
+}
+
+#! send a midi message
+fun void send(const RtMidi.Out mout) {
+  mout << 128 << 13 << 14;
+  mout.send();
+}
+
+"aseqdump" => open => const auto mout => send;
