@@ -1,7 +1,7 @@
 #include <RtMidi.h>
 #include "Gwion.hh"
 
-ANN static void error_callback(RtMidiError::Type type, const std::string &errorText, void *data) {
+ANN static void error_callback(RtMidiError::Type type, const std::string &errorText, void *data NUSED) {
   switch(type) {
     case RtMidiError::Type::WARNING:
      gw_err("{+Y}[RtMidi] Warning{0}: ");
@@ -47,8 +47,11 @@ struct MidiIn {
 };
 
 static DTOR(rtmidiin_dtor) {
-  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT); \
+puts(__func__);
+  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
+  MUTEX_LOCK(min->mutex);
   delete min->in;
+  MUTEX_UNLOCK(min->mutex);
   MUTEX_CLEANUP(min->mutex);
   m_vector_release(&min->msgs);
 }
@@ -59,7 +62,7 @@ ANN static inline void min_add(struct MidiIn *min, unsigned char msg[3]) {
   MUTEX_UNLOCK(min->mutex);
 }
 
-ANN static void callback(double timeStamp, std::vector<unsigned char> *message, void *data ) {
+ANN static void callback(double timeStamp NUSED, std::vector<unsigned char> *message, void *data) {
   const M_Object o = (M_Object)data;
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
   size_t sz = message->size(),
@@ -81,7 +84,7 @@ ANN static void callback(double timeStamp, std::vector<unsigned char> *message, 
 }
 
 ANN static void min_init(struct MidiIn *min, const M_Object o) {
-  min->in = new RtMidiIn(RtMidi::Api::UNSPECIFIED, "Gwion Input");
+  min->in = new RtMidiIn(RtMidi::Api::UNSPECIFIED, "Gwion In");
   min->in->setCallback(callback, o);
   min->in->setErrorCallback(error_callback, o);
   MUTEX_SETUP(min->mutex);
@@ -124,7 +127,7 @@ static MFUN(rtmidiin_read) {
   MUTEX_UNLOCK(min->mutex);
 }
 
-static MFUN(rtmidi_ignore) {
+static MFUN(rtmidiin_ignore) {
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
   min->in->ignoreTypes(*(m_uint*)MEM(SZ_INT), *(m_uint*)MEM(SZ_INT*2), *(m_uint*)MEM(SZ_INT*3));
 }
@@ -137,7 +140,7 @@ static SFUN(rtmidi##io##_count) {\
 static SFUN(rtmidi##io##_name) {                                                   \
   RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);                        \
   std::string str = io.getPortName(*(m_int*)MEM(0));                           \
-  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.data()); \
+  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)str.data()); \
 }                                                                              \
 \
 static SFUN(rtmidi##io##_names) {\
@@ -148,7 +151,7 @@ static SFUN(rtmidi##io##_names) {\
   for(m_uint i = 0; i < count; i++) {\
     std::string str = io.getPortName(i);\
     *(M_Object*)(ARRAY(ret)->ptr + ARRAY_OFFSET + i * SZ_INT) =\
-           new_string2(shred->info->vm->gwion, shred, str.data());\
+           new_string2(shred->info->vm->gwion, shred, (m_str)str.data());\
   }\
   *(M_Object*)RETURN = ret;\
 }\
@@ -256,7 +259,7 @@ GWION_IMPORT(RtMidi) {
   GWI_BB(gwi_func_arg(gwi, "bool", "sysex"))
   GWI_BB(gwi_func_arg(gwi, "bool", "midiTime"))
   GWI_BB(gwi_func_arg(gwi, "bool", "midiSense"))
-  GWI_BB(gwi_func_end(gwi, rtmidiin_read, ae_flag_none))
+  GWI_BB(gwi_func_end(gwi, rtmidiin_ignore, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
   DECL_OB(const Type, t_rtmidiout, = gwi_class_ini(gwi, "Out", "int[0]"));
