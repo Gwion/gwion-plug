@@ -14,6 +14,7 @@ extern "C"
 #include "operator.h"
 #include "import.h"
 #include "ugen.h"
+#include "gwi.h"
 
 #define gwi_mk_type(a, b, c, d)       gwi_mk_type(a, (m_str)b, c, (m_str)d)
 #define gwi_class_ini(a, b, c)        gwi_class_ini(a, (m_str)b, (m_str)c)
