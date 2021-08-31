@@ -119,7 +119,6 @@ static INSTR(reflection_cast) {
   const M_Object o = *(M_Object*)(shred->reg - SZ_INT);
   const Type lhs = (*(Type*)o->data)->info->base_type;
   const Type rhs = ((Type)instr->m_val)->info->base_type;
-  printf("lhs:%s rhs:%s\n", lhs->name, rhs->name);
   if(isa(lhs, rhs) > 0) {
     const m_bit *base  = *(m_bit**)(o->data + SZ_INT*5);
     shred->reg += instr->m_val2 - SZ_INT;
@@ -139,8 +138,10 @@ static OP_EMIT(opem_reflection_cast) {
 
 static INSTR(reflection_eq) {
   shred->reg -= SZ_INT;
-  const Type lhs = (*(Type*)REG(-SZ_INT))->info->base_type;
-  const Type rhs = (*(Type*)REG(0))->info->base_type;
+  const Type _lhs = *(Type*)REG(-SZ_INT);
+  const Type _rhs = *(Type*)REG(0);
+  const Type lhs = _lhs->info->base_type ?: _lhs;
+  const Type rhs = _rhs->info->base_type ?: _rhs;
   *(m_uint*)REG(-SZ_INT) =
       get_depth(lhs) == get_depth(rhs) &&
       isa(array_base(lhs), array_base(rhs)) > 0;
