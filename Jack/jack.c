@@ -32,7 +32,7 @@ static void inner_cb(struct JackInfo* info, jack_default_audio_sample_t** in,
   jack_nframes_t frame;
   VM* vm = info->vm;
   m_uint chan;
-  for(frame = 0; frame < nframes; frame++) {
+  for(frame = 0; frame < nframes && vm->bbq->is_running; frame++) {
     for(chan = 0; chan < vm->bbq->si->in; chan++)
       vm->bbq->in[chan] = in[chan][frame];
     vm->bbq->run(vm);
@@ -144,6 +144,7 @@ static void jack_run(VM* vm, Driver* di) {
 //    usleep(10);
   while(vm->bbq->is_running)
     usleep(100);
+//    usleep(10);
 //  jack_deactivate(info->client);
 //  jack_client_close(info->client);
 }
