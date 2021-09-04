@@ -25,6 +25,7 @@ static void send_data(struct lws *wsi) {
   }
   lws_write( wsi, c, sizeof(float) * BUFLEN * NCHAN, LWS_WRITE_BINARY );
 }
+
 static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len){
   (void)user;
   (void)in;
@@ -78,4 +79,180 @@ GWDRIVER(ws) {
   d->ini = ws_ini;
   d->run = ws_run;
   d->del = ws_del;
+}
+
+#include "instr.h"
+#include "gwion.h"
+#include "object.h"
+#include "operator.h"
+#include "import.h"
+
+struct WsMsg {
+  size_t capa;
+  size_t size;
+  m_bit  data[];
+};
+
+struct Ws {
+  struct WsMsg *msg;
+  struct Vector_ v;
+	struct lws_context *ctx;
+  MUTEX_TYPE mutex;
+  MemPool mp;
+  THREAD_TYPE thread;
+  volatile bool run;
+};
+/*
+static INSTR(ws_add_int) {
+  POP_REG(shred, SZ_INT);
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  struct Ws *ws = &*(struct Ws*)o->data;
+  struct WsMsg *msg = ws->msg;
+  const m_int i = *(m_int*)REG(0);
+  const size_t next_size = msg->size + SZ_INT;
+  if(msg->size > msg->capa) {
+    const size_t next_capa = msg->capa*2;
+    msg = mp_realloc(shred->info->mp, msg->data, msg->size, next_capa);
+  }
+  *(m_int*)(msg->data + msg->size) = i;
+  msg->size = next_size;
+}
+
+static INSTR(ws_add_float) {
+  POP_REG(shred, SZ_FLOAT);
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  struct Ws *ws = &*(struct Ws*)o->data;
+  struct WsMsg *msg = ws->msg;
+  const m_float f = *(m_float*)REG(0);
+  const size_t next_size = msg->size + SZ_FLOAT;
+  if(msg->size > msg->capa) {
+    const size_t next_capa = msg->capa*2;
+    msg = mp_realloc(shred->info->mp, msg->data, msg->size, next_capa);
+  }
+  *(m_float*)(msg->data + msg->size) = f;
+  msg->size = next_size;
+}
+*/
+static INSTR(ws_add_string) {
+  POP_REG(shred, SZ_INT);
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
+  struct Ws *ws = &*(struct Ws*)o->data;
+  struct WsMsg *msg = ws->msg;
+  const m_str s = STRING(*(M_Object*)REG(0));
+  const size_t sz = strlen(s);
+  const size_t next_size = msg->size + sz;
+  if(msg->size > msg->capa) {
+    const size_t next_capa = msg->capa*2;
+    msg = mp_realloc(shred->info->mp, msg->data, msg->size, next_capa);
+  }
+  memcpy(msg->data, s, sz);
+  msg->size = next_size;
+}
+
+#define WS_MSG_CAP (8 + sizeof(struct WsMsg))
+static struct WsMsg* new_wsmsg(const MemPool mp) {
+  struct WsMsg *msg = mp_calloc2(mp, WS_MSG_CAP);
+  msg->capa  = WS_MSG_CAP;
+  msg->size = 0;
+  return msg;
+}
+
+static MFUN(ws_send) {
+  struct Ws *ws = &*(struct Ws*)o->data;
+  MUTEX_LOCK(ws->mutex);
+  vector_add(&ws->v, (m_uint)*(struct WsMsg**)o->data);
+  MUTEX_UNLOCK(ws->mutex);
+  *(struct WsMsg**)o->data = new_wsmsg(shred->info->mp);
+}
+
+static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len){
+  (void)in;
+  (void)len;
+  const M_Object o = lws_context_user(lws_get_context(wsi));
+	switch(reason) {
+		case LWS_CALLBACK_RECEIVE:
+			lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
+			break;
+		case LWS_CALLBACK_SERVER_WRITEABLE:
+  struct Ws *ws = &*(struct Ws*)o->data;
+      MUTEX_LOCK(ws->mutex);
+      for(m_uint i = 0; i < vector_size(&ws->v); i++) {
+        struct WsMsg *msg = (struct WsMsg*)vector_at(&ws->v, i);
+        lws_write( wsi, msg->data, msg->size, LWS_WRITE_BINARY );
+        mp_free2(ws->mp, msg->capa, msg);
+      }
+      vector_clear(&ws->v);
+      MUTEX_UNLOCK(ws->mutex);
+			lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
+			break;
+		default:
+			break;
+	}
+	return 0;
+}
+
+static struct lws_protocols ws_protocols[] = {
+	{ .name="http-only", .callback=ws_callback, },
+	{ .name=NULL } /* terminator */
+};
+
+static void* ws_process(void* data) {
+  struct Ws *ws = (struct Ws*)data;
+  while(ws->run)
+    lws_service(ws->ctx, 0);
+  return NULL;
+}
+
+static MFUN(ws_new) {
+  *(M_Object*)RETURN = o;
+  struct Ws *ws = &*(struct Ws*)o->data;
+  const m_int port = *(m_int*)MEM(SZ_INT);
+  ws->msg = new_wsmsg(shred->info->mp);
+  vector_init(&ws->v);
+  MUTEX_SETUP(ws->mutex);
+  struct lws_context_creation_info info =
+    { .port=port, .protocols=ws_protocols, .user=o };
+	ws->ctx = lws_create_context( &info );
+  ws->mp = shred->info->mp;
+  ws->run = true;
+  THREAD_CREATE(ws->thread, ws_process, ws);
+}
+
+static DTOR(ws_dtor) {
+  struct Ws *ws = &*(struct Ws*)o->data;
+  struct WsMsg *msg = ws->msg;
+	lws_context_destroy(ws->ctx);
+  for(m_uint i = 0; i < vector_size(&ws->v); i++) {
+    struct WsMsg *msg = *(struct WsMsg**)o->data;
+    mp_free2(shred->info->mp, msg->capa, msg);
+  }
+  mp_free2(shred->info->mp, msg->capa, msg->data);
+  vector_release((Vector)(o->data + SZ_INT));
+  MUTEX_CLEANUP(ws->mutex);
+}
+
+GWION_IMPORT(ws) {
+
+  lws_set_log_level(LLL_ERR, NULL);
+
+  DECL_BB(const Type, t_ws, = gwi_class_ini(gwi, "WebSocket", "Object"));
+  SET_FLAG(t_ws, abstract);
+  gwi_class_xtor(gwi, NULL, ws_dtor);
+  t_ws->nspc->offset += sizeof(struct Ws);
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"));
+  GWI_BB(gwi_func_arg(gwi, "int", "port"));
+  GWI_BB(gwi_func_end(gwi, ws_new, ae_flag_none));
+  GWI_BB(gwi_func_ini(gwi, "void", "send"));
+  GWI_BB(gwi_func_end(gwi, ws_send, ae_flag_none));
+  GWI_BB(gwi_class_end(gwi));
+/*
+  GWI_BB(gwi_oper_ini(gwi, "WebSocket", "int", "WebSocket"));
+  GWI_BB(gwi_oper_end(gwi, "<<", ws_add_int));
+
+  GWI_BB(gwi_oper_ini(gwi, "WebSocket", "float", "WebSocket"));
+  GWI_BB(gwi_oper_end(gwi, "<<", ws_add_float));
+*/
+  GWI_BB(gwi_oper_ini(gwi, "WebSocket", "string", "WebSocket"));
+  GWI_BB(gwi_oper_end(gwi, "<<", ws_add_string));
+
 }

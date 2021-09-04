@@ -1,4 +1,9 @@
 #import WebSocket
 
-var SinOsc s ~> dac;
-5::second => now;
+new WebSocket(1111) => const auto ws;
+while(true) {
+  ws << "1";
+  <<< "send" >>>;
+  ws.send();
+  second => now;
+}
