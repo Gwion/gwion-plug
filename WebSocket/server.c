@@ -174,7 +174,8 @@ static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason, void *
 			lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
 			break;
 		case LWS_CALLBACK_SERVER_WRITEABLE:
-  struct Ws *ws = &*(struct Ws*)o->data;
+{
+      struct Ws *ws = &*(struct Ws*)o->data;
       MUTEX_LOCK(ws->mutex);
       for(m_uint i = 0; i < vector_size(&ws->v); i++) {
         struct WsMsg *msg = (struct WsMsg*)vector_at(&ws->v, i);
@@ -184,6 +185,7 @@ static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason, void *
       vector_clear(&ws->v);
       MUTEX_UNLOCK(ws->mutex);
 			lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
+}
 			break;
 		default:
 			break;
