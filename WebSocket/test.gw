@@ -2,8 +2,6 @@
 
 new WebSocket(1111) => const auto ws;
 while(true) {
-  ws << "1";
-  <<< "send" >>>;
-  ws.send();
+  #"{ "i" : 1 }"# => ws.send;
   second => now;
 }
