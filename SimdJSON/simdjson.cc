@@ -130,7 +130,6 @@ static SFUN(simdjson_load) {
   const VM_Code code = *(VM_Code *)REG(SZ_INT);
   const M_Object ret = new_object(shred->info->mp, shred, code->ret_type);
   *(M_Object *)RETURN = ret;
-  vector_add(&shred->gc, (m_uint)ret);
   try {
     auto s = SIMDJSON(ret);
     s->parser = new dom::parser();
