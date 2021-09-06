@@ -1,0 +1,3 @@
+#import TermColor
+
+<<< "{+Y}test{0}" $ TermColor >>>;
