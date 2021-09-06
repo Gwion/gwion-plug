@@ -294,7 +294,9 @@ static void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, 
     dom::array dom_array = elem.get_array();
     const Type btype = t->info->base_type;
     const Type atype = array_type(gwion->env, btype, t->array_depth);
-    const M_Vector array = ARRAY(o) = new_m_vector(gwion->mp, t->info->base_type->size, 0);
+//    const M_Vector array = ARRAY(o) = new_m_vector(gwion->mp, t->info->base_type->size, 0);
+    const M_Vector array = ARRAY(o);
+    m_vector_init(ARRAY(o), t->info->base_type->size, 0);
     m_uint i = 0;
     for(auto a : dom_array) {
       if(isa(btype, gwion->type[et_int]) > 0) {

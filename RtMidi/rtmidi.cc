@@ -47,7 +47,6 @@ struct MidiIn {
 };
 
 static DTOR(rtmidiin_dtor) {
-puts(__func__);
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
   MUTEX_LOCK(min->mutex);
   delete min->in;
