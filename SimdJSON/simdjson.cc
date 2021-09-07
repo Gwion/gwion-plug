@@ -377,7 +377,7 @@ static MFUN(Hydrate) {
   try {
     hydrate(shred->info->vm->gwion, shred, SIMDJSON(o)->element, ret, ret->type_ref);
   } catch (const simdjson_error &e) {
-    handle(shred, "JsonHydrateError");
+    handle(shred, (m_str)"JsonHydrateError");
   }
 }
 
