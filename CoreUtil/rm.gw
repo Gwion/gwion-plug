@@ -1,0 +1,8 @@
+#import CoreUtil
+
+CoreUtil.touch("rmme.gw");
+
+foreach(file : CoreUtil.glob("rmme.gw"))
+  <<< file >>>;
+
+CoreUtil.rm("rmme.gw");

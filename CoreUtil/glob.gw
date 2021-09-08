@@ -1,0 +1,4 @@
+#import CoreUtil
+
+foreach(filename : CoreUtil.glob("*.*"))
+   <<< filename >>>;
