@@ -2,6 +2,7 @@
   #include <glob.h>
   #include <dlfcn.h>
   #include <limits.h>
+  #include <sys/stat.h>
 #endif
 #include "unistd.h"
 #include "gwion_util.h"
@@ -103,6 +104,15 @@ static SFUN(core_envset) {
 #undef setenv
 #endif
 
+
+static SFUN(core_mkdir) {
+  const m_str dirname = STRING(*(M_Object*)MEM(0));
+#ifndef BUILD_ON_WINDOWS
+  *(m_uint*)RETURN = !mkdir(dirname, 0777);
+#else
+  *(m_uint*)RETURN = CreateDirectoryA(dirname, NULL);
+#endif
+}
 GWION_IMPORT(CoreUtil) {
   gwidoc(gwi, "Provide file system utilities");
   DECL_OB(const Type, t_coreutil, = gwi_struct_ini(gwi, "CoreUtil"));
@@ -143,11 +153,11 @@ GWION_IMPORT(CoreUtil) {
   GWI_BB(gwi_func_arg(gwi, "string", "key"))
   GWI_BB(gwi_func_arg(gwi, "string", "val"))
   GWI_BB(gwi_func_end(gwi, core_envset, ae_flag_static))
-/*
-  GWI_BB(gwi_func_ini(gwi, "int", "mkdir"))
+
+  GWI_BB(gwi_func_ini(gwi, "bool", "mkdir"))
   GWI_BB(gwi_func_arg(gwi, "string", "dir"))
   GWI_BB(gwi_func_end(gwi, core_mkdir, ae_flag_static))
-*/
+
 
   GWI_BB(gwi_struct_end(gwi))
   return GW_OK;
