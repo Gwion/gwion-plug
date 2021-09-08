@@ -108,7 +108,6 @@ ANN static void min_init(struct MidiIn *min, const M_Object o) {
 #define MIN_INIT(name, open)                        \
 static MFUN(rtmidiin_##name) {                      \
   *(M_Object*)RETURN = o;                           \
-/*vector_add(&shred->gc, (m_uint)o);*/\
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT); \
   try {                                             \
     min_init(min, o);                               \
@@ -182,7 +181,6 @@ static SFUN(rtmidi##io##_names) {\
   const unsigned int count = io.getPortCount();\
   const VM_Code code = *(VM_Code*)REG(0);\
   const M_Object ret = new_array(shred->info->mp, code->ret_type, count);\
-  /*ret->ref++;*//* what a hack */\
   for(m_uint i = 0; i < count; i++) {\
     std::string str = io.getPortName(i);\
     *(M_Object*)(ARRAY(ret)->ptr + ARRAY_OFFSET + i * SZ_INT) =\
@@ -203,9 +201,10 @@ static MFUN(rtmidiout_send) {
   RtMidiOut *out = *(RtMidiOut**)(o->data + SZ_INT*2);
   M_Vector array = ARRAY(o);
   const m_uint sz = m_vector_size(array);
+  if(!sz) return;
   std::vector<unsigned char> msg(sz);
   for(m_uint i = 0; i < sz; i++)
-    msg[i] = *(m_uint*)(array->ptr + ARRAY_OFFSET + i*SZ_INT);
+    msg[i] = *(m_uint*)(array->ptr + ARRAY_OFFSET + i*sz);
   try {
     out->sendMessage(&msg);
   } catch (RtMidiError &e) {
@@ -310,12 +309,12 @@ GWION_IMPORT(RtMidi) {
 
   gwidoc(gwi, "set midi-thru");
   GWI_BB(gwi_func_ini(gwi, "void", "connect"))
-  GWI_BB(gwi_func_arg(gwi, "Midiout", "out"))
+  GWI_BB(gwi_func_arg(gwi, "Out", "out"))
   GWI_BB(gwi_func_end(gwi, rtmidiin_connect, ae_flag_none))
 
   gwidoc(gwi, "unset midi-thru");
   GWI_BB(gwi_func_ini(gwi, "void", "disconnect"))
-  GWI_BB(gwi_func_arg(gwi, "Midiout", "out"))
+  GWI_BB(gwi_func_arg(gwi, "Out", "out"))
   GWI_BB(gwi_func_end(gwi, rtmidiin_disconnect, ae_flag_none))
 
 

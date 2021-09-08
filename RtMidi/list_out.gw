@@ -1,0 +1,3 @@
+#import RtMidi
+foreach(a : RtMidi.Out.names())
+  <<< a >>>;
