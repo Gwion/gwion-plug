@@ -44,6 +44,7 @@ struct MidiIn {
   RtMidiIn *in;
   MUTEX_TYPE mutex;
   struct M_Vector_ msgs;
+  struct Vector_   thru;
 };
 
 static DTOR(rtmidiin_dtor) {
@@ -53,6 +54,10 @@ static DTOR(rtmidiin_dtor) {
   MUTEX_UNLOCK(min->mutex);
   MUTEX_CLEANUP(min->mutex);
   m_vector_release(&min->msgs);
+  if(min->thru.ptr) {
+    for(m_uint i = 0; i < vector_size(&min->thru); i++)
+      _release((M_Object)vector_at(&min->thru, i), shred);
+  }
 }
 
 ANN static inline void min_add(struct MidiIn *min, unsigned char msg[3]) {
@@ -82,6 +87,16 @@ ANN static void callback(double timeStamp NUSED, std::vector<unsigned char> *mes
   broadcast(o);
 }
 
+ANN static void thru_callback(double timeStamp , std::vector<unsigned char> *message, void *data) {
+  callback(timeStamp, message, data);
+  const M_Object o = (M_Object)data;
+  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
+  for(m_uint i = 0; i < vector_size(&min->thru); i++) {
+    RtMidiOut *mout = (RtMidiOut*)vector_at(&min->thru, i);
+    mout->sendMessage(message);
+  }
+}
+
 ANN static void min_init(struct MidiIn *min, const M_Object o) {
   min->in = new RtMidiIn(RtMidi::Api::UNSPECIFIED, "Gwion In");
   min->in->setCallback(callback, o);
@@ -93,6 +108,7 @@ ANN static void min_init(struct MidiIn *min, const M_Object o) {
 #define MIN_INIT(name, open)                        \
 static MFUN(rtmidiin_##name) {                      \
   *(M_Object*)RETURN = o;                           \
+/*vector_add(&shred->gc, (m_uint)o);*/\
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT); \
   try {                                             \
     min_init(min, o);                               \
@@ -110,8 +126,27 @@ MIN_INIT(new3, openVirtualPort(STRING(*(M_Object*)MEM(SZ_INT))))
 
 #undef MIN_INIT
 
+static MFUN(rtmidiin_connect) {
+  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
+  const M_Object mout = *(M_Object*)MEM(SZ_INT);
+  mout->ref++;
+  if(!min->thru.ptr)
+    vector_init(&min->thru);
+  vector_add(&min->thru, (m_uint)mout);
+}
+
+static MFUN(rtmidiin_disconnect) {
+  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
+  const M_Object mout = *(M_Object*)MEM(SZ_INT);
+  const m_int idx = vector_find(&min->thru, (m_uint)mout);
+  if(idx != -1) {
+    vector_rem(&min->thru, idx);
+    release(mout, shred);
+  }
+}
+
 static MFUN(rtmidiin_read) {
-  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT); \
+  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
   MUTEX_LOCK(min->mutex);
   const m_uint sz = m_vector_size(&min->msgs);
   if(sz) {
@@ -147,10 +182,11 @@ static SFUN(rtmidi##io##_names) {\
   const unsigned int count = io.getPortCount();\
   const VM_Code code = *(VM_Code*)REG(0);\
   const M_Object ret = new_array(shred->info->mp, code->ret_type, count);\
+  /*ret->ref++;*//* what a hack */\
   for(m_uint i = 0; i < count; i++) {\
     std::string str = io.getPortName(i);\
     *(M_Object*)(ARRAY(ret)->ptr + ARRAY_OFFSET + i * SZ_INT) =\
-           new_string2(shred->info->vm->gwion, shred, (m_str)str.data());\
+           new_string2(shred->info->vm->gwion, NULL, (m_str)str.data());\
   }\
   *(M_Object*)RETURN = ret;\
 }\
@@ -240,6 +276,18 @@ GWION_IMPORT(RtMidi) {
 
   GWI_OB(gwi_struct_ini(gwi, (m_str)"RtMidi"));
 
+  DECL_OB(const Type, t_rtmidiout, = gwi_class_ini(gwi, "Out", "int[0]"));
+  SET_FLAG(t_rtmidiout, abstract | ae_flag_final);
+  gwi_class_xtor(gwi, NULL, rtmidiout_dtor);
+  t_rtmidiout->nspc->offset += SZ_INT;
+  import_common(out);
+
+  gwidoc(gwi, "send a midi message");
+  GWI_BB(gwi_func_ini(gwi, "void", "send"))
+  GWI_BB(gwi_func_end(gwi, rtmidiout_send, ae_flag_none))
+
+  GWI_BB(gwi_class_end(gwi))
+
   DECL_OB(const Type, t_rtmidiin, = gwi_class_ini(gwi, "In", "Event"));
   SET_FLAG(t_rtmidiin, abstract | ae_flag_final);
   gwi_class_xtor(gwi, NULL, rtmidiin_dtor);
@@ -259,17 +307,17 @@ GWION_IMPORT(RtMidi) {
   GWI_BB(gwi_func_arg(gwi, "bool", "midiTime"))
   GWI_BB(gwi_func_arg(gwi, "bool", "midiSense"))
   GWI_BB(gwi_func_end(gwi, rtmidiin_ignore, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_rtmidiout, = gwi_class_ini(gwi, "Out", "int[0]"));
-  SET_FLAG(t_rtmidiout, abstract | ae_flag_final);
-  gwi_class_xtor(gwi, NULL, rtmidiout_dtor);
-  t_rtmidiout->nspc->offset += SZ_INT;
-  import_common(out);
+  gwidoc(gwi, "set midi-thru");
+  GWI_BB(gwi_func_ini(gwi, "void", "connect"))
+  GWI_BB(gwi_func_arg(gwi, "Midiout", "out"))
+  GWI_BB(gwi_func_end(gwi, rtmidiin_connect, ae_flag_none))
 
-  gwidoc(gwi, "send a midi message");
-  GWI_BB(gwi_func_ini(gwi, "void", "send"))
-  GWI_BB(gwi_func_end(gwi, rtmidiout_send, ae_flag_none))
+  gwidoc(gwi, "unset midi-thru");
+  GWI_BB(gwi_func_ini(gwi, "void", "disconnect"))
+  GWI_BB(gwi_func_arg(gwi, "Midiout", "out"))
+  GWI_BB(gwi_func_end(gwi, rtmidiin_disconnect, ae_flag_none))
+
 
   GWI_BB(gwi_class_end(gwi))
 
