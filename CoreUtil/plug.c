@@ -1,8 +1,12 @@
 #ifndef BUILD_ON_WINDOWS
+  #define _XOPEN_SOURCE 500
+  #define _POSIX_C_SOURCE 200112L
   #include <glob.h>
   #include <dlfcn.h>
   #include <limits.h>
   #include <sys/stat.h>
+  #include <stdio.h>
+  #include <ftw.h>
 #endif
 #include "unistd.h"
 #include "gwion_util.h"
@@ -113,6 +117,89 @@ static SFUN(core_mkdir) {
   *(m_uint*)RETURN = CreateDirectoryA(dirname, NULL);
 #endif
 }
+
+#ifndef BUILD_ON_WINDOWS
+ANN static int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf) {
+  const int rv = remove(fpath);
+  if (rv)
+    perror(fpath);
+  return rv;
+}
+#else
+ANN static inline BOOL IsDots(const TCHAR* str) {
+    if(_tcscmp(str,".") && _tcscmp(str,"..")) return FALSE;
+    return TRUE;
+}
+
+ANN static BOOL DeleteDirectory(const TCHAR* sPath) {
+    HANDLE hFind;  // file handle
+    WIN32_FIND_DATA FindFileData;
+
+    TCHAR DirPath[MAX_PATH];
+    TCHAR FileName[MAX_PATH];
+
+    _tcscpy(DirPath,sPath);
+    _tcscat(DirPath,"\\*");    // searching all files
+    _tcscpy(FileName,sPath);
+    _tcscat(FileName,"\\");
+
+    hFind = FindFirstFile(DirPath,&FindFileData); // find the first file
+    if(hFind == INVALID_HANDLE_VALUE) return FALSE;
+    _tcscpy(DirPath,FileName);
+
+    bool bSearch = true;
+    while(bSearch) { // until we finds an entry
+        if(FindNextFile(hFind,&FindFileData)) {
+            if(IsDots(FindFileData.cFileName)) continue;
+            _tcscat(FileName,FindFileData.cFileName);
+            if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+
+                // we have found a directory, recurse
+                if(!DeleteDirectory(FileName)) {
+                    FindClose(hFind);
+                    return FALSE; // directory couldn't be deleted
+                }
+                RemoveDirectory(FileName); // remove the empty directory
+                _tcscpy(FileName,DirPath);
+            }
+            else {
+                if(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
+                    _chmod(FileName, _S_IWRITE); // change read-only file mode
+                if(!DeleteFile(FileName)) {  // delete the file
+                    FindClose(hFind);
+                    return FALSE;
+                }
+                _tcscpy(FileName,DirPath);
+            }
+        }
+        else {
+            if(GetLastError() == ERROR_NO_MORE_FILES) // no more files there
+            bSearch = false;
+            else {
+                // some error occured, close the handle and return FALSE
+                FindClose(hFind);
+                return FALSE;
+            }
+
+        }
+
+    }
+    FindClose(hFind);  // closing file handle
+
+    return RemoveDirectory(sPath); // remove the empty directory
+
+}
+#endif
+
+static SFUN(core_rmdirr) {
+  const m_str dirname = STRING(*(M_Object*)MEM(0));
+#ifndef BUILD_ON_WINDOWS
+  *(m_int*)RETURN = !nftw(dirname, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
+#else
+  *(m_int*)RETURN = DeleteDirectory(String, Boolean)
+#endif
+}
+
 GWION_IMPORT(CoreUtil) {
   gwidoc(gwi, "Provide file system utilities");
   DECL_OB(const Type, t_coreutil, = gwi_struct_ini(gwi, "CoreUtil"));
@@ -158,6 +245,9 @@ GWION_IMPORT(CoreUtil) {
   GWI_BB(gwi_func_arg(gwi, "string", "dir"))
   GWI_BB(gwi_func_end(gwi, core_mkdir, ae_flag_static))
 
+  GWI_BB(gwi_func_ini(gwi, "bool", "rmdirr"))
+  GWI_BB(gwi_func_arg(gwi, "string", "dir"))
+  GWI_BB(gwi_func_end(gwi, core_rmdirr, ae_flag_static))
 
   GWI_BB(gwi_struct_end(gwi))
   return GW_OK;
