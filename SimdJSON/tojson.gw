@@ -1,0 +1,14 @@
+#import SimdJSON
+
+class C {
+  var int? i;
+  var float f[3][1];
+  "test" => var string str;
+}
+
+
+const C c;
+42 => c.i.val;
+
+
+<<< c => SimdJSON.tojson >>>;

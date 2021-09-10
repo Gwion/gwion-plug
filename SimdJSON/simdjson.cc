@@ -1,5 +1,6 @@
 #include "simdjson.h"
 #include "Gwion.hh"
+#include "tojson.hh"
 extern "C" {
 #include "traverse.h"
 #include "gwi.h"
@@ -7,10 +8,7 @@ extern "C" {
 }
 
 using namespace simdjson;
-
-// should go in a module
-static Gwion local_gwion;
-//static VM_Shred local_shred;
+#include "hydrate.hh"
 
 struct GwSimdJson {
   dom::parser *parser;
@@ -269,194 +267,16 @@ arr_getx(a,
    M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;);
-/*
-#include "shreduler_private.h"
-static void hydrate_ctor(const VM_Shred shred, const M_Object o) {
-  Type t = o->type_ref;
-  do {
-    if(tflag(t, tflag_ctor) && t->nspc->pre_ctor) {
-      const VM_Code cb = vmcode_callback(shred->info->mp, t->nspc->pre_ctor);
-      const VM_Shred sh = new_vm_shred(shred->info->mp, cb);
-      sh->base = shred->base;
-      *(M_Object*)sh->mem = o;
-      vm_add_shred(local_gwion->vm, sh);
-      vm_run(local_gwion->vm);
-      local_gwion->vm->shreduler->bbq->is_running = 1;
-    }
-  } while((t = t->info->parent));
-}
-*/
-//static void hydrate(const Gwion gwion, dom::object json, const M_Object o, const Type t) {
-// think about the cleaning
-static void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, const M_Object o, const Type t) {
-  if(!t->nspc)return;
-  if(t->array_depth) {
-    dom::array dom_array = elem.get_array();
-    const Type btype = t->info->base_type;
-    const Type atype = array_type(gwion->env, btype, t->array_depth);
-//    const M_Vector array = ARRAY(o) = new_m_vector(gwion->mp, t->info->base_type->size, 0);
-    const M_Vector array = ARRAY(o);
-    m_vector_init(ARRAY(o), t->info->base_type->size, 0);
-    m_uint i = 0;
-    for(auto a : dom_array) {
-      if(isa(btype, gwion->type[et_int]) > 0) {
-        int64_t i = a.get_int64();
-        m_vector_add(array, &i);
-      } else if(tflag(btype, tflag_float) > 0) {
-        double f = a.get_double();
-        m_float val  = a.get_double();
-        m_vector_add(array, &val);
-      } else if(btype == gwion->type[et_string]) { // what about string extended?
-        std::string_view s = a.get_string();
-        const M_Object str = new_string2(gwion, NULL, (m_str)s.data());
-        m_vector_add(array, &str);
-      } else if(isa(btype, gwion->type[et_object]) > 0) {
-        const M_Object tmp = new_object(gwion->mp, NULL, btype);
-if(isa(btype, gwion->type[et_event]) > 0)
-vector_init(&EV_SHREDS(tmp));
-//        hydrate_ctor(shred, tmp);
-        m_vector_add(array, &tmp);
-        hydrate(gwion, shred, a, tmp, btype);
-      } else exit(12);
-      i++;
-    }
-    return;
-  }
-  if(t->info->parent)
-    hydrate(gwion, shred, elem, o, t->info->parent);
-  dom::object json = elem.get_object();
-  const Map m = &t->nspc->info->value->map;
-  for(m_uint i = 0; i < map_size(m); i++) {
-    const Value value = (Value)map_at(m, i);
-    if(is_func(gwion, value->type))continue;
-    if(!vflag(value, vflag_member))continue;
-    if(isa(value->type, gwion->type[et_int]) > 0) {
-      int64_t i = (json)[value->name];
-      *(m_int*)(o->data + value->from->offset) = i;
-    } else if(tflag(value->type, tflag_float) > 0) {
-      double f = (json)[value->name];
-      *(m_float*)(o->data + value->from->offset) = f;
-    } else if(value->type == gwion->type[et_string]) { // what about string extended?
-      if(elem.is_string()) { // skipping if not string (bad?)
-        std::string_view s = (json)[value->name];
-        *(M_Object*)(o->data + value->from->offset) = new_string2(gwion, NULL, (m_str)s.data());
-      }
-    } else if(isa(value->type, gwion->type[et_object]) > 0) {
-      if(elem.is_object()) { // same as string
-        const M_Object tmp = new_object(gwion->mp, NULL, value->type);
-if(isa(value->type, gwion->type[et_event]) > 0)
-vector_init(&EV_SHREDS(tmp));
-//        hydrate_ctor(shred, tmp);
-        *(M_Object*)(o->data + value->from->offset) = tmp;
-        dom::element dom = (json)[value->name];
-        hydrate(gwion, shred, dom, tmp, value->type);
-      }
-    } else exit(12);
-  }
-}
 
 static MFUN(Hydrate) {
   const VM_Code code = *(VM_Code*)REG(SZ_INT);
-  const M_Object ret = new_object(shred->info->mp, shred, code->ret_type);
-  *(M_Object*)RETURN = ret;
-// pre ctor
-//  hydrate_ctor(shred, ret);
-/*
-  Type t = code->ret_type;
-  do {
-    if(tflag(t, tflag_ctor) && t->nspc->pre_ctor) {
-      const VM_Code cb = vmcode_callback(shred->info->mp, t->nspc->pre_ctor);
-      const VM_Shred sh = new_vm_shred(shred->info->mp, cb);
-      sh->base = shred->base;
-      *(M_Object*)sh->mem = ret;
-      vm_add_shred(local_gwion->vm, sh);
-      vm_run(local_gwion->vm);
-    }
-  } while((t = t->info->parent));
-*/
   try {
-    hydrate(shred->info->vm->gwion, shred, SIMDJSON(o)->element, ret, ret->type_ref);
+    hydrate(shred->info->vm->gwion, shred, SIMDJSON(o)->element, code->ret_type, (m_bit*)RETURN);
   } catch (const simdjson_error &e) {
     handle(shred, (m_str)"JsonHydrateError");
   }
 }
 
-ANN static inline bool is_base_array(const Type t) {
-  return t->array_depth && !tflag(t, tflag_empty);
-}
-
-static void tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init);
-static void _tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init) {
-  if(t->info->parent)
-    _tojson(gwion, str, o, t->info->parent, init);
-  if(!t->nspc)return;
-  if(t->array_depth) {
-    if(!is_base_array(o->type_ref))
-      *str << "\"array\":";
-    *str << "[";
-    const M_Vector array = ARRAY(o);
-    const Type base = array_base(t);
-    bool _init = false;
-    for(m_uint i = 0; i < m_vector_size(array); i++) {
-      if(is_func(gwion, base))continue;
-      if(_init)*str << ",";
-      if(isa(base, gwion->type[et_int]) > 0)
-        *str << *(m_int*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
-      else if(tflag(base, tflag_float) > 0)
-        *str << *(m_float*)(array->ptr + ARRAY_OFFSET + SZ_FLOAT*i);
-      else if(base == gwion->type[et_string])
-        *str << "\"" << STRING(*(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i)) << "\"" ;
-      else if(isa(base, gwion->type[et_object]) > 0) {
-        const M_Object obj = *(M_Object*)(array->ptr + ARRAY_OFFSET + SZ_INT*i);
-        bool _init = false;
-        tojson(gwion, str, obj, obj->type_ref, &_init);
-      } else exit(12);
-// ...
-      _init = true;
-    }
-    *str << "]";
-    if(is_base_array(o->type_ref))
-      return;
-    *init = true;
-  }
-  const Map m = &t->nspc->info->value->map;
-  for(m_uint i = 0; i < map_size(m); i++) {
-    const Value value = (Value)map_at(m, i);
-    if(is_func(gwion, value->type))continue;
-    if(!vflag(value, vflag_member))continue;
-    if(*init)
-      *str << ",";
-    *str << "\"" << value->name << "\":";
-    if(isa(value->type, gwion->type[et_int]) > 0) {
-      *str << *(m_int*)(o->data + value->from->offset);
-    } else if(tflag(value->type, tflag_float) > 0)
-      *str << *(m_float*)(o->data + value->from->offset);
-    else if(value->type == gwion->type[et_string]) {
-      const M_Object obj = *(M_Object*)(o->data + value->from->offset);
-      if(obj)
-        *str << "\"" << STRING(obj) << "\"";
-      else
-        *str << "null";
-    } else if(isa(value->type, gwion->type[et_object]) > 0) {
-      bool _init = false;
-      const M_Object obj = *(M_Object*)(o->data + value->from->offset);
-      if(obj)
-        tojson(gwion, str, obj, obj->type_ref, &_init);
-      else
-        *str << "null";
-    } else exit(12);
-    *init = true;
-  }
-}
-
-static void tojson(const Gwion gwion, std::stringstream *str, const M_Object o, const Type t, bool *init) {
-  if(!is_base_array(o->type_ref))
-    *str << "{";
-  _tojson(gwion, str, o, t, init);
-  if(!is_base_array(o->type_ref))
-    *str << "}";
-
-}
 static SFUN(ToJson) {
   std::stringstream str;
   bool init = false;
@@ -661,10 +481,6 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_oper_ini(gwi, (m_str)"SimdJSON.Get", (m_str)OP_ANY_TYPE, NULL));
   GWI_BB(gwi_oper_add(gwi, opck_simdjson_get_at));
   GWI_BB(gwi_oper_end(gwi, (m_str)"=>", NULL));
-
-
-local_gwion = gwion_cpy(gwi->gwion->vm)->gwion;
-
   return GW_OK;
 }
 }

@@ -1,0 +1,15 @@
+#import SimdJSON
+class A {}
+class B {
+  var int? i;
+}
+class C extends A {
+  var B b;
+  const string my;
+  var int array[2];
+}
+class D extends C {}
+"simple.json" => SimdJSON.load => const auto json;
+
+<<< json.hydrate:[D]() => SimdJSON.tojson >>>;
+
