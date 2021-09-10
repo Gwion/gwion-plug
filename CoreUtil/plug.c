@@ -200,6 +200,22 @@ static SFUN(core_rmdirr) {
 #endif
 }
 
+static SFUN(core_cp) {
+  *(m_uint*)RETURN = false;
+  FILE *fileIn = fopen(STRING(*(M_Object*)MEM(0)), "rb");
+  if(!fileIn)
+    return;
+  FILE *fileOut = fopen(STRING(*(M_Object*)MEM(SZ_INT)), "wb");
+  if (fileOut) {
+    char ch;
+    while ((ch=fgetc(fileIn))!=EOF)
+	    fputc(ch, fileOut);
+		fclose(fileOut);
+  *(m_uint*)RETURN = true;
+  }
+  fclose(fileIn);
+}
+
 GWION_IMPORT(CoreUtil) {
   gwidoc(gwi, "Provide file system utilities");
   DECL_OB(const Type, t_coreutil, = gwi_struct_ini(gwi, "CoreUtil"));
@@ -248,6 +264,12 @@ GWION_IMPORT(CoreUtil) {
   GWI_BB(gwi_func_ini(gwi, "bool", "rmdirr"))
   GWI_BB(gwi_func_arg(gwi, "string", "dir"))
   GWI_BB(gwi_func_end(gwi, core_rmdirr, ae_flag_static))
+
+  gwidoc(gwi, "copy a file");
+  GWI_BB(gwi_func_ini(gwi, "int", "cp"));
+  GWI_BB(gwi_func_arg(gwi, "string", "old"))
+  GWI_BB(gwi_func_arg(gwi, "string", "new"))
+  GWI_BB(gwi_func_end(gwi, core_cp, ae_flag_static))
 
   GWI_BB(gwi_struct_end(gwi))
   return GW_OK;
