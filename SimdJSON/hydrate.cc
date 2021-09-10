@@ -66,6 +66,25 @@ ANN void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, con
       std::string_view s = elem.get_string();
       *(M_Object*)data = new_string2(gwion, NULL, (m_str)s.data());
     }
+  } else if(isa(t, gwion->type[et_function]) > 0) {
+    std::string_view s = elem.get_string();
+    char c[strlen(s.data()) + 1];
+    strcpy(c, s.data());
+    char *at = strchr(c, '@');
+    *at = '\0';
+    char c1[strlen(s.data()) + 1];
+    strcpy(c1, s.data());
+    char *at1 = strrchr(c1, '$');
+    *at1 = '\0';
+    const Symbol sym = insert_symbol(gwion->st, c);
+    const Value v = nspc_lookup_value1(t->info->value->from->owner, sym);
+    Func f = v->d.func_ref;
+    do {
+      if(!strcmp(f->name, c1)) {
+        *(VM_Code*)data = f->code;
+        break;
+      }
+    } while((f = f->next));
   } else if(isa(t, gwion->type[et_compound]) > 0) {
     if(!elem.is_null()) {
       Hydrate h = { .gwion=gwion, .shred=shred, .data=data};
@@ -91,7 +110,8 @@ ANN static void iterate_object(Hydrate *const &h,
   const Map m = &t->nspc->info->value->map;
   for(m_uint i = 0; i < map_size(m); i++) {
     const Value value = (Value)map_at(m, i);
-    if(is_func(h->gwion, value->type))continue;
+    if(is_class(h->gwion, value->type))continue;
+    if(is_func(h->gwion, value->type) && !is_fptr(h->gwion, value->type))continue;
     if(!vflag(value, vflag_member))continue;
     m_bit *ptr = !tflag(t, tflag_struct) ? h->obj->data : (m_bit*)h->data;
     hydrate(h->gwion, h->shred, dom_object[value->name], value->type, ptr + value->from->offset);
