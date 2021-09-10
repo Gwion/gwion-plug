@@ -37,9 +37,9 @@ ANN static void tojson_pp(ToJson *const json, const Type t, const m_bit* data) {
   else if(t == type[et_string])
     *json->str << "\"" << STRING(*(M_Object*)data) << "\"" ;
   else if(isa(t, type[et_function]) > 0) {
-    const Func f = *(Func*)data;
-    if(f)
-      *json->str << "\"" << (*(Func*)data)->name << "\"" ;
+    const VM_Code code = *(VM_Code*)data;
+    if(code)
+      *json->str << "\"" << (*(VM_Code*)data)->name << "\"" ;
     else *json->str << "null";
   } else if(isa(t, type[et_compound]) > 0) {
     m_bit *const next = !tflag(t, tflag_struct)
