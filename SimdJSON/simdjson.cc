@@ -279,8 +279,7 @@ static MFUN(Hydrate) {
 
 static SFUN(ToJson) {
   std::stringstream str;
-  bool init = false;
-  tojson(shred->info->vm->gwion, &str, *(M_Object*)MEM(0), o->type_ref, &init);
+  tojson(shred->info->vm->gwion, &str, *(M_Object*)MEM(0));
   *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.str().data());
 }
 

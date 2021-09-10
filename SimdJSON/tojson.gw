@@ -6,7 +6,6 @@ class C {
   "test" => var string str;
 }
 
-
 const C c;
 42 => c.i.val;
 

@@ -1,7 +1,7 @@
 #import SimdJSON
 class A {}
 class B {
-  var int? i;
+  var int i;
 }
 class C extends A {
   var B b;

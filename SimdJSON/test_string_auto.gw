@@ -5,7 +5,7 @@ new SimdJSON(
   "x": 1,
   "y": 1.1,
   "b": true,
-  "s": "foo",
+  "s": "foo"
 }"#
 ) => var auto json;
 
