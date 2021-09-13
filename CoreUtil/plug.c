@@ -216,6 +216,27 @@ static SFUN(core_cp) {
   fclose(fileIn);
 }
 
+static SFUN(core_link) {
+  const m_str old = STRING(*(M_Object*)MEM(0));
+  const m_str new = STRING(*(M_Object*)MEM(SZ_INT));
+#ifndef BUILD_ON_WINDOWS
+  *(m_int*)RETURN = !link(old, new);
+#else
+  const DWORD attr = GetFileAttributesA(old);
+  const DWORD flag = FileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+  *(m_int*)RETURN = CreateSymbolicLinkA(old, new, attr);
+#endif
+}
+
+static SFUN(core_unlink) {
+  const m_str filename = STRING(*(M_Object*)MEM(0));
+#ifndef BUILD_ON_WINDOWS
+  *(m_int*)RETURN = !unlink(filename);
+#else
+  *(m_int*)RETURN = !remove(filename);
+#endif
+}
+
 GWION_IMPORT(CoreUtil) {
   gwidoc(gwi, "Provide file system utilities");
   DECL_OB(const Type, t_coreutil, = gwi_struct_ini(gwi, "CoreUtil"));
@@ -270,6 +291,17 @@ GWION_IMPORT(CoreUtil) {
   GWI_BB(gwi_func_arg(gwi, "string", "old"))
   GWI_BB(gwi_func_arg(gwi, "string", "new"))
   GWI_BB(gwi_func_end(gwi, core_cp, ae_flag_static))
+
+  gwidoc(gwi, "link a file");
+  GWI_BB(gwi_func_ini(gwi, "int", "link"));
+  GWI_BB(gwi_func_arg(gwi, "string", "old"))
+  GWI_BB(gwi_func_arg(gwi, "string", "new"))
+  GWI_BB(gwi_func_end(gwi, core_unlink, ae_flag_static))
+
+  gwidoc(gwi, "unlink a file");
+  GWI_BB(gwi_func_ini(gwi, "int", "unlink"));
+  GWI_BB(gwi_func_arg(gwi, "string", "file"))
+  GWI_BB(gwi_func_end(gwi, core_unlink, ae_flag_static))
 
   GWI_BB(gwi_struct_end(gwi))
   return GW_OK;
