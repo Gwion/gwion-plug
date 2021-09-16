@@ -128,10 +128,13 @@ MIN_INIT(new3, openVirtualPort(STRING(*(M_Object*)MEM(SZ_INT))))
 static MFUN(rtmidiin_connect) {
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
   const M_Object mout = *(M_Object*)MEM(SZ_INT);
-  mout->ref++;
-  if(!min->thru.ptr)
-    vector_init(&min->thru);
   vector_add(&min->thru, (m_uint)mout);
+  mout->ref++;
+  if(!min->thru.ptr) {
+    vector_init(&min->thru);
+    RtMidiOut *out = *(RtMidiOut**)(mout->data + SZ_INT*2);
+    min->in->setCallback(thru_callback, o);
+  }
 }
 
 static MFUN(rtmidiin_disconnect) {
@@ -141,6 +144,8 @@ static MFUN(rtmidiin_disconnect) {
   if(idx != -1) {
     vector_rem(&min->thru, idx);
     release(mout, shred);
+    if(!vector_size(&min->thru))
+      min->in->setCallback(callback, o);
   }
 }
 
@@ -186,6 +191,7 @@ static SFUN(rtmidi##io##_names) {\
     *(M_Object*)(ARRAY(ret)->ptr + ARRAY_OFFSET + i * SZ_INT) =\
            new_string2(shred->info->vm->gwion, NULL, (m_str)str.data());\
   }\
+  vector_add(&shred->gc, (m_uint)ret);\
   *(M_Object*)RETURN = ret;\
 }\
 
