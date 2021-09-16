@@ -176,18 +176,9 @@ static void alsa_run_interleaved(VM* vm, Driver* di) {
       LOOP_OPTIM
       for(m_uint chan = 0; chan < (m_uint)di->si->out; chan++)
         ((m_float*)info->out_bufi)[k++] = di->out[chan];
-    if(++di->pos == 16777216-1) {
-//exit(3);
-//exit(5);
-for(m_uint i = 0; i < vector_size(&vm->shreduler->shreds); i++) {
-printf("set shred wake_time %lu\n", i);
-((VM_Shred)vector_at(&vm->shreduler->shreds, i))->tick->wake_time -= 16777216.0000;
-}
-puts("set pos to zero");
-      di->pos = 0;
+      next_bbq_pos(vm);
     }
-//      ++di->pos;
-    }
+
     if(snd_pcm_writei(info->pcm_out, info->out_bufi, info->bufsize) < 0)
       snd_pcm_prepare(info->pcm_out);
   }

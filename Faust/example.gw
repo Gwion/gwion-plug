@@ -6,5 +6,5 @@
 var SinOsc s ~> faust ~> dac;
 
 second => now;
-#!s ~< faust;
+s ~< faust;
 second => now;
