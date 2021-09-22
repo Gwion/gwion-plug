@@ -178,7 +178,7 @@ static SFUN(rtmidi##io##_count) {\
 static SFUN(rtmidi##io##_name) {                                                   \
   RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);                        \
   std::string str = io.getPortName(*(m_int*)MEM(0));                           \
-  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)str.data()); \
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)str.data()); \
 }                                                                              \
 \
 static SFUN(rtmidi##io##_names) {\
@@ -189,9 +189,8 @@ static SFUN(rtmidi##io##_names) {\
   for(m_uint i = 0; i < count; i++) {\
     std::string str = io.getPortName(i);\
     *(M_Object*)(ARRAY(ret)->ptr + ARRAY_OFFSET + i * SZ_INT) =\
-           new_string2(shred->info->vm->gwion, NULL, (m_str)str.data());\
+           new_string(shred->info->vm->gwion, (m_str)str.data());\
   }\
-  vector_add(&shred->gc, (m_uint)ret);\
   *(M_Object*)RETURN = ret;\
 }\
 

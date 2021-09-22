@@ -132,7 +132,7 @@ MFUN(midifile_event)
 //    exit(12);
   Alg_track* tr = seq->track(track);
 //  M_Object obj = *(M_Object*)MEM(SZ_INT*3);
-  M_Object obj = new_object(shred->info->mp, shred, t_midifileev);
+  M_Object obj = new_object(shred->info->mp, t_midifileev);
   if(n < 0 || n >= tr->length())
       TYPE(obj) = 'e'; // error
   else

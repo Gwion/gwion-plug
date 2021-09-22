@@ -101,7 +101,7 @@ static SFUN(std_scale) {
 static SFUN(std_getenv) {
   GETSTRING(env, 0)
   const m_str str = getenv(env);
-  *(M_Object*)RETURN = str ? new_string(shred->info->mp, shred, str) : 0;
+  *(M_Object*)RETURN = str ? new_string(shred->info->vm->gwion, str) : 0;
 }
 
 #ifdef BUILD_ON_WINDOWS

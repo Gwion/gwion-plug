@@ -189,7 +189,7 @@ static SFUN(file_list) {
   const M_Object ret = new_array(shred->info->mp, t, n);
   vector_add(&shred->gc, (vtype)ret);
   for(m_uint i = 0; i < (m_uint)n; i++) {
-    const M_Object string = new_string(shred->info->mp, NULL, namelist[i]->d_name);
+    const M_Object string = new_string(shred->info->vm->gwion, namelist[i]->d_name);
     m_vector_set(ARRAY(ret), i, &string);
     free(namelist[i]);
   }
@@ -242,13 +242,13 @@ GWION_IMPORT(fileio) {
   gwi_class_xtor(gwi,  NULL, static_fileio_dtor);
   GWI_BB(gwi_class_end(gwi))
 
-  const M_Object gw_cin = new_object(gwi->gwion->mp, NULL, t_internal);
+  const M_Object gw_cin = new_object(gwi->gwion->mp, t_internal);
   IO_FILE(gw_cin) = stdin;
   vector_init(&EV_SHREDS(gw_cin));
-  const M_Object gw_cout = new_object(gwi->gwion->mp, NULL, t_internal);
+  const M_Object gw_cout = new_object(gwi->gwion->mp, t_internal);
   IO_FILE(gw_cout) = stdout;
   vector_init(&EV_SHREDS(gw_cout));
-  const M_Object gw_cerr = new_object(gwi->gwion->mp, NULL, t_internal);
+  const M_Object gw_cerr = new_object(gwi->gwion->mp, t_internal);
   IO_FILE(gw_cerr) = stderr;
   vector_init(&EV_SHREDS(gw_cerr));
   gwi_item_ini(gwi, "@FileIOInternal", "cin");

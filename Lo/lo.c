@@ -407,7 +407,7 @@ static MFUN(oscin_rem) {
 
 lo_getter(int, m_int, arg->data.i);
 lo_getter(float, m_float, arg->data.f);
-lo_getter(string, M_Object, new_string(shred->info->mp, shred, arg->data.s));
+lo_getter(string, M_Object, new_string(shred->info->vm->gwion, arg->data.s));
 
 ANEW ANN static LoServer new_loserver(const MemPool mp, const Map map, const m_int port) {
   char c[256];

@@ -309,8 +309,8 @@ static INSTR(PlayerCtor) {
   ogh_music_decode(OGH(o), dbg_on_note, dbg_on_tempo_change, dbg_on_loop, &dec);
   qsort(ARRAY_PTR(dec.array), m_vector_size(dec.array), sizeof(ogh_adjusted_note_t), compare);
   const Type t = (Type)instr->m_val;
-  const M_Object ret = new_object(gwion->mp, shred, t);
-//  const M_Object ret = new_object(gwion->mp, NULL, t);
+  const M_Object ret = new_object(gwion->mp, t);
+//  const M_Object ret = new_object(gwion->mp, t);
   UGEN(ret) = new_UGen(shred->info->mp);
   vector_add(&shred->info->vm->ugen, (vtype)UGEN(ret));
   ugen_ini(shred->info->vm->gwion, UGEN(ret), 0, 1);
@@ -329,8 +329,8 @@ static INSTR(PlayerCtor) {
     runtime->voice[i].shred = new_vm_shred(gwion->mp, runtime->code);
     vm_add_shred(gwion->vm, runtime->voice[i].shred);
     shreduler_remove(gwion->vm->shreduler, runtime->voice[i].shred, false);
-//    runtime->voice[i].note = new_object(gwion->mp, shred, note_type);
-    runtime->voice[i].note = new_object(gwion->mp, NULL, note_type);
+//    runtime->voice[i].note = new_object(gwion->mp, note_type);
+    runtime->voice[i].note = new_object(gwion->mp, note_type);
   }
   *(M_Object*)REG(-SZ_INT) = ret;
   const VM_Code ctor_code = t->nspc->pre_ctor;
@@ -372,7 +372,7 @@ static SFUN(ogh_open) {
   rewind(file);
   fread(ogh, length, 1, file);
   fclose(file);
-  const M_Object ret = new_object_str(shred->info->vm->gwion, shred, "Ogham");
+  const M_Object ret = new_object_str(shred->info->vm->gwion, "Ogham");
   OGH(ret) = ogh;
   *(M_Object*)RETURN = ret;
 }

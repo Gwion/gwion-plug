@@ -37,7 +37,7 @@ static SFUN(core_glob) {
   const M_Vector array = ARRAY(ret);
   vector_add(&shred->gc, (m_uint)ret);
   for (m_uint i = 0; i < results.gl_pathc; i++) {
-    const M_Object str = new_string2(shred->info->vm->gwion, NULL, results.gl_pathv[i]);
+    const M_Object str = new_string(shred->info->vm->gwion, results.gl_pathv[i]);
     m_vector_set(array, i, &str);
   }
   globfree(&results);
@@ -51,7 +51,7 @@ static SFUN(core_glob) {
     char c[PATH_MAX];
     strcpy(c, name);
     strcpy(c + strlen(name) - 4, filedata.cFileName);
-    const M_Object str = new_string2(shred->info->vm->gwion, NULL, c);
+    const M_Object str = new_string(shred->info->vm->gwion, c);
     m_vector_add(array, i, &str);
   } while (FindNextFile(file, &filedata));
   FindClose(file);
@@ -93,7 +93,7 @@ static SFUN(core_rmdir) {
 static SFUN(core_envget) {
   const m_str varname = STRING(*(M_Object*)MEM(0));
   const m_str value = getenv(varname);
-  *(M_Object*)RETURN = new_string(shred->info->mp, shred, value ?: "");
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, value ?: "");
 }
 
 #ifdef BUILD_ON_WINDOWS

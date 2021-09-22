@@ -245,7 +245,7 @@ INSTR(VecMember) {
 
 #define describe_vec(func, op)                                                \
 ANN static void vec_##func(const m_bit* v, const int size, const m_float f) { \
-  for(int i = size + 1; --i;)                                                 \
+  for(int i = size + 1; --i;                                                 \
     *(m_float*)(v + (i-1) * SZ_FLOAT) op##= f;                                \
 }
 describe_vec(Add, +)

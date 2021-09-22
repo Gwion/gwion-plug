@@ -20,8 +20,8 @@ static MFUN(pm_info) {
     return;
   }
   *(m_int*)   (o->data)            = info->structVersion;
-  *(M_Object*)(o->data + SZ_INT)   = new_string2(shred->info->vm->gwion, NULL, (m_str)info->interf);
-  *(M_Object*)(o->data + SZ_INT*2) = new_string2(shred->info->vm->gwion, NULL, (m_str)info->name);
+  *(M_Object*)(o->data + SZ_INT)   = new_string(shred->info->vm->gwion, (m_str)info->interf);
+  *(M_Object*)(o->data + SZ_INT*2) = new_string(shred->info->vm->gwion, (m_str)info->name);
   *(m_int*)   (o->data + SZ_INT*3) = info->input;
   *(m_int*)   (o->data + SZ_INT*4) = info->output;
   *(m_int*)   (o->data + SZ_INT*5) = info->opened;

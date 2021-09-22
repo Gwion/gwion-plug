@@ -78,7 +78,7 @@ static OP_CHECK(opck_list_ctor) {
 }
 
 static M_Object new_list(const VM_Shred shred, const Type base, const Type t, m_bit *const data) {
-  M_Object o = new_object(shred->info->mp, shred, base);
+  M_Object o = new_object(shred->info->mp, base);
   memcpy(o->data, data, t->size);
   return o;
 }

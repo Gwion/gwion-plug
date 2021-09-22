@@ -51,7 +51,7 @@ static MFUN(fileread) {
   char *string = _mp_malloc(shred->info->mp, fsize + 1);
   readf(f, string, fsize);
   string[fsize] = 0;
-  const M_Object ret = new_object(shred->info->mp, shred, shred->info->vm->gwion->type[et_string]);
+  const M_Object ret = new_object(shred->info->mp, shred->info->vm->gwion->type[et_string]);
   STRING(ret) = string;
   *(M_Object*)RETURN = ret;
 }
@@ -115,7 +115,7 @@ static INSTR(FileTxtCtor) {
     handle(shred, _("can't open file"));
     return;
   }
-  const M_Object o = new_object(shred->info->mp, shred, t);
+  const M_Object o = new_object(shred->info->mp, t);
   *(file_t**)(o->data + SZ_INT) = f;
   *(M_Object*)REG(-SZ_INT) = o;
 }
@@ -179,14 +179,14 @@ GWION_IMPORT(File:[text]) {
   GWI_BB(gwi_oper_emi(gwi, opem_txt_write))
   GWI_BB(gwi_oper_end(gwi, "<<", NULL))
 
-  const M_Object gw_stdout = new_object_str(gwi->gwion, NULL, "File:[txt]");
+  const M_Object gw_stdout = new_object_str(gwi->gwion, "File:[txt]");
 //  const M_Object gw_stdout = new_object_str(gwi->gwion, NULL, "@Filetxt");
 //  *(file_t**)(gw_stdout->data + SZ_INT) = openf_fd(1, O_RDONLY, 0666, FILE_512_BYTE_BUFFER);
   *(file_t**)(gw_stdout->data + SZ_INT) = openf_fd(1, O_RDONLY, 0666, FILE_NO_BUFFERING);
   GWI_BB(gwi_item_ini(gwi, "File:[txt]", "stdout"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, obj, gw_stdout))
 
-  const M_Object gw_sterr = new_object_str(gwi->gwion, NULL, "File:[txt]");
+  const M_Object gw_sterr = new_object_str(gwi->gwion, "File:[txt]");
   *(file_t**)(gw_stdout->data + SZ_INT) = openf_fd(1, O_RDONLY, 0666, FILE_512_BYTE_BUFFER);
   GWI_BB(gwi_item_ini(gwi, "File:[txt]", "stderr"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, obj, gw_stdout))

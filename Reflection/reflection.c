@@ -30,10 +30,10 @@ static m_uint fill_values(const VM_Shred shred, const Type base, const M_Vector 
   const m_uint sz = safe_map_size(m);
   for(m_uint i = 0; i < sz; i++) {
     const Value value = (Value)map_at(m, i);
-    M_Object o = *(M_Object*)(ARRAY_PTR(v) + (i + new_offset) * ARRAY_SIZE(v)) = new_object(shred->info->mp, NULL, t);
+    M_Object o = *(M_Object*)(ARRAY_PTR(v) + (i + new_offset) * ARRAY_SIZE(v)) = new_object(shred->info->mp, t);
     *(Type*)o->data = type_class(gwion, value->type);
-    *(M_Object*)(o->data + SZ_INT) = new_string2(gwion, NULL, value->type->name);
-    *(M_Object*)(o->data + SZ_INT*2) = new_string2(gwion, NULL, value->name);
+    *(M_Object*)(o->data + SZ_INT) = new_string(gwion, value->type->name);
+    *(M_Object*)(o->data + SZ_INT*2) = new_string(gwion, value->name);
     *(m_uint*)(o->data + SZ_INT*3) = vflag(value, vflag_member);
     *(m_uint*)(o->data + SZ_INT*4) = is_func(gwion, value->type);
 
@@ -63,10 +63,8 @@ static SFUN(reflection) {
   const VM_Code code = *(VM_Code*)REG(SZ_INT);
   const Type t = (*(Type*)MEM(0));
   const Map m = t->nspc ? &t->nspc->info->value->map : NULL;
-//  const m_uint sz = map_size(m);
   const m_uint sz = count_values(t, 0);
   const M_Object ret = new_array(shred->info->mp, code->ret_type, sz);
-  vector_add(&shred->gc, (m_uint)ret);
   *(M_Object*)RETURN = ret;
   if(!sz)return;
   fill_values(shred, t, ARRAY(ret), code->ret_type->info->base_type, NULL, 0);
@@ -78,9 +76,7 @@ static SFUN(reflection_object) {
   const Type t = arg->type_ref;
   const Map m = t->nspc ? &t->nspc->info->value->map : NULL;
   const m_uint sz = count_values(t, 0);
-//  const m_uint sz = map_size(m);
   const M_Object ret = new_array(shred->info->mp, code->ret_type, sz);
-  vector_add(&shred->gc, (m_uint)ret);
   *(M_Object*)RETURN = ret;
   if(!sz)return;
   fill_values(shred, t, ARRAY(ret), code->ret_type->info->base_type, arg, 0);
@@ -92,7 +88,7 @@ static SFUN(reflection_typeof) {
 }
 
 static SFUN(reflection_typename) {
-  *(M_Object*)RETURN = new_string(shred->info->mp, shred, (*(Type*)MEM(0))->name);
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (*(Type*)MEM(0))->name);
 }
 
 static OP_CHECK(opck_typeof) {

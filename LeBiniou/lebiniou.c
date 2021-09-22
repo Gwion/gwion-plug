@@ -40,7 +40,7 @@ GWION_IMPORT(LeBiniou) {
   GWI_BB(gwi_class_end(gwi))
 
 
-  const M_Object o = new_object(gwi->gwion->mp, NULL, t_lebiniou);
+  const M_Object o = new_object(gwi->gwion->mp, t_lebiniou);
   UGEN(o) = new_UGen(gwi->gwion->mp);
   ugen_ini(gwi->gwion, UGEN(o), 2, 2);
   ugen_gen(gwi->gwion, UGEN(o), lebiniou_tick,

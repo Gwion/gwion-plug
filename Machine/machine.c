@@ -81,7 +81,6 @@ static SFUN(machine_shreds) {
     const VM_Shred sh = (VM_Shred)vector_at(v, i);
     m_vector_set(ARRAY(obj), i, &sh->tick->xid);
   }
-  vector_add(&shred->gc, (vtype)obj);
   *(M_Object*)RETURN = obj;
 }
 

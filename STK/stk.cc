@@ -215,7 +215,7 @@ static MFUN(gw_Stk_clear_alertList) {
 
 static MFUN(gw_Stk_rawwavePath) {
   std::string result = stk::Stk::rawwavePath();
-  *(M_Object*)RETURN = (&result)->data() ? new_string(shred->info->mp, shred, (m_str)(&result)->data()) : NULL;
+  *(M_Object*)RETURN = (&result)->data() ? new_string(shred->info->vm->gwion, (m_str)(&result)->data()) : NULL;
 }
 
 static MFUN(gw_Stk_setRawwavePath) {
@@ -949,8 +949,8 @@ static m_int o_Blit_swig;
 static SFUN(gw_Blit_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Blit * result = (stk::Blit *)new stk::Blit(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Blit);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Blit");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Blit);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Blit");
   GW_Blit(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -1018,8 +1018,8 @@ static m_int o_BlitSaw_swig;
 static SFUN(gw_BlitSaw_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::BlitSaw * result = (stk::BlitSaw *)new stk::BlitSaw(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_BlitSaw);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.BlitSaw");
+  //M_Object ret_obj = new_object(shred->info->mp, t_BlitSaw);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.BlitSaw");
   GW_BlitSaw(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -1075,8 +1075,8 @@ static m_int o_BlitSquare_swig;
 static SFUN(gw_BlitSquare_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::BlitSquare * result = (stk::BlitSquare *)new stk::BlitSquare(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_BlitSquare);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.BlitSquare");
+  //M_Object ret_obj = new_object(shred->info->mp, t_BlitSquare);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.BlitSquare");
   GW_BlitSquare(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -1241,8 +1241,8 @@ static m_int o_BlowHole_swig;
 static SFUN(gw_BlowHole_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::BlowHole * result = (stk::BlowHole *)new stk::BlowHole(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_BlowHole);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.BlowHole");
+  //M_Object ret_obj = new_object(shred->info->mp, t_BlowHole);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.BlowHole");
   GW_BlowHole(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -1323,8 +1323,8 @@ static m_int o_Bowed_swig;
 static SFUN(gw_Bowed_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Bowed * result = (stk::Bowed *)new stk::Bowed(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Bowed);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Bowed");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Bowed);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Bowed");
   GW_Bowed(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -1455,8 +1455,8 @@ static m_int o_Brass_swig;
 static SFUN(gw_Brass_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Brass * result = (stk::Brass *)new stk::Brass(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Brass);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Brass");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Brass);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Brass");
   GW_Brass(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -1540,8 +1540,8 @@ static m_int o_Chorus_swig;
 static SFUN(gw_Chorus_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Chorus * result = (stk::Chorus *)new stk::Chorus(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Chorus);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Chorus");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Chorus);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Chorus");
   GW_Chorus(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -1592,8 +1592,8 @@ static m_int o_Clarinet_swig;
 static SFUN(gw_Clarinet_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Clarinet * result = (stk::Clarinet *)new stk::Clarinet(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Clarinet);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Clarinet");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Clarinet);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Clarinet");
   GW_Clarinet(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -1729,8 +1729,8 @@ static SFUN(gw_Delay_ctor0) {
   handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_INT);
   stk::Delay * result = (stk::Delay *)new stk::Delay(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Delay);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Delay");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Delay);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Delay");
   GW_Delay(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -1743,8 +1743,8 @@ static SFUN(gw_Delay_ctor1) {
   handle(shred, (m_str)"NullPtrException");
   unsigned long arg1 = (unsigned long)*(m_int*)MEM(0);
   stk::Delay * result = (stk::Delay *)new stk::Delay(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Delay);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Delay");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Delay);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Delay");
   GW_Delay(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -1849,8 +1849,8 @@ static SFUN(gw_DelayA_ctor0) {
   handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_FLOAT);
   stk::DelayA * result = (stk::DelayA *)new stk::DelayA(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_DelayA);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.DelayA");
+  //M_Object ret_obj = new_object(shred->info->mp, t_DelayA);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.DelayA");
   GW_DelayA(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -1861,8 +1861,8 @@ static SFUN(gw_DelayA_ctor0) {
 static SFUN(gw_DelayA_ctor1) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::DelayA * result = (stk::DelayA *)new stk::DelayA(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_DelayA);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.DelayA");
+  //M_Object ret_obj = new_object(shred->info->mp, t_DelayA);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.DelayA");
   GW_DelayA(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -1954,8 +1954,8 @@ static SFUN(gw_DelayL_ctor0) {
   handle(shred, (m_str)"NullPtrException");
   unsigned long arg2 = (unsigned long)*(m_int*)MEM(0+SZ_FLOAT);
   stk::DelayL * result = (stk::DelayL *)new stk::DelayL(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_DelayL);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.DelayL");
+  //M_Object ret_obj = new_object(shred->info->mp, t_DelayL);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.DelayL");
   GW_DelayL(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -1966,8 +1966,8 @@ static SFUN(gw_DelayL_ctor0) {
 static SFUN(gw_DelayL_ctor1) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::DelayL * result = (stk::DelayL *)new stk::DelayL(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_DelayL);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.DelayL");
+  //M_Object ret_obj = new_object(shred->info->mp, t_DelayL);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.DelayL");
   GW_DelayL(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -2099,8 +2099,8 @@ static SFUN(gw_Echo_ctor0) {
   handle(shred, (m_str)"NullPtrException");
   unsigned long arg1 = (unsigned long)*(m_int*)MEM(0);
   stk::Echo * result = (stk::Echo *)new stk::Echo(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Echo);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Echo");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Echo);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Echo");
   GW_Echo(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -2155,8 +2155,8 @@ static m_int o_Flute_swig;
 static SFUN(gw_Flute_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Flute * result = (stk::Flute *)new stk::Flute(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Flute);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Flute");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Flute);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Flute");
   GW_Flute(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -2464,8 +2464,8 @@ static SFUN(gw_Granulate_ctor1) {
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   bool arg3 = (bool)*(m_int*)MEM(0+SZ_INT+SZ_INT);
   stk::Granulate * result = (stk::Granulate *)new stk::Granulate(arg1,arg2,arg3);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Granulate);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Granulate");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Granulate);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Granulate");
   GW_Granulate(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -2479,8 +2479,8 @@ static SFUN(gw_Granulate_ctor2) {
   handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   stk::Granulate * result = (stk::Granulate *)new stk::Granulate(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Granulate);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Granulate");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Granulate);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Granulate");
   GW_Granulate(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -2598,8 +2598,8 @@ static SFUN(gw_Guitar_ctor0) {
   handle(shred, (m_str)"NullPtrException");
   std::string arg2(STRING(*(M_Object*)MEM(0+SZ_INT))); // here arg2
   stk::Guitar * result = (stk::Guitar *)new stk::Guitar(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Guitar);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Guitar");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Guitar);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Guitar");
   GW_Guitar(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -2610,8 +2610,8 @@ static SFUN(gw_Guitar_ctor0) {
 static SFUN(gw_Guitar_ctor1) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   stk::Guitar * result = (stk::Guitar *)new stk::Guitar(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Guitar);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Guitar");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Guitar);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Guitar");
   GW_Guitar(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -2775,8 +2775,8 @@ static m_int o_JCRev_swig;
 static SFUN(gw_JCRev_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::JCRev * result = (stk::JCRev *)new stk::JCRev(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_JCRev);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.JCRev");
+  //M_Object ret_obj = new_object(shred->info->mp, t_JCRev);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.JCRev");
   GW_JCRev(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -2845,8 +2845,8 @@ static SFUN(gw_LentPitShift_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   int arg2 = (int)*(m_int*)MEM(0+SZ_FLOAT);
   stk::LentPitShift * result = (stk::LentPitShift *)new stk::LentPitShift(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_LentPitShift);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.LentPitShift");
+  //M_Object ret_obj = new_object(shred->info->mp, t_LentPitShift);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.LentPitShift");
   GW_LentPitShift(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -2857,8 +2857,8 @@ static SFUN(gw_LentPitShift_ctor0) {
 static SFUN(gw_LentPitShift_ctor1) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::LentPitShift * result = (stk::LentPitShift *)new stk::LentPitShift(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_LentPitShift);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.LentPitShift");
+  //M_Object ret_obj = new_object(shred->info->mp, t_LentPitShift);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.LentPitShift");
   GW_LentPitShift(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -2903,8 +2903,8 @@ static m_int o_Mandolin_swig;
 static SFUN(gw_Mandolin_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Mandolin * result = (stk::Mandolin *)new stk::Mandolin(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Mandolin);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Mandolin");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Mandolin);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Mandolin");
   GW_Mandolin(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -3006,8 +3006,8 @@ static SFUN(gw_Mesh2D_ctor) {
   handle(shred, (m_str)"NullPtrException");
   unsigned short arg2 = (unsigned short)*(m_int*)MEM(0+SZ_INT);
   stk::Mesh2D * result = (stk::Mesh2D *)new stk::Mesh2D(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Mesh2D);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Mesh2D");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Mesh2D);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Mesh2D");
   GW_Mesh2D(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -3344,8 +3344,8 @@ static m_int o_Noise_swig;
 static SFUN(gw_Noise_ctor0) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   stk::Noise * result = (stk::Noise *)new stk::Noise(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Noise);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Noise");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Noise);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Noise");
   GW_Noise(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -3390,8 +3390,8 @@ static m_int o_NRev_swig;
 static SFUN(gw_NRev_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::NRev * result = (stk::NRev *)new stk::NRev(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_NRev);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.NRev");
+  //M_Object ret_obj = new_object(shred->info->mp, t_NRev);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.NRev");
   GW_NRev(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -3436,8 +3436,8 @@ static m_int o_OnePole_swig;
 static SFUN(gw_OnePole_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::OnePole * result = (stk::OnePole *)new stk::OnePole(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_OnePole);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.OnePole");
+  //M_Object ret_obj = new_object(shred->info->mp, t_OnePole);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.OnePole");
   GW_OnePole(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -3504,8 +3504,8 @@ static m_int o_OneZero_swig;
 static SFUN(gw_OneZero_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::OneZero * result = (stk::OneZero *)new stk::OneZero(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_OneZero);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.OneZero");
+  //M_Object ret_obj = new_object(shred->info->mp, t_OneZero);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.OneZero");
   GW_OneZero(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -3615,7 +3615,7 @@ static DTOR(gw_Phonemes_dtor) {
 static MFUN(gw_Phonemes_name) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   char * result = (char *)stk::Phonemes::name(arg1);
-  *(M_Object*)RETURN = result ? new_string(shred->info->mp, shred, (m_str)result) : NULL;
+  *(M_Object*)RETURN = result ? new_string(shred->info->vm->gwion, (m_str)result) : NULL;
 }
 
 static MFUN(gw_Phonemes_voiceGain) {
@@ -3700,8 +3700,8 @@ static m_int o_Plucked_swig;
 static SFUN(gw_Plucked_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Plucked * result = (stk::Plucked *)new stk::Plucked(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Plucked);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Plucked");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Plucked);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Plucked");
   GW_Plucked(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -3840,8 +3840,8 @@ static m_int o_PRCRev_swig;
 static SFUN(gw_PRCRev_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::PRCRev * result = (stk::PRCRev *)new stk::PRCRev(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_PRCRev);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.PRCRev");
+  //M_Object ret_obj = new_object(shred->info->mp, t_PRCRev);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.PRCRev");
   GW_PRCRev(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 1, 1);
@@ -4132,8 +4132,8 @@ static m_int o_Saxofony_swig;
 static SFUN(gw_Saxofony_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Saxofony * result = (stk::Saxofony *)new stk::Saxofony(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Saxofony);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Saxofony");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Saxofony);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Saxofony");
   GW_Saxofony(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -4208,8 +4208,8 @@ static m_int o_Shakers_swig;
 static SFUN(gw_Shakers_ctor0) {
   int arg1 = (int)*(m_int*)MEM(0);
   stk::Shakers * result = (stk::Shakers *)new stk::Shakers(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Shakers);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Shakers");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Shakers);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Shakers");
   GW_Shakers(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -4398,8 +4398,8 @@ static SFUN(gw_SingWave_ctor0) {
   std::string arg1(STRING(*(M_Object*)MEM(0))); // here arg1
   bool arg2 = (bool)*(m_int*)MEM(0+SZ_INT);
   stk::SingWave * result = (stk::SingWave *)new stk::SingWave(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_SingWave);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.SingWave");
+  //M_Object ret_obj = new_object(shred->info->mp, t_SingWave);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.SingWave");
   GW_SingWave(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -4412,8 +4412,8 @@ static SFUN(gw_SingWave_ctor1) {
   handle(shred, (m_str)"NullPtrException");
   std::string arg1(STRING(*(M_Object*)MEM(0))); // here arg1
   stk::SingWave * result = (stk::SingWave *)new stk::SingWave(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_SingWave);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.SingWave");
+  //M_Object ret_obj = new_object(shred->info->mp, t_SingWave);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.SingWave");
   GW_SingWave(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -4506,8 +4506,8 @@ static m_int o_Sitar_swig;
 static SFUN(gw_Sitar_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Sitar * result = (stk::Sitar *)new stk::Sitar(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Sitar);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Sitar");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Sitar);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Sitar");
   GW_Sitar(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -4568,8 +4568,8 @@ static SFUN(gw_Vector3D_ctor0) {
   stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_FLOAT);
   stk::StkFloat arg3 = (stk::StkFloat)*(m_float*)MEM(0+SZ_FLOAT+SZ_FLOAT);
   stk::Vector3D * result = (stk::Vector3D *)new stk::Vector3D(arg1,arg2,arg3);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Vector3D);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Vector3D");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Vector3D);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Vector3D");
   GW_Vector3D(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;
 }
@@ -4578,8 +4578,8 @@ static SFUN(gw_Vector3D_ctor1) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_FLOAT);
   stk::Vector3D * result = (stk::Vector3D *)new stk::Vector3D(arg1,arg2);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Vector3D);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Vector3D");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Vector3D);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Vector3D");
   GW_Vector3D(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;
 }
@@ -4587,8 +4587,8 @@ static SFUN(gw_Vector3D_ctor1) {
 static SFUN(gw_Vector3D_ctor2) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Vector3D * result = (stk::Vector3D *)new stk::Vector3D(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Vector3D);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Vector3D");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Vector3D);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Vector3D");
   GW_Vector3D(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;
 }
@@ -4665,8 +4665,8 @@ static m_int o_StifKarp_swig;
 static SFUN(gw_StifKarp_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::StifKarp * result = (stk::StifKarp *)new stk::StifKarp(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_StifKarp);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.StifKarp");
+  //M_Object ret_obj = new_object(shred->info->mp, t_StifKarp);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.StifKarp");
   GW_StifKarp(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -4785,8 +4785,8 @@ static m_int o_Twang_swig;
 static SFUN(gw_Twang_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Twang * result = (stk::Twang *)new stk::Twang(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Twang);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Twang");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Twang);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Twang");
   GW_Twang(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -5023,8 +5023,8 @@ static m_int o_Voicer_swig;
 static SFUN(gw_Voicer_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Voicer * result = (stk::Voicer *)new stk::Voicer(arg1);
-  //M_Object ret_obj = new_object(shred->info->mp, shred, t_Voicer);
-  M_Object ret_obj = new_object_str(shred->info->vm->gwion, shred, (m_str)"stk.Voicer");
+  //M_Object ret_obj = new_object(shred->info->mp, t_Voicer);
+  M_Object ret_obj = new_object_str(shred->info->vm->gwion, (m_str)"stk.Voicer");
   GW_Voicer(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;UGEN(ret_obj) = new_UGen(shred->info->mp);
   ugen_ini(shred->info->vm->gwion, UGEN(ret_obj), 0, 1);
@@ -5446,7 +5446,7 @@ m_bool CPPIMPORT(Gwi gwi) {
   CHECK_BB(gwi_func_ini(gwi, "int", "RT_BUFFER_SIZE"));
   CHECK_BB(gwi_func_end(gwi, gw_RT_BUFFER_SIZE_get, ae_flag_static));
   CHECK_BB(gwi_item_ini(gwi, "string", "RAWWAVE_PATH"));
-  const M_Object rawpath = new_string2(gwi->gwion, NULL, s_name(insert_symbol(gwi->gwion->st, (m_str)"../../rawwaves/")));
+  const M_Object rawpath = new_string(gwi->gwion, s_name(insert_symbol(gwi->gwion->st, (m_str)"../../rawwaves/")));
   CHECK_BB(gwi_item_end(gwi, ae_flag_const | ae_flag_static, obj, rawpath));
   CHECK_BB(gwi_func_ini(gwi, "float", "PI"));
   CHECK_BB(gwi_func_end(gwi, gw_PI_get, ae_flag_static));

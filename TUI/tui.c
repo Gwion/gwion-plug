@@ -121,7 +121,7 @@ static MFUN(Window_title_set) {
 
 static MFUN(Window_title_get) {
   TUIWindow *win = WINDOW(o);
-  *(M_Object*)RETURN = new_string(shred->info->mp, shred, (m_str)win->menu.title);
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)win->menu.title);
 }
 
 static MFUN(window_position) {
@@ -335,7 +335,7 @@ static MFUN(Label_text_set) {
 }
 
 static MFUN(Label_text_get) {                                             \
-  *(M_Object*)RETURN = new_string(shred->info->mp, shred, WIDGET(o).user_data); \
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, WIDGET(o).user_data); \
 }
 
 struct TUIClosure_ {
@@ -404,7 +404,7 @@ static MFUN(type##_##name##_set) {           \
 static MFUN(type##_##name##_get) {                                             \
   TUIWidget w = WIDGET(o);                                                    \
   TUI##type *a = (TUI##type*)(w.user_data);                                    \
-  *(M_Object*)RETURN = new_string(shred->info->mp, shred, a->name); \
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, a->name); \
 }
 
 #define WIDGET_SET_STRING_ARRAY(type, name)                           \
@@ -502,14 +502,14 @@ WIDGET_INT(Row, TUIRowPositioning, positioning)
   *(m_str*)t_##name->nspc->class_data = #tuiclass; \
 
 ANN static m_bool attr_object(const Gwi gwi, const Type t, const m_str name, const TUIAttribute attr) {
-  const M_Object o = new_object(gwi->gwion->mp, NULL, t);
+  const M_Object o = new_object(gwi->gwion->mp, t);
   *(TUIAttribute*)o->data = attr;
   GWI_BB(gwi_item_ini(gwi, "Attribute", name))
   GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const | ae_flag_late, obj, o))
 }
 
 static SFUN(tui_attr0) {
-  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  const M_Object attr = new_object_str(shred->info->vm->gwion, "TUI.Attribute");
   *(TUIAttribute*)attr->data = (TUIAttribute) {
       .foreground=*(TUIColor*)MEM(0)
   };
@@ -517,7 +517,7 @@ static SFUN(tui_attr0) {
 }
 
 static SFUN(tui_attr1) {
-  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  const M_Object attr = new_object_str(shred->info->vm->gwion, "TUI.Attribute");
   *(TUIAttribute*)attr->data = (TUIAttribute) {
       .foreground=*(TUIColor*)MEM(0),
       .background=*(TUIColor*)MEM(SZ_INT),
@@ -526,7 +526,7 @@ static SFUN(tui_attr1) {
 }
 
 static SFUN(tui_attr2) {
-  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  const M_Object attr = new_object_str(shred->info->vm->gwion, "TUI.Attribute");
   *(TUIAttribute*)attr->data = (TUIAttribute) {
       .foreground=*(TUIColor*)MEM(0),
       .background=*(TUIColor*)MEM(SZ_INT),
@@ -536,7 +536,7 @@ static SFUN(tui_attr2) {
 }
 
 static SFUN(tui_attr3) {
-  const M_Object attr = new_object_str(shred->info->vm->gwion, shred, "TUI.Attribute");
+  const M_Object attr = new_object_str(shred->info->vm->gwion, "TUI.Attribute");
   *(TUIAttribute*)attr->data = (TUIAttribute) {
       .foreground=*(TUIColor*)MEM(0),
       .background=*(TUIColor*)MEM(SZ_INT),

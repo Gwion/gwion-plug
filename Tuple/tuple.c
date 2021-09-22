@@ -237,7 +237,7 @@ static OP_CHECK(opck_impl_tuple) {
 INSTR(TupleCtor) {
 // most of this could be expressed with regular instructions
   const Type t = (Type)instr->m_val;
-  const M_Object o = new_object(shred->info->mp, shred, t);
+  const M_Object o = new_object(shred->info->mp, t);
   const m_uint sz = t->nspc->offset;
   memcpy(o->data, shred->reg - sz - SZ_INT, sz);
   shred->reg -= (sz);

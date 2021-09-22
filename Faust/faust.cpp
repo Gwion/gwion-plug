@@ -255,7 +255,7 @@ public:
     // clear code string
     string m_code = "";
     // get it
-    for (string line; std::getline(fin, line);) m_code += line + '\n';
+    for (string line; std::getline(fin, line); m_code += line + '\n';
 
     // eval it
     return eval(shred, gwobj, m_code);
@@ -321,7 +321,7 @@ static SFUN(faust_eval) {
   const VM_Code vmcode = *(VM_Code*)REG(SZ_INT);
   const m_str _code = STRING(*(M_Object*)MEM(0));
   const string code = _code;
-  const M_Object gwobj = new_object(shred->info->mp, shred, vmcode->ret_type);
+  const M_Object gwobj = new_object(shred->info->mp, vmcode->ret_type);
   UGEN(gwobj) = new_UGen(shred->info->mp);
   vector_add(&shred->info->vm->ugen, (vtype)UGEN(gwobj));
   const Faust *faust = Faust::eval(shred, gwobj, code);
@@ -332,7 +332,7 @@ static SFUN(faust_compile) {
   const VM_Code vmcode = *(VM_Code*)REG(SZ_INT);
   const m_str _path = STRING(*(M_Object*)MEM(0));
   const string path = _path;
-  const M_Object gwobj = new_object(shred->info->mp, shred, vmcode->ret_type);
+  const M_Object gwobj = new_object(shred->info->mp, vmcode->ret_type);
   UGEN(gwobj) = new_UGen(shred->info->mp);
   vector_add(&shred->info->vm->ugen, (vtype)UGEN(gwobj));
   const Faust *faust = Faust::compile(shred, gwobj, path);
@@ -362,7 +362,7 @@ static MFUN(faust_code) {
   Faust *const f = *(Faust **)(o->data + SZ_INT);
   string _code = f->code();
   char const *code = _code.c_str();
-  *(M_Object*)RETURN = new_string(shred->info->mp, shred, (m_str)code);
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)code);
 }
 
 extern "C" {

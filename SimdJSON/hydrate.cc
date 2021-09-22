@@ -33,7 +33,7 @@ ANN static void hydrate_union(Hydrate *const h, dom::element elem, const Type t)
 }
 
 ANN static void hydrate_object(Hydrate *const h, dom::element elem, const Type t) {
-  const M_Object tmp = new_object(h->gwion->mp, NULL, t);
+  const M_Object tmp = new_object(h->gwion->mp, t);
   Hydrate next = { .gwion=h->gwion, .shred=h->shred, .obj=tmp };
   if(t == h->gwion->type[et_event])
     vector_init(&EV_SHREDS(tmp));
@@ -64,7 +64,7 @@ ANN void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, con
   else if(t == gwion->type[et_string]) {
     if(elem.is_string()) {
       std::string_view s = elem.get_string();
-      *(M_Object*)data = new_string2(gwion, NULL, (m_str)s.data());
+      *(M_Object*)data = new_string(gwion, (m_str)s.data());
     }
   } else if(isa(t, gwion->type[et_function]) > 0) {
     std::string_view s = elem.get_string();

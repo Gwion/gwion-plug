@@ -155,10 +155,10 @@ static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
       char c[outlen + 1];
       strncpy(c, data, outlen);
       c[outlen] = '\0';
-      const M_Object str = new_string2(gwion, NULL, c);
+      const M_Object str = new_string(gwion, c);
       *(M_Object*)(ca->data + i*SZ_INT) = str;
     } else {
-      const M_Object o = new_object(gwion->mp, ca->shred, t);
+      const M_Object o = new_object(gwion->mp, t);
       *(M_Object*)(ca->data + i*SZ_INT) = o;
       struct Vector_ tmp;
       const Vector v = &t->info->tuple->contains;
@@ -313,7 +313,7 @@ static OP_CHECK(opck_record_ctor) {
 
 static INSTR(RecordCtor) {
   POP_REG(shred, instr->m_val);
-  const M_Object o = new_object(shred->info->mp, shred, (Type)instr->m_val2);
+  const M_Object o = new_object(shred->info->mp, (Type)instr->m_val2);
   memcpy(o->data, REG(-SZ_INT), instr->m_val);
   *(M_Object*)REG(-SZ_INT) = o;
 }

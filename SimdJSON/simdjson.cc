@@ -108,25 +108,25 @@ ANN static void object_pp(std::string *str, dom::object elem, uint indent) {
 static MFUN(simdjson_pp) {
   std::string str;
   element_pp(&str, SIMDJSON(o)->element, 0);
-  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.data());
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, str.data());
 }
 
 static MFUN(simdjson_obj_pp) {
   std::string str;
   object_pp(&str, SIMDJSON_OBJ(o), 0);
-  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.data());
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, str.data());
 }
 
 static MFUN(simdjson_arr_pp) {
   std::string str;
   array_pp(&str, SIMDJSON_ARR(o), 0);
-  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.data());
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, str.data());
 }
 
 static SFUN(simdjson_load) {
   const M_Object arg = *(M_Object *)MEM(0);
   const VM_Code code = *(VM_Code *)REG(SZ_INT);
-  const M_Object ret = new_object(shred->info->mp, shred, code->ret_type);
+  const M_Object ret = new_object(shred->info->mp, code->ret_type);
   *(M_Object *)RETURN = ret;
   try {
     auto s = SIMDJSON(ret);
@@ -163,29 +163,29 @@ static MFUN(simdjson_get##name) {                \
 
 getx(i,
     int64_t value = SIMDJSON(o)->element[str];
-    *(m_int*)RETURN = value;);
+    *(m_int*)RETURN = value;)
 getx(b,
     bool value = SIMDJSON(o)->element[str];
-    *(m_int*)RETURN = value;);
+    *(m_int*)RETURN = value;)
 getx(f,
     double value = SIMDJSON(o)->element[str];
-    *(m_float*)RETURN = value;);
+    *(m_float*)RETURN = value;)
 getx(s,
     std::string_view view = SIMDJSON(o)->element[str];
     std::string value(view);
-    *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)value.data()););
+    *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)value.data());)
 getx(o,
    dom::object value = SIMDJSON(o)->element[str];
    dom::object *val = new dom::object(value);
-   M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
+   M_Object ret = new_object(shred->info->mp, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::object**)ret->data = val;
-   *(M_Object*)RETURN = ret;);
+   *(M_Object*)RETURN = ret;)
 getx(a,
    dom::array value = SIMDJSON(o)->element[str];
    dom::array *val = new dom::array(value);
-   M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
+   M_Object ret = new_object(shred->info->mp, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::array**)ret->data = val;
-   *(M_Object*)RETURN = ret;);
+   *(M_Object*)RETURN = ret;)
 
 #define obj_getx(name, body)                     \
 static MFUN(simdjson_obj_get##name) {            \
@@ -200,29 +200,29 @@ static MFUN(simdjson_obj_get##name) {            \
 
 obj_getx(i,
     int64_t value = SIMDJSON_OBJ(o)[str];
-    *(m_int*)RETURN = value;);
+    *(m_int*)RETURN = value;)
 obj_getx(b,
     bool value = SIMDJSON_OBJ(o)[str];
-    *(m_int*)RETURN = value;);
+    *(m_int*)RETURN = value;)
 obj_getx(f,
     double value = SIMDJSON_OBJ(o)[str];
-    *(m_float*)RETURN = value;);
+    *(m_float*)RETURN = value;)
 obj_getx(s,
     std::string_view view = SIMDJSON_OBJ(o)[str];
     std::string value(view);
-    *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)value.data()););
+    *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)value.data());)
 obj_getx(o,
    dom::object value = SIMDJSON_OBJ(o)[str];
    dom::object *val = new dom::object(value);
-   M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
+   M_Object ret = new_object(shred->info->mp, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::object**)ret->data = val;
-   *(M_Object*)RETURN = ret;);
+   *(M_Object*)RETURN = ret;)
 obj_getx(a,
    dom::array value = SIMDJSON_OBJ(o)[str];
    dom::array *val = new dom::array(value);
-   M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
+   M_Object ret = new_object(shred->info->mp, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::array**)ret->data = val;
-   *(M_Object*)RETURN = ret;);
+   *(M_Object*)RETURN = ret;)
 
 #define arr_getx(name, body)                      \
 static MFUN(simdjson_arr_get##name) {             \
@@ -244,29 +244,29 @@ static MFUN(simdjson_arr_get##name) {             \
 
 arr_getx(i,
     const int64_t value = *iter;
-    *(m_int*)RETURN = value;);
+    *(m_int*)RETURN = value;)
 arr_getx(b,
     const bool value = *iter;
-    *(m_int*)RETURN = value;);
+    *(m_int*)RETURN = value;)
 arr_getx(f,
     const double value = *iter;
-    *(m_float*)RETURN = value;);
+    *(m_float*)RETURN = value;)
 arr_getx(s,
     std::string_view view = *iter;
     std::string value(view);
-    *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, (m_str)value.data()););
+    *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)value.data());)
 arr_getx(o,
    dom::object value = *iter;
    dom::object *val = new dom::object(value);
-   M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
+   M_Object ret = new_object(shred->info->mp, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::object**)ret->data = val;
-   *(M_Object*)RETURN = ret;);
+   *(M_Object*)RETURN = ret;)
 arr_getx(a,
    dom::array value = *iter;
    dom::array *val = new dom::array(value);
-   M_Object ret = new_object(shred->info->mp, shred, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
+   M_Object ret = new_object(shred->info->mp, (*(VM_Code*)REG(SZ_INT*2))->ret_type);
    *(dom::array**)ret->data = val;
-   *(M_Object*)RETURN = ret;);
+   *(M_Object*)RETURN = ret;)
 
 static MFUN(Hydrate) {
   const VM_Code code = *(VM_Code*)REG(SZ_INT);
@@ -280,7 +280,7 @@ static MFUN(Hydrate) {
 static SFUN(ToJson) {
   std::stringstream str;
   tojson(shred->info->vm->gwion, &str, *(M_Object*)MEM(0));
-  *(M_Object*)RETURN = new_string2(shred->info->vm->gwion, shred, str.str().data());
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, str.str().data());
 }
 
 // return an Event:[T]

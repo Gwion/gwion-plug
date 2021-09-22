@@ -199,7 +199,7 @@ static SFUN(gwbmi_create) {
     handle(shred, "[{+R}BMI{0}] can't create buffer.");
     return;
   }
-  const M_Object ret = new_object_str(shred->info->vm->gwion, shred, "BMI");
+  const M_Object ret = new_object_str(shred->info->vm->gwion, "BMI");
   *(bmi_buffer**)ret->data = buffer;
   const size_t sz = bmi_buffer_content_size(buffer);
   memset(buffer->contents, 0, sz);
@@ -213,7 +213,7 @@ static SFUN(gwbmi_from_file) {
     handle(shred, "[{+R}BMI{0}] can't open file.");
     return;
   }
-  const M_Object ret = new_object_str(shred->info->vm->gwion, shred, "BMI");
+  const M_Object ret = new_object_str(shred->info->vm->gwion, "BMI");
   *(bmi_buffer**)ret->data = buffer;
   *(M_Object*)RETURN = ret;
   fclose(f);

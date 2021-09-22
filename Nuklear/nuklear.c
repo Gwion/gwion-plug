@@ -281,7 +281,7 @@ static DTOR(nk_dtor) {
 //  XDestroyWindow(gw->win->dpy, gw->win->win);
   gw_nk_shutdown(gw->win);
   free(gw->ctx);
-  for(m_uint i = vector_size(gw->widget) + 1; --i;)
+  for(m_uint i = vector_size(gw->widget) + 1; --i;
     release((M_Object)vector_at(gw->widget, i), shred);
   vector_release(gw->widget);
   free(gw->win);
@@ -294,7 +294,7 @@ static CTOR(widget_ctor)
 {
   char name[256];
   sprintf(name, "Widget:%p", o);
-  (*(M_Object*)(o->data + o_nk_name)) = new_string2(shred->info->vm->gwion, NULL, name);
+  (*(M_Object*)(o->data + o_nk_name)) = new_string(shred->info->vm->gwion, name);
   (*(GWindow**)(o->data + o_nk_gwin)) = last_window;
   (*(M_Object*)(o->data + o_nk_parent)) = last_window->last_widget;
   if(last_window->last_widget && strcmp(o->type_ref->name, "NkLayout")

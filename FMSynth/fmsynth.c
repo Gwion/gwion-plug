@@ -40,8 +40,8 @@ static TICK(fmsynth_tick) {
 }
 
 CTOR(ctor) {
-  NAME(o) = new_string2(shred->info->vm->gwion, NULL, "name");
-  AUTHOR(o) = new_string2(shred->info->vm->gwion, NULL, "author");
+  NAME(o) = new_string(shred->info->vm->gwion, "name");
+  AUTHOR(o) = new_string(shred->info->vm->gwion, "author");
   SYNTH(o) = fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
   ugen_gen(shred->info->vm->gwion, UGEN(o), fmsynth_tick, SYNTH(o), 0);

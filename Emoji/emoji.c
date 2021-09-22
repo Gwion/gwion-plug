@@ -20,7 +20,7 @@ static MFUN(mfun) {
   const size_t sz = strlen(in);
   char out[sz + 1];
   cmojify(out, sz, in);
-  *(M_Object*)RETURN = new_string(shred->info->mp, shred, out);
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, out);
 }
 
 GWION_IMPORT(Emoji) {

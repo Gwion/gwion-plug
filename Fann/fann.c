@@ -56,7 +56,7 @@ static MFUN(reset_errno) {
 
 static MFUN(errstr) {
   m_str str = fann_get_errstr(ERROR(o));
-  *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, str ? str : "no error");
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion, str ? str : "no error");
 }
 
 static MFUN(reset_errstr) {
@@ -199,7 +199,7 @@ static struct fann_connection to_fann(M_Object o) {
 }
 
 static M_Object from_fann(const VM_Shred shred, struct fann_connection c) {
-  M_Object o= new_object(shred->info->mp, NULL, t_fann_connect);
+  M_Object o= new_object(shred->info->mp, t_fann_connect);
   *(m_uint*)(o->data + o_fann_from)    = c.from_neuron;
   *(m_uint*)(o->data + o_fann_to)      = c.to_neuron;
   *(m_float*)(o->data + o_fann_weight) = c.weight;
@@ -306,7 +306,7 @@ static SFUN(type_str) {
     handle(shred, "FannInvalidName");
     return;
   }
-  *(m_uint*)RETURN = (m_uint)new_string(shred->info->mp, shred, (m_str)FANN_NETTYPE_NAMES[i]);
+  *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion, (m_str)FANN_NETTYPE_NAMES[i]);
 }
 
 static MFUN(load) {
@@ -646,7 +646,7 @@ static MFUN(train_save) {
 }
 
 static SFUN(train_merge) {
-  M_Object ret = new_object(shred->info->mp, shred, t_fann_data);
+  M_Object ret = new_object(shred->info->mp, t_fann_data);
   M_Object l = *(M_Object*)MEM(0);
   M_Object r = *(M_Object*)MEM(SZ_INT);
   DATA(ret) = fann_merge_train_data(DATA(l), DATA(r));
@@ -654,7 +654,7 @@ static SFUN(train_merge) {
 }
 
 static SFUN(train_duplicate) {
-  M_Object ret = new_object(shred->info->mp, shred, t_fann_data);
+  M_Object ret = new_object(shred->info->mp, t_fann_data);
   M_Object l = *(M_Object*)MEM(0);
   M_Object r = *(M_Object*)MEM(SZ_INT);
   DATA(ret) = fann_duplicate_train_data(DATA(l));
@@ -662,7 +662,7 @@ static SFUN(train_duplicate) {
 }
 
 static MFUN(train_do_subset) {
-  M_Object ret = new_object(shred->info->mp, shred, t_fann_data);
+  M_Object ret = new_object(shred->info->mp, t_fann_data);
   m_uint pos = *(m_uint*)MEM(SZ_INT);
   m_uint len = *(m_uint*)MEM(SZ_INT*2);
   DATA(ret) = fann_subset_train_data(DATA(o), pos, len);

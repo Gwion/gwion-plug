@@ -82,7 +82,7 @@ static CTOR(tinysr_ctor) {
   struct sr_data* sr = new_sr_data(o, shred->info->vm->bbq->si->sr);
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
   ugen_gen(shred->info->vm->gwion, UGEN(o), tinysr_tick, sr, 0);
-  const M_Object ev = TINY_EV(o) = new_object(shred->info->mp, NULL, shred->info->vm->gwion->type[et_event]);
+  const M_Object ev = TINY_EV(o) = new_object(shred->info->mp, shred->info->vm->gwion->type[et_event]);
   EV_SHREDS(ev) = new_vector(shred->info->mp);
 }
 
@@ -105,7 +105,7 @@ static MFUN(word) {
   const UGen u = UGEN(o);
   struct sr_data* sr = (struct sr_data*)u->module.gen.data;
   *(M_Object*)RETURN = sr->ini ?
-    new_string(shred->info->mp, shred, sr->ctx->word_names[TINY_IDX(o)]) : NULL;
+    new_string(shred->info->vm->gwion, sr->ctx->word_names[TINY_IDX(o)]) : NULL;
 }
 
 static MFUN(word_index) {
@@ -113,7 +113,7 @@ static MFUN(word_index) {
   const UGen u = UGEN(o);
   struct sr_data* sr = (struct sr_data*)u->module.gen.data;
   *(M_Object*)RETURN = idx >= 0 ?
-    new_string(shred->info->mp, shred, sr->ctx->word_names[idx]) : NULL;
+    new_string(shred->info->vm->gwion, sr->ctx->word_names[idx]) : NULL;
 }
 
 static MFUN(state) {
