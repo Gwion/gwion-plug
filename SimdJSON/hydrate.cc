@@ -1,5 +1,6 @@
 #include "simdjson.h"
 #include "Gwion.hh"
+#include "dict.h"
 
 using namespace simdjson;
 
@@ -15,6 +16,33 @@ typedef struct {
 } Hydrate;
 
 ANN static void _hydrate(Hydrate *const h, dom::element elem, const Type t);
+
+ANN static void hydrate_dict(Hydrate *const h, dom::element elem, const Type t) {
+  HMap *const hmap = &*(struct HMap*)h->obj->data;
+  const dom::object object = elem.get_object();
+  const m_uint capacity = object["capacity"].get_uint64();
+  const dom::element data_object = object["data"];
+  const dom::array dom_array = data_object.get_array();
+  const HMapInfo *hinfo = (HMapInfo*)t->nspc->class_data;
+  hmap->data  = (m_bit*)mp_calloc2(h->gwion->mp, hinfo->sz * capacity);
+  hmap->state = (m_bit*)mp_calloc2(h->gwion->mp, sizeof(HState) * capacity);
+  hmap->capacity = capacity;
+  for(auto e : dom_array) {
+    const auto dom_slot = e["slot"];
+    const m_uint slot = dom_slot.get_int64();
+    HState *const state = (HState*)(hmap->state + slot * sizeof(HState));
+    state->set = true;
+    try {
+      m_bit *const data = hmap->data + (hinfo->sz * slot);
+      auto key = e["key"];
+      hydrate(h->gwion, h->shred, key.value(), hinfo->key, data);
+      auto val = e["val"];
+      hydrate(h->gwion, h->shred, val.value(), hinfo->key, data + hinfo->key->size);
+    } catch (const simdjson_error &e) {
+      state->deleted = true;
+    }
+  }
+}
 
 ANN static void hydrate_union(Hydrate *const h, dom::element elem, const Type t) {
   const dom::object obj = elem.get_object();

@@ -237,7 +237,7 @@ static MFUN(simdjson_arr_get##name) {             \
       i++;                                        \
       ++iter;                                     \
     }                                             \
-  } catch (simdjson_error &e) {                   \
+  } catch (const simdjson_error &e) {             \
     handle(shred, (m_str)"SimdJSONArrayInvalid"); \
   }                                               \
 }

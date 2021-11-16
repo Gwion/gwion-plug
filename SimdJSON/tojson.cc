@@ -1,6 +1,7 @@
 #include "simdjson.h"
 #include "Gwion.hh"
 #include "tojson.hh"
+#include "dict.h"
 
 ANN static inline bool is_base_array(const Type t) {
   return t->array_depth && !tflag(t, tflag_empty);
@@ -18,6 +19,29 @@ typedef struct ToJson {
 
 ANN static void tojson_pp(ToJson *const json, const Type t, const m_bit* data);
 ANN void real_tojson(ToJson *const json, const Type t, m_bit *const data);
+
+ANN static void tojson_dict(ToJson *const json, const Type t) {
+  const HMapInfo *hinfo = (HMapInfo*)t->nspc->class_data;
+  HMap *hmap = &*(struct HMap*)json->obj->data;
+  m_uint count = 0;
+  *json->str << "\"capacity\":" << hmap->capacity << ",\"data\":[";
+  for(m_uint i = 0; i < hmap->capacity; i++) {
+    const HState state = *(HState*)(hmap->state + i * sizeof(HState));
+    m_bit *const data = hmap->data + hinfo->sz * i;
+    if(state.set) {
+      if(count++) *json->str << ",";
+      *json->str << "{\"slot\":" << i;
+      if(!state.deleted) {
+       *json->str << ",\"key\":";
+        tojson_pp(json, hinfo->key, data);
+        *json->str << ",\"val\":";
+        tojson_pp(json, hinfo->val, data + hinfo->key->size);
+      } else *json->str << ",\"deleted\":true";
+      *json->str << "}";
+    }
+  }
+  *json->str << "]";
+}
 
 ANN static void tojson_union(ToJson *const json, const Type t) {
     const m_uint   idx = *(m_uint*)json->obj->data;
@@ -94,6 +118,10 @@ ANN static void _tojson(ToJson *const json, const Type t) {
   if(!t->nspc)return;
   if(isa(t, json->gwion->type[et_union]) > 0) {
     tojson_union(json, t);
+    return;
+  }
+  if(isa(t, json->gwion->type[et_dict]) > 0) {
+    tojson_dict(json, t);
     return;
   }
   if(t->info->parent)
