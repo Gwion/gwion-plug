@@ -1,0 +1,17 @@
+#import Sciter
+
+#!Sciter.rtOption(
+#!  Sciter.Runtime.fileIO |
+#!  Sciter.Runtime.socketIO |
+#!  Sciter.Runtime.eval |
+#!  Sciter.Runtime.sysinfo
+#!);
+
+#! Sciter.debug(true);
+
+Sciter.run("Arago Workstation", "../../../../gui/public/index.html");
+Sciter.focus_cb(true);
+
+3::second => now;
+<<< "end" >>>;
+Sciter.end();
