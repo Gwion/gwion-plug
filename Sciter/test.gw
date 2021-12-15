@@ -9,9 +9,12 @@
 
 #! Sciter.debug(true);
 
-Sciter.run("Arago Workstation", "../../../../gui/public/index.html");
+Sciter.run("My HTML application", "index.html");
 Sciter.focus_cb(true);
 
-3::second => now;
-<<< "end" >>>;
+for(var int i; i < 10; i++) {
+    Sciter.data("Every second", "${i}");
+    second => now;
+}
+
 Sciter.end();
