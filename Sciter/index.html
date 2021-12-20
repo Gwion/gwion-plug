@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <script>
+            // From gwion: Sciter.data(string, string);
+            function data(key, value) {
+                document.getElementById('key').innerHTML = key + ":&nbsp;";
+                document.getElementById('value').innerHTML = value;
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Gwion / Sciter application</h1>
+        <p>
+            Post data to your application by calling Sciter.data(key, value);
+        </p>
+        <h2><span id="key"></span><span id="value"></span></h2>
+    </body>
+</html>
