@@ -250,7 +250,14 @@ ANN static void repl_end(struct Repl* repl, VM* vm, const Vector v) {
   vm->bbq->is_running = 0;
 }
 
+static void please_wait(void) {
+ enum {SECS_TO_SLEEP = 0, NSEC_TO_SLEEP = 50000000};
+ struct timespec remaining, request = {SECS_TO_SLEEP, NSEC_TO_SLEEP};
+  nanosleep(&request, &remaining);
+}
+
 ANN static void* repl_process(void* data) {
+  please_wait();
   VM* vm = (VM*)data;
   struct Vector_ v;
   struct Repl* repl = repl_ini(vm, &v);
@@ -281,7 +288,7 @@ GWMODINI(repl) {
 
 GWMODEND(repl) {
 //#ifdef __linux__
-//  pthread_join(repl_thread, NULL);
+  pthread_join(repl_thread, NULL);
 //#endif
 }
 
