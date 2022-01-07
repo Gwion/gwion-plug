@@ -1,0 +1,20 @@
+#import Sciter
+
+#!Sciter.rtOption(
+#!  Sciter.Runtime.fileIO |
+#!  Sciter.Runtime.socketIO |
+#!  Sciter.Runtime.eval |
+#!  Sciter.Runtime.sysinfo
+#!);
+
+#! Sciter.debug(true);
+
+Sciter.run("My HTML application", "index.html");
+Sciter.focus_cb(true);
+
+for(var int i; i < 10; i++) {
+    Sciter.data("Every second", "${i}");
+    second => now;
+}
+
+Sciter.end();
