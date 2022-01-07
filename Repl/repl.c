@@ -136,7 +136,7 @@ ANN static struct Repl* repl_ctx(struct Repl* repl, const Vector v, const VM* vm
   struct Repl* r = NULL;
   accept = 1;
   const m_str ln = readline("\033[1mcontext:\033[0m ");
-  for(m_uint i = vector_size(v) + 1; --i; {
+  for(m_uint i = vector_size(v) + 1; --i;) {
     struct Repl* s = (struct Repl*)vector_at(v, i-1);
     if(!strcmp(ln, s->ctx->name)) {
        r = s;
@@ -243,7 +243,7 @@ ANN static struct Repl* repl_ini(const VM* vm, const Vector v) {
 ANN static void repl_end(struct Repl* repl, VM* vm, const Vector v) {
   if(!repl->is_loaded)
     unload_context(repl->ctx, vm->gwion->env);
-  for(m_uint i = vector_size(v) + 1; --i;
+  for(m_uint i = vector_size(v) + 1; --i;)
     free_repl((struct Repl*)vector_at(v, i-1), vm);
   vector_release(v);
   write_history(NULL);
