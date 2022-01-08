@@ -13,4 +13,10 @@ make
 make install
 ```
 # Usage
-check .gw files in the directory.
+  * <kbd>Alt</kbd> + <kbd>g</kbd>: prepare to accept code
+  * <kbd>Alt</kbd> + <kbd>f</kbd>: launch a new *fork*
+  * <kbd>Alt</kbd> + <kbd>c</kbd>: create new context
+  * <kbd>Alt</kbd> + <kbd>z</kbd>: cancel line
+  * <kbd>Alt</kbd> + <kbd>a</kbd>: add a file
+  * <kbd>Alt</kbd> + <kbd>r</kbd>: remove a shred (from its ID)
+  * <kbd>Alt</kbd> + <kbd>s</kbd>: system command

@@ -25,31 +25,38 @@
 #define PROMPT_SZ 128
 
 static pthread_t repl_thread;
-static m_bool accept, cancel, chctx, fork, add, sys;
+static bool accept, cancel, chctx, fork, add, sys;
 
 static inline int _bind_cr(int count __attribute__((unused)), int key __attribute__((unused))) {
   if(accept) {
     printf("\n");
-    return rl_done = 1;
+    return rl_done = true;
   }
   printf("\n(...)");
   return 0;
 }
 
 static inline int _bind_accept(int count __attribute__((unused)), int key __attribute__((unused))) {
-  accept = 1;
+  accept = true;
   return 0;
 }
 
 static inline int _bind_cancel(int count __attribute__((unused)), int key __attribute__((unused))) {
-  cancel = 1;
-  accept = 1;
+  cancel = true;
+  accept = true;
   return 0;
 }
 
 static inline int _bind_add(int count __attribute__((unused)), int key __attribute__((unused))) {
-  accept = rl_done = 1;
-  add = key == 97 ? 1 : -1;
+  accept = rl_done = true;
+  add = true;
+  return 0;
+}
+
+
+static inline int _bind_rem(int count __attribute__((unused)), int key __attribute__((unused))) {
+  accept = rl_done = true;
+  add = false;
   return 0;
 }
 
@@ -83,33 +90,18 @@ INSTR(EOC2) {
   vmcode_remref(shred->code, shred->info->vm->gwion);
 }
 
-ANN static m_bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
+ANN static bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
   if(vm->shreduler->list && shred == vm->shreduler->list->self) {
     gw_err("shred[%"UINT_F"] is running.please use '\\C-f' to spork it\n", shred->tick->xid);
     return GW_ERROR;
   }
-/*
-  FILE* f = fmemopen(line, strlen(line), "r");
-  const Gwion gwion = vm->gwion;
-  struct AstGetter_ arg = { "repl", f, gwion->st };
-  MUTEX_LOCK(gwion->data->mutex);
-  DECL_OB(Ast, ast, = parse(&arg));
-  gwion->env->name = "repl";
-  if(traverse_ast(vm->gwion->env, ast) < 0)
-    goto close;
-  if(!(shred->code = emit_ast(vm->gwion->env, ast)))
-    goto close;
-  MUTEX_UNLOCK(gwion->data->mutex);
-close:
-  fclose(f);
-*/
-  compile_string(vm->gwion, "repl", line);
+  return !!compile_string(vm->gwion, "repl", line);
 }
 
 struct Repl {
   Context ctx;
   VM_Shred shred;
-  m_bool is_loaded;
+  bool is_loaded;
 };
 
 ANN static struct Repl* new_repl(MemPool p, const m_str name) {
@@ -183,10 +175,13 @@ static void repl_sys(void) {
 }
 
 ANN static void repl_add(VM* vm) {
-  const m_str line = readline(add > 0 ? "add file: " : "rem file:");
-  if(add > 0)
+  const m_str line = readline(add ? "add file: " : "rem file:");
+  if(add) {
+    // should we strip in the core?
+    line[strlen(line)-1] = '\0';
     compile_string(vm->gwion, "repl", line);
-  else {
+    compile_filename(vm->gwion, line);
+  } else {
     const m_uint index = strtol(line, NULL, 10);
     vm_remove(vm, index);
   }
@@ -235,7 +230,7 @@ ANN static struct Repl* repl_ini(const VM* vm, const Vector v) {
   rl_bind_keyseq("\\M-c", _bind_ctx);\
   rl_bind_keyseq("\\M-z", _bind_cancel);\
   rl_bind_keyseq("\\M-a", _bind_add);\
-  rl_bind_keyseq("\\M-r", _bind_add);\
+  rl_bind_keyseq("\\M-r", _bind_rem);\
   rl_bind_keyseq("\\M-s", _bind_sys);\
   return repl;
 }
@@ -281,14 +276,9 @@ ANN static void* repl_process(void* data) {
 GWMODINI(repl) {
   shreduler_set_loop(gwion->vm->shreduler, 1);
   pthread_create(&repl_thread, NULL, repl_process, gwion->vm);
-//#ifndef __linux__
-//  pthread_detach(repl_thread);
-//#endif
 }
 
 GWMODEND(repl) {
-//#ifdef __linux__
   pthread_join(repl_thread, NULL);
-//#endif
 }
 
