@@ -13,7 +13,7 @@ OBJ      += $(CPP_SRC:.cpp=.o)
 OBJ      += $(CXX_SRC:.cc=.o)
 CFLAGS   += -I${INC}
 CFLAGS   += -I.. -g
-LDFLAGS   = -shared -fPIC
+LDFLAGS  += -shared -fPIC
 AUTO_INSTALL_DEPS ?= 0
 
 NAME = $(shell basename `pwd`)
