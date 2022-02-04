@@ -1,4 +1,4 @@
-#include <RtMidi.h>
+#include <rtmidi/RtMidi.h>
 #include "Gwion.hh"
 
 ANN static void error_callback(RtMidiError::Type type, const std::string &errorText, void *data NUSED) {
@@ -171,27 +171,39 @@ static MFUN(rtmidiin_ignore) {
 }
 #define static_func(IO, io)\
 static SFUN(rtmidi##io##_count) {\
-  RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);\
-  *(m_int*)RETURN = io.getPortCount();\
+  try{\
+    RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);\
+   *(m_int*)RETURN = io.getPortCount();\
+  } catch (RtMidiError &e) {\
+    handle(shred, (m_str)"MidiOutException");\
+  }\
 }\
 \
 static SFUN(rtmidi##io##_name) {                                                   \
-  RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);                        \
-  std::string str = io.getPortName(*(m_int*)MEM(0));                           \
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)str.data()); \
-}                                                                              \
+  try{\
+    RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);                        \
+    std::string str = io.getPortName(*(m_int*)MEM(0));                           \
+    *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)str.data()); \
+  } catch (RtMidiError &e) {\
+    handle(shred, (m_str)"MidiOutException");\
+  }\
+	}                                                                              \
 \
 static SFUN(rtmidi##io##_names) {\
-  RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);\
-  const unsigned int count = io.getPortCount();\
-  const VM_Code code = *(VM_Code*)REG(0);\
-  const M_Object ret = new_array(shred->info->mp, code->ret_type, count);\
-  for(m_uint i = 0; i < count; i++) {\
-    std::string str = io.getPortName(i);\
-    *(M_Object*)(ARRAY(ret)->ptr + ARRAY_OFFSET + i * SZ_INT) =\
-           new_string(shred->info->vm->gwion, (m_str)str.data());\
+  try{\
+    RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);\
+    const unsigned int count = io.getPortCount();\
+    const VM_Code code = *(VM_Code*)REG(0);\
+    const M_Object ret = new_array(shred->info->mp, code->ret_type, count);\
+    for(m_uint i = 0; i < count; i++) {\
+      std::string str = io.getPortName(i);\
+      *(M_Object*)(ARRAY(ret)->ptr + ARRAY_OFFSET + i * SZ_INT) =\
+             new_string(shred->info->vm->gwion, (m_str)str.data());\
+    }\
+    *(M_Object*)RETURN = ret;\
+  } catch (RtMidiError &e) {\
+    handle(shred, (m_str)"MidiOutException");\
   }\
-  *(M_Object*)RETURN = ret;\
 }\
 
 static_func(In,  in);
