@@ -1,13 +1,13 @@
 include ../config.mk
 NAME=Sciter
 
-SCITER_DIR ?= ${PWD}/../../../sciter/
+SCITER_DIR ?= ${PWD}/../../../sciter
 
 #!CFLAGS+=${PWD}/./../../sciter/bin.lite/linux/x64/libsciter.so
-CFLAGS+=-I${PWD}/../../../sciter/include
-CFLAGS+=-I${PWD}/../../../sciter/demos.lite/sciter-glfw-opengl
-CFLAGS+=-I${PWD}/../../../sciter/demos.lite/glfw/include
-CFLAGS+=-I${PWD}/../../../sciter/demos.lite/glfw/deps/
+CFLAGS+=-I${SCITER_DIR}/include
+CFLAGS+=-I${SCITER_DIR}/demos.lite/sciter-glfw-opengl
+CFLAGS+=-I${SCITER_DIR}/demos.lite/glfw/include
+CFLAGS+=-I${SCITER_DIR}/demos.lite/glfw/deps/
 CFLAGS+=`pkg-config gtk+-3.0 --cflags`
 CFLAGS += -DWINDOWLESS
 CFLAGS += -D_GLFW_X11
