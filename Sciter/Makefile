@@ -1,7 +1,7 @@
 include ../config.mk
 NAME=Sciter
 
-SCITER_DIR := ${PWD}/../../../sciter/
+SCITER_DIR ?= ${PWD}/../../../sciter/
 
 #!CFLAGS+=${PWD}/./../../sciter/bin.lite/linux/x64/libsciter.so
 CFLAGS+=-I${PWD}/../../../sciter/include
