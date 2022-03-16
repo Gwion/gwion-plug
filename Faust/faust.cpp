@@ -255,7 +255,7 @@ public:
     // clear code string
     string m_code = "";
     // get it
-    for (string line; std::getline(fin, line); m_code += line + '\n';
+    for (string line; std::getline(fin, line); m_code += line + '\n');
 
     // eval it
     return eval(shred, gwobj, m_code);

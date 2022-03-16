@@ -24,10 +24,12 @@ fun RtMidi.In open(const string name) {
 
 #! read incoming messages
 fun void read(const RtMidi.In min) {
+while(true) {
   min => now;
   var int status, data1, data2;
   while(min.read(status, data1, data2))
     <<< "${status} ${data1} ${data2}" >>>;
+}
 }
 
 "Launch" => open => const auto min => read;

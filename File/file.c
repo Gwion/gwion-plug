@@ -13,11 +13,10 @@
 typedef Type (*filemodule)(const Gwion);
 
 static OP_CHECK(opck_file_scan) {
-exit(3);
   struct TemplateScan *ts = (struct TemplateScan*)data;
-  if(!ts->td->types || ts->td->types->next)
+  if(!ts->td->types || ts->td->types->len)
     ERR_N(ts->td->pos, _("File needs one template argument"));
-  const Symbol sym = ts->td->types->td->xid;
+  const Symbol sym = (*mp_vector_at(ts->td->types, Type_Decl*, 0))->xid;
   const m_str module = s_name(sym);
   char c[64];
   const size_t sz = strlen(module);
@@ -29,9 +28,9 @@ exit(3);
 
 static OP_CHECK(opck_file_ctor) {
   Exp_Call *call = (Exp_Call*)data;
-  if(!call->tmpl->call || call->tmpl->call->next)
+  if(!call->tmpl->call || call->tmpl->call->len)
     ERR_N(exp_self(call)->pos, _("File construtor needs one template argument"));
-  const Symbol sym = call->tmpl->call->td->xid;
+  const Symbol sym = (*mp_vector_at(call->tmpl->call, Type_Decl*, 0))->xid;
   const m_str module = s_name(sym);
   char c[64];
   const size_t sz = strlen(module);

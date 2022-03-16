@@ -612,7 +612,7 @@ static MFUN(fc_compute) {
   Vector v = *(Vector*)(o->data + o_fc_vector);
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   ret = new_array(shred->info->mp, t, vector_size(v));
-  vector_add(&shred->gc, (vtype)ret);
+//  vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
     M_Object obj = (M_Object)vector_at(v, i);
 //    if(!obj) continue; // prevented in fc.add

@@ -64,7 +64,7 @@ static OP_CHECK(opck_list_ctor) {
   if(!call->tmpl)
     ERR_N(call->func->pos, _("List needs template"));
   CHECK_BN(check_exp(env, call->func));
-  DECL_ON(const Type, t, = known_type(env, call->tmpl->call->td));
+  DECL_ON(const Type, t, = known_type(env, *mp_vector_at(call->tmpl->call, Type_Decl*, 0)));
   Exp e = call->args;
   if(!e)
     ERR_N(call->func->pos, _("List needs argument"));
@@ -104,7 +104,7 @@ static OP_EMIT(opem_list_ctor) {
   Exp e = call->args;
   do ++n;
   while((e = e->next));
-  const Type t = known_type(emit->env, call->tmpl->call->td);
+  DECL_OB(const Type, t, = known_type(emit->env, *mp_vector_at(call->tmpl->call, Type_Decl*, 0)));
   if(isa(t, emit->gwion->type[et_compound]) > 0) {
     for(m_uint i = 0; i < n; ++i)
       emit_compound_addref(emit, t, -(i+1)*t->size, 0);

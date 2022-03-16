@@ -30,12 +30,12 @@ static SFUN(core_glob) {
   glob_t results;
   if (glob(name, 0, NULL, &results)) {
     const M_Object ret = *(M_Object*)RETURN = new_array(shred->info->mp, shred->code->ret_type, 0);
-    vector_add(&shred->gc, (m_uint)ret);
+//    vector_add(&shred->gc, (m_uint)ret);
     return;
   }
   const M_Object ret = *(M_Object*)RETURN = new_array(shred->info->mp, code->ret_type, results.gl_pathc);
   const M_Vector array = ARRAY(ret);
-  vector_add(&shred->gc, (m_uint)ret);
+//  vector_add(&shred->gc, (m_uint)ret);
   for (m_uint i = 0; i < results.gl_pathc; i++) {
     const M_Object str = new_string(shred->info->vm->gwion, results.gl_pathv[i]);
     m_vector_set(array, i, &str);
@@ -56,7 +56,7 @@ static SFUN(core_glob) {
   } while (FindNextFile(file, &filedata));
   FindClose(file);
   *(M_Object*)RETURN = ret;
-  vector_add(&shred->gc, (m_uint)ret);
+//  vector_add(&shred->gc, (m_uint)ret);
 #endif
 }
 

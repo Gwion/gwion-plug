@@ -15,6 +15,10 @@
 #include "traverse.h"
 #include "parse.h"
 
+#define SZ_COMPLEX (SZ_FLOAT*2)
+#define SZ_VEC3    (SZ_FLOAT*3)
+#define SZ_VEC4    (SZ_FLOAT*4)
+
 #define describe(name, op) \
 static INSTR(Complex##name) {\
   POP_REG(shred, SZ_COMPLEX); \
@@ -245,7 +249,7 @@ INSTR(VecMember) {
 
 #define describe_vec(func, op)                                                \
 ANN static void vec_##func(const m_bit* v, const int size, const m_float f) { \
-  for(int i = size + 1; --i;                                                 \
+  for(int i = size + 1; --i;)                                                 \
     *(m_float*)(v + (i-1) * SZ_FLOAT) op##= f;                                \
 }
 describe_vec(Add, +)

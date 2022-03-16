@@ -12,7 +12,8 @@ OBJ       = $(SRC:.c=.o)
 OBJ      += $(CPP_SRC:.cpp=.o)
 OBJ      += $(CXX_SRC:.cc=.o)
 CFLAGS   += -I${INC}
-CFLAGS   += -I.. -g
+CFLAGS   += -I..
+CFLAGS   += -Wall -Wextra
 LDFLAGS  += -shared -fPIC
 AUTO_INSTALL_DEPS ?= 0
 

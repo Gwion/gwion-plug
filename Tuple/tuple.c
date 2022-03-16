@@ -96,7 +96,7 @@ ANN static void unpack_instr_decl(const Emitter emit, struct TupleEmit *te) {
   te->obj_offset = te->tmp_offset;
   do {
     if(te->e->exp_type == ae_exp_decl) {
-      const Value value = te->e->d.exp_decl.list->self->value;
+      const Value value = (mp_vector_at(te->e->d.exp_decl.list, struct Var_Decl_, 0))->value;
       te->sz += value->type->size;
       sz += value->type->size;
       value->from->offset = emit_local(emit, value->type);
@@ -272,8 +272,9 @@ ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, con
 //      new_type_decl(gwion->mp, insert_symbol(gwion->st, "auto"), pos);
       new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
   td->flag -= ae_flag_late;
-  const Var_Decl var = new_var_decl(gwion->mp, name, NULL, pos);
-  const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
+  struct Var_Decl_ var = { .xid = name, .pos = pos };
+  Var_Decl_List vlist = new_mp_vector(gwion->mp, sizeof(struct Var_Decl_), 1);
+  mp_vector_set(vlist, struct Var_Decl_, 0, var);
   return new_exp_decl(gwion->mp, td, vlist, pos);
 }
 
@@ -282,24 +283,31 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   const Type exists = nspc_lookup_type1(env->curr, sym);
   if(exists)
     return exists;
-  Stmt_List base = NULL, curr = NULL;
+  Stmt_List base = NULL;
   for(m_uint i = 0; i < vector_size(v); ++i) {
     char name[num_digit(i) + 16];
     sprintf(name, "@tuple member %"UINT_F, i);
     const Symbol sym = insert_symbol(env->gwion->st, name);
     const Type t = (Type)vector_at(v, i);
-//    const Symbol tsym = insert_symbol(t != (Type)1 ? t->name : "@Undefined");
     Exp decl = decl_from_id(env->gwion, t, sym, pos);
-    const Stmt stmt = new_stmt_exp(env->gwion->mp, ae_stmt_exp, decl, pos);
-    const Stmt_List slist = new_stmt_list(env->gwion->mp, stmt, NULL);
-    if(curr)
-      curr->next = slist;
-    if(!base)
-      base = slist;
-    curr = slist;
+    struct Stmt_ stmt = {
+      .stmt_type = ae_stmt_exp,
+      .d = { .stmt_exp = { .val = decl } },
+      .pos = pos
+    };
+    if(base) {
+      mp_vector_add(env->gwion->mp, &base, struct Stmt_, stmt);
+    } else {
+      base = new_mp_vector(env->gwion->mp, sizeof(struct Stmt_), 1);
+      mp_vector_set(base, struct Stmt_, 0, stmt);
+    }
   }
-  Section * section = new_section_stmt_list(env->gwion->mp, base);
-  Ast body = new_ast(env->gwion->mp, section, NULL);
+  Section section = {
+    .section_type = ae_section_stmt,
+    .d = { .stmt_list = base }
+  };
+  Ast body = new_mp_vector(env->gwion->mp, sizeof(Section), 1);
+  mp_vector_set(body, Section, 0, section);
   Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), pos);
   Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none,
         sym, td, body, pos);
@@ -371,7 +379,6 @@ static OP_CHECK(unpack_ck) {
   const Symbol decl = insert_symbol(env->gwion->st, "auto");
   const Symbol skip = insert_symbol(env->gwion->st, "_");
   Exp e = call->args;
-//  const Value v = nspc_lookup_value1(env->global_nspc, insert_symbol("false"));
   while(e) {
     if(e->exp_type != ae_exp_primary || e->d.prim.prim_type != ae_prim_id)
       ERR_O(e->pos, _("invalid expression for unpack"))
@@ -381,11 +388,10 @@ static OP_CHECK(unpack_ck) {
       e->type = env->gwion->type[et_auto];
       e->d.exp_decl.type = env->gwion->type[et_auto];
       e->exp_type = ae_exp_decl;
-//      e->d.exp_decl.td = new_type_decl(env->gwion->mp, new_id_list(env->gwion->mp, decl, e->pos));
       e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, e->pos);
-      e->d.exp_decl.list = new_var_decl_list(env->gwion->mp,
-        new_var_decl(env->gwion->mp, var, NULL, e->pos), NULL);
-//      e->d.exp_decl.list->self->value = v;
+      e->d.exp_decl.list = new_mp_vector(env->gwion->mp, sizeof(struct Var_Decl_), 1);
+      struct Var_Decl_ vd = { .xid = var, .pos = call->func->pos};
+      mp_vector_set(e->d.exp_decl.list, struct Var_Decl_, 0, vd);
     } else {
       e->d.prim.prim_type = ae_prim_nil;
       e->type = env->gwion->type[et_auto];
@@ -471,16 +477,17 @@ static ANN Type scan_tuple(const Env env, const Type_Decl *td) {
   struct Vector_ v;
   vector_init(&v);
   Type_List tl = td->types;
-  do {
-    const Type t = tl->td->xid != insert_symbol(env->gwion->st, "_") ?
-       known_type(env, tl->td) : (Type)1;
+  for(uint32_t i = 0; i < tl->len; i++) {
+    Type_Decl *td = mp_vector_at(tl, Type_Decl, 0);
+    const Type t = td->xid != insert_symbol(env->gwion->st, "_") ?
+       known_type(env, td) : (Type)1;
     if(t)
       vector_add(&v, (m_uint)t);
     else {
       vector_release(&v);
       return env->gwion->type[et_error];
     }
-  } while((tl = tl->next));
+  }
   const Type ret = tuple_type(env, &v, td->pos);
   vector_release(&v);
   return ret;

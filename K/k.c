@@ -96,8 +96,7 @@ m_float** kmeans_refine(m_uint x, m_uint y, m_float** d, m_uint iter, m_uint n_p
   }
   /* get the best centroids */
   /* aka the one with min distance */
-  for(i = iter; --i;
-  {
+  for(i = iter; --i;) {
     j = i -1;
     if(dist[j] < min)
     {

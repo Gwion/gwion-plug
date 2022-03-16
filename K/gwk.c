@@ -47,7 +47,7 @@ static SFUN(gw_knn) {
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret_obj = new_array(shred->info->mp, t, inst_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
-  vector_add(&shred->gc, (vtype)ret_obj);
+//  vector_add(&shred->gc, (vtype)ret_obj);
   matrix_release(data);
   matrix_release(inst);
   free(ret);
@@ -68,7 +68,7 @@ static SFUN(gw_kmeans) {
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret_obj = new_array(shred->info->mp, t, data_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
-  vector_add(&shred->gc, (vtype)ret_obj);
+//  vector_add(&shred->gc, (vtype)ret_obj);
   memcpy(ARRAY(ret_obj)->ptr, ret, data_y * sizeof(m_uint));
   matrix_release(data);
   matrix_release(cent);
@@ -88,13 +88,13 @@ static SFUN(gw_kmeans_refine) {
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret_obj = new_array(shred->info->mp, t, data_x);
   *(m_uint*)RETURN = (m_uint)ret_obj;
-  vector_add(&shred->gc, (vtype)ret_obj);
+//  vector_add(&shred->gc, (vtype)ret_obj);
   for(i = 0; i < n_label; i++) {
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
     M_Object obj = new_array(shred->info->mp, t, data_y);
     memcpy(ARRAY(obj)->ptr, ret[i], data_y * sizeof(m_float));
     m_vector_set(ARRAY(ret_obj), i, (char*)&obj);
-    vector_add(&shred->gc, (vtype)obj);
+//    vector_add(&shred->gc, (vtype)obj);
   }
   matrix_release(ret);
   matrix_release(data);

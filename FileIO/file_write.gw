@@ -1,0 +1,11 @@
+#import FileIO
+
+new FileIO("test.txt", "w") => const auto file;
+#!try {
+#!  "foo" => file.write;
+#!"foo" => const string s;
+#!<<< "foo" $ Object  >>>;
+  file.write("foo");
+#!} handle {
+#!  <<< "something happened" >>>;
+#!}
