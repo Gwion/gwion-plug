@@ -56,6 +56,10 @@ static MFUN(file_eof) {
   *(m_int*)RETURN = feof(IO_FILE(o));
 }
 
+static MFUN(file_flush) {
+  *(m_int*)RETURN = fflush(IO_FILE(o));
+}
+
 static MFUN(file2string) {
   shreduler_remove(shred->tick->shreduler, shred, 0);
   thrd_t thrd;
@@ -111,6 +115,10 @@ GWION_IMPORT(fileio) {
   gwidoc(gwi, "Check for EOF");
   gwi_func_ini(gwi, "int", "eof");
   GWI_BB(gwi_func_end(gwi, file_eof, ae_flag_none))
+
+  gwidoc(gwi, "flush the file");
+  gwi_func_ini(gwi, "int", "flush");
+  GWI_BB(gwi_func_end(gwi, file_flush, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
 
