@@ -134,12 +134,12 @@ ANN static void _tojson(ToJson *const json, const Type t) {
 ANN void real_tojson(ToJson *const json, const Type t, m_bit *const data) {
   if(!is_base_array(t))
     *json->str << "{";
-  ToJson next = { .str=json->str, .data=data, .gwion=json->gwion };
+  ToJson next = { .str=json->str, .data=data, .gwion=json->gwion, .init = false };
   _tojson(&next, t);
   if(!is_base_array(t))
     *json->str << "}";
 }
 ANN void tojson(const Gwion gwion, std::stringstream *str, const M_Object o) {
-  ToJson json = { .str=str, .gwion=gwion };
+  ToJson json = { .str=str, .data = NULL, .gwion=gwion, .init = false };
   real_tojson(&json, o->type_ref, (m_bit*)o);
 }

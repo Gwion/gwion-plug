@@ -49,15 +49,16 @@ struct MidiIn {
 
 static DTOR(rtmidiin_dtor) {
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
-  MUTEX_LOCK(min->mutex);
-  delete min->in;
-  MUTEX_UNLOCK(min->mutex);
-  MUTEX_CLEANUP(min->mutex);
+  MUTEX_TYPE mutex = min->mutex;
+  MUTEX_LOCK(mutex);
   m_vector_release(&min->msgs);
   if(min->thru.ptr) {
     for(m_uint i = 0; i < vector_size(&min->thru); i++)
       _release((M_Object)vector_at(&min->thru, i), shred);
   }
+  delete min->in;
+  MUTEX_UNLOCK(mutex);
+  MUTEX_CLEANUP(mutex);
 }
 
 ANN static inline void min_add(struct MidiIn *min, unsigned char msg[3]) {
@@ -132,7 +133,6 @@ static MFUN(rtmidiin_connect) {
   mout->ref++;
   if(!min->thru.ptr) {
     vector_init(&min->thru);
-    RtMidiOut *out = *(RtMidiOut**)(mout->data + SZ_INT*2);
     min->in->setCallback(thru_callback, o);
   }
 }

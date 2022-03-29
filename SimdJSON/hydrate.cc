@@ -127,7 +127,6 @@ ANN static void iterate_array(Hydrate *const h,
   const M_Vector array = ARRAY(h->obj);
   m_vector_init(array, t->info->base_type->size, dom_array.size());
   m_uint i = 0;
-  const m_uint size = btype->size;
   m_bit *const ptr = array->ptr + ARRAY_OFFSET;
   for(auto a : dom_array)
     hydrate(h->gwion, h->shred, a, btype, ptr + i++ * btype->size);
