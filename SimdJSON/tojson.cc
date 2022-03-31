@@ -58,9 +58,11 @@ ANN static void tojson_pp(ToJson *const json, const Type t, const m_bit* data) {
     *json->str << *(m_int*)data;
   else if(tflag(t, tflag_float))
     *json->str << *(m_float*)data;
-  else if(t == type[et_string])
-    *json->str << "\"" << STRING(*(M_Object*)data) << "\"" ;
-  else if(isa(t, type[et_function]) > 0) {
+  else if(t == type[et_string]) {
+    const M_Object o = *(M_Object*)data;
+    if(o)
+      *json->str << "\"" << STRING(o) << "\"" ;
+  } else if(isa(t, type[et_function]) > 0) {
     const VM_Code code = *(VM_Code*)data;
     if(code)
       *json->str << "\"" << (*(VM_Code*)data)->name << "\"" ;
