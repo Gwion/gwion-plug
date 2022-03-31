@@ -132,15 +132,15 @@ ANN static void _tojson(ToJson *const json, const Type t) {
 }
 
 ANN void real_tojson(ToJson *const json, const Type t, m_bit *const data) {
-  if(!is_base_array(t))
+  const M_Object o = (M_Object)data;
+  if(!is_base_array(t) && o )
     *json->str << "{";
   ToJson next = { .str=json->str, .data=data, .gwion=json->gwion, .init = false };
-  const M_Object o = (M_Object)data;
   if(!tflag(t, tflag_struct)) {
     if(o) _tojson(&next, o->type_ref);
-    else *json->str << "\"null\"";
+    else *json->str << "null";
   } else _tojson(&next, t);
-  if(!is_base_array(t))
+  if(!is_base_array(t) && o)
     *json->str << "}";
 }
 
