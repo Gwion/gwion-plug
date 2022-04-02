@@ -63,12 +63,22 @@ ANN static void hydrate_union(Hydrate *const h, dom::element elem, const Type t)
 ANN static void hydrate_object(Hydrate *const h, dom::element elem, const Type t) {
   const M_Object tmp = new_object(h->gwion->mp, t);
   Hydrate next = { .gwion=h->gwion, .shred=h->shred, .obj=tmp };
+
+  if(isa(t, h->gwion->type[et_union]) > 0)
+    hydrate_union(&next, elem, t);
+  else {
+    if(isa(t, h->gwion->type[et_event]) > 0)
+      vector_init(&EV_SHREDS(tmp));
+    _hydrate(&next, elem, t);
+  }
+/*
   if(t == h->gwion->type[et_event])
     vector_init(&EV_SHREDS(tmp));
   else if(isa(t, h->gwion->type[et_union]) > 0)
     hydrate_union(&next, elem, t);
   else
     _hydrate(&next, elem, t);
+*/
   *(M_Object*)(h->data) = tmp;
 }
 
