@@ -63,12 +63,11 @@ ANN static void hydrate_union(Hydrate *const h, dom::element elem, const Type t)
 ANN static void hydrate_object(Hydrate *const h, dom::element elem, const Type t) {
   const M_Object tmp = new_object(h->gwion->mp, t);
   Hydrate next = { .gwion=h->gwion, .shred=h->shred, .obj=tmp };
-
   if(isa(t, h->gwion->type[et_union]) > 0)
     hydrate_union(&next, elem, t);
   else {
-    if(isa(t, h->gwion->type[et_event]) > 0)
-      vector_init(&EV_SHREDS(tmp));
+//    if(isa(t, h->gwion->type[et_event]) > 0)
+//      vector_init(&EV_SHREDS(tmp));
     _hydrate(&next, elem, t);
   }
 /*
@@ -165,6 +164,10 @@ ANN static void _hydrate(Hydrate *const h, dom::element elem, /*const M_Object o
   }
   if(t->info->parent)
     _hydrate(h, elem, t->info->parent);
+  if(vflag(t->info->value, vflag_builtin) && tflag(t, tflag_ctor)) {
+    f_xtor ctor = (f_xtor)t->nspc->pre_ctor->native_func;
+    ctor(h->obj, h->shred->mem, h->shred); // beware mem
+  }
   dom::object dom_object = elem.get_object();
   iterate_object(h, dom_object, t);
 }
