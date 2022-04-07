@@ -221,7 +221,7 @@ static MFUN(rtmidiout_send) {
   if(!sz) return;
   std::vector<unsigned char> msg(sz);
   for(m_uint i = 0; i < sz; i++)
-    msg[i] = *(m_uint*)(array->ptr + ARRAY_OFFSET + i*sz);
+    msg[i] = *(m_uint*)(array->ptr + ARRAY_OFFSET + i*SZ_INT);
   try {
     out->sendMessage(&msg);
   } catch (RtMidiError &e) {
