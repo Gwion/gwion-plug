@@ -65,7 +65,7 @@ static MFUN(ffi_do_call) {
 static MFUN(ffivar_do_call) {
   const Type t = o->type_ref;
   ffi_cif cif = FFI_CIF(t);
-  const void*  func = FFI_DL(t);
+//  const void*  func = FFI_DL(t);
   const Func f = (Func)vector_front(&t->nspc->vtable);
   M_Object varobj  = *(M_Object*)MEM(f->code->stack_depth - SZ_INT);
   struct Vararg_ *v = *(struct Vararg_**)varobj->data;
@@ -73,7 +73,7 @@ static MFUN(ffivar_do_call) {
   void* const data = MEM(SZ_INT + FFI_SZ(t) + SZ_INT), **tmp = data;
   m_uint sz = SZ_INT;
   for(unsigned i = 0; i < cif.nargs; ++i) {
-    const ffi_type *type = FFI_TYPES(t)[i];
+//    const ffi_type *type = FFI_TYPES(t)[i];
     *(void**)tmp = MEM(sz);
     ++tmp;
   }
@@ -84,7 +84,6 @@ static MFUN(ffivar_do_call) {
   memcpy(trash, FFI_TYPES(t), cif.nargs * SZ_INT);
   for(unsigned i = 0; i < nvariadic; ++i) {
     const Type type = ((Type)vector_at(&v->t, i));
-    const m_str name = type->name;
     *tmp_types = str2ffitype(type->name);
     *(void**)tmp = (v->d + sz);
     sz += type->size;
@@ -102,25 +101,38 @@ static MFUN(ffivar_do_call) {
 
 ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str name, const loc_t pos) {
   Type_Decl *td = new_type_decl(gwion->mp, insert_symbol(gwion->st, type), pos);
-  const Var_Decl var = new_var_decl(gwion->mp, insert_symbol(gwion->st, name), NULL, pos);
-  const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
+//  const Var_Decl var = new_var_decl(gwion->mp, insert_symbol(gwion->st, name), NULL, pos);
+//  
+//  const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
+  struct Var_Decl_ decl = { .xid = insert_symbol(gwion->st, name), .pos = pos };
+  const Var_Decl_List vlist = new_mp_vector(gwion->mp, sizeof(struct Var_Decl_), 1);
+  mp_vector_set(vlist, struct Var_Decl_, 0, decl);
+//  const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
   SET_FLAG(td, static);
   return new_exp_decl(gwion->mp, td, vlist, pos);
 }
 
-ANN static inline Stmt_List stmt_list_from_id(const Gwion gwion, const m_str type, const m_str name, const loc_t pos) {
+ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slist, const m_str type, const m_str name, const loc_t pos, const uint i) {
   const Exp exp = decl_from_id(gwion, type, name, pos);
-  const Stmt stmt = new_stmt_exp(gwion->mp, ae_stmt_exp, exp, pos);
-  return new_stmt_list(gwion->mp, stmt, NULL);
+  struct Stmt_ stmt = {
+    .d = { .stmt_exp = { .val = exp } },
+    .pos = pos,
+    .stmt_type = ae_stmt_exp
+  };
+  mp_vector_set(slist, struct Stmt_, i, stmt);
 }
 
 static OP_CHECK(ctor_as_call) {
   Exp_Call *const call = (Exp_Call*)data;
+
+  // FIXME: the check_exp_call1 part goes into a loop
+  ERR_N(call->func->pos, "mokjom");
+
   Exp func = cpy_exp(env->gwion->mp, call->func), e = call->func;
   e->exp_type = ae_exp_dot;
   Exp_Dot *dot = &e->d.exp_dot;
   dot->base = func;
-  dot->xid = insert_symbol(env->gwion->st, "call");
+  dot->xid = insert_symbol(env->gwion->st, "@call");
   return check_exp_call1(env, call) ?: env->gwion->type[et_error];
 }
 
@@ -139,7 +151,7 @@ static inline m_bool traverse_ffi(const Env env, const Type ffi, const Class_Def
 static inline Type _check_ffi_types(const Env env, const Exp_Call *call) {
   if(call->args->next)
     CHECK_OO(check_exp(env, call->args->next));;
-  return known_type(env, call->tmpl->call->td);
+  return known_type(env, *mp_vector_at(call->tmpl->call, Type_Decl*, 0));
 }
 
 static inline Type check_ffi_types(const Env env, const Type ffi, const Exp_Call *call) {
@@ -196,43 +208,46 @@ static OP_CHECK(opck_ffi_ctor) {
     ERR_N(exp->pos, "can't open func '%s'", func_name);
 
   exp = exp->next;
-  Arg_List base = NULL, list = NULL;
+  Arg_List args = NULL;
   const Type cffi = nspc_lookup_type0(ffi->nspc, insert_symbol(env->gwion->st, "@CFFI"));
-  while(exp) {
-    const Type actual = actual_type(env->gwion, exp->type);
-    if(is_class(env->gwion, exp->type) < 0 ||
-        isa(actual, cffi) < 0)
-      ERR_N(exp->pos, "Argument is not a FFI type");
-    char name[64];
-    sprintf(name, "FFIBASE.%s", actual->name);
-    const loc_t pos = exp->pos;
-    Type_Decl *td = str2td(env->gwion, name, pos);
-    Var_Decl var = new_var_decl(mp, NULL, NULL, pos);
-    Arg_List tmp = new_arg_list(mp, td, var, NULL);
-    if(!base)
-      base = tmp;
-    if(list)
-      list->next = tmp;
-    list = tmp;
-    exp = exp->next;
+  if(exp) {
+    args = new_mp_vector(env->gwion->mp, sizeof(Arg), 0);
+    do {
+      const Type actual = actual_type(env->gwion, exp->type);
+      if(!is_class(env->gwion, exp->type) || isa(actual, cffi) < 0)
+        ERR_N(exp->pos, "Argument is not a FFI type");
+      char name[64];
+      sprintf(name, "FFIBASE.%s", actual->name);
+      const loc_t pos = exp->pos;
+      Type_Decl *td = str2td(env->gwion, name, pos);
+      struct Var_Decl_ var = { .pos = pos };
+      Arg arg = { .td = td, .var_decl = var };
+      mp_vector_add(env->gwion->mp, &args, Arg, arg);
+    } while((exp = exp->next));
   }
   char _ret_name[64];
   sprintf(_ret_name, "FFIBASE.%s", ret_type->name);
   Type_Decl *td = str2td(env->gwion, _ret_name, call->func->pos);
-  Func_Base *fb = new_func_base(mp, td, insert_symbol(env->gwion->st, "call"), base, ae_flag_none, call->func->pos);
+  Func_Base *fb = new_func_base(mp, td, insert_symbol(env->gwion->st, "call"), args, ae_flag_none, call->func->pos);
   if(variadic)
     set_fbflag(fb, fbflag_variadic);
   Func_Def fdef = new_func_def(mp, fb, NULL);
-  Section * section = new_section_func_def(env->gwion->mp, fdef);
-  Ast body = new_ast(env->gwion->mp, section, NULL);
+  Func_Def fdef2 = cpy_func_def(mp, fdef);
+  fdef2->base->xid = insert_symbol(env->gwion->st, "@call");
+  Section section = { .d = { .func_def = fdef }, .section_type = ae_section_func };
+  Section section2 = { .d = { .func_def = fdef2 }, .section_type = ae_section_func };
+  Ast body = new_mp_vector(env->gwion->mp, sizeof(Section), 2);
+  mp_vector_set(body, Section, 0, section);
 {
-  const Stmt_List ssz = stmt_list_from_id(env->gwion, "int", "@sz", exp_self(call)->pos);
-  const Stmt_List sfunc = stmt_list_from_id(env->gwion, "@internal", "@func", exp_self(call)->pos);
-  sfunc->next = ssz;
-  const Stmt_List scif = stmt_list_from_id(env->gwion, "@cif", "@ffi_cif", exp_self(call)->pos);
-  scif->next = sfunc;
-  Section *section = new_section_stmt_list(env->gwion->mp, scif);
-  body->next = new_ast(mp, section, NULL);
+  Stmt_List slist = new_mp_vector(env->gwion->mp, sizeof(struct Stmt_), 3);
+  stmt_list_from_id(env->gwion, slist, "@cif", "@ffi_cif", exp_self(call)->pos, 0);
+  stmt_list_from_id(env->gwion, slist, "@internal", "@func", exp_self(call)->pos, 1);
+  stmt_list_from_id(env->gwion, slist, "int", "@sz", exp_self(call)->pos, 2);
+  Section section = {
+    .d = { .stmt_list = slist },
+    .section_type = ae_section_stmt
+  };
+  mp_vector_set(body, Section, 1, section);
 }
   char ext_name[64];
   sprintf(ext_name, "FFI:[FFIBASE.%s]", ret_type->name);
