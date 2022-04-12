@@ -64,7 +64,7 @@ static MFUN(sinosc_size) {
 
 static MFUN(sinosc_size_phase) {
   const m_int size    = *(m_int*)(shred->mem + SZ_INT);
-  const float phase = *(m_int*)(shred->mem + SZ_INT * 2);
+  const m_float phase = *(m_float*)(shred->mem + SZ_INT * 2);
   SP_osc* ug = (SP_osc*)UGEN(o)->module.gen.data;
   refresh_sine(shred->info->vm, ug, size, phase);
 }

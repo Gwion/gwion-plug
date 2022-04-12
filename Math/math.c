@@ -11,6 +11,10 @@
 #include "operator.h"
 #include "import.h"
 
+#ifndef USE_DOUBLE
+#define modf fmodf
+#endif
+
 static SFUN(math_abs) {
   *(m_uint*)RETURN = labs(*(m_int*)MEM(0));
 }
@@ -98,6 +102,7 @@ math2(atan2)
 math2(hypot)
 math2(pow)
 math2(fmod)
+math2(modf)
 math2(remainder)
 math2(_min)
 math2(_max)
@@ -134,7 +139,7 @@ static INSTR(op_ifpower) {
 }
 
 GWION_IMPORT(math) {
-  GWI_BB(gwi_struct_ini(gwi, "Math"))
+  GWI_OB(gwi_struct_ini(gwi, "Math"))
 
   gwi_func_ini(gwi, "int", "abs");
   gwi_func_arg(gwi, "int", "value");
@@ -184,6 +189,7 @@ GWION_IMPORT(math) {
   decl_math2("atan2",     atan2)
   decl_math2("pow",       pow)
   decl_math2("fmod",      fmod)
+  decl_math2("modf",      modf)
   decl_math2("remainder", remainder)
   decl_math2("min",       _min)
   decl_math2("max",       _max)
