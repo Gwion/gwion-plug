@@ -1,5 +1,5 @@
 # this should point to the cytosol's source
-CYTOSOL_DIR ?=../../../cytosol/
+CYTOSOL_DIR ?=Cytosol/
 
 include ../config.mk
 

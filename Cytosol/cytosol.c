@@ -31,6 +31,7 @@ struct CytosolClosure_ {
   VM_Code  code;
   struct Vector_ args;
 };
+
 static CTOR(cytosol_ctor) {
   PROG(o) = cyt_program_new();
   RUNNER(o) = cyt_driver_runner_new();
@@ -108,7 +109,7 @@ static MFUN(cytosol_run) {
     handle(shred, "Negative iteration requested");
     return;
   }
-   cyt_driver_runner_run(
+  cyt_driver_runner_run(
     RUNNER(o), PROG(o), EXECSTATE(o), CELLENV(o), bound);
 }
 
@@ -135,7 +136,6 @@ struct CytosolArg {
 
 static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
   const size_t n = cyt_value_buffer_get_size(ca->buf);
-  cyt_value_buffer *_buf = cyt_value_buffer_new(n);
   const Vector v = &ca->types;
   for(m_uint i = 0; i < vector_size(v); i++) {
     const Type t = (Type)vector_at(v, i);
@@ -223,19 +223,18 @@ static INSTR(func2cyt) {
 static OP_CHECK(opck_func2cyt) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   const Func func = bin->rhs->type->info->func;
-//  const Type cyt = actual_type(env->gwion, bin->lhs->type);
   const Type fields = (Type)vector_front(&bin->lhs->type->info->tuple->contains);
-  Arg_List arg = func->def->base->args;
-  while(arg) {
-    if(isa(arg->type, env->gwion->type[et_int]) < 0 &&
-       isa(arg->type, env->gwion->type[et_string]) < 0 &&
-       arg->type == fields && isa(arg->type, fields) < 0 )
-      ERR_N(arg->var_decl->pos, "invalid type in field assignment");
-    arg = arg->next;
-    return NULL;
-
+  Arg_List args = func->def->base->args;
+  if(args) {
+    for(uint32_t i = 0; i < args->len; i++) {
+      Arg *arg = mp_vector_at(args, Arg, i);
+      if(isa(arg->type, env->gwion->type[et_int]) < 0 &&
+         isa(arg->type, env->gwion->type[et_string]) < 0 &&
+         arg->type == fields && isa(arg->type, fields) < 0 )
+        ERR_N(arg->var_decl.pos, "invalid type in field assignment");
+    }
   }
-  return env->gwion->type[et_void];
+  return bin->lhs->type;
 }
 
 static OP_EMIT(opem_func2cyt) {
@@ -246,47 +245,47 @@ static OP_EMIT(opem_func2cyt) {
   const Instr instr = emit_add_instr(emit, func2cyt);
   struct Vector_ v;
   vector_init(&v);
-  Arg_List arg = func->def->base->args;
-  while(arg) {
-    vector_add(&v, (m_uint)arg->type);
-    arg = arg->next;
+  Arg_List args = func->def->base->args;
+  if(args) {
+    for(uint32_t i = 0; i < args->len; i++) {
+      Arg *arg = mp_vector_at(args, Arg, i);
+      vector_add(&v, (m_uint)arg->type);
+    }
   }
   instr->m_val = (m_uint)v.ptr;
   return GW_OK;
 }
 
 static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list) {
-  int n = 0;
-  while(list) {
-    Stmt stmt = list->stmt;
+  for(uint32_t i = 0; i < list->len; i++) {
+    Stmt stmt = mp_vector_at(list, struct Stmt_, i);
     if (stmt->stmt_type == ae_stmt_exp &&
         stmt->d.stmt_exp.val->exp_type == ae_exp_decl &&
-        !stmt->d.stmt_exp.val->d.exp_decl.list->next) {
-      const Type type = stmt->d.stmt_exp.val->d.exp_decl.list->self->value->type;
+        stmt->d.stmt_exp.val->d.exp_decl.list->len == 1) {
+      const Type type = mp_vector_at(stmt->d.stmt_exp.val->d.exp_decl.list, struct Var_Decl_, 0)->value->type;
       if(isa(type, env->gwion->type[et_int]) < 0 &&
         isa(type, env->gwion->type[et_string]) < 0 &&
         isa(type, fields) < 0)
       ERR_B(stmt->d.stmt_exp.val->pos, "invalid type '%s' in Cytosol.field", type->name)
    } else
       ERR_B(stmt->pos, "invalid stmt in Cytosol.field")
-    n++;
-    list = list->next;
   }
-  return n;
+  return list->len;
 }
 
 static OP_CHECK(opck_record_check) {
   const Class_Def cdef = (Class_Def)data;
   const Type t = cdef->base.type;
   Ast ast = cdef->body;
-//  nspc_allocdata(env->gwion->mp, t->nspc);
   if(ast) {
-    if (ast->section->section_type != ae_section_stmt)
+    Section * section = mp_vector_at(ast, Section, 0);
+    if (section->section_type != ae_section_stmt)
       ERR_N(cdef->pos, "Invalid section in Cytosol.Field");
     const Type fields = t->info->parent;
-    CHECK_BN(cytosol_stmt_list(env, fields, ast->section->d.stmt_list));
-    while((ast = ast->next)) {
-      if (ast->section->section_type == ae_section_stmt)
+    CHECK_BN(cytosol_stmt_list(env, fields, section->d.stmt_list));
+    for(uint32_t i = 1; i < ast->len; i++) {
+      Section * section = mp_vector_at(ast, Section, i);
+      if (section->section_type == ae_section_stmt)
         ERR_N(cdef->pos, "Declaration must be at the top of Cytosol.Record declaration");
     }
   }
@@ -346,7 +345,7 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_enum_add(gwi, "int_t", 0))
   GWI_BB(gwi_enum_add(gwi, "string_t", 0))
   GWI_BB(gwi_enum_add(gwi, "record_t", 0))
-  GWI_BB(gwi_enum_end(gwi))
+  GWI_OB(gwi_enum_end(gwi))
   t_fields->nspc->offset += SZ_INT*5;
 
   GWI_BB(gwi_func_ini(gwi, "void", "add_string"))
