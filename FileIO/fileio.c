@@ -20,6 +20,12 @@ static DTOR(fileio_dtor) {
   fclose(IO_FILE(o));
 }
 
+struct FileIOInfo {
+  m_str str;
+  FILE * file;
+  VM_Shred shred;
+};
+
 static int fileio_read(void *data) {
   VM_Shred shred = (VM_Shred)data;
   const M_Object o = *(M_Object*)shred->mem;
@@ -41,11 +47,13 @@ static int fileio_read(void *data) {
 }
 
 static int fileio_write(void *data) {
-  const VM_Shred shred = (VM_Shred)data;
-  const M_Object o = *(M_Object*)shred->mem;
-  const M_Object arg = *(M_Object*)(shred->mem + SZ_INT*2);
-  const size_t sz = strlen(STRING(arg));
-  if(fwrite(STRING(arg), sz, 1, IO_FILE(o)) > 0)
+  struct FileIOInfo *info = data;
+  const size_t sz = strlen(info->str);
+  const VM_Shred shred = info->shred;
+  const m_str str = info->str;
+  FILE *file = info->file;
+  mp_free2(shred->info->mp, sizeof(struct FileIOInfo), info);
+  if(fwrite(str, sz, 1,  file) > 0)
     shredule(shred->tick->shreduler, shred, 1);
   else
     handle(shred, "FileWriteException");
@@ -69,8 +77,13 @@ static MFUN(file2string) {
 
 static MFUN(string2file) {
   shreduler_remove(shred->tick->shreduler, shred, 0);
+  struct FileIOInfo *info = mp_calloc2(shred->info->mp, sizeof(struct FileIOInfo));
+  info->shred = shred;
+  info->file = IO_FILE(o);
+  const M_Object arg = *(M_Object*)(shred->mem + SZ_INT);
+  info->str = STRING(arg);
   thrd_t thrd;
-  thrd_create(&thrd, fileio_write, shred);
+  thrd_create(&thrd, fileio_write, info);
   thrd_detach(thrd);
 }
 
@@ -124,7 +137,7 @@ GWION_IMPORT(fileio) {
 
   gwidoc(gwi, "stdin, stderr and stdout");
   cfile(gwi, t_fileio, "stdin", stdin);
-  cfile(gwi, t_fileio, "stout", stdout);
+  cfile(gwi, t_fileio, "stdout", stdout);
   cfile(gwi, t_fileio, "stderr", stderr);
   return GW_OK;
 }

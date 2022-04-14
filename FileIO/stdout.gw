@@ -1,0 +1,6 @@
+#import FileIO
+
+stderr.write("lkjl");
+
+#! you can force flush
+stderr.flush();
