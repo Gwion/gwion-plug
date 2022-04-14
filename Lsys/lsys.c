@@ -181,8 +181,7 @@ int lsys_make_list(lsys_d *lsys,
             pos = toint(c) + 1;
         }
         lsys_entry *ent = &lsys->ent[pos];
-        int i;
-        for(i = ent->start; i < ent->end; i++) {
+        for(uint i = ent->start; i < ent->end; i++) {
             lsys_make_list(lsys, lst, str, str[i - 1], N - 1);
         }
     } else {

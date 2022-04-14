@@ -90,11 +90,10 @@ static MFUN(gw_lsys_reset)
 static MFUN(gw_lsys_size)
 {
   Lsys*  ptr = LSYS(o);
-  *(m_uint*)RETURN = ptr->is_init ? ptr->lst.size : -1;
+  *(m_int*)RETURN = ptr->is_init ? (m_int)ptr->lst.size : -1;
 }
 
 static MFUN(gw_lsys_get) {
-  int i;
   Lsys*  ptr   = LSYS(o);
   if(!ptr->is_init)
   {
@@ -102,7 +101,7 @@ static MFUN(gw_lsys_get) {
     return;
   }
   char str[ptr->lst.size];
-  for(i = 0; i < ptr->lst.size; i++) {
+  for(uint i = 0; i < ptr->lst.size; i++) {
     ptr->pos = lsys_list_iter(&ptr->lst, &ptr->ent, ptr->pos);
     str[i] = tochar(ptr->ent->val + 1);
   }
@@ -110,7 +109,7 @@ static MFUN(gw_lsys_get) {
 }
 
 GWION_IMPORT(lsys) {
-  GWI_BB(gwi_class_ini(gwi, "Lsys", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "Lsys", "UGen"))
   gwi_class_xtor(gwi, ctor, dtor);
 
   GWI_BB(gwi_func_ini(gwi, "void", "parse"))
