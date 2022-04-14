@@ -110,7 +110,7 @@ static MFUN(gw_lsys_get) {
 }
 
 GWION_IMPORT(lsys) {
-  GWI_BB(gwi_class_ini(gwi, "Lsys", NULL))
+  GWI_BB(gwi_class_ini(gwi, "Lsys", "UGen"))
   gwi_class_xtor(gwi, ctor, dtor);
 
   GWI_BB(gwi_func_ini(gwi, "void", "parse"))
