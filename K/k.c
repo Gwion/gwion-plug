@@ -63,13 +63,12 @@ m_uint* kmeans(m_uint x, m_uint y, m_float **data, m_uint k, m_float t,
   return labels;
 }
 
-m_float** kmeans_refine(m_uint x, m_uint y, m_float** d, m_uint iter, m_uint n_points, m_uint n_label)
+m_float** kmeans_refine(m_uint y, m_float** d, m_uint iter, m_uint n_points, m_uint n_label)
 {
   m_uint i, j, k, l, index;
   m_float min = INFINITY;
   m_float dist[iter];
   m_float** centroid[iter];
-  m_float** ret;
   srand(time(NULL));
   /* try with a subsample iter times */
   for(i = 0; i < iter; i++)
@@ -172,7 +171,6 @@ m_float euclidian_distance(m_float* a, m_float* b, m_uint size)
 m_uint knn_classify(m_uint x, m_uint y, m_float** d, m_uint n_labels, m_uint* labels, m_float* instance, m_uint k)
 {
   m_uint i, j = 0, ret;
-  m_float  max = 0.0;
   id_dist   id[x];
   id_dist    ret_id[x];
   m_uint _labels[n_labels];
@@ -203,7 +201,6 @@ m_uint* knn_classify_multi(m_uint x, m_uint y, m_float** d, m_uint n_labels, m_u
   m_uint* ret = (m_uint*)xmalloc(n_instance * sizeof(m_uint));
   for(l = 0; l < n_instance; l++) {
     m_uint i, j = 0;
-    m_float  max = 0.0;
     id_dist   id[x];
     id_dist    ret_id[x];
     m_uint _labels[n_labels];

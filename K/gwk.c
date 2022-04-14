@@ -101,7 +101,7 @@ static SFUN(gw_kmeans_refine) {
 }
 
 GWION_IMPORT(gwk) {
-  GWI_BB(gwi_class_ini(gwi, "K", NULL))
+  GWI_OB(gwi_class_ini(gwi, "K", NULL))
 
   gwi_func_ini(gwi, "int[]", "nn");
     gwi_func_arg(gwi, "float", "data[][]");
