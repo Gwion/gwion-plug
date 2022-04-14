@@ -166,7 +166,7 @@ std(lintodb, 20.0 * log10)
   GWI_BB(gwi_func_end(gwi, std_##name  , ae_flag_static)) \
 
 GWION_IMPORT(std) {
-  GWI_BB(gwi_struct_ini(gwi, "Std"))
+  GWI_OB(gwi_struct_ini(gwi, "Std"))
 
   gwi_func_ini(gwi, "int", "clamp");
   gwi_func_arg(gwi, "int", "value");
