@@ -149,7 +149,7 @@ static ANN m_bool import_oscout(const Gwi gwi) {
     GWI_BB(gwi_enum_add(gwi, "UDP",  LO_UDP));
     GWI_BB(gwi_enum_add(gwi, "TCP",  LO_TCP));
     GWI_BB(gwi_enum_add(gwi, "UNIX", LO_UNIX));
-    GWI_BB(gwi_enum_end(gwi));
+    GWI_OB(gwi_enum_end(gwi));
 
     gwi_func_ini(gwi, "auto", "new");
       gwi_func_arg(gwi, "string", "url");
@@ -232,12 +232,12 @@ static void osc_error_handler(int num, const char *msg, const char *where) {
   gw_err("problem %i with osc: %s %s", num, msg, where);
 }
 
-static int osc_method_handler(const char *path, const char *type, lo_arg **argv,
-                              int argc, lo_message msg, void *data) {
+static int osc_method_handler(const char *path NUSED, const char *type, lo_arg **argv,
+                              int argc, lo_message msg NUSED, void *data) {
   const LoMethod   m = (LoMethod)data;
   struct Vector_ v;
   vector_init(&v);
-  for (m_uint i = 0; i < argc; i++) {
+  for (int i = 0; i < argc; i++) {
     const LoArg arg = new_arg(m->p);
     switch (type[i]) {
     case 'i':
@@ -266,7 +266,7 @@ static int osc_method_handler(const char *path, const char *type, lo_arg **argv,
   }
 
   for (m_uint i = 0; i < vector_size(&m->client); i++) {
-    for (m_uint j = 1; j < argc; j++) {
+    for (int j = 1; j < argc; j++) {
       const LoArg arg = (LoArg)vector_at(&v, j);
       arg->ref++;
     }
@@ -371,12 +371,12 @@ static MFUN(osc_recv) {
   vector_rem(c_arg, 0);
   MUTEX_UNLOCK(loin->mutex);
 }
-
+/*
 static MFUN(oscin_rem) {
   const m_str path = STRING(*(M_Object *)MEM(0));
   const m_str type = STRING(*(M_Object *)MEM(SZ_INT));
   struct LoIn loin = LOIN(o);
-  for (m_uint i = 0; i < vector_size(&loin.methods); i++) {
+  for (m_int i = 0; i < (m_int)vector_size(&loin.methods); i++) {
     const LoMethod m = (LoMethod)vector_at(&loin.methods, i);
     if (!strcmp(m->path, path) && !strcmp(m->type, type)) {
       if ((i = vector_find(&m->client, (vtype)o)) >= 0)
@@ -390,7 +390,7 @@ static MFUN(oscin_rem) {
     }
   }
 }
-
+*/
 //! function factory for getters
 #define lo_getter(name, type, ret)                                             \
   static INSTR(oscin_get_##name) {                                             \
@@ -500,7 +500,7 @@ static ANN m_bool import_oscin(const Gwi gwi) {
 }
 
 GWMODINI(Lo) { return new_map(gwion->mp); }
-GWMODEND(Lo) { if(self)return free_map(gwion->mp, (Map)self); }
+GWMODEND(Lo) { return free_map(gwion->mp, (Map)self); }
 
 GWION_IMPORT(lo) {
   GWI_BB(import_oscout(gwi));
