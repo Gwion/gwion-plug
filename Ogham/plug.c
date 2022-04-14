@@ -111,8 +111,8 @@ printf("idx %lu\n", dec->idx);
   const ogh_adjusted_note_t *last = ARRAY_NOTE(dec->array, dec->idx-1);
   float offset = last->real_offset + last->real_duration;
   for(ogh_offset_t repeat = 0; repeat < l_dir->count; repeat++) {
-    for(ogh_offset_t i = l_dir->previous; i >= 0; i--) {
-      ogh_adjusted_note_t *base = ARRAY_NOTE(dec->array, dec->idx - i);
+    for(ogh_offset_t i = l_dir->previous; i--;) {
+      ogh_adjusted_note_t *base = ARRAY_NOTE(dec->array, dec->idx - i - 1);
       ogh_adjusted_note_t note = {
         .index = base->index,
         .freq = base->freq,
@@ -135,11 +135,11 @@ static int compare(const void *a, const void *b) {
   return ((ogh_adjusted_note_t*)b)->real_offset <
          ((ogh_adjusted_note_t*)a)->real_offset;
 }
-
+/*
 static int compare_end(const void *a, const void *b) {
   return *(double*)b < *(double*)a;
 }
-
+*/
 static MFUN(ogh_tc) {
   ogh_tempo_change(OGH(o), *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2));
 }
@@ -276,7 +276,7 @@ static TICK(player_tick) {
 }
 
 
-static m_uint get_polyphony(MemPool mp, M_Vector notes) {
+static m_uint get_polyphony(M_Vector notes) {
   m_int count = 1, max = 0;
   const m_uint sz = m_vector_size(notes);
   if(sz)
@@ -316,7 +316,7 @@ static INSTR(PlayerCtor) {
   ugen_ini(shred->info->vm->gwion, UGEN(ret), 0, 1);
   ugen_gen(shred->info->vm->gwion, UGEN(ret), player_tick, ret, 0);
   PLAYER_NOTES(ret) = array;
-  const m_uint polyphony = PLAYER_POLYPHONY(ret) = get_polyphony(gwion->mp, array);
+  const m_uint polyphony = PLAYER_POLYPHONY(ret) = get_polyphony(array);
   PLAYER_DUR(ret) = shred->info->vm->bbq->si->sr;
   PLAYER_NOW(ret) = shred->tick->shreduler->bbq->pos;
 
@@ -403,7 +403,7 @@ GWION_IMPORT(Ogham) {
     DECL_OB(const Type, t_player, = gwi_class_ini(gwi, "Player", "UGen"));
     gwi_class_xtor(gwi, NULL, player_dtor);
 
-      GWI_BB(gwi_class_ini(gwi, "Note", "Object"))
+      GWI_OB(gwi_class_ini(gwi, "Note", "Object"))
       GWI_BB(gwi_item_ini(gwi, "int", "index"))
       GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
       GWI_BB(gwi_item_ini(gwi, "float", "frequency"))
