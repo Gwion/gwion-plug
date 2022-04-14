@@ -92,7 +92,7 @@ static MFUN(sinosc_set_amp) {
 }
 
 ANN static m_bool import_sinosc(const Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "SinOsc", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "SinOsc", "UGen"))
   gwi_class_xtor(gwi, sinosc_ctor, sinosc_dtor);
   gwi_func_ini(gwi, "void", "init");
   gwi_func_arg(gwi, "int", "size");
@@ -140,7 +140,7 @@ static MFUN(gain_set_gain) {
 }
 
 ANN static m_bool import_gain(const Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Gain", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "Gain", "UGen"))
   gwi_class_xtor(gwi, gain_ctor, basic_dtor);
   gwi_func_ini(gwi, "float", "gain");
   GWI_BB(gwi_func_end(gwi, gain_get_gain, ae_flag_none))
@@ -171,7 +171,7 @@ static MFUN(impulse_set_next) {
 }
 
 ANN static m_bool import_impulse(const Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Impulse", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "Impulse", "UGen"))
   gwi_class_xtor(gwi, impulse_ctor, basic_dtor);
   gwi_func_ini(gwi, "float", "next");
   GWI_BB(gwi_func_end(gwi, impulse_get_next, ae_flag_none))
@@ -193,7 +193,7 @@ static CTOR(fullrect_ctor) {
 }
 
 ANN static m_bool import_fullrect(const Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "FullRect", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "FullRect", "UGen"))
   gwi_class_xtor(gwi, fullrect_ctor, basic_dtor);
   GWI_BB(gwi_class_end(gwi))
   return 1;
@@ -213,7 +213,7 @@ static CTOR(halfrect_ctor) {
 }
 
 ANN static m_bool import_halfrect(const Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi,  "HalfRect", "UGen"))
+  GWI_OB(gwi_class_ini(gwi,  "HalfRect", "UGen"))
   gwi_class_xtor(gwi, halfrect_ctor, basic_dtor);
   GWI_BB(gwi_class_end(gwi))
   return 1;
@@ -238,7 +238,7 @@ static MFUN(step_set_next) {
 }
 
 ANN static m_bool import_step(const Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Step", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "Step", "UGen"))
   gwi_class_xtor(gwi, step_ctor, basic_dtor);
   gwi_func_ini(gwi, "float", "next");
   GWI_BB(gwi_func_end(gwi, step_get_next, ae_flag_none))
@@ -263,7 +263,7 @@ static CTOR(zerox_ctor) {
 }
 
 ANN static m_bool import_zerox(const Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "ZeroX", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "ZeroX", "UGen"))
   gwi_class_xtor(gwi, zerox_ctor, basic_dtor);
   GWI_BB(gwi_class_end(gwi))
   return 1;
