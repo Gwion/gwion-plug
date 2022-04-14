@@ -98,7 +98,7 @@ static SFUN(machine_pass) {
 }
 
 GWION_IMPORT(machine) {
-  GWI_BB(gwi_struct_ini(gwi, "Machine"))
+  GWI_OB(gwi_struct_ini(gwi, "Machine"))
   gwi_func_ini(gwi, "int",  "add");
   gwi_func_arg(gwi, "string",  "filename");
   GWI_BB(gwi_func_end(gwi, machine_add, ae_flag_static))
@@ -126,7 +126,7 @@ GWION_IMPORT(machine) {
   gwi_func_ini(gwi, "int", "compile_replace");
   gwi_func_arg(gwi, "string", "code");
   gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, machine_compile, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, machine_compile_replace, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "pass");
   gwi_func_arg(gwi, "string[]", "passes");
