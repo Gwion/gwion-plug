@@ -4,4 +4,4 @@ FFI:[int](puts, pointer) => var auto puts;
 <<< puts.call("test") >>>;
 
 FFIvar:[int](printf, pointer) => var auto printf;
-<<< printf.call("test %i %i\n", 1 $ FFIBASE.int, 2 $ FFIBASE.int) >>>;
+<<< printf("test %i %i\n", 1 $ FFIBASE.int, 2 $ FFIBASE.int) >>>;

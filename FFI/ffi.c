@@ -124,15 +124,13 @@ ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slis
 
 static OP_CHECK(ctor_as_call) {
   Exp_Call *const call = (Exp_Call*)data;
-
-  // FIXME: the check_exp_call1 part goes into a loop
-  ERR_N(call->func->pos, "mokjom");
-
   Exp func = cpy_exp(env->gwion->mp, call->func), e = call->func;
   e->exp_type = ae_exp_dot;
   Exp_Dot *dot = &e->d.exp_dot;
   dot->base = func;
-  dot->xid = insert_symbol(env->gwion->st, "@call");
+  dot->xid = insert_symbol(env->gwion->st, "call");
+  dot->is_call = call;
+  call->func->type = NULL;
   return check_exp_call1(env, call) ?: env->gwion->type[et_error];
 }
 
@@ -232,10 +230,10 @@ static OP_CHECK(opck_ffi_ctor) {
   if(variadic)
     set_fbflag(fb, fbflag_variadic);
   Func_Def fdef = new_func_def(mp, fb, NULL);
-  Func_Def fdef2 = cpy_func_def(mp, fdef);
-  fdef2->base->xid = insert_symbol(env->gwion->st, "@call");
+//  Func_Def fdef2 = cpy_func_def(mp, fdef);
+//  fdef2->base->xid = insert_symbol(env->gwion->st, "@call");
   Section section = { .d = { .func_def = fdef }, .section_type = ae_section_func };
-  Section section2 = { .d = { .func_def = fdef2 }, .section_type = ae_section_func };
+//  Section section2 = { .d = { .func_def = fdef2 }, .section_type = ae_section_func };
   Ast body = new_mp_vector(env->gwion->mp, sizeof(Section), 2);
   mp_vector_set(body, Section, 0, section);
 {
