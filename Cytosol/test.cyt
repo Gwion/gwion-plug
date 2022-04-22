@@ -6,7 +6,7 @@ extern pp2(p: Person)
 gene (x: Person)
 {
     express Person(name: "Tia", age: 1)
-    express Person(name: "Tia", age: 1)
+//    express Person(name: "NotTia", age: 12)
 }
 
 gene (x: Person)

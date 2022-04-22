@@ -1,5 +1,5 @@
 #import Cytosol
-
+#!<<< "here" >>>;
 class Person extends Cytosol.Record {
   var string name;
   var int age;
@@ -26,8 +26,9 @@ cyt.add_path("test.cyt");
 
 if(cyt.compile()) {
   cyt.add_record(1, Person("Tia", 1));
-  repeat(2) {
-    cyt.run(1);
+  cyt.add_record(1, Person("NotTia", 3));
+  repeat(4) {
+    cyt.run(3);
     me.yield();
   }
 }

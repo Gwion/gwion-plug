@@ -134,8 +134,7 @@ struct CytosolArg {
   const struct cyt_value_buffer* buf;
 };
 
-static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
-  const size_t n = cyt_value_buffer_get_size(ca->buf);
+ANN static bool cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
   const Vector v = &ca->types;
   for(m_uint i = 0; i < vector_size(v); i++) {
     const Type t = (Type)vector_at(v, i);
@@ -147,7 +146,7 @@ static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
     } else if(isa(t, gwion->type[et_bool]) > 0) {
       bool b;
       cyt_value_buffer_get_bool(ca->buf, i, &b);
-      *(m_uint*)(ca->data + i*SZ_INT) = n;
+      *(m_uint*)(ca->data + i*SZ_INT) = b;
     } else if(isa(t, gwion->type[et_string]) > 0) {
       const char* data;
       size_t outlen;
@@ -158,13 +157,15 @@ static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
       const M_Object str = new_string(gwion, c);
       *(M_Object*)(ca->data + i*SZ_INT) = str;
     } else {
+return false;
+/*
       const M_Object o = new_object(gwion->mp, t);
       *(M_Object*)(ca->data + i*SZ_INT) = o;
       struct Vector_ tmp;
       const Vector v = &t->info->tuple->contains;
       vector_init(&tmp);
-      for(m_uint i = 0; i < vector_size(v); i++) {
-        const Type t = (Type)vector_at(v, i);
+      for(m_uint j = 0; j < vector_size(v); j++) {
+        const Type t = (Type)vector_at(v, j);
         vector_add(&tmp, (m_uint)t);
       }
       cyt_value_buffer *out;
@@ -177,9 +178,10 @@ static void cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
       };
       cytosol_args(gwion, &record);
       vector_release(&tmp);
+*/
     }
   }
-  return;
+  return true;
 }
 
 static void cytosol_fun(void* data, const struct cyt_value_buffer* buf) {
@@ -193,8 +195,8 @@ static void cytosol_fun(void* data, const struct cyt_value_buffer* buf) {
     .types = closure->args,
     .buf = buf
   };
-  cytosol_args(closure->shred->info->vm->gwion, &args);
-  vm_add_shred(closure->shred->info->vm, shred);
+  if(cytosol_args(closure->shred->info->vm->gwion, &args))
+    vm_add_shred(closure->shred->info->vm, shred);
 }
 
 static void cytosol_cb(const M_Object o, const VM_Shred shred, const VM_Code code, const struct Vector_ types, const m_str name) {
