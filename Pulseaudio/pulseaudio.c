@@ -27,18 +27,25 @@ static pa_simple* pa_open(m_uint direction, pa_sample_spec* ss) {
 
 static DRVINI(pa_ini) {
   struct PaInfo* info = (struct PaInfo*)xmalloc(sizeof(struct PaInfo));
+  bool error = false;
   if(di->si->in) {
     pa_sample_spec ss_in = { PA_FLOAT, di->si->sr, di->si->in};
-    CHECK_OB((info->in = pa_open(PA_STREAM_RECORD, &ss_in)));;
+    if(!(info->in = pa_open(PA_STREAM_RECORD, &ss_in))) {
+      gw_err("{-}[{0}{+R}pulseaudio input error{0}{-}]{0}\n");
+      error = true;
+    }
   } else
     info->in = NULL;
   if(di->si->out) {
     pa_sample_spec ss_out = { PA_FLOAT, di->si->sr, di->si->out};
-    CHECK_OB((info->out  = pa_open(PA_STREAM_PLAYBACK,   &ss_out)));;
+    if(!(info->out  = pa_open(PA_STREAM_PLAYBACK,   &ss_out))) {
+      gw_err("{-}[{0}{+R}pulseaudio output error{0}{-}]{0}\n");
+      error = true;
+    }
   } else
     info->out = NULL;
   di->driver->data = info;
-  return GW_OK;
+  return !error ? GW_OK : GW_ERROR;
 }
 
 static DRVRUN(pa_run) {
