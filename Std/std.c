@@ -165,6 +165,10 @@ std(lintodb, 20.0 * log10)
   gwi_func_arg(gwi, #t2, "value");            \
   GWI_BB(gwi_func_end(gwi, std_##name  , ae_flag_static)) \
 
+static SFUN(std_classname) {
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, o->type_ref->name);
+}
+
 GWION_IMPORT(std) {
   GWI_OB(gwi_struct_ini(gwi, "Std"))
 
@@ -221,6 +225,11 @@ GWION_IMPORT(std) {
   import_stdx(dbtorms, float,  float)
   import_stdx(dbtolin, float,  float)
   import_stdx(lintodb, float,  float)
+
+  GWI_BB(gwi_func_ini(gwi, "string", "classname"));
+  GWI_BB(gwi_func_arg(gwi, "Object", "arg"));
+  GWI_BB(gwi_func_end(gwi, std_classname, ae_flag_static));
+
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }

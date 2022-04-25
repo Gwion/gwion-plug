@@ -298,8 +298,9 @@ static OP_CHECK(opck_simdjson_get_at) {
   Exp_Binary *bin = (Exp_Binary*)data;
   CHECK_NN(opck_rassign(env, data));
   // check_the expression has the good type
-  if (bin->lhs->exp_type != ae_exp_call)exit(12);
-  if (bin->lhs->d.exp_call.func->exp_type != ae_exp_dot)exit(13);
+  if (bin->lhs->exp_type != ae_exp_call ||
+      bin->lhs->d.exp_call.func->exp_type != ae_exp_dot)
+    ERR_N(bin->lhs->pos, (m_str)_("invalid expression for SimdJSON.get"));
   bin->lhs->d.exp_call.func->type = NULL;
   Exp_Dot *const dot = &bin->lhs->d.exp_call.func->d.exp_dot;
   if(isa(bin->rhs->type, env->gwion->type[et_bool]) > 0)
@@ -314,7 +315,7 @@ static OP_CHECK(opck_simdjson_get_at) {
     dot->xid = insert_symbol(env->gwion->st, (m_str)"get_o");
   else if(!strcmp(bin->rhs->type->name, "array"))
     dot->xid = insert_symbol(env->gwion->st, (m_str)"get_a");
-  else exit(12);
+  else ERR_N(bin->lhs->pos, (m_str)_("unhandled type for SimdJSON.get"));
   CHECK_ON(check_exp(env, bin->lhs->d.exp_call.func));
   return bin->lhs->type = bin->lhs->d.exp_call.func->type->info->func->def->base->ret_type;
 }

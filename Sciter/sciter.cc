@@ -62,8 +62,8 @@ static SFUN(sciter_run) {
     return;
   }
   glfwSetErrorCallback(error_callback);
-  if (!glfwInit()) // handle
-     exit(EXIT_FAILURE);
+  if (!glfwInit())
+    handle(shred, "SciterInitException");
   sciter_init_hints();
   const m_str title = STRING(*(M_Object*)MEM(0));
   strncpy(s_title, title, strlen(title));

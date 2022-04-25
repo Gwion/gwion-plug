@@ -1,0 +1,10 @@
+#import Std
+
+class C {}
+class D extends C {}
+
+fun void test(Object o) {
+   <<< Std.classname(o) >>>;
+}
+
+new D => test;
