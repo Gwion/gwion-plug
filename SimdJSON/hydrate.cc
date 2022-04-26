@@ -65,6 +65,8 @@ ANN static void hydrate_object(Hydrate *const h, dom::element elem, const Type t
   Hydrate next = { .gwion=h->gwion, .shred=h->shred, .obj=tmp };
   if(isa(t, h->gwion->type[et_union]) > 0)
     hydrate_union(&next, elem, t);
+  else if(isa(t, h->gwion->type[et_dict]) > 0)
+    hydrate_dict(&next, elem, t);
   else {
 //    if(isa(t, h->gwion->type[et_event]) > 0)
 //      vector_init(&EV_SHREDS(tmp));
