@@ -162,6 +162,9 @@ static CTOR(ctor) {
 }
 
 static OP_EMIT(opem_vecx_ctor) {
+  const Instr instr = emit_add_instr(emit, RegMove);
+//  instr->m_val = -SZ_COMPLEX;
+  instr->m_val = SZ_INT;
   return GW_OK;
 }
 
@@ -320,7 +323,7 @@ static MFUN(vec3_update_set_slew) {
 
 #define describe_vec3(name, op)           \
 static INSTR(Vec3##name) {\
-  POP_REG(shred, SZ_VEC3);                \
+  POP_REG(shred, SZ_VEC3);       \
   m_vec3 r, * t = (m_vec3*)REG(-SZ_VEC3); \
   r.x = t->x op (t + 1)->x;               \
   r.y = t->y op (t + 1)->y;               \

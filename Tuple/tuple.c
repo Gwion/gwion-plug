@@ -37,7 +37,7 @@ struct UnpackInfo_ {
 };
 
 static INSTR(TupleUnpack) {
-  const M_Object o = *(M_Object*)(shred->reg - SZ_INT*2);
+  const M_Object o = *(M_Object*)(shred->reg - SZ_INT);
   struct UnpackInfo_ *info = (struct UnpackInfo_*)instr->m_val;
   memcpy(shred->mem + info->mem_offset, o->data + info->obj_offset, info->size);
 }
@@ -51,7 +51,7 @@ ANN static inline Type tuple_base(Type t, const m_uint idx) {
 INSTR(TupleMember) {
   const M_Object o = *(M_Object*)(shred->reg - SZ_INT);
   const Type base = tuple_base(o->type_ref, instr->m_val);
-  const m_bit* byte = shred->code->bytecode + shred->pc * BYTECODE_SZ;
+  const m_bit* byte = shred->code->bytecode + (shred->pc-1) * BYTECODE_SZ;
   const m_uint idx = instr->m_val - base->info->tuple->start;
   const Type t = (Type)vector_at(&base->info->tuple->types, idx);
   const m_uint offset = vector_at(&base->info->tuple->offset, idx);
@@ -309,8 +309,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   Ast body = new_mp_vector(env->gwion->mp, sizeof(Section), 1);
   mp_vector_set(body, Section, 0, section);
   Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), pos);
-  Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none,
-        sym, td, body, pos);
+  Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none, sym, td, body, pos);
   SET_FLAG(cdef, abstract | ae_flag_final);
   CHECK_BO(scan0_class_def(env, cdef));
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
@@ -390,7 +389,7 @@ static OP_CHECK(unpack_ck) {
       e->exp_type = ae_exp_decl;
       e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, e->pos);
       e->d.exp_decl.list = new_mp_vector(env->gwion->mp, sizeof(struct Var_Decl_), 1);
-      struct Var_Decl_ vd = { .xid = var, .pos = call->func->pos};
+      struct Var_Decl_ vd = { .xid = var, .pos = e->pos};
       mp_vector_set(e->d.exp_decl.list, struct Var_Decl_, 0, vd);
     } else {
       e->d.prim.prim_type = ae_prim_nil;
@@ -429,10 +428,6 @@ static OP_CHECK(opck_at_unpack) {
       struct Vector_ v; // hoist?
       vector_init(&v);
       parents(env, t, &v);
-//      ID_List id = e->d.exp_decl.td->xid;
-//      id->xid = (Symbol)vector_front(&v);
-//      for(m_uint i = 1; i < vector_size(&v); ++i)
-//        id = (id->next = new_id_list(env->gwion->mp, (Symbol)vector_at(&v, i), e->pos));
       Type_Decl *td = e->d.exp_decl.td;
       td->xid = (Symbol)vector_front(&v);
       for(m_uint i = 1; i < vector_size(&v); ++i)
@@ -441,6 +436,7 @@ static OP_CHECK(opck_at_unpack) {
       const Exp next = e->next;
       e->d.exp_decl.type = NULL;
       e->next = NULL;
+      e->type = NULL;
       const m_bool ret = traverse_exp(env, e);
       e->next = next;
       CHECK_BO(ret);
@@ -466,8 +462,8 @@ static OP_EMIT(opem_at_unpack) {
     const Vector v = &bin->lhs->type->info->tuple->types;
     struct TupleEmit te = { .e=bin->rhs->d.exp_call.args, .v=v };
     emit_unpack_instr(emit, &te);
-    const Instr pop2 = emit_add_instr(emit, RegMove);
-    pop2->m_val = -SZ_INT;
+//    const Instr pop2 = emit_add_instr(emit, RegMove);
+//    pop2->m_val = -SZ_INT;
 
   }
   return GW_OK;
@@ -478,7 +474,7 @@ static ANN Type scan_tuple(const Env env, const Type_Decl *td) {
   vector_init(&v);
   Type_List tl = td->types;
   for(uint32_t i = 0; i < tl->len; i++) {
-    Type_Decl *td = mp_vector_at(tl, Type_Decl, 0);
+    Type_Decl *td = *mp_vector_at(tl, Type_Decl*, i);
     const Type t = td->xid != insert_symbol(env->gwion->st, "_") ?
        known_type(env, td) : (Type)1;
     if(t)
@@ -519,11 +515,8 @@ static OP_EMIT(opem_tuple_access) {
 }
 
 GWION_IMPORT(tuple) {
-//  const Type t_tuple = gwi_mk_type(gwi, TUPLE_NAME, SZ_INT, "Object");
-//  gwi_add_type(gwi, t_tuple);
   const Type t_tuple = gwi_class_ini(gwi, TUPLE_NAME, "Object");
   gwi_class_end(gwi);
-//t_tuple->base.tmpl = new_tmpl(gwi->gwion->mp, NULL);
   const Type t_undef = gwi_mk_type(gwi, "@Undefined", SZ_INT, NULL);
   gwi_add_type(gwi, t_undef);
   SET_FLAG(t_tuple, abstract);
@@ -570,10 +563,14 @@ GWION_IMPORT(tuple) {
   GWI_BB(gwi_oper_add(gwi, unpack_ck))
   GWI_BB(gwi_oper_emi(gwi, unpack_em))
   GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
+  GWI_BB(gwi_oper_ini(gwi, "Unpack", NULL, NULL))
+  GWI_BB(gwi_oper_add(gwi, unpack_ck))
+  GWI_BB(gwi_oper_end(gwi, "@partial", NULL))
   GWI_BB(gwi_oper_ini(gwi, "Object", "Unpack", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_at_unpack))
   GWI_BB(gwi_oper_emi(gwi, opem_at_unpack))
   GWI_BB(gwi_oper_end(gwi, "=>", NULL))
+
 //  GWI_BB(gwi_oper_add(gwi, opck_at_unpack))
 //  GWI_BB(gwi_oper_emi(gwi, opem_at_unpack))
 //  GWI_BB(gwi_oper_end(gwi, "==", NULL))
