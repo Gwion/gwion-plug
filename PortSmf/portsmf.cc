@@ -126,12 +126,12 @@ MFUN(midifile_track_len)
 MFUN(midifile_event)
 {
   Alg_seq* seq = SEQ(o);
-  m_uint track = *(m_uint*)MEM(SZ_INT);
+  m_int track = *(m_uint*)MEM(SZ_INT);
   m_uint n     = *(m_uint*)MEM(SZ_INT*2);
-//  if(track < 0 || track >= seq->tracks())
-//    exit(12);
   Alg_track* tr = seq->track(track);
-//  M_Object obj = *(M_Object*)MEM(SZ_INT*3);
+  if(track < 0 || track >= seq->tracks()) {
+    handle(shred, "PortSmfTrackError");
+  }
   M_Object obj = new_object(shred->info->mp, t_midifileev);
   if(n < 0 || n >= tr->length())
       TYPE(obj) = 'e'; // error

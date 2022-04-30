@@ -44,8 +44,6 @@ struct TUIMeta {
 static volatile int grun = 1;
 void ctrlc(int _NUSED) {
   grun = 0;
-//  pthread_exit(NULL);
-//  return;
   THREAD_RETURN();
 }
 #include "shreduler_private.h"

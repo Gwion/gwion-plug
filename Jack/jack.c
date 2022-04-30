@@ -20,7 +20,6 @@ struct JackInfo {
   VM* vm;
 };
 
-static bool run = true;
 static void gwion_shutdown(void *arg) {
   VM *vm = (VM *)arg;
   vm->bbq->is_running = 0;
@@ -125,10 +124,6 @@ static m_bool init_ports(struct JackInfo* info, m_uint nchan, m_bool input) {
   return ret;
 }
 
-
-static void sig(int unused NUSED) {
-  run = false;
-}
 
 static void jack_run(VM* vm, Driver* di) {
   struct JackInfo* info = (struct JackInfo*)di->driver->data;
