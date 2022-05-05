@@ -1,4 +1,5 @@
-CC := ${CXX}
+#CC := ${CXX}
+CC := gcc
 
 include ../config.mk
 
@@ -6,15 +7,14 @@ STK_LIB := stk/src/libstk.a
 ifeq ($(wilcard ${STK_LIB}), )
 LDFLAGS += -L$(shell dirname ${STK_LIB})
 CFLAGS += -Istk/include
+else
+CFLAGS += -I/usr/include/stk
 endif
 
-CFLAGS += -I/usr/include/stk
-LDFLAGS+=-lstk
+LDFLAGS += -lstk
 
-all: t stk.checklib ${NAME}.so
-t:
-	echo ${CXX}
-	echo ${CC}
+all: stk.checklib ${NAME}.so
+
 include ../config_post.mk
 
 get-stk:

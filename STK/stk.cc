@@ -209,10 +209,6 @@ static MFUN(gw_Stk_ignoreSampleRateChange1) {
   (arg1)->ignoreSampleRateChange();
 }
 
-static MFUN(gw_Stk_clear_alertList) {
-  stk::Stk::clear_alertList();
-}
-
 static MFUN(gw_Stk_rawwavePath) {
   std::string result = stk::Stk::rawwavePath();
   *(M_Object*)RETURN = (&result)->data() ? new_string(shred->info->vm->gwion, (m_str)(&result)->data()) : NULL;
@@ -5422,8 +5418,6 @@ m_bool CPPIMPORT(Gwi gwi) {
   CHECK_BB(gwi_func_end(gwi, gw_Stk_ignoreSampleRateChange0, ae_flag_none));
   CHECK_BB(gwi_func_ini(gwi, "void", "ignoreSampleRateChange"));
   CHECK_BB(gwi_func_end(gwi, gw_Stk_ignoreSampleRateChange1, ae_flag_none));
-  CHECK_BB(gwi_func_ini(gwi, "void", "clear_alertList"));
-  CHECK_BB(gwi_func_end(gwi, gw_Stk_clear_alertList, ae_flag_none));
   CHECK_BB(gwi_func_ini(gwi, "string", "rawwavePath"));
   CHECK_BB(gwi_func_end(gwi, gw_Stk_rawwavePath, ae_flag_none));
   CHECK_BB(gwi_func_ini(gwi, "void", "setRawwavePath"));

@@ -25,6 +25,7 @@ gwi_typedef_end(gwi, ae_flag_none);
 // Samplerate
 %insert("init") {stk::Stk::setSampleRate(gwi->gwion->vm->bbq->si->sr);}
 
+%ignore *::clear_alerList;
 %ignore *::swap16;
 %ignore *::swap32;
 %ignore *::swap64;
