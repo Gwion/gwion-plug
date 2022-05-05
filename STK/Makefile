@@ -1,4 +1,4 @@
-#CC ?= g++
+CC := ${CXX}
 
 include ../config.mk
 
@@ -11,8 +11,10 @@ endif
 CFLAGS += -I/usr/include/stk
 LDFLAGS+=-lstk
 
-all: stk.checklib ${NAME}.so
-
+all: t stk.checklib ${NAME}.so
+t:
+	echo ${CXX}
+	echo ${CC}
 include ../config_post.mk
 
 get-stk:
