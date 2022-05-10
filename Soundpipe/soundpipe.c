@@ -7445,15 +7445,14 @@ GWION_IMPORT(Soundpipe) {
     sp->sr = gwi->gwion->vm->bbq->si->sr;
     set_module(vm->gwion, "Soundpipe", sp);
   }
-  const uint8_t nchan = vm->bbq->si->out;
-  M_Object o = new_M_UGen(gwi->gwion);
+  const M_Object o = new_M_UGen(gwi->gwion);
   ugen_ini(gwi->gwion, UGEN(o), 1, 1);
   ugen_gen(gwi->gwion, UGEN(o), sp_tick, sp, 0);
   vector_add(&vm->ugen, (vtype)UGEN(o));
   gwi_item_ini(gwi, "UGen", "@soundpipe main ugen");
   gwi_item_end(gwi, ae_flag_late | ae_flag_const, obj, o);
   ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));
-  GWI_BB(gwi_class_ini(gwi, "ftbl", NULL))
+  GWI_OB(gwi_class_ini(gwi, "ftbl", NULL))
   gwi_class_xtor(gwi, NULL, ftbl_dtor);
   GWI_BB(gwi_item_ini(gwi, "@internal", "@ftbl"))
   gwi_item_end(gwi, 0, num, 0);
