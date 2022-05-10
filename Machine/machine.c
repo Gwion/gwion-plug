@@ -19,11 +19,7 @@
 
 static SFUN(machine_add) {
   const M_Object obj = *(M_Object*)MEM(0);
-  if(!obj)
-    return;
   const m_str str = STRING(obj);
-  if(!str)
-    return;
   *(m_uint*)RETURN = compile_filename(shred->info->vm->gwion, str);
 }
 

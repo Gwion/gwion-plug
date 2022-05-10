@@ -21,7 +21,8 @@ else
 LDFLAGS += -lsoundpipe
 endif
 
-all: soundpipe.checklib ${NAME}.so
+all: soundpipe.checklib
+	${NAME}.so
 
 ifeq (${USE_DOUBLE}, 1)
 SNDFILE_CFLAGS += -DUSE_DOUBLE
