@@ -60,6 +60,7 @@ static MFUN(sinosc_size) {
   const m_int size = *(m_int*)(shred->mem + SZ_INT);
   SP_osc* ug = (SP_osc*)UGEN(o)->module.gen.data;
   refresh_sine(shred->info->vm, ug, size, 0);
+  *(M_Object*)RETURN = o;
 }
 
 static MFUN(sinosc_size_phase) {
@@ -67,6 +68,7 @@ static MFUN(sinosc_size_phase) {
   const m_float phase = *(m_float*)(shred->mem + SZ_INT * 2);
   SP_osc* ug = (SP_osc*)UGEN(o)->module.gen.data;
   refresh_sine(shred->info->vm, ug, size, phase);
+  *(M_Object*)RETURN = o;
 }
 
 static MFUN(sinosc_get_freq) {
@@ -92,12 +94,12 @@ static MFUN(sinosc_set_amp) {
 }
 
 ANN static m_bool import_sinosc(const Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "SinOsc", "UGen"))
+  const Type t_sinosc = gwi_class_ini(gwi, "SinOsc", "UGen");
   gwi_class_xtor(gwi, sinosc_ctor, sinosc_dtor);
-  gwi_func_ini(gwi, "void", "init");
+  gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "int", "size");
   GWI_BB(gwi_func_end(gwi, sinosc_size, ae_flag_none))
-  gwi_func_ini(gwi, "void", "init");
+  gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "int", "size");
   gwi_func_arg(gwi, "float", "phase");
   GWI_BB(gwi_func_end(gwi, sinosc_size_phase, ae_flag_none))
@@ -112,6 +114,7 @@ ANN static m_bool import_sinosc(const Gwi gwi) {
   gwi_func_arg(gwi, "float", "amp");
   GWI_BB(gwi_func_end(gwi, sinosc_set_amp, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
+  UNSET_FLAG(t_sinosc, abstract);
   return 1;
 }
 
@@ -129,7 +132,6 @@ static CTOR(gain_ctor) {
   UGEN(o)->module.gen.tick = gain_tick;
   *(m_float*)UGEN(o)->module.gen.data = 1;
 }
-
 
 static MFUN(gain_get_gain) {
   *(m_float*)RETURN = *(m_float*)UGEN(o)->module.gen.data;
