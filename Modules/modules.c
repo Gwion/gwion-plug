@@ -63,6 +63,13 @@ static MFUN(sinosc_size) {
   *(M_Object*)RETURN = o;
 }
 
+static MFUN(sinosc_phase) {
+  const m_float phase = *(m_float*)(shred->mem + SZ_INT);
+  SP_osc* ug = (SP_osc*)UGEN(o)->module.gen.data;
+  refresh_sine(shred->info->vm, ug, 2048, phase);
+  *(M_Object*)RETURN = o;
+}
+
 static MFUN(sinosc_size_phase) {
   const m_int size    = *(m_int*)(shred->mem + SZ_INT);
   const m_float phase = *(m_float*)(shred->mem + SZ_INT * 2);
@@ -99,6 +106,9 @@ ANN static m_bool import_sinosc(const Gwi gwi) {
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "int", "size");
   GWI_BB(gwi_func_end(gwi, sinosc_size, ae_flag_none))
+  gwi_func_ini(gwi, "auto", "new");
+  gwi_func_arg(gwi, "float", "phase");
+  GWI_BB(gwi_func_end(gwi, sinosc_phase, ae_flag_none))
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "int", "size");
   gwi_func_arg(gwi, "float", "phase");
