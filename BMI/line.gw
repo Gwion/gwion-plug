@@ -5,8 +5,6 @@
 
 new BMI(SIZE, SIZE, 0) => const auto bmi;
 
-const BMI.Point matrix[SIZE][SIZE];
-
 new BMI.Rect(0, 0, SIZE, SIZE) => const auto rect;
 
 bmi.fill_rect(rect, BMI.newRGB(0,0,0));
@@ -15,12 +13,8 @@ for (var int i; i < 120; i++) {
   (i * 3. * pi) / 180. => const float radians;
   (Math.cos(radians) * 128. + 128.) => const int end_x;
   (Math.sin(radians) * 128. + 128.) => const int end_y;
-  const BMI.Point start;
-  128 => start.x;
-  128 => start.y;
-  const BMI.Point end;
-  end_x => end.x;
-  end_y => end.y;
+  new BMI.Point(128, 128) => const auto start;
+  new BMI.Point(end_x, end_y) => const auto end;
   bmi.stroke_line(start, end, 1, BMI.newRGB((i * 43) % 256, end_x % 256, end_y % 256));
 }
 

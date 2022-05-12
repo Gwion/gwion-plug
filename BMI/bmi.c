@@ -245,8 +245,9 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
   GWI_BB(gwi_item_ini(gwi, "int", "y"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-  GWI_BB(gwi_func_ini(gwi, "int", "new"))
-  GWI_BB(gwi_func_arg(gwi, "int", "color0"))
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
+  GWI_BB(gwi_func_arg(gwi, "int", "x"))
+  GWI_BB(gwi_func_arg(gwi, "int", "y"))
   GWI_BB(gwi_func_end(gwi,  BMIPointCtor, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   UNSET_FLAG(t_point, abstract);
