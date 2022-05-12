@@ -72,7 +72,6 @@ static MFUN(gwbmi_draw_point) {
       *(m_uint*)((o)->data + SZ_INT*3))
 
 static MFUN(BMIRectCtor) {
-  POP_REG(shred, SZ_INT*4);
   const m_uint x = *(m_uint*)MEM(SZ_INT);
   const m_uint y = *(m_uint*)MEM(SZ_INT*2);
   const m_uint w = *(m_uint*)MEM(SZ_INT*3);
@@ -81,6 +80,14 @@ static MFUN(BMIRectCtor) {
   *(m_uint*)(o->data + SZ_INT) = y;
   *(m_uint*)(o->data + SZ_INT*2) = w;
   *(m_uint*)(o->data + SZ_INT*3) = h;
+  *(M_Object*)RETURN = o;
+}
+
+static MFUN(BMIPointCtor) {
+  const m_uint x = *(m_uint*)MEM(SZ_INT);
+  const m_uint y = *(m_uint*)MEM(SZ_INT*2);
+  *(m_uint*)(o->data) = x;
+  *(m_uint*)(o->data + SZ_INT) = y;
   *(M_Object*)RETURN = o;
 }
 
@@ -238,7 +245,11 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
   GWI_BB(gwi_item_ini(gwi, "int", "y"))
   GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
+  GWI_BB(gwi_func_ini(gwi, "int", "new"))
+  GWI_BB(gwi_func_arg(gwi, "int", "color0"))
+  GWI_BB(gwi_func_end(gwi,  BMIPointCtor, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
+  UNSET_FLAG(t_point, abstract);
 
   GWI_BB(gwi_enum_ini(gwi, "Edge"))
   GWI_BB(gwi_enum_add(gwi, "left", BMI_RECT_EDGE_LEFT))

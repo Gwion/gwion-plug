@@ -7,9 +7,7 @@ new BMI(SIZE, SIZE, 0) => const auto bmi;
 
 const BMI.Point matrix[SIZE][SIZE];
 
-const BMI.Rect rect;
-SIZE => rect.w;
-SIZE => rect.h;
+new BMI.Rect(0, 0, SIZE, SIZE) => const auto rect;
 
 bmi.fill_rect(rect, BMI.newRGB(0,0,0));
 
