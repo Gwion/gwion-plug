@@ -3,7 +3,7 @@
 
 #define SIZE 256
 
-BMI.create(SIZE, SIZE, 0) => const auto bmi;
+new BMI(SIZE, SIZE, 0) => const auto bmi;
 
 const BMI.Point matrix[SIZE][SIZE];
 
@@ -13,7 +13,7 @@ SIZE => rect.h;
 
 bmi.fill_rect(rect, BMI.newRGB(0,0,0));
 
-BMI.create(32, 32, 0) => const auto layer;
+new BMI(32, 32, 0) => const auto layer;
 const BMI.Rect rect0;
 32 => rect0.w => rect0.h;
 

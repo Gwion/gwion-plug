@@ -1,8 +1,7 @@
 #import BMI
 
-BMI.create(256, 256, 0) => const auto bmi;
+new BMI(256, 256, 0) => const auto bmi;
 
-#! we'll have a constructor, but for now ...
 fun BMI.Rect mk_rect(const int x, const int y, const int w, const int h) {
   const BMI.Rect rect;
   x => rect.x;

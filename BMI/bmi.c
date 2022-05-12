@@ -190,32 +190,30 @@ static SFUN(gwbmi_color_blend) {
   *(bmi_component*)RETURN = bmi_rgb_blend(c0, (uint32_t)(i0*256), c1, (uint32_t)(i1*256));
 }
 
-static SFUN(gwbmi_create) {
-  const m_uint width = *(m_uint*)MEM(0);
-  const m_uint height = *(m_uint*)MEM(SZ_INT);
-  const m_uint flags = *(m_uint*)MEM(SZ_INT*2);
+static MFUN(gwbmi_create) {
+  const m_uint width = *(m_uint*)MEM(SZ_INT);
+  const m_uint height = *(m_uint*)MEM(SZ_INT*2);
+  const m_uint flags = *(m_uint*)MEM(SZ_INT*3);
   bmi_buffer *buffer = bmi_buffer_new(width, height, flags);
   if(!buffer) {
     handle(shred, "[{+R}BMI{0}] can't create buffer.");
     return;
   }
-  const M_Object ret = new_object_str(shred->info->vm->gwion, "BMI");
-  *(bmi_buffer**)ret->data = buffer;
+  *(bmi_buffer**)o->data = buffer;
   const size_t sz = bmi_buffer_content_size(buffer);
   memset(buffer->contents, 0, sz);
-  *(M_Object*)RETURN = ret;
+  *(M_Object*)RETURN = o;
 }
 
-static SFUN(gwbmi_from_file) {
-  FILE *f = fopen(STRING(*(M_Object*)MEM(SZ_INT)), "w");
+static MFUN(gwbmi_from_file) {
+  FILE *f = fopen(STRING(*(M_Object*)MEM(SZ_INT)), "r");
   bmi_buffer* buffer = bmi_buffer_from_file(f);
   if(!buffer) {
     handle(shred, "[{+R}BMI{0}] can't open file.");
     return;
   }
-  const M_Object ret = new_object_str(shred->info->vm->gwion, "BMI");
-  *(bmi_buffer**)ret->data = buffer;
-  *(M_Object*)RETURN = ret;
+  *(bmi_buffer**)o->data = buffer;
+  *(M_Object*)RETURN = o;
   fclose(f);
 }
 
@@ -231,7 +229,8 @@ GWION_IMPORT(BMI) {
   gwi_class_xtor(gwi, NULL, bmi_dtor);
   t_bmi->nspc->offset += SZ_INT; //allocate room for the buffer
   // we don't want to create BMI by other means than provided constructors
-  SET_FLAG(t_bmi, abstract);
+//  SET_FLAG(t_bmi, abstract);
+
 
   DECL_OB(const Type, t_point, = gwi_class_ini(gwi, "Point", "Object"));
   gwi_gack(gwi, t_point, bmi_point_gack);
@@ -246,7 +245,7 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_enum_add(gwi, "right", BMI_RECT_EDGE_RIGHT))
   GWI_BB(gwi_enum_add(gwi, "top", BMI_RECT_EDGE_TOP))
   GWI_BB(gwi_enum_add(gwi, "bottom", BMI_RECT_EDGE_BOTTOM))
-  GWI_BB(gwi_enum_end(gwi))
+  GWI_OB(gwi_enum_end(gwi))
 
   DECL_OB(const Type, t_rect, = gwi_class_ini(gwi, "Rect", "Object"));
   gwi_gack(gwi, t_rect, bmi_rect_gack);
@@ -269,6 +268,12 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "int", "width"))
   GWI_BB(gwi_func_arg(gwi, "Edge", "edge")) // as we don't have the enum yet
   GWI_BB(gwi_func_end(gwi, gwbmi_rect_set, ae_flag_none))
+  GWI_BB(gwi_func_ini(gwi, "auto", "new")) //???
+  GWI_BB(gwi_func_arg(gwi, "int", "a"))
+  GWI_BB(gwi_func_arg(gwi, "int", "b"))
+  GWI_BB(gwi_func_arg(gwi, "int", "c"))
+  GWI_BB(gwi_func_arg(gwi, "int", "d"))
+  GWI_BB(gwi_func_end(gwi, BMIRectCtor, ae_flag_none))
 
 
   GWI_BB(gwi_class_end(gwi))
@@ -286,25 +291,24 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_struct_end(gwi))
 
   DECL_OB(const Type, t_rgb, = gwi_struct_ini(gwi, "RGB"));
-// more colors :)
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "White"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_WHITE()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_WHITE()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Black"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_BLACK()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_BLACK()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Red"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_RED()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_RED()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Green"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_GREEN()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_GREEN()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Blue"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_BLUE()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_BLUE()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Magenta"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_MAGENTA()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_MAGENTA()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Yellow"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_YELLOW()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_YELLOW()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Orange"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_ORANGE()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_ORANGE()))
   GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Cyan"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_RGB_CYAN()))
+  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_CYAN()))
   GWI_BB(gwi_struct_end(gwi))
 
   GWI_BB(gwi_func_ini(gwi, "Color", "blend"))
@@ -353,11 +357,6 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "Color", "color"))
   GWI_BB(gwi_func_end(gwi, gwbmi_stroke_line, ae_flag_none))
 
-  GWI_BB(gwi_item_ini(gwi, "int", "member"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-
-  GWI_BB(gwi_item_ini(gwi, "int", "static"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 1234))
 
   GWI_BB(gwi_func_ini(gwi, "Color", "newRGB"))
   GWI_BB(gwi_func_arg(gwi, "int", "r"))
@@ -384,12 +383,15 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "string", "filename"))
   GWI_BB(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
 
-  // constructor functions
-  GWI_BB(gwi_func_ini(gwi, "BMI", "create"))
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
   GWI_BB(gwi_func_arg(gwi, "int", "width"))
   GWI_BB(gwi_func_arg(gwi, "int", "height"))
   GWI_BB(gwi_func_arg(gwi, "int", "flags"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_create, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, gwbmi_create, ae_flag_none))
+
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
+  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
+  GWI_BB(gwi_func_end(gwi, gwbmi_from_file, ae_flag_none))
 
   GWI_BB(gwi_func_ini(gwi, "BMI", "to_file"))
   GWI_BB(gwi_func_arg(gwi, "string", "filename"))
@@ -398,7 +400,7 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_union_ini(gwi, "Result"))
   GWI_BB(gwi_union_add(gwi, "BMI", "success"))
   GWI_BB(gwi_union_add(gwi, "string", "error"))
-  GWI_BB(gwi_union_end(gwi, ae_flag_none))
+  GWI_OB(gwi_union_end(gwi, ae_flag_none))
 
   const Type t = str2type(gwi->gwion, "BMI.Result", gwi->loc);
   const m_uint scope = env_push_type(gwi->gwion->env, t);
@@ -406,6 +408,7 @@ GWION_IMPORT(BMI) {
   GWI_BB(gwi_func_arg(gwi, "string", "filename"))
   GWI_BB(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
   env_pop(gwi->gwion->env, scope);
+
   GWI_BB(gwi_class_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, "BMI.Color", "BMI.Color", "BMI.Color"))

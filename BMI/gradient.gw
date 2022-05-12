@@ -2,7 +2,7 @@
 
 #define SIZE 256
 
-BMI.create(SIZE, SIZE, 0) => const auto bmi;
+new BMI(SIZE, SIZE, 0) => const auto bmi;
 
 const BMI.Point matrix[SIZE][SIZE];
 
