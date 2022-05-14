@@ -105,7 +105,7 @@ ANN void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, con
       std::string_view s = elem.get_string();
       *(M_Object*)data = new_string(gwion, (m_str)s.data());
     }
-  } else if(isa(t, gwion->type[et_function]) > 0) {
+  } else if(is_func(gwion, t)) {
     std::string_view s = elem.get_string();
     char c[strlen(s.data()) + 1];
     strcpy(c, s.data());

@@ -62,7 +62,7 @@ ANN static void tojson_pp(ToJson *const json, const Type t, const m_bit* data) {
     const M_Object o = *(M_Object*)data;
     if(o)
       *json->str << "\"" << STRING(o) << "\"" ;
-  } else if(isa(t, type[et_function]) > 0) {
+  } else if(is_func(json->gwion, t)) {
     const VM_Code code = *(VM_Code*)data;
     if(code)
       *json->str << "\"" << (*(VM_Code*)data)->name << "\"" ;
