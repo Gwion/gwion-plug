@@ -4,16 +4,14 @@
 #import Modules
 #import Soundpipe
 
-var Evdev dev;
-if(dev.index(4) < 0)
-  me.exit();
+new Evdev(6) => var Evdev dev;
 
 var SinOsc s ~> dac;
 s ~> var Jcrev rev ~> dac;
 
 while(true) {
   dev => now;
-  var EvdevEv ev;
+  var Evdev.Ev ev;
   while(dev.recv(ev)) {
     if(ev.type == 1 && ev.value == 1)
       ev.code /2. + 36 => Std.mtof => s.freq;
