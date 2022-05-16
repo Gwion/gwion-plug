@@ -1,6 +1,12 @@
 name: MacOs
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main   
+  pull-request:
+    branches:
+      - main
 
 env:
   CFLAGS: -fsanitize=address -fno-omit-frame-pointer
