@@ -388,10 +388,9 @@ print("  gwi_item_ini(gwi, \"UGen\", \"@soundpipe main ugen\");")
 print("  gwi_item_end(gwi, ae_flag_late | ae_flag_const, obj, o);")
 
 print("  ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));")
-print("  GWI_OB(gwi_class_ini(gwi, \"ftbl\", NULL))")
+print("  DECL_OB(const Type, t_ftbl, = gwi_class_ini(gwi, \"ftbl\", NULL));")
 print("  gwi_class_xtor(gwi, NULL, ftbl_dtor);")
-print("  GWI_BB(gwi_item_ini(gwi, \"@internal\", \"@ftbl\"))")
-print("  gwi_item_end(gwi, 0, num, 0);")
+print("  t_ftbl->nspc->offset += SZ_INT;")
 for n in ipairs(a) do
   local gen_name = a[n]
   local object = sptbl[gen_name]

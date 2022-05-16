@@ -9,7 +9,6 @@
 #include "operator.h"
 #include "import.h"
 #include "ugen.h"
-//#include "sporth.h"
 #include "plumber.h"
 
 typedef struct sporthData {
@@ -174,7 +173,7 @@ static MFUN(sporth_parse_file) {
 }
 
 GWION_IMPORT(sporth) {
-  GWI_BB(gwi_class_ini(gwi, "Sporth", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "Sporth", "UGen"))
   gwi_class_xtor(gwi, sporth_ctor, sporth_dtor);
 
   GWI_BB(gwi_func_ini(gwi, "float", "p"))

@@ -62,7 +62,7 @@ ANN static void tojson_pp(ToJson *const json, const Type t, const m_bit* data) {
     const M_Object o = *(M_Object*)data;
     if(o)
       *json->str << "\"" << STRING(o) << "\"" ;
-  } else if(is_func(json->gwion, t)) {
+  } else if(is_func(json->gwion, t)) { // is_callable?
     const VM_Code code = *(VM_Code*)data;
     if(code)
       *json->str << "\"" << (*(VM_Code*)data)->name << "\"" ;
@@ -82,7 +82,7 @@ ANN static void _tojson_array(ToJson *const json, const Type t) {
   bool init = false;
   const m_bit *ptr = array->ptr + ARRAY_OFFSET;
   for(m_uint i = 0; i < m_vector_size(array); i++) {
-    if(is_func(json->gwion, base) && !is_fptr(json->gwion, base))continue;
+    if(is_func(json->gwion, base) && !is_fptr(json->gwion, base))continue; // is_func
     if(init) *json->str << ",";
     tojson_pp(json, base, ptr + i * base->size);
     init = true;
@@ -104,7 +104,7 @@ ANN static void tojson_compound(ToJson *const json, const Type t) {
   for(m_uint i = 0; i < map_size(m); i++) {
     const Value value = (Value)map_at(m, i);
     if(is_class(json->gwion, value->type))continue;
-    if(is_func(json->gwion, value->type) && !is_fptr(json->gwion, value->type))continue;
+    if(is_func(json->gwion, value->type) && !is_fptr(json->gwion, value->type))continue; // is_func
     if(!vflag(value, vflag_member))continue;
     if(json->init) *json->str << ",";
     *json->str << "\"" << value->name << "\":";

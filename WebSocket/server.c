@@ -117,7 +117,7 @@ static MFUN(ws_send_string) {
   MUTEX_UNLOCK(ws->mutex);
 }
 
-static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len){
+static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user NUSED, void *in, size_t len){
   (void)in;
   (void)len;
   Ws *const ws = lws_context_user(lws_get_context(wsi));
@@ -187,7 +187,7 @@ GWION_IMPORT(ws) {
   lws_set_log_level(LLL_ERR, NULL);
 
   gwidoc(gwi, "A class To Handle Websockets");
-  DECL_BB(const Type, t_ws, = gwi_class_ini(gwi, "WebSocket", "Object"));
+  DECL_OB(const Type, t_ws, = gwi_class_ini(gwi, "WebSocket", "Object"));
   SET_FLAG(t_ws, abstract);
   gwi_class_xtor(gwi, NULL, ws_dtor);
   t_ws->nspc->offset += sizeof(Ws);

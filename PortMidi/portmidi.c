@@ -186,7 +186,7 @@ GWION_IMPORT(PortMidi) {
   GWI_BB(gwi_class_end(gwi))
 
   gwidoc(gwi, "Handle MIDI output");
-  DECL_BB(const Type, t_midiout, = gwi_class_ini(gwi, "MidiOut", "PortMidi"));
+  DECL_OB(const Type, t_midiout, = gwi_class_ini(gwi, "MidiOut", "PortMidi"));
   gwi_class_xtor(gwi, NULL, pmout_dtor);
   t_midiout->nspc->offset += sizeof(PmStream*);
 

@@ -19,7 +19,8 @@ static SFUN(TermColor) {
   char* buf = mp_malloc2(shred->info->mp, sz);  // Allocate memory in pool.
 
   // Hand the string to tcol, it will put the result in `buf`.
-  enum term_color_error_t err = tcol_snprintf(buf, sz, str);
+  /*enum term_color_error_t err = */
+  (void)tcol_snprintf(buf, sz, str);
 
   // Set the return value to the new string (the string constructor implicitly copies buf).
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, buf);

@@ -29,8 +29,7 @@ static SFUN(core_glob) {
 #ifndef BUILD_ON_WINDOWS
   glob_t results;
   if (glob(name, 0, NULL, &results)) {
-    const M_Object ret = *(M_Object*)RETURN = new_array(shred->info->mp, shred->code->ret_type, 0);
-//    vector_add(&shred->gc, (m_uint)ret);
+     *(M_Object*)RETURN = new_array(shred->info->mp, shred->code->ret_type, 0);
     return;
   }
   const M_Object ret = *(M_Object*)RETURN = new_array(shred->info->mp, code->ret_type, results.gl_pathc);
@@ -119,7 +118,7 @@ static SFUN(core_mkdir) {
 }
 
 #ifndef BUILD_ON_WINDOWS
-ANN static int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf) {
+ANN static int unlink_cb(const char *fpath NUSED, const struct stat *sb NUSED, int typeflag NUSED, struct FTW *ftwbuf NUSED) {
   const int rv = remove(fpath);
   if (rv)
     perror(fpath);
@@ -296,7 +295,7 @@ GWION_IMPORT(CoreUtil) {
   GWI_BB(gwi_func_ini(gwi, "int", "link"));
   GWI_BB(gwi_func_arg(gwi, "string", "old"))
   GWI_BB(gwi_func_arg(gwi, "string", "new"))
-  GWI_BB(gwi_func_end(gwi, core_unlink, ae_flag_static))
+  GWI_BB(gwi_func_end(gwi, core_link, ae_flag_static))
 
   gwidoc(gwi, "unlink a file");
   GWI_BB(gwi_func_ini(gwi, "int", "unlink"));

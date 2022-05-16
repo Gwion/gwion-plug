@@ -156,8 +156,8 @@ static Type t_Voicer;
 static Type t_VoicForm;
 static Type t_Whistle;
 static Type t_Wurley;
-static m_int o_Stk_swig;
-#define GW_Stk(a) *(stk::Stk**)(a->data + o_Stk_swig)
+
+#define GW_Stk(a) *(stk::Stk**)(a->data)
 static SFUN(gw_Stk_STK_SINT8_get) {
   stk::Stk::StkFormat result = (stk::Stk::StkFormat)(stk::Stk::StkFormat)stk::Stk::STK_SINT8;
   *(m_int*)RETURN = (m_int)result;
@@ -272,8 +272,7 @@ static TICK(Instrmnt_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Instrmnt_swig;
-#define GW_Instrmnt(a) *(stk::Instrmnt**)(a->data + o_Stk_swig)
+#define GW_Instrmnt(a) *(stk::Instrmnt**)(a->data)
 static MFUN(gw_Instrmnt_clear) {
   stk::Instrmnt * arg1 = (stk::Instrmnt *)GW_Instrmnt((*(M_Object*)MEM(0)));
   (arg1)->clear();
@@ -318,8 +317,7 @@ static DTOR(gw_Instrmnt_dtor) {
   }
 }
 
-static m_int o_Generator_swig;
-#define GW_Generator(a) *(stk::Generator**)(a->data + o_Stk_swig)
+#define GW_Generator(a) *(stk::Generator**)(a->data)
 static MFUN(gw_Generator_channelsOut) {
   stk::Generator * arg1 = (stk::Generator *)GW_Generator((*(M_Object*)MEM(0)));
   unsigned int result = (unsigned int)((stk::Generator const *)arg1)->channelsOut();
@@ -338,8 +336,7 @@ static TICK(FM_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_FM_swig;
-#define GW_FM(a) *(stk::FM**)(a->data + o_Stk_swig)
+#define GW_FM(a) *(stk::FM**)(a->data)
 static DTOR(gw_FM_dtor) {
   if(GW_FM(o)) {
     delete (stk::FM*)GW_FM(o);
@@ -422,8 +419,7 @@ static MFUN(gw_FM_controlChange) {
   (arg1)->controlChange(arg2,arg3);
 }
 
-static m_int o_Filter_swig;
-#define GW_Filter(a) *(stk::Filter**)(a->data + o_Stk_swig)
+#define GW_Filter(a) *(stk::Filter**)(a->data)
 static MFUN(gw_Filter_channelsIn) {
   stk::Filter * arg1 = (stk::Filter *)GW_Filter((*(M_Object*)MEM(0)));
   unsigned int result = (unsigned int)((stk::Filter const *)arg1)->channelsIn();
@@ -467,8 +463,7 @@ static DTOR(gw_Filter_dtor) {
   }
 }
 
-static m_int o_Effect_swig;
-#define GW_Effect(a) *(stk::Effect**)(a->data + o_Stk_swig)
+#define GW_Effect(a) *(stk::Effect**)(a->data)
 static MFUN(gw_Effect_channelsOut) {
   stk::Effect * arg1 = (stk::Effect *)GW_Effect((*(M_Object*)MEM(0)));
   unsigned int result = (unsigned int)((stk::Effect const *)arg1)->channelsOut();
@@ -493,8 +488,7 @@ static DTOR(gw_Effect_dtor) {
   }
 }
 
-static m_int o_Function_swig;
-#define GW_Function(a) *(stk::Function**)(a->data + o_Stk_swig)
+#define GW_Function(a) *(stk::Function**)(a->data)
 static MFUN(gw_Function_lastOut) {
   stk::Function * arg1 = (stk::Function *)GW_Function((*(M_Object*)MEM(0)));
   stk::StkFloat result = (stk::StkFloat)((stk::Function const *)arg1)->lastOut();
@@ -513,8 +507,7 @@ static TICK(Sampler_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Sampler_swig;
-#define GW_Sampler(a) *(stk::Sampler**)(a->data + o_Stk_swig)
+#define GW_Sampler(a) *(stk::Sampler**)(a->data)
 static DTOR(gw_Sampler_dtor) {
   if(GW_Sampler(o)) {
     delete (stk::Sampler*)GW_Sampler(o);
@@ -556,8 +549,7 @@ static TICK(ADSR_tick) {
   u->out = s->tick();
 }
 
-static m_int o_ADSR_swig;
-#define GW_ADSR(a) *(stk::ADSR**)(a->data + o_Stk_swig)
+#define GW_ADSR(a) *(stk::ADSR**)(a->data)
 static CTOR(gw_ADSR_ctor) {
   if(o->type_ref == t_ADSR)
   GW_ADSR(o) = new stk::ADSR();
@@ -669,8 +661,7 @@ static SFUN(gw_TARGET_THRESHOLD_get) {
   *(m_float*)RETURN = (m_float)(float)result;
 }
 
-static m_int o_Asymp_swig;
-#define GW_Asymp(a) *(stk::Asymp**)(a->data + o_Stk_swig)
+#define GW_Asymp(a) *(stk::Asymp**)(a->data)
 static CTOR(gw_Asymp_ctor) {
   if(o->type_ref == t_Asymp)
   GW_Asymp(o) = new stk::Asymp();
@@ -743,8 +734,7 @@ static SFUN(gw_MAX_BANDED_MODES_get) {
   *(m_int*)RETURN = (m_int)result;
 }
 
-static m_int o_BandedWG_swig;
-#define GW_BandedWG(a) *(stk::BandedWG**)(a->data + o_Stk_swig)
+#define GW_BandedWG(a) *(stk::BandedWG**)(a->data)
 static CTOR(gw_BandedWG_ctor) {
   if(o->type_ref == t_BandedWG)
   GW_BandedWG(o) = new stk::BandedWG();
@@ -828,8 +818,7 @@ static TICK(BiQuad_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_BiQuad_swig;
-#define GW_BiQuad(a) *(stk::BiQuad**)(a->data + o_Stk_swig)
+#define GW_BiQuad(a) *(stk::BiQuad**)(a->data)
 static CTOR(gw_BiQuad_ctor) {
   if(o->type_ref == t_BiQuad)
   GW_BiQuad(o) = new stk::BiQuad();
@@ -940,8 +929,7 @@ static TICK(Blit_tick) {
   u->out = s->tick();
 }
 
-static m_int o_Blit_swig;
-#define GW_Blit(a) *(stk::Blit**)(a->data + o_Stk_swig)
+#define GW_Blit(a) *(stk::Blit**)(a->data)
 static SFUN(gw_Blit_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Blit * result = (stk::Blit *)new stk::Blit(arg1);
@@ -1009,8 +997,7 @@ static TICK(BlitSaw_tick) {
   u->out = s->tick();
 }
 
-static m_int o_BlitSaw_swig;
-#define GW_BlitSaw(a) *(stk::BlitSaw**)(a->data + o_Stk_swig)
+#define GW_BlitSaw(a) *(stk::BlitSaw**)(a->data)
 static SFUN(gw_BlitSaw_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::BlitSaw * result = (stk::BlitSaw *)new stk::BlitSaw(arg1);
@@ -1066,8 +1053,7 @@ static TICK(BlitSquare_tick) {
   u->out = s->tick();
 }
 
-static m_int o_BlitSquare_swig;
-#define GW_BlitSquare(a) *(stk::BlitSquare**)(a->data + o_Stk_swig)
+#define GW_BlitSquare(a) *(stk::BlitSquare**)(a->data)
 static SFUN(gw_BlitSquare_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::BlitSquare * result = (stk::BlitSquare *)new stk::BlitSquare(arg1);
@@ -1135,8 +1121,7 @@ static TICK(BeeThree_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_BeeThree_swig;
-#define GW_BeeThree(a) *(stk::BeeThree**)(a->data + o_Stk_swig)
+#define GW_BeeThree(a) *(stk::BeeThree**)(a->data)
 static CTOR(gw_BeeThree_ctor) {
   if(o->type_ref == t_BeeThree)
   GW_BeeThree(o) = new stk::BeeThree();
@@ -1165,8 +1150,7 @@ static TICK(BlowBotl_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_BlowBotl_swig;
-#define GW_BlowBotl(a) *(stk::BlowBotl**)(a->data + o_Stk_swig)
+#define GW_BlowBotl(a) *(stk::BlowBotl**)(a->data)
 static CTOR(gw_BlowBotl_ctor) {
   if(o->type_ref == t_BlowBotl)
   GW_BlowBotl(o) = new stk::BlowBotl();
@@ -1232,8 +1216,7 @@ static TICK(BlowHole_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_BlowHole_swig;
-#define GW_BlowHole(a) *(stk::BlowHole**)(a->data + o_Stk_swig)
+#define GW_BlowHole(a) *(stk::BlowHole**)(a->data)
 static SFUN(gw_BlowHole_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::BlowHole * result = (stk::BlowHole *)new stk::BlowHole(arg1);
@@ -1314,8 +1297,7 @@ static TICK(Bowed_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Bowed_swig;
-#define GW_Bowed(a) *(stk::Bowed**)(a->data + o_Stk_swig)
+#define GW_Bowed(a) *(stk::Bowed**)(a->data)
 static SFUN(gw_Bowed_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Bowed * result = (stk::Bowed *)new stk::Bowed(arg1);
@@ -1399,8 +1381,7 @@ static TICK(BowTable_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_BowTable_swig;
-#define GW_BowTable(a) *(stk::BowTable**)(a->data + o_Stk_swig)
+#define GW_BowTable(a) *(stk::BowTable**)(a->data)
 static CTOR(gw_BowTable_ctor) {
   if(o->type_ref == t_BowTable)
   GW_BowTable(o) = new stk::BowTable();
@@ -1446,8 +1427,7 @@ static TICK(Brass_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Brass_swig;
-#define GW_Brass(a) *(stk::Brass**)(a->data + o_Stk_swig)
+#define GW_Brass(a) *(stk::Brass**)(a->data)
 static SFUN(gw_Brass_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Brass * result = (stk::Brass *)new stk::Brass(arg1);
@@ -1531,8 +1511,7 @@ static TICK(Chorus_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Chorus_swig;
-#define GW_Chorus(a) *(stk::Chorus**)(a->data + o_Stk_swig)
+#define GW_Chorus(a) *(stk::Chorus**)(a->data)
 static SFUN(gw_Chorus_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Chorus * result = (stk::Chorus *)new stk::Chorus(arg1);
@@ -1583,8 +1562,7 @@ static TICK(Clarinet_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Clarinet_swig;
-#define GW_Clarinet(a) *(stk::Clarinet**)(a->data + o_Stk_swig)
+#define GW_Clarinet(a) *(stk::Clarinet**)(a->data)
 static SFUN(gw_Clarinet_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Clarinet * result = (stk::Clarinet *)new stk::Clarinet(arg1);
@@ -1662,8 +1640,7 @@ static TICK(Cubic_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Cubic_swig;
-#define GW_Cubic(a) *(stk::Cubic**)(a->data + o_Stk_swig)
+#define GW_Cubic(a) *(stk::Cubic**)(a->data)
 static CTOR(gw_Cubic_ctor) {
   if(o->type_ref == t_Cubic)
   GW_Cubic(o) = new stk::Cubic();
@@ -1715,8 +1692,7 @@ static TICK(Delay_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Delay_swig;
-#define GW_Delay(a) *(stk::Delay**)(a->data + o_Stk_swig)
+#define GW_Delay(a) *(stk::Delay**)(a->data)
 static SFUN(gw_Delay_ctor0) {
   if(!*(M_Object*)MEM(0))
   handle(shred, (m_str)"NullPtrException");
@@ -1837,8 +1813,7 @@ static TICK(DelayA_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_DelayA_swig;
-#define GW_DelayA(a) *(stk::DelayA**)(a->data + o_Stk_swig)
+#define GW_DelayA(a) *(stk::DelayA**)(a->data)
 static SFUN(gw_DelayA_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_FLOAT))
@@ -1942,8 +1917,7 @@ static TICK(DelayL_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_DelayL_swig;
-#define GW_DelayL(a) *(stk::DelayL**)(a->data + o_Stk_swig)
+#define GW_DelayL(a) *(stk::DelayL**)(a->data)
 static SFUN(gw_DelayL_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_FLOAT))
@@ -2052,8 +2026,7 @@ static SFUN(gw_DRUM_POLYPHONY_get) {
   *(m_int*)RETURN = (m_int)result;
 }
 
-static m_int o_Drummer_swig;
-#define GW_Drummer(a) *(stk::Drummer**)(a->data + o_Stk_swig)
+#define GW_Drummer(a) *(stk::Drummer**)(a->data)
 static CTOR(gw_Drummer_ctor) {
   if(o->type_ref == t_Drummer)
   GW_Drummer(o) = new stk::Drummer();
@@ -2088,11 +2061,8 @@ static TICK(Echo_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Echo_swig;
-#define GW_Echo(a) *(stk::Echo**)(a->data + o_Stk_swig)
+#define GW_Echo(a) *(stk::Echo**)(a->data)
 static SFUN(gw_Echo_ctor0) {
-  if(!*(M_Object*)MEM(0))
-  handle(shred, (m_str)"NullPtrException");
   unsigned long arg1 = (unsigned long)*(m_int*)MEM(0);
   stk::Echo * result = (stk::Echo *)new stk::Echo(arg1);
   //M_Object ret_obj = new_object(shred->info->mp, t_Echo);
@@ -2146,8 +2116,7 @@ static TICK(Flute_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Flute_swig;
-#define GW_Flute(a) *(stk::Flute**)(a->data + o_Stk_swig)
+#define GW_Flute(a) *(stk::Flute**)(a->data)
 static SFUN(gw_Flute_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Flute * result = (stk::Flute *)new stk::Flute(arg1);
@@ -2234,8 +2203,7 @@ static TICK(FMVoices_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_FMVoices_swig;
-#define GW_FMVoices(a) *(stk::FMVoices**)(a->data + o_Stk_swig)
+#define GW_FMVoices(a) *(stk::FMVoices**)(a->data)
 static CTOR(gw_FMVoices_ctor) {
   if(o->type_ref == t_FMVoices)
   GW_FMVoices(o) = new stk::FMVoices();
@@ -2277,8 +2245,7 @@ static TICK(FormSwep_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_FormSwep_swig;
-#define GW_FormSwep(a) *(stk::FormSwep**)(a->data + o_Stk_swig)
+#define GW_FormSwep(a) *(stk::FormSwep**)(a->data)
 static CTOR(gw_FormSwep_ctor) {
   if(o->type_ref == t_FormSwep)
   GW_FormSwep(o) = new stk::FormSwep();
@@ -2360,8 +2327,7 @@ static TICK(FreeVerb_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_FreeVerb_swig;
-#define GW_FreeVerb(a) *(stk::FreeVerb**)(a->data + o_Stk_swig)
+#define GW_FreeVerb(a) *(stk::FreeVerb**)(a->data)
 static CTOR(gw_FreeVerb_ctor) {
   if(o->type_ref == t_FreeVerb)
   GW_FreeVerb(o) = new stk::FreeVerb();
@@ -2442,8 +2408,7 @@ static TICK(Granulate_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Granulate_swig;
-#define GW_Granulate(a) *(stk::Granulate**)(a->data + o_Stk_swig)
+#define GW_Granulate(a) *(stk::Granulate**)(a->data)
 static CTOR(gw_Granulate_ctor0) {
   if(o->type_ref == t_Granulate)
   GW_Granulate(o) = new stk::Granulate();
@@ -2586,8 +2551,7 @@ static TICK(Guitar_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Guitar_swig;
-#define GW_Guitar(a) *(stk::Guitar**)(a->data + o_Stk_swig)
+#define GW_Guitar(a) *(stk::Guitar**)(a->data)
 static SFUN(gw_Guitar_ctor0) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   if(!*(M_Object*)MEM(0+SZ_INT))
@@ -2736,8 +2700,7 @@ static TICK(HevyMetl_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_HevyMetl_swig;
-#define GW_HevyMetl(a) *(stk::HevyMetl**)(a->data + o_Stk_swig)
+#define GW_HevyMetl(a) *(stk::HevyMetl**)(a->data)
 static CTOR(gw_HevyMetl_ctor) {
   if(o->type_ref == t_HevyMetl)
   GW_HevyMetl(o) = new stk::HevyMetl();
@@ -2766,8 +2729,7 @@ static TICK(JCRev_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_JCRev_swig;
-#define GW_JCRev(a) *(stk::JCRev**)(a->data + o_Stk_swig)
+#define GW_JCRev(a) *(stk::JCRev**)(a->data)
 static SFUN(gw_JCRev_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::JCRev * result = (stk::JCRev *)new stk::JCRev(arg1);
@@ -2812,8 +2774,7 @@ static TICK(JetTable_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_JetTable_swig;
-#define GW_JetTable(a) *(stk::JetTable**)(a->data + o_Stk_swig)
+#define GW_JetTable(a) *(stk::JetTable**)(a->data)
 static CTOR(gw_JetTable_ctor) {
   if(o->type_ref == t_JetTable)
   GW_JetTable(o) = new stk::JetTable();
@@ -2835,8 +2796,7 @@ static TICK(LentPitShift_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_LentPitShift_swig;
-#define GW_LentPitShift(a) *(stk::LentPitShift**)(a->data + o_Stk_swig)
+#define GW_LentPitShift(a) *(stk::LentPitShift**)(a->data)
 static SFUN(gw_LentPitShift_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   int arg2 = (int)*(m_int*)MEM(0+SZ_FLOAT);
@@ -2894,8 +2854,7 @@ static TICK(Mandolin_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Mandolin_swig;
-#define GW_Mandolin(a) *(stk::Mandolin**)(a->data + o_Stk_swig)
+#define GW_Mandolin(a) *(stk::Mandolin**)(a->data)
 static SFUN(gw_Mandolin_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Mandolin * result = (stk::Mandolin *)new stk::Mandolin(arg1);
@@ -2992,8 +2951,7 @@ static SFUN(gw_NYMAX_get) {
   *(m_int*)RETURN = (m_int)result;
 }
 
-static m_int o_Mesh2D_swig;
-#define GW_Mesh2D(a) *(stk::Mesh2D**)(a->data + o_Stk_swig)
+#define GW_Mesh2D(a) *(stk::Mesh2D**)(a->data)
 static SFUN(gw_Mesh2D_ctor) {
   if(!*(M_Object*)MEM(0))
   handle(shred, (m_str)"NullPtrException");
@@ -3090,8 +3048,7 @@ static TICK(Modal_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Modal_swig;
-#define GW_Modal(a) *(stk::Modal**)(a->data + o_Stk_swig)
+#define GW_Modal(a) *(stk::Modal**)(a->data)
 static DTOR(gw_Modal_dtor) {
   if(GW_Modal(o)) {
     delete (stk::Modal*)GW_Modal(o);
@@ -3174,8 +3131,7 @@ static TICK(ModalBar_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_ModalBar_swig;
-#define GW_ModalBar(a) *(stk::ModalBar**)(a->data + o_Stk_swig)
+#define GW_ModalBar(a) *(stk::ModalBar**)(a->data)
 static CTOR(gw_ModalBar_ctor) {
   if(o->type_ref == t_ModalBar)
   GW_ModalBar(o) = new stk::ModalBar();
@@ -3228,8 +3184,7 @@ static TICK(Modulate_tick) {
   u->out = s->tick();
 }
 
-static m_int o_Modulate_swig;
-#define GW_Modulate(a) *(stk::Modulate**)(a->data + o_Stk_swig)
+#define GW_Modulate(a) *(stk::Modulate**)(a->data)
 static CTOR(gw_Modulate_ctor) {
   if(o->type_ref == t_Modulate)
   GW_Modulate(o) = new stk::Modulate();
@@ -3280,8 +3235,7 @@ static TICK(Moog_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Moog_swig;
-#define GW_Moog(a) *(stk::Moog**)(a->data + o_Stk_swig)
+#define GW_Moog(a) *(stk::Moog**)(a->data)
 static CTOR(gw_Moog_ctor) {
   if(o->type_ref == t_Moog)
   GW_Moog(o) = new stk::Moog();
@@ -3335,8 +3289,7 @@ static TICK(Noise_tick) {
   u->out = s->tick();
 }
 
-static m_int o_Noise_swig;
-#define GW_Noise(a) *(stk::Noise**)(a->data + o_Stk_swig)
+#define GW_Noise(a) *(stk::Noise**)(a->data)
 static SFUN(gw_Noise_ctor0) {
   unsigned int arg1 = (unsigned int)*(m_int*)MEM(0);
   stk::Noise * result = (stk::Noise *)new stk::Noise(arg1);
@@ -3381,8 +3334,7 @@ static TICK(NRev_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_NRev_swig;
-#define GW_NRev(a) *(stk::NRev**)(a->data + o_Stk_swig)
+#define GW_NRev(a) *(stk::NRev**)(a->data)
 static SFUN(gw_NRev_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::NRev * result = (stk::NRev *)new stk::NRev(arg1);
@@ -3427,8 +3379,7 @@ static TICK(OnePole_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_OnePole_swig;
-#define GW_OnePole(a) *(stk::OnePole**)(a->data + o_Stk_swig)
+#define GW_OnePole(a) *(stk::OnePole**)(a->data)
 static SFUN(gw_OnePole_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::OnePole * result = (stk::OnePole *)new stk::OnePole(arg1);
@@ -3495,8 +3446,7 @@ static TICK(OneZero_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_OneZero_swig;
-#define GW_OneZero(a) *(stk::OneZero**)(a->data + o_Stk_swig)
+#define GW_OneZero(a) *(stk::OneZero**)(a->data)
 static SFUN(gw_OneZero_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::OneZero * result = (stk::OneZero *)new stk::OneZero(arg1);
@@ -3563,8 +3513,7 @@ static TICK(PercFlut_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_PercFlut_swig;
-#define GW_PercFlut(a) *(stk::PercFlut**)(a->data + o_Stk_swig)
+#define GW_PercFlut(a) *(stk::PercFlut**)(a->data)
 static CTOR(gw_PercFlut_ctor) {
   if(o->type_ref == t_PercFlut)
   GW_PercFlut(o) = new stk::PercFlut();
@@ -3594,8 +3543,7 @@ static MFUN(gw_PercFlut_noteOn) {
   (arg1)->noteOn(arg2,arg3);
 }
 
-static m_int o_Phonemes_swig;
-#define GW_Phonemes(a) *(stk::Phonemes**)(a->data + o_Stk_swig)
+#define GW_Phonemes(a) *(stk::Phonemes**)(a->data)
 static CTOR(gw_Phonemes_ctor) {
   if(o->type_ref == t_Phonemes)
   GW_Phonemes(o) = new stk::Phonemes();
@@ -3657,8 +3605,7 @@ static SFUN(gw_maxDelay_get) {
   *(m_int*)RETURN = (m_int)result;
 }
 
-static m_int o_PitShift_swig;
-#define GW_PitShift(a) *(stk::PitShift**)(a->data + o_Stk_swig)
+#define GW_PitShift(a) *(stk::PitShift**)(a->data)
 static CTOR(gw_PitShift_ctor) {
   if(o->type_ref == t_PitShift)
   GW_PitShift(o) = new stk::PitShift();
@@ -3691,8 +3638,7 @@ static TICK(Plucked_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Plucked_swig;
-#define GW_Plucked(a) *(stk::Plucked**)(a->data + o_Stk_swig)
+#define GW_Plucked(a) *(stk::Plucked**)(a->data)
 static SFUN(gw_Plucked_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Plucked * result = (stk::Plucked *)new stk::Plucked(arg1);
@@ -3756,8 +3702,7 @@ static TICK(PoleZero_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_PoleZero_swig;
-#define GW_PoleZero(a) *(stk::PoleZero**)(a->data + o_Stk_swig)
+#define GW_PoleZero(a) *(stk::PoleZero**)(a->data)
 static CTOR(gw_PoleZero_ctor) {
   if(o->type_ref == t_PoleZero)
   GW_PoleZero(o) = new stk::PoleZero();
@@ -3831,8 +3776,7 @@ static TICK(PRCRev_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_PRCRev_swig;
-#define GW_PRCRev(a) *(stk::PRCRev**)(a->data + o_Stk_swig)
+#define GW_PRCRev(a) *(stk::PRCRev**)(a->data)
 static SFUN(gw_PRCRev_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::PRCRev * result = (stk::PRCRev *)new stk::PRCRev(arg1);
@@ -3877,8 +3821,7 @@ static TICK(Recorder_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Recorder_swig;
-#define GW_Recorder(a) *(stk::Recorder**)(a->data + o_Stk_swig)
+#define GW_Recorder(a) *(stk::Recorder**)(a->data)
 static CTOR(gw_Recorder_ctor) {
   if(o->type_ref == t_Recorder)
   GW_Recorder(o) = new stk::Recorder();
@@ -3980,8 +3923,7 @@ static TICK(ReedTable_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_ReedTable_swig;
-#define GW_ReedTable(a) *(stk::ReedTable**)(a->data + o_Stk_swig)
+#define GW_ReedTable(a) *(stk::ReedTable**)(a->data)
 static CTOR(gw_ReedTable_ctor) {
   if(o->type_ref == t_ReedTable)
   GW_ReedTable(o) = new stk::ReedTable();
@@ -4015,8 +3957,7 @@ static TICK(Resonate_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Resonate_swig;
-#define GW_Resonate(a) *(stk::Resonate**)(a->data + o_Stk_swig)
+#define GW_Resonate(a) *(stk::Resonate**)(a->data)
 static CTOR(gw_Resonate_ctor) {
   if(o->type_ref == t_Resonate)
   GW_Resonate(o) = new stk::Resonate();
@@ -4087,8 +4028,7 @@ static TICK(Rhodey_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Rhodey_swig;
-#define GW_Rhodey(a) *(stk::Rhodey**)(a->data + o_Stk_swig)
+#define GW_Rhodey(a) *(stk::Rhodey**)(a->data)
 static CTOR(gw_Rhodey_ctor) {
   if(o->type_ref == t_Rhodey)
   GW_Rhodey(o) = new stk::Rhodey();
@@ -4123,8 +4063,7 @@ static TICK(Saxofony_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Saxofony_swig;
-#define GW_Saxofony(a) *(stk::Saxofony**)(a->data + o_Stk_swig)
+#define GW_Saxofony(a) *(stk::Saxofony**)(a->data)
 static SFUN(gw_Saxofony_ctor) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Saxofony * result = (stk::Saxofony *)new stk::Saxofony(arg1);
@@ -4199,8 +4138,7 @@ static TICK(Shakers_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Shakers_swig;
-#define GW_Shakers(a) *(stk::Shakers**)(a->data + o_Stk_swig)
+#define GW_Shakers(a) *(stk::Shakers**)(a->data)
 static SFUN(gw_Shakers_ctor0) {
   int arg1 = (int)*(m_int*)MEM(0);
   stk::Shakers * result = (stk::Shakers *)new stk::Shakers(arg1);
@@ -4264,8 +4202,7 @@ static TICK(Simple_tick) {
   u->out = s->tick();
 }
 
-static m_int o_Simple_swig;
-#define GW_Simple(a) *(stk::Simple**)(a->data + o_Stk_swig)
+#define GW_Simple(a) *(stk::Simple**)(a->data)
 static CTOR(gw_Simple_ctor) {
   if(o->type_ref == t_Simple)
   GW_Simple(o) = new stk::Simple();
@@ -4328,8 +4265,7 @@ static SFUN(gw_TABLE_SIZE_get) {
   *(m_int*)RETURN = (m_int)result;
 }
 
-static m_int o_SineWave_swig;
-#define GW_SineWave(a) *(stk::SineWave**)(a->data + o_Stk_swig)
+#define GW_SineWave(a) *(stk::SineWave**)(a->data)
 static CTOR(gw_SineWave_ctor) {
   if(o->type_ref == t_SineWave)
   GW_SineWave(o) = new stk::SineWave();
@@ -4386,8 +4322,7 @@ static TICK(SingWave_tick) {
   u->out = s->tick();
 }
 
-static m_int o_SingWave_swig;
-#define GW_SingWave(a) *(stk::SingWave**)(a->data + o_Stk_swig)
+#define GW_SingWave(a) *(stk::SingWave**)(a->data)
 static SFUN(gw_SingWave_ctor0) {
   if(!*(M_Object*)MEM(0))
   handle(shred, (m_str)"NullPtrException");
@@ -4497,8 +4432,7 @@ static TICK(Sitar_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Sitar_swig;
-#define GW_Sitar(a) *(stk::Sitar**)(a->data + o_Stk_swig)
+#define GW_Sitar(a) *(stk::Sitar**)(a->data)
 static SFUN(gw_Sitar_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Sitar * result = (stk::Sitar *)new stk::Sitar(arg1);
@@ -4557,8 +4491,7 @@ static MFUN(gw_Sitar_noteOff) {
   (arg1)->noteOff(arg2);
 }
 
-static m_int o_Vector3D_swig;
-#define GW_Vector3D(a) *(stk::Vector3D**)(a->data + o_Stk_swig)
+#define GW_Vector3D(a) *(stk::Vector3D**)(a->data)
 static SFUN(gw_Vector3D_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::StkFloat arg2 = (stk::StkFloat)*(m_float*)MEM(0+SZ_FLOAT);
@@ -4656,8 +4589,7 @@ static TICK(StifKarp_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_StifKarp_swig;
-#define GW_StifKarp(a) *(stk::StifKarp**)(a->data + o_Stk_swig)
+#define GW_StifKarp(a) *(stk::StifKarp**)(a->data)
 static SFUN(gw_StifKarp_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::StifKarp * result = (stk::StifKarp *)new stk::StifKarp(arg1);
@@ -4746,8 +4678,7 @@ static TICK(TubeBell_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_TubeBell_swig;
-#define GW_TubeBell(a) *(stk::TubeBell**)(a->data + o_Stk_swig)
+#define GW_TubeBell(a) *(stk::TubeBell**)(a->data)
 static CTOR(gw_TubeBell_ctor) {
   if(o->type_ref == t_TubeBell)
   GW_TubeBell(o) = new stk::TubeBell();
@@ -4776,8 +4707,7 @@ static TICK(Twang_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Twang_swig;
-#define GW_Twang(a) *(stk::Twang**)(a->data + o_Stk_swig)
+#define GW_Twang(a) *(stk::Twang**)(a->data)
 static SFUN(gw_Twang_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Twang * result = (stk::Twang *)new stk::Twang(arg1);
@@ -4834,7 +4764,7 @@ static MFUN(gw_Twang_setLoopFilter) {
   handle(shred, (m_str)"NullPtrException");
   const M_Vector arg2_array = ARRAY(*(M_Object*)MEM(0+SZ_INT));
   std::vector< stk::StkFloat > arg2;
-  for (int i=0; i < m_vector_size(arg2_array); i++) {
+  for (m_int i=0; i < m_vector_size(arg2_array); i++) {
     m_float f;
     m_vector_get(arg2_array, i, &f);
     (&arg2)->push_back(f);
@@ -4854,8 +4784,7 @@ static TICK(TwoPole_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_TwoPole_swig;
-#define GW_TwoPole(a) *(stk::TwoPole**)(a->data + o_Stk_swig)
+#define GW_TwoPole(a) *(stk::TwoPole**)(a->data)
 static CTOR(gw_TwoPole_ctor) {
   if(o->type_ref == t_TwoPole)
   GW_TwoPole(o) = new stk::TwoPole();
@@ -4938,8 +4867,7 @@ static TICK(TwoZero_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_TwoZero_swig;
-#define GW_TwoZero(a) *(stk::TwoZero**)(a->data + o_Stk_swig)
+#define GW_TwoZero(a) *(stk::TwoZero**)(a->data)
 static CTOR(gw_TwoZero_ctor) {
   if(o->type_ref == t_TwoZero)
   GW_TwoZero(o) = new stk::TwoZero();
@@ -5014,8 +4942,7 @@ static TICK(Voicer_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Voicer_swig;
-#define GW_Voicer(a) *(stk::Voicer**)(a->data + o_Stk_swig)
+#define GW_Voicer(a) *(stk::Voicer**)(a->data)
 static SFUN(gw_Voicer_ctor0) {
   stk::StkFloat arg1 = (stk::StkFloat)*(m_float*)MEM(0);
   stk::Voicer * result = (stk::Voicer *)new stk::Voicer(arg1);
@@ -5187,8 +5114,7 @@ static TICK(VoicForm_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_VoicForm_swig;
-#define GW_VoicForm(a) *(stk::VoicForm**)(a->data + o_Stk_swig)
+#define GW_VoicForm(a) *(stk::VoicForm**)(a->data)
 static CTOR(gw_VoicForm_ctor) {
   if(o->type_ref == t_VoicForm)
   GW_VoicForm(o) = new stk::VoicForm();
@@ -5285,8 +5211,7 @@ static TICK(Whistle_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Whistle_swig;
-#define GW_Whistle(a) *(stk::Whistle**)(a->data + o_Stk_swig)
+#define GW_Whistle(a) *(stk::Whistle**)(a->data)
 static CTOR(gw_Whistle_ctor) {
   if(o->type_ref == t_Whistle)
   GW_Whistle(o) = new stk::Whistle();
@@ -5352,8 +5277,7 @@ static TICK(Wurley_tick) {
   u->out = s->tick(1);
 }
 
-static m_int o_Wurley_swig;
-#define GW_Wurley(a) *(stk::Wurley**)(a->data + o_Stk_swig)
+#define GW_Wurley(a) *(stk::Wurley**)(a->data)
 static CTOR(gw_Wurley_ctor) {
   if(o->type_ref == t_Wurley)
   GW_Wurley(o) = new stk::Wurley();
@@ -5385,18 +5309,15 @@ static MFUN(gw_Wurley_noteOn) {
 
 m_bool CPPIMPORT(Gwi gwi) {
   CHECK_OB(gwi_struct_ini(gwi, (m_str)"stk"));
-  
+
   gwi_typedef_ini(gwi, (m_str)"float", (m_str)"StkFloat");
   gwi_typedef_end(gwi, ae_flag_none);
-  
+
   stk::Stk::setSampleRate(gwi->gwion->vm->bbq->si->sr);
-  /*const Type*/ t_Stk = gwi_class_ini(gwi, "Stk", "UGen");
+  const Type t_Stk = gwi_class_ini(gwi, "Stk", "UGen");
   SET_FLAG(t_Stk, abstract);
-  o_Stk_swig = t_Stk->nspc->offset;
   t_Stk->nspc->offset += SZ_INT;
-//  CHECK_BB(gwi_item_ini(gwi, "@internal", "@Swig_Stk_Object"));
-//  CHECK_BB((o_Stk_swig = gwi_item_end(gwi, ae_flag_none, num, 0)));
-  
+
   CHECK_BB(gwi_func_ini(gwi, "int", "STK_SINT8"));
   CHECK_BB(gwi_func_end(gwi, gw_Stk_STK_SINT8_get, ae_flag_static));
   CHECK_BB(gwi_func_ini(gwi, "int", "STK_SINT16"));

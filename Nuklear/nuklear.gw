@@ -1,12 +1,12 @@
 #import Nuklear
 #import Modules
 
-var NkPanel panel;
+var Nk.Panel panel;
 
-var NkLayout layout;
+var Nk.Layout layout;
 "test" => layout.name;
 
-var NkSlider slider;
+var Nk.Slider slider;
 "test" => slider.name;
 
 220 => const auto base_freq;
@@ -18,6 +18,6 @@ spork {
   } while(true);
 };
 
-var NkButton b;
+var Nk.Button b;
 "Hit me to Quit!" => b.name;
 b => now;

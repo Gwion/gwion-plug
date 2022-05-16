@@ -164,7 +164,7 @@ static OP_CHECK(ffi_var_cast) {
   Exp_Call *call = &exp->d.exp_call;
   CHECK_ON(check_exp(env, call->args));
   struct loc_t_ loc = {};
-  const Type ffi = str2type(env->gwion, "FFIBASE.@CFFI", loc);
+  const Type ffi = str2type(env->gwion, "FFIBASE.CFFI", loc);
   Exp arg = call->args->next;
   while(arg) {
     if(isa(arg->type, ffi) < 0)
@@ -207,7 +207,7 @@ static OP_CHECK(opck_ffi_ctor) {
 
   exp = exp->next;
   Arg_List args = NULL;
-  const Type cffi = nspc_lookup_type0(ffi->nspc, insert_symbol(env->gwion->st, "@CFFI"));
+  const Type cffi = nspc_lookup_type0(ffi->nspc, insert_symbol(env->gwion->st, "CFFI"));
   if(exp) {
     args = new_mp_vector(env->gwion->mp, sizeof(Arg), 0);
     do {
@@ -230,17 +230,14 @@ static OP_CHECK(opck_ffi_ctor) {
   if(variadic)
     set_fbflag(fb, fbflag_variadic);
   Func_Def fdef = new_func_def(mp, fb, NULL);
-//  Func_Def fdef2 = cpy_func_def(mp, fdef);
-//  fdef2->base->xid = insert_symbol(env->gwion->st, "@call");
   Section section = { .d = { .func_def = fdef }, .section_type = ae_section_func };
-//  Section section2 = { .d = { .func_def = fdef2 }, .section_type = ae_section_func };
   Ast body = new_mp_vector(env->gwion->mp, sizeof(Section), 2);
   mp_vector_set(body, Section, 0, section);
 {
   Stmt_List slist = new_mp_vector(env->gwion->mp, sizeof(struct Stmt_), 3);
-  stmt_list_from_id(env->gwion, slist, "@cif", "@ffi_cif", exp_self(call)->pos, 0);
-  stmt_list_from_id(env->gwion, slist, "@internal", "@func", exp_self(call)->pos, 1);
-  stmt_list_from_id(env->gwion, slist, "int", "@sz", exp_self(call)->pos, 2);
+  stmt_list_from_id(env->gwion, slist, "cif", "ffi_cif", exp_self(call)->pos, 0);
+  stmt_list_from_id(env->gwion, slist, "int", "func", exp_self(call)->pos, 1);
+  stmt_list_from_id(env->gwion, slist, "int", "sz", exp_self(call)->pos, 2);
   Section section = {
     .d = { .stmt_list = slist },
     .section_type = ae_section_stmt
@@ -355,7 +352,7 @@ FFI_GACK(complex_longdouble, complex long double, "%p")
 FFI_FUNC(pointer, void*, void*, SZ_INT, "%p")
 
 #define FFI_DECL(name, type)                                                      \
-  DECL_OB(const Type, t_##name, = gwi_mk_type(gwi, #name, sizeof(type), "@CFFI")); \
+  DECL_OB(const Type, t_##name, = gwi_mk_type(gwi, #name, sizeof(type), "CFFI")); \
   gwi_add_type(gwi, t_##name);                                                    \
   gwi_gack(gwi, t_##name, gack_ffi_##name);
 
@@ -377,9 +374,9 @@ static OP_CHECK(opck2ffi) {
 
 GWION_IMPORT(FFI) {
   DECL_OB(const Type, t_ffib, = gwi_class_ini(gwi, "FFIBASE", "Object"));
-    DECL_OB(const Type, t_cif, = gwi_mk_type(gwi, "@cif", sizeof(ffi_cif), NULL));
+    DECL_OB(const Type, t_cif, = gwi_mk_type(gwi, "cif", sizeof(ffi_cif), NULL));
     gwi_add_type(gwi, t_cif);
-    DECL_OB(const Type, t_cffi, = gwi_mk_type(gwi, "@CFFI", 0, NULL));
+    DECL_OB(const Type, t_cffi, = gwi_mk_type(gwi, "CFFI", 0, NULL));
     gwi_add_type(gwi, t_cffi);
 
     FFI_DECL(int, int)
@@ -427,7 +424,7 @@ GWION_IMPORT(FFI) {
   FFI_OPER(float, float)
   FFI_OPER(float, double)
   FFI_OPER(float, longdouble)
-  FFI_OPER2(pointer, @internal, pointer)
+  FFI_OPER2(pointer, int, pointer)
 
   GWI_BB(gwi_oper_ini(gwi, "Object", "FFIBASE.pointer", "FFIBASE.pointer"))
   GWI_BB(gwi_oper_end(gwi, "$", object2ffi))

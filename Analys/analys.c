@@ -14,7 +14,6 @@
 #include "ugen.h"
 #include "array.h"
 
-static Type t_ana;
 typedef struct {
   unsigned int size;
   unsigned int pos;
@@ -137,22 +136,22 @@ static MFUN(fft_compute) {
 }
 
 static m_bool import_fft(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "FFT", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "FFT", "UGen"))
   gwi_class_xtor(gwi, fft_ctor, fft_dtor);
   gwi_func_ini(gwi, "int", "init");
   gwi_func_arg(gwi, "int", "size");
   GWI_BB(gwi_func_end(gwi, fft_init, ae_flag_none))
-  /*  gwi_func_ini(gwi, "int", "init");
-  /*    gwi_func_arg(gwi, "int", "size");*/
-  /*    gwi_func_arg(gwi, "float[]", "window");*/
-  /*  gwi_func_ini(gwi, "int", "init");
-  /*    gwi_func_arg(gwi, "int", "size");*/
-  /*    gwi_func_arg(gwi, "string", "window");*/
-  /*  gwi_func_ini(gwi, "int", "window");
-  /*    gwi_func_arg(gwi, "float[]", "window");*/
-  /*  gwi_func_ini(gwi, "int", "window");
-  /*    gwi_func_arg(gwi, "string", "name");*/
-  /*  gwi_func_ini(gwi, "complex[]", "compute");*/
+  /*  gwi_func_ini(gwi, "int", "init"):
+      gwi_func_arg(gwi, "int", "size");
+      gwi_func_arg(gwi, "float[]", "window");
+    gwi_func_ini(gwi, "int", "init");
+      gwi_func_arg(gwi, "int", "size");
+      gwi_func_arg(gwi, "string", "window");
+    gwi_func_ini(gwi, "int", "window");
+     gwi_func_arg(gwi, "float[]", "window");
+    gwi_func_ini(gwi, "int", "window");
+      gwi_func_arg(gwi, "string", "name");
+    gwi_func_ini(gwi, "complex[]", "compute");*/
   gwi_func_ini(gwi, "void", "compute");
   GWI_BB(gwi_func_end(gwi, fft_compute, ae_flag_none))
 
@@ -170,7 +169,7 @@ typedef struct Ana {
   m_uint last;
 } Ana;
 
-typedef double (*f_analys)(Ana* fft);
+typedef m_float (*f_analys)(Ana* fft);
 /*
 m_float array_max(m_float* f, unsigned int size, unsigned int* index)
 {
@@ -413,17 +412,15 @@ m_float compute_zerox(Ana* fft, m_float* buffer)
   return xings/fft->size;
 }
 */
-m_int o_ana_ana;
-m_int o_ana_fft;
-m_int o_ana_fn;
 
-static m_float ana_dummy(Fft* fft) {
+static m_float ana_dummy(Fft* fft NUSED) {
   return 0.0;
 }
+
 static MFUN(ana_compute) {
-  M_Object   fft = *(M_Object*)(o->data + o_ana_fft);
-  Ana* ana = *(Ana**)(o->data + o_ana_ana);
-  f_analys f = *(f_analys*)(o->data + o_ana_fn);
+  M_Object   fft = *(M_Object*)(o->data + SZ_INT*2);
+  Ana* ana = *(Ana**)(o->data);
+  f_analys f = *(f_analys*)(o->data + SZ_INT);
   if(!fft || ana->last == ana->sp->pos)
     return;
   *(m_float*)RETURN = f(ana);
@@ -431,13 +428,13 @@ static MFUN(ana_compute) {
 }
 
 static MFUN(ana_get_fft) {
-  *(m_uint*)RETURN = (m_uint) * (M_Object*)(o->data + o_ana_fft);
+  *(m_uint*)RETURN = (m_uint) * (M_Object*)(o->data + SZ_INT*2);
 }
 
 static MFUN(ana_set_fft) {
   Fft* fft;
-  M_Object obj = *(M_Object*)(o->data + o_ana_fft);
-  Ana* ana = *(Ana**)(o->data + o_ana_ana);
+  M_Object obj = *(M_Object*)(o->data + SZ_INT*2);
+  Ana* ana = *(Ana**)(o->data);
   if(obj)
     release(obj, shred);
   obj = *(M_Object*)MEM(SZ_INT);
@@ -456,108 +453,103 @@ static MFUN(ana_set_fft) {
   ++obj->ref;
   ana->size = fft->fft->fftsize;
   ana->fval = fft->frq->s;
-  *(M_Object*)RETURN = *(M_Object*)(o->data + o_ana_fft) = obj;
+  *(M_Object*)RETURN = *(M_Object*)(o->data + SZ_INT*2) = obj;
 }
 
 static CTOR(ana_ctor) {
-  Ana* ana = *(Ana**)(o->data + o_ana_ana) = (Ana*)xmalloc(sizeof(Ana));
+  Ana* ana = *(Ana**)(o->data) = (Ana*)xmalloc(sizeof(Ana));
   ana->sr = shred->info->vm->bbq->si->sr;
   ana->percent = 50; // rolloff;
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)ana_dummy;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)ana_dummy;
   ana->sp = shred->info->vm->bbq;
   ana->last = 0;
 }
 
 static DTOR(ana_dtor) {
-  free(*(Ana**)(o->data + o_ana_ana));
+  free(*(Ana**)(o->data));
 }
 
 static m_bool import_ana(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "ANA", NULL))
+  DECL_OB(const Type, t_ana, = gwi_class_ini(gwi, "ANA", NULL));
   gwi_class_xtor(gwi, ana_ctor, ana_dtor);
-  gwi_item_ini(gwi, "@internal", "@_fft");
-  o_ana_ana = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_ana_ana)
-  gwi_item_ini(gwi,"FFT", "@fft");
-  o_ana_fft = gwi_item_end(gwi,  ae_flag_late, num, 0);
-  GWI_BB(o_ana_fft)
-  gwi_item_ini(gwi, "@internal", "@fn");
-  o_ana_fn = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_ana_fn)
-  gwi_func_ini(gwi, "float", "compute");
+  t_ana->nspc->offset += SZ_INT*2;
+  GWI_BB(gwi_item_ini(gwi,"FFT", "_fft"));
+  GWI_BB(gwi_item_end(gwi,  ae_flag_late, num, 0));
+  GWI_BB(gwi_func_ini(gwi, "float", "compute"));
   GWI_BB(gwi_func_end(gwi, ana_compute, ae_flag_none))
-  gwi_func_ini(gwi, "FFT", "fft");
+  GWI_BB(gwi_func_ini(gwi, "FFT", "fft"));
   GWI_BB(gwi_func_end(gwi, ana_get_fft, ae_flag_none))
-  gwi_func_ini(gwi, "FFT", "fft");
-  gwi_func_arg(gwi, "FFT", "arg");
+  GWI_BB(gwi_func_ini(gwi, "FFT", "fft"));
+  GWI_BB(gwi_func_arg(gwi, "FFT", "arg"));
   GWI_BB(gwi_func_end(gwi, ana_set_fft, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(centroid_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_centroid;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_centroid;
 }
 static m_bool import_centroid(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Centroid", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "Centroid", "ANA"))
   gwi_class_xtor(gwi, centroid_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(spread_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_spread;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_spread;
 }
 static m_bool import_spread(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Spread", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "Spread", "ANA"))
   gwi_class_xtor(gwi, spread_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(skewness_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_skewness;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_skewness;
 }
 static m_bool import_skewness(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Skewness", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "Skewness", "ANA"))
   gwi_class_xtor(gwi, skewness_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(kurtosis_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_kurtosis;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_kurtosis;
 }
+
 static m_bool import_kurtosis(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Kurtosis", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "Kurtosis", "ANA"))
   gwi_class_xtor(gwi, kurtosis_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(rms_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rms;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_rms;
 }
 static m_bool import_rms(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "RMS", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "RMS", "ANA"))
   gwi_class_xtor(gwi, rms_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(rolloff_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_rolloff;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_rolloff;
 }
 static MFUN(rolloff_get_percent) {
-  Ana* ana = *(Ana**)(o->data + o_ana_ana);
+  Ana* ana = *(Ana**)(o->data);
   *(m_float*)RETURN = ana->percent;
 }
 static MFUN(rolloff_set_percent) {
-  Ana* ana = *(Ana**)(o->data + o_ana_ana);
+  Ana* ana = *(Ana**)(o->data);
   *(m_float*)RETURN = (ana->percent = *(m_float*)MEM(SZ_INT));
 }
 static m_bool import_rolloff(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Rolloff", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "Rolloff", "ANA"))
   gwi_class_xtor(gwi, rolloff_ctor, NULL);
   gwi_func_ini(gwi, "float", "percent");
   GWI_BB(gwi_func_end(gwi, rolloff_get_percent, ae_flag_none))
@@ -569,59 +561,58 @@ static m_bool import_rolloff(Gwi gwi) {
 }
 
 static CTOR(freq_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_freq;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_freq;
 }
+
 static m_bool import_freq(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "Freq", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "Freq", "ANA"))
   gwi_class_xtor(gwi, freq_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(asc_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_asc;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_asc;
 }
+
 static m_bool import_asc(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "ASC", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "ASC", "ANA"))
   gwi_class_xtor(gwi, asc_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
 static CTOR(ass_ctor) {
-  *(f_analys*)(o->data + o_ana_fn) = (f_analys)compute_ass;
+  *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_ass;
 }
+
 static m_bool import_ass(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "ASS", "ANA"))
+  GWI_OB(gwi_class_ini(gwi, "ASS", "ANA"))
   gwi_class_xtor(gwi, ass_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
   return GW_OK;
 }
 
-static m_int o_fc_vector;
 static CTOR(fc_ctor) {
-  *(Vector*)(o->data + o_fc_vector) = new_vector(shred->info->mp);
+  *(Vector*)(o->data) = new_vector(shred->info->mp);
 }
 static DTOR(fc_dtor) {
-  free_vector(shred->info->mp, *(Vector*)(o->data + o_fc_vector));
+  free_vector(shred->info->mp, *(Vector*)(o->data));
 }
 
 static MFUN(fc_compute) {
   m_uint i;
   M_Object ret;
-  Vector v = *(Vector*)(o->data + o_fc_vector);
+  Vector v = *(Vector*)(o->data);
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   ret = new_array(shred->info->mp, t, vector_size(v));
-//  vector_add(&shred->gc, (vtype)ret);
   for(i = 0; i < vector_size(v); i++) {
     M_Object obj = (M_Object)vector_at(v, i);
-//    if(!obj) continue; // prevented in fc.add
-    Ana* ana   = *(Ana**)(obj->data + o_ana_ana);
-//    if(!_fft) continue; // seems prevented somehow. (this is unclear)
-    Fft* fft   = *(Fft**)(obj->data + o_ana_fft);
+    Ana* ana   = *(Ana**)(obj->data);
+    Fft* fft   = *(Fft**)(obj->data + SZ_INT*2);
     if(!fft)
       continue;
-    f_analys fn  = *(f_analys*)(obj->data + o_ana_fn);
+    f_analys fn  = *(f_analys*)(obj->data + SZ_INT);
     m_float f = fn(ana);
     m_vector_set(ARRAY(ret), i, (char*)&f);
   }
@@ -629,7 +620,7 @@ static MFUN(fc_compute) {
 }
 
 static MFUN(fc_add) {
-  Vector v = *(Vector*)(o->data + o_fc_vector);
+  Vector v = *(Vector*)(o->data);
   M_Object obj = *(M_Object*)MEM(SZ_INT);
   if(obj) {
     vector_add(v, (vtype)obj);
@@ -639,7 +630,7 @@ static MFUN(fc_add) {
 }
 
 static MFUN(fc_rem) {
-  Vector v = *(Vector*)(o->data + o_fc_vector);
+  Vector v = *(Vector*)(o->data);
   M_Object obj = *(M_Object*)MEM(SZ_INT);
   if(obj) {
     vector_rem(v, vector_find(v, (vtype)obj));
@@ -654,7 +645,7 @@ INSTR(fc_connect) {
   M_Object obj = **(M_Object**)REG(SZ_INT);
   if(o) {
     if(obj) {
-      Vector v = *(Vector*)(obj->data + o_fc_vector);
+      Vector v = *(Vector*)(obj->data);
       vector_add(v, (vtype)o);
       release(obj, shred);
     }
@@ -670,7 +661,7 @@ INSTR(fc_disconnect) {
   M_Object obj = *(M_Object*)REG(SZ_INT); // WARN inconsistency
   if(o) {
     if(obj) {
-      Vector v = *(Vector*)(obj->data + o_fc_vector);
+      Vector v = *(Vector*)(obj->data);
       vector_rem(v, vector_find(v, (vtype)o));
       release(obj, shred);
     }
@@ -681,11 +672,9 @@ INSTR(fc_disconnect) {
 }
 
 static m_bool import_fc(Gwi gwi) {
-  GWI_BB(gwi_class_ini(gwi, "FC", NULL))
+  DECL_OB(const Type, t_fc, = gwi_class_ini(gwi, "FC", NULL));
   gwi_class_xtor(gwi, fc_ctor, fc_dtor);
-  gwi_item_ini(gwi, "@internal", "@vector");
-  o_fc_vector = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_fc_vector)
+  t_fc->nspc->offset += SZ_INT;
   gwi_func_ini(gwi, "float[]", "compute");
   GWI_BB(gwi_func_end(gwi, fc_compute, ae_flag_none))
   gwi_func_ini(gwi, "ANA", "add");

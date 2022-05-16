@@ -105,9 +105,7 @@ void dbg_on_note(void *data, ogh_note_t* n) {
 }
 
 void dbg_on_loop(void *data, ogh_loop_dir_t* l_dir) {
-puts(__func__);
   Decoder *dec = (Decoder*)data;
-printf("idx %lu\n", dec->idx);
   const ogh_adjusted_note_t *last = ARRAY_NOTE(dec->array, dec->idx-1);
   float offset = last->real_offset + last->real_duration;
   for(ogh_offset_t repeat = 0; repeat < l_dir->count; repeat++) {

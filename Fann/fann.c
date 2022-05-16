@@ -1047,7 +1047,7 @@ MFUN(set_cascade_num_candidate_groups) {
 }
 
 GWION_IMPORT(fann) {
-  GWI_BB(gwi_class_ini(gwi, "FANN_connect", NULL))
+  GWI_OB(gwi_class_ini(gwi, "FANN_connect", NULL));
   gwi_item_ini(gwi,"int",  "from");
   o_fann_from = gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(o_fann_from)
@@ -1060,9 +1060,8 @@ GWION_IMPORT(fann) {
   GWI_BB(gwi_class_end(gwi))
 
   // this is for error handling
-  GWI_BB(gwi_class_ini(gwi, "FANN_base", NULL))
-  gwi_item_ini(gwi, "@internal", "@data");
-  o_fann_error = gwi_item_end(gwi, ae_flag_none, num, 0);
+  DECL_OB(const Type, t_base, = gwi_class_ini(gwi, "FANN_base", NULL));
+  t_base->nspc->offset += SZ_INT;
   GWI_BB(o_fann_error)
   gwi_func_ini(gwi, "void", "log");
     gwi_func_arg(gwi, "FileIO", "f");
@@ -1080,7 +1079,7 @@ GWION_IMPORT(fann) {
   GWI_BB(gwi_class_end(gwi))
 
 //  Training Data Manipulation
-  GWI_BB(gwi_class_ini(gwi, "Fann_data", "FANN_base"))
+  GWI_OB(gwi_class_ini(gwi, "Fann_data", "FANN_base"));
   gwi_class_xtor(gwi, NULL, data_dtor);
   gwi_func_ini(gwi, "void", "from_data");
     gwi_func_arg(gwi, "int", "num");
@@ -1137,7 +1136,7 @@ GWION_IMPORT(fann) {
 
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "FANN", "FANN_base"))
+  GWI_OB(gwi_class_ini(gwi, "FANN", "FANN_base"));
   gwi_class_xtor(gwi, NULL, fann_dtor);
   gwi_func_ini(gwi, "string", "type_str");
     gwi_func_arg(gwi, "int", "layer");

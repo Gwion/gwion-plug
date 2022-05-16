@@ -126,7 +126,7 @@ static MFUN(state) {
 GWION_IMPORT(tinysr) {
   const Type t_tinysr = gwi_mk_type(gwi, "TinySR", SZ_INT, "UGen");
 
-  GWI_BB(gwi_class_ini(gwi, "Tinysr", "UGen"))
+  GWI_OB(gwi_class_ini(gwi, "Tinysr", "UGen"))
   gwi_class_xtor(gwi, tinysr_ctor, tinysr_dtor);
 
   GWI_BB(gwi_item_ini(gwi, "Event", "ev"))

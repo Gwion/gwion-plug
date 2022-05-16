@@ -49,7 +49,7 @@ int terminal_get_attr(terminal_attr_t* attr) {
     attr->flags = 0;
 
     const char* lang = secure_getenv_nongnu("LANG");
-    if (lang != NULL && strstr(lang, "UTF-8") || strstr(lang, "UTF8")) {
+    if ((lang != NULL && strstr(lang, "UTF-8")) || strstr(lang, "UTF8")) {
         attr->flags |= TerminalFlagSupportsUTF8;
     }
     const char* term = secure_getenv_nongnu("TERM");

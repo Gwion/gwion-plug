@@ -24,6 +24,7 @@
 #define NK_INCLUDE_DEFAULT_ALLOCATOR
 #define NK_IMPLEMENTATION
 #define NK_XLIB_IMPLEMENTATION
+#define NK_IMPLEMENTATION
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 #include "nuklear.h"
@@ -128,11 +129,8 @@ sleep_for(long t)
  * ===============================================================*/
 static m_int o_nk_data;
 static m_int o_nk_name;
-static m_int o_nk_exec;
-static m_int o_nk_gwin;
 static m_int o_nk_list;
 static m_int o_nk_ival;
-static m_int o_nk_parent;
   static m_int o_nk_imin;
   static m_int o_nk_imax;
   static m_int o_nk_istp;
@@ -145,7 +143,6 @@ static m_int o_nk_fval;
 /*static m_int o_nk_sval;*/
 
 
-/*m_int o_event_shred = SZ_INT;*/
 #define LIST(o) *(Vector*)(o->data + o_nk_list)
 #define NAME(o) STRING(*(M_Object*)(o->data + o_nk_name))
 typedef void (*f_nk)(M_Object o, struct nk_context* ctx);
@@ -185,7 +182,7 @@ static void* _loop(void* data) {
           for(m_uint i = 0; i < vector_size(gw->widget); i++)
           {
             M_Object o = (M_Object)vector_at(gw->widget, i);
-            f_nk exec = *(f_nk*)(o->data + o_nk_exec);
+            f_nk exec = *(f_nk*)(o->data + SZ_INT*2);
             exec(o, ctx);
           }
         /* Draw */
@@ -198,9 +195,10 @@ static void* _loop(void* data) {
             sleep_for(DTIME - gw->dt);
         XUnlockDisplay(xw->dpy);
     }
+  return NULL;
 }
 
-static void gw_nk_init(GWindow* gw, VM_Shred shred) {
+static void gw_nk_init(GWindow* gw) {
   XWindow* xw = gw->win;
   if(!active)
     XInitThreads();
@@ -254,39 +252,46 @@ static CTOR(nk_ctor) {
   gw->win = (XWindow*)xmalloc(sizeof(XWindow));
   gw->last_widget = NULL;
   gw->widget = new_vector(shred->info->mp);
-  gw_nk_init(gw, shred);
+  gw_nk_init(gw);
   last_window = gw;
   pthread_create(&gw->thread, NULL, &_loop, gw);
   *(GWindow**)(o->data + o_nk_data) = gw;
 }
 
 static void gw_nk_shutdown(struct XWindow* xw) {
+//    nk_xlib_shutdown();   
+//    XUnmapWindow(xw->dpy, xw->win);
+//    XFreeColormap(xw.dpy, xw.cmap);
+//    XDestroyWindow(xw.dpy, xw.win);
+//    XCloseDisplay(xw.dpy); 
 //  XUnmapWindow(xw->dpy, xw->win);
 //  XDestroyWindow(xw->dpy, xw->win);
 //  XFreeColormap(xw->dpy, xw->cmap);
 //  nk_xfont_del(xw->dpy, xw->font);
-//  if(!active)
-//  if(!active)
 //  XFlush(xw->dpy);
-  if(!--active) {
+//  if(!--active) {
 //    XCloseDisplay(xw->dpy);
+//    nk_xfont_del(xw->dpy, xw->font);
 //    nk_xlib_shutdown();
-  }
+//    XUnmapWindow(xw->dpy, xw->win);
+//    XFreeColormap(xw->dpy, xw->cmap);
+//    XDestroyWindow(xw->dpy, xw->win);
+//    XCloseDisplay(xw->dpy);
+//  }
 }
 static DTOR(nk_dtor) {
   GWindow* gw = *(GWindow**)(o->data + o_nk_data);
   pthread_cancel(gw->thread);
   pthread_join(gw->thread, NULL);
+  free(gw->ctx);
+  for(m_uint i = vector_size(gw->widget) + 1; --i;)
+    release((M_Object)vector_at(gw->widget, i-1), shred);
+  vector_release(gw->widget);
 //  XUnmapWindow(gw->win->dpy, gw->win->win);
 //  XDestroyWindow(gw->win->dpy, gw->win->win);
-  gw_nk_shutdown(gw->win);
-  free(gw->ctx);
-  for(m_uint i = vector_size(gw->widget) + 1; --i;
-    release((M_Object)vector_at(gw->widget, i), shred);
-  vector_release(gw->widget);
   free(gw->win);
   free(gw);
-  *(GWindow**)(o->data + o_nk_data) = NULL;
+  gw_nk_shutdown(gw->win);
 }
 
 
@@ -295,17 +300,16 @@ static CTOR(widget_ctor)
   char name[256];
   sprintf(name, "Widget:%p", o);
   (*(M_Object*)(o->data + o_nk_name)) = new_string(shred->info->vm->gwion, name);
-  (*(GWindow**)(o->data + o_nk_gwin)) = last_window;
-  (*(M_Object*)(o->data + o_nk_parent)) = last_window->last_widget;
-  if(last_window->last_widget && strcmp(o->type_ref->name, "NkLayout")
-    && strcmp(o->type_ref->name, "NkMenu"))
+  (*(GWindow**)(o->data + SZ_INT*3)) = last_window;
+  (*(M_Object*)(o->data + SZ_INT)) = last_window->last_widget;
+  if(last_window->last_widget && strcmp(o->type_ref->name, "Layout")
+    && strcmp(o->type_ref->name, "Menu"))
     widget_add(LIST(last_window->last_widget), o);
 }
 
 static m_uint o_nk_align;
 static CTOR(sval_ctor)
 {
-/*  *(f_nk*)(o->data + o_nk_exec) = label_execute;*/
   *(m_uint*)(o->data + o_nk_align) = NK_TEXT_LEFT;
 }
 static m_uint o_nk_wrap, o_nk_labelcolor;
@@ -329,7 +333,7 @@ static void label_execute(M_Object o, struct nk_context* ctx)
 }
 static CTOR(label_ctor)
 {
-  *(f_nk*)(o->data + o_nk_exec) = label_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = label_execute;
 }
 
 static void text_execute(M_Object o, struct nk_context* ctx)
@@ -341,7 +345,7 @@ static void text_execute(M_Object o, struct nk_context* ctx)
 }
 static CTOR(text_ctor)
 {
-  *(f_nk*)(o->data + o_nk_exec) = text_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = text_execute;
 }
 
 static m_uint o_nk_select;
@@ -352,7 +356,7 @@ static void slabel_execute(M_Object o, struct nk_context* ctx)
 }
 static CTOR(slabel_ctor)
 {
-  *(f_nk*)(o->data + o_nk_exec) = label_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = slabel_execute;
 }
 
 static void stext_execute(M_Object o, struct nk_context* ctx)
@@ -362,7 +366,7 @@ static void stext_execute(M_Object o, struct nk_context* ctx)
 }
 static CTOR(stext_ctor)
 {
-  *(f_nk*)(o->data + o_nk_exec) = text_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = stext_execute;
 }
 
 static m_int o_nk_prog, o_nk_progmax, o_nk_progmod;
@@ -373,7 +377,7 @@ static void prog_execute(M_Object o, struct nk_context* ctx)
 }
 static CTOR(prog_ctor)
 {
-  *(f_nk*)(o->data + o_nk_exec) = prog_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = prog_execute;
   *(m_uint*)(o->data + o_nk_prog) = 0;
   *(m_uint*)(o->data + o_nk_progmax) = 100;
   *(m_uint*)(o->data + o_nk_progmod) = 1;
@@ -386,7 +390,6 @@ static void button_execute(M_Object o, struct nk_context* ctx)
   if(*(m_uint*)(o->data + o_nk_button_color))
   {
   M_Object color = *(M_Object*)(o->data + o_nk_button_color);
-  struct nk_color c = COLOR(color);
   if(nk_button_color(ctx, COLOR(color)))
       broadcast(o);
   } else if(NAME(o)) {
@@ -394,18 +397,19 @@ static void button_execute(M_Object o, struct nk_context* ctx)
         broadcast(o);
   }
 }
+
 static CTOR(button_ctor)
 {
-  *(f_nk*)(o->data + o_nk_exec) = button_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = button_execute;
 }
 static void group_exec(M_Object o, struct nk_context* ctx)
 {
-  m_uint i;
+  m_uint i = 0;
   Vector v = LIST(o);
   for(i = 0; i < vector_size(v); i++)
   {
     M_Object obj = (M_Object)vector_at(v, i);
-    f_nk exec = *(f_nk*)(obj->data + o_nk_exec);
+    f_nk exec = *(f_nk*)(obj->data + SZ_INT*2);
     exec(obj, ctx);
   }
 }
@@ -416,11 +420,11 @@ static CTOR(group_ctor)
 }
 static DTOR(group_dtor) {
   free_vector(shred->info->mp, LIST(o));
-  last_window->last_widget = *(M_Object*)(o->data + o_nk_parent);
+  last_window->last_widget = *(M_Object*)(o->data + SZ_INT);
 }
 static MFUN(group_end)
 {
-  last_window->last_widget = *(M_Object*)(o->data + o_nk_parent);
+  last_window->last_widget = *(M_Object*)(o->data + SZ_INT);
 }
 
 static MFUN(group_begin)
@@ -447,7 +451,7 @@ static void rowd_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(rowd_ctor) {
-  (*(f_nk*)(o->data + o_nk_exec)) = rowd_execute;
+  (*(f_nk*)(o->data + SZ_INT*2)) = rowd_execute;
   *(m_uint*)(o->data + o_nk_rowcol) = 1;
   *(m_uint*)(o->data + o_nk_rowh) = 30;
   *(m_uint*)(o->data + o_nk_roww) = 100;
@@ -459,8 +463,6 @@ static m_int o_nk_w;
 static m_int o_nk_h;
 static m_int o_nk_flags;
 static void layout_execute(M_Object o, struct nk_context* ctx) {
-  m_uint i;
-  Vector v = LIST(o);
   char name[256];
   sprintf(name, "%p", o);
   if (nk_begin_titled(ctx, name,  NAME(o),
@@ -476,7 +478,7 @@ static void layout_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(layout_ctor) {
-  (*(f_nk*)(o->data + o_nk_exec))    = layout_execute;
+  (*(f_nk*)(o->data + SZ_INT*2))    = layout_execute;
   (*(m_uint*)(o->data + o_nk_x))     = 50;
   (*(m_uint*)(o->data + o_nk_y))     = 50;
   (*(m_uint*)(o->data + o_nk_w))     = 400;
@@ -493,9 +495,9 @@ static CTOR(layout_ctor) {
 
 static m_int o_nk_state;
 static void tree_execute(M_Object o, struct nk_context* ctx) {
-  int i;
   if(nk_widget_is_mouse_clicked(ctx, NK_BUTTON_LEFT))
     broadcast(o);
+  int i = 0;
   if(nk_tree_push_id(ctx, *(m_uint*)(o->data + o_nk_state), NAME(o), i, (m_uint)o)) {
     row(o, ctx);
     group_exec(o, ctx);
@@ -504,7 +506,7 @@ static void tree_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(tree_ctor) {
-  (*(f_nk*)(o->data + o_nk_exec)) = tree_execute;
+  (*(f_nk*)(o->data + SZ_INT*2)) = tree_execute;
   (*(m_uint*)(o->data + o_nk_state)) = NK_TREE_TAB;
 }
 
@@ -526,7 +528,7 @@ static void combo_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(combo_ctor) {
-  *(f_nk*)(o->data + o_nk_exec) = combo_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = combo_execute;
 }
 
 static MFUN(combo_add) {
@@ -535,15 +537,13 @@ static MFUN(combo_add) {
 }
 
 static void menubar_execute(M_Object o, struct nk_context* ctx) {
-  m_uint i;
-  struct nk_panel menu;
   nk_menubar_begin(ctx);
   group_exec(o, ctx);
   nk_menubar_end(ctx);
 }
 
 static CTOR(menubar_ctor) {
-  *(f_nk*)(o->data + o_nk_exec) = menubar_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = menubar_execute;
 }
 
 static MFUN(menubar_add) {
@@ -569,7 +569,7 @@ static void menu_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(menu_ctor) {
-  *(f_nk*)(o->data + o_nk_exec) = menu_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = menu_execute;
 }
 
 static MFUN(menu_add) {
@@ -588,7 +588,7 @@ static void nkstring_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(nkstring_ctor) {
-  *(f_nk*)(o->data + o_nk_exec) = nkstring_execute;
+  *(f_nk*)(o->data + SZ_INT*2) = nkstring_execute;
   *(m_uint*)(o->data + o_nk_edit_type) = NK_EDIT_SIMPLE;
 /*  *(m_uint*)(o->data + o_nk_edit_type) = NK_EDIT_BOX;*/
 }
@@ -599,7 +599,7 @@ static void check_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(check_ctor) {
-  (*(f_nk*)(o->data + o_nk_exec)) = check_execute;
+  (*(f_nk*)(o->data + SZ_INT*2)) = check_execute;
 }
 
 static void propi_execute(M_Object o, struct nk_context* ctx) {
@@ -611,7 +611,7 @@ static void propi_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(propi_ctor) {
-  (*(f_nk*)(o->data + o_nk_exec)) = propi_execute;
+  (*(f_nk*)(o->data + SZ_INT*2)) = propi_execute;
   *(m_int*)(o->data + o_nk_imax) = 100;
   *(m_int*)(o->data + o_nk_istp) = 10;
   *(m_float*)(o->data + o_nk_iinc) = 1.0;
@@ -624,7 +624,7 @@ static void slideri_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(slideri_ctor) {
-  (*(f_nk*)(o->data + o_nk_exec)) = slideri_execute;
+  (*(f_nk*)(o->data + SZ_INT*2)) = slideri_execute;
   *(m_int*)(o->data + o_nk_imax) = 1.0;
   *(m_int*)(o->data + o_nk_ival) = 0.0;
   *((m_int*)((M_Object)o)->data + o_nk_istp) = 0.1; // ? BUG
@@ -643,7 +643,7 @@ static void propf_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(propf_ctor) {
-  (*(f_nk*)(o->data + o_nk_exec)) = propf_execute;
+  (*(f_nk*)(o->data + SZ_INT*2)) = propf_execute;
   *(m_float*)(o->data + o_nk_fmax) = 1.0;
   *(m_float*)(o->data + o_nk_fval) = 0.0;
   *(m_float*)(o->data + o_nk_fstp) = 1;
@@ -659,7 +659,7 @@ static void slider_execute(M_Object o, struct nk_context* ctx) {
 }
 
 static CTOR(slider_ctor) {
-  (*(f_nk*)   (o->data + o_nk_exec)) = slider_execute;
+  (*(f_nk*)   (o->data + SZ_INT*2)) = slider_execute;
   *(m_float*)(o->data + o_nk_fmax)  = 1.0;
   *(m_float*)(o->data + o_nk_fval)  = 0.0;
   *(m_float*)(o->data + o_nk_fstp)  = 0.1; // ? BUG
@@ -667,139 +667,112 @@ static CTOR(slider_ctor) {
 }
 
 GWION_IMPORT(Nuklear) {
-  GWI_BB(gwi_class_ini(gwi, "NkColor", NULL))
+  GWI_OB(gwi_struct_ini(gwi, "Nk"))
+
+  GWI_OB(gwi_class_ini(gwi, "Color", NULL))
   gwi_item_ini(gwi,"int", "r");
   o_nk_r = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_r)
   gwi_item_ini(gwi,"int", "g");
   o_nk_g = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_g)
   gwi_item_ini(gwi,"int", "b");
   o_nk_b = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_b)
   gwi_item_ini(gwi,"int", "a");
   o_nk_a = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_a)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkPanel", NULL))
+  DECL_OB(const Type, t_panel, = gwi_class_ini(gwi, "Panel", NULL));
   gwi_class_xtor(gwi, nk_ctor, nk_dtor);
-  gwi_item_ini(gwi, "@internal", "@win");
-  o_nk_data = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_data)
+  t_panel->nspc->offset += SZ_INT;
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkWidget", "Event"))
+  DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"));
   gwi_class_xtor(gwi, widget_ctor, NULL);
+  t_widget->nspc->offset += SZ_INT*3;
   gwi_item_ini(gwi,"string", "name");
   o_nk_name = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_name);
-  gwi_item_ini(gwi, "@internal", "@parent");
-  o_nk_parent = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_parent);
-  gwi_item_ini(gwi, "@internal", "@exe");
-  o_nk_exec = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_exec)
-  gwi_item_ini(gwi, "@internal", "@win");
-  o_nk_gwin = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_gwin)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkSval", "NkWidget"))
+  GWI_OB(gwi_class_ini(gwi, "Sval", "Widget"))
   gwi_class_xtor(gwi, sval_ctor, NULL);
   gwi_item_ini(gwi, "int",  "align");
   o_nk_align = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_align)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkLabel", "NkSval"))
+  GWI_OB(gwi_class_ini(gwi, "Label", "Sval"))
   gwi_class_xtor(gwi, label_ctor, NULL);
   gwi_item_ini(gwi, "int",  "wrap");
   o_nk_wrap = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_wrap)
-  gwi_item_ini(gwi, "NkColor",  "color");
+  gwi_item_ini(gwi, "Color",  "color");
   o_nk_labelcolor= gwi_item_end(gwi, ae_flag_late, num, 0);
-  GWI_BB(o_nk_labelcolor)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkText", "NkSval"))
+  GWI_OB(gwi_class_ini(gwi, "Text", "Sval"))
   gwi_class_xtor(gwi, text_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkSLabel", "NkSval"))
+  GWI_OB(gwi_class_ini(gwi, "Stext", "Sval"))
+  gwi_class_xtor(gwi, stext_ctor, NULL);
+  GWI_BB(gwi_class_end(gwi))
+
+  GWI_OB(gwi_class_ini(gwi, "SLabel", "Sval"))
   gwi_class_xtor(gwi, slabel_ctor, NULL);
   gwi_item_ini(gwi, "int",  "selectable");
   o_nk_select = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_select)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkProg", "NkWidget"))
+  GWI_OB(gwi_class_ini(gwi, "Prog", "Widget"))
   gwi_class_xtor(gwi, prog_ctor, NULL);
   gwi_item_ini(gwi,"int", "val");
   o_nk_prog = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_prog)
   gwi_item_ini(gwi,"int", "max");
   o_nk_progmax = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_progmax)
   gwi_item_ini(gwi,"int", "mod");
   o_nk_progmod = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_progmod)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkButton", "NkWidget"))
+  GWI_OB(gwi_class_ini(gwi, "Button", "Widget"))
   gwi_class_xtor(gwi, button_ctor, NULL);
   gwi_item_ini(gwi, "int",  "behavior");
   o_nk_behavior = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_behavior)
-  gwi_item_ini(gwi, "NkColor",  "color");
+  gwi_item_ini(gwi, "Color",  "color");
   o_nk_button_color= gwi_item_end(gwi, ae_flag_late, num, 0);
-  GWI_BB(o_nk_button_color)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkGroup", "NkWidget"))
+  GWI_OB(gwi_class_ini(gwi, "Group", "Widget"))
   gwi_class_xtor(gwi, group_ctor, group_dtor);
-  gwi_item_ini(gwi, "@internal", "@widget");
+//  gwi_item_ini(gwi, "@internal", "@widget");
+  gwi_item_ini(gwi, "int", "@widget");
   o_nk_list = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "void", "begin");
   GWI_BB(gwi_func_end(gwi, group_begin, ae_flag_none))
   gwi_func_ini(gwi, "void", "end");
   GWI_BB(gwi_func_end(gwi, group_end, ae_flag_none))
-  GWI_BB(o_nk_list)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkRow", "NkGroup"))
+  GWI_OB(gwi_class_ini(gwi, "Row", "Group"))
   gwi_class_xtor(gwi, rowd_ctor, NULL);
   gwi_item_ini(gwi, "int",  "height");
   o_nk_rowh = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_rowh)
   gwi_item_ini(gwi, "int",  "width");
   o_nk_roww = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_roww)
   gwi_item_ini(gwi, "int",  "col");
   o_nk_rowcol = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_rowcol)
   gwi_item_ini(gwi, "int",  "static");
   o_nk_static = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_static)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkLayout", "NkRow"))
+  GWI_OB(gwi_class_ini(gwi, "Layout", "Row"))
   gwi_class_xtor(gwi, layout_ctor, NULL);
   gwi_item_ini(gwi, "int",  "x");
   o_nk_x = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_x)
   gwi_item_ini(gwi, "int",  "y");
   o_nk_y = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_y)
   gwi_item_ini(gwi, "int",  "w");
   o_nk_w = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_w)
   gwi_item_ini(gwi, "int",  "h");
   o_nk_h = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_h)
   gwi_item_ini(gwi, "int",  "flag");
   o_nk_flags = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_flags)
   gwi_item_ini(gwi,"int", "BORDER");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, NK_WINDOW_BORDER);
   gwi_item_ini(gwi,"int", "MOVABLE");
@@ -816,45 +789,41 @@ GWION_IMPORT(Nuklear) {
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, NK_PANEL_MENU);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkCombo", "NkRow"))
+  GWI_OB(gwi_class_ini(gwi, "Combo", "Row"))
   gwi_class_xtor(gwi, combo_ctor, NULL);
   gwi_item_ini(gwi, "int",  "val");
   o_nk_comboval = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_comboval)
   gwi_func_ini(gwi, "string", "add");
   gwi_func_arg(gwi, "string", "s");
   GWI_BB(gwi_func_end(gwi, combo_add, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkMenu", "NkGroup"))
+  GWI_OB(gwi_class_ini(gwi, "Menu", "Group"))
   gwi_class_xtor(gwi, menu_ctor, NULL);
   gwi_item_ini(gwi, "int",  "val");
   o_nk_menuval = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_menuval)
   gwi_func_ini(gwi, "string", "add");
   gwi_func_arg(gwi, "string", "s");
   GWI_BB(gwi_func_end(gwi, menu_add, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkMenuBar", "NkGroup"))
+  GWI_OB(gwi_class_ini(gwi, "MenuBar", "Group"))
   gwi_class_xtor(gwi, menubar_ctor, NULL);
   gwi_func_ini(gwi, "void", "add");
-  gwi_func_arg(gwi, "NkMenu", "s");
+  gwi_func_arg(gwi, "Menu", "s");
   GWI_BB(gwi_func_end(gwi, menubar_add, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkTree", "NkRow"))
+  GWI_OB(gwi_class_ini(gwi, "Tree", "Row"))
   gwi_class_xtor(gwi, tree_ctor, NULL);
   gwi_item_ini(gwi, "int",  "state");
   o_nk_state = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_state)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkString", "NkRow"))
+  GWI_OB(gwi_class_ini(gwi, "String", "Row"))
   gwi_class_xtor(gwi, nkstring_ctor, NULL);
   gwi_item_ini(gwi,"int", "type");
   o_nk_edit_type= gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_edit_type)
   gwi_item_ini(gwi,"int", "SIMPLE");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, NK_EDIT_SIMPLE);
   gwi_item_ini(gwi,"int", "FIELD");
@@ -865,62 +834,53 @@ GWION_IMPORT(Nuklear) {
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, NK_EDIT_EDITOR);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkIval", "NkWidget"))
+  GWI_OB(gwi_class_ini(gwi, "Ival", "Widget"))
   gwi_item_ini(gwi, "int",  "val");
   o_nk_ival = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_ival)
   gwi_item_ini(gwi, "int",  "min");
   o_nk_imin = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_imin)
   gwi_item_ini(gwi, "int",  "max");
   o_nk_imax = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_imax)
   gwi_item_ini(gwi,"int", "step");
   o_nk_istp = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_istp)
   gwi_item_ini(gwi,"float", "inc");
   o_nk_iinc = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_iinc)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkPropi", "NkIval"))
+  GWI_OB(gwi_class_ini(gwi, "Propi", "Ival"))
   gwi_class_xtor(gwi, propi_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkSliderI", "NkIval"))
+  GWI_OB(gwi_class_ini(gwi, "SliderI", "Ival"))
   gwi_class_xtor(gwi, slideri_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkCheck", "NkIval"))
+  GWI_OB(gwi_class_ini(gwi, "Check", "Ival"))
   gwi_class_xtor(gwi, check_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkFval", "NkWidget"))
+  GWI_OB(gwi_class_ini(gwi, "Fval", "Widget"))
   gwi_item_ini(gwi, "float",  "val");
   o_nk_fval = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_fval)
   gwi_item_ini(gwi, "float",  "min");
   o_nk_fmin = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_fmin)
   gwi_item_ini(gwi, "float",  "max");
   o_nk_fmax = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_fmax)
 
   gwi_item_ini(gwi,"float", "step");
   o_nk_fstp = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_fstp)
   gwi_item_ini(gwi,"float", "inc");
   o_nk_finc = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(o_nk_finc)
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkPropF", "NkFval"))
+  GWI_OB(gwi_class_ini(gwi, "PropF", "Fval"))
   gwi_class_xtor(gwi, propf_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_class_ini(gwi, "NkSlider", "NkFval"))
+  GWI_OB(gwi_class_ini(gwi, "Slider", "Fval"))
   gwi_class_xtor(gwi, slider_ctor, NULL);
   GWI_BB(gwi_class_end(gwi))
+
+  GWI_BB(gwi_struct_end(gwi))
   return GW_OK;
 }
-

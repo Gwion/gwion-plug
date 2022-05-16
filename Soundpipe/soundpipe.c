@@ -7452,10 +7452,9 @@ GWION_IMPORT(Soundpipe) {
   gwi_item_ini(gwi, "UGen", "@soundpipe main ugen");
   gwi_item_end(gwi, ae_flag_late | ae_flag_const, obj, o);
   ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));
-  GWI_OB(gwi_class_ini(gwi, "ftbl", NULL))
+  DECL_OB(const Type, t_ftbl, = gwi_class_ini(gwi, "ftbl", NULL));
   gwi_class_xtor(gwi, NULL, ftbl_dtor);
-  GWI_BB(gwi_item_ini(gwi, "@internal", "@ftbl"))
-  gwi_item_end(gwi, 0, num, 0);
+  t_ftbl->nspc->offset += SZ_INT;
   gwi_func_ini(gwi, "void", "_gen_composite");
   gwi_func_arg(gwi, "int", "Size");
      gwinote(gwi, "a string of space-separated parameters, in groups of four:");

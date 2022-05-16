@@ -35,10 +35,10 @@ static m_uint fill_values(const VM_Shred shred, const Type base, const M_Vector 
     *(M_Object*)(o->data + SZ_INT) = new_string(gwion, value->type->name);
     *(M_Object*)(o->data + SZ_INT*2) = new_string(gwion, value->name);
     *(m_uint*)(o->data + SZ_INT*3) = vflag(value, vflag_member);
-    *(m_uint*)(o->data + SZ_INT*4) = is_func(gwion, value->type);
+    *(m_uint*)(o->data + SZ_INT*4) = is_func(gwion, value->type); // is_callable
 
     if(data) {
-      if(!is_func(gwion, value->type)) {
+      if(!is_func(gwion, value->type)) { // is_callable
         if(vflag(value, vflag_member)) {
           *(m_bit**)(o->data + SZ_INT*5) = &*(m_bit*)(data->data + value->from->offset);
         } else {
