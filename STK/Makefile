@@ -1,6 +1,3 @@
-#CC := ${CXX}
-CC := gcc
-
 include ../config.mk
 
 STK_LIB := stk/src/libstk.a
