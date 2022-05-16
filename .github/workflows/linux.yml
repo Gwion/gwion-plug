@@ -2,11 +2,9 @@ name: Linux
 
 on:
   push:
-    branches:
-      - main
+    branches: [master]
   pull-request:
-     branches:
-      - main
+     branches: [master]
 
 env:
   CFLAGS: -fsanitize=address -fno-omit-frame-pointer
