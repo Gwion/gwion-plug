@@ -10,10 +10,9 @@
 #include "operator.h"
 #include "import.h"
 
-static m_int o_pd_file;
 static m_bool pd_init;
 
-#define PDFILE(o) (*(void**)(o->data + o_pd_file))
+#define PDFILE(o) (*(void**)(o->data + SZ_INT))
 
 static CTOR(pd_ctor) {
   if(!pd_init++) {
@@ -46,7 +45,6 @@ static MFUN(gwpd_close) {
 GWION_IMPORT(pd) {
   DECL_OB(const Type, t_pd, = gwi_class_ini(gwi, "PD", "UGen"));
   gwi_class_xtor(gwi, pd_ctor, pd_dtor);
-  o_pd_file = t_pd->nspc->offset;
   t_pd->nspc->offset += SZ_INT;
   GWI_BB(gwi_func_ini(gwi, "int", "open"))
   GWI_BB(gwi_func_arg(gwi, "string", "basename"))

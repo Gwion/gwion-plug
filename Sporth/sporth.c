@@ -108,7 +108,7 @@ static MFUN(sporth_set_table) {
   *(m_float*)RETURN = val;
 }
 
-MFUN(sporth_get_table) {
+static MFUN(sporth_get_table) {
   sporthData * data = (sporthData*)UGEN(o)->module.gen.data;
   const m_uint i = *(m_uint*)MEM(SZ_INT);
   sp_ftbl *ft;

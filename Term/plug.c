@@ -136,7 +136,7 @@ GWION_IMPORT(Term) {
   GWI_BB(gwi_enum_add(gwi, "cyan", 6));
   GWI_BB(gwi_enum_add(gwi, "white", 7));
   GWI_BB(gwi_enum_add(gwi, "default", 9));
-  GWI_BB(gwi_enum_end(gwi));
+  GWI_OB(gwi_enum_end(gwi));
 
   GWI_BB(gwi_enum_ini(gwi, "Attr"));
   GWI_BB(gwi_enum_add(gwi, "off", 0));
@@ -149,7 +149,7 @@ GWION_IMPORT(Term) {
   GWI_BB(gwi_enum_add(gwi, "reverse", 7));
   GWI_BB(gwi_enum_add(gwi, "concealed", 8));
   GWI_BB(gwi_enum_add(gwi, "crossed", 9));
-  GWI_BB(gwi_enum_end(gwi));
+  GWI_OB(gwi_enum_end(gwi));
 
   GWI_OB(gwi_class_ini(gwi, "AttrStr", "string"))
   GWI_BB(gwi_class_end(gwi))

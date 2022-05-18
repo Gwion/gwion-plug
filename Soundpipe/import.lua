@@ -338,14 +338,9 @@ print('#include <stdlib.h>\
 #include "gwi.h"\
 #include "array.h"')
 
---print("m_uint o_ftbl_data;")
---print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data + o_ftbl_data)")
 print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)")
 print("#define CHECK_SIZE(size)  if(size <= 0){fprintf(stderr, \"'gen_ftbl' size argument must be more than 0\");return;}")
 print("#define handle(a,b) { handle(a,b); return; }")
---print("\n/*static*/ sp_data* sp;")
---print("__attribute__((destructor)) static void sp_end(void) {sp_destroy(&sp);}")
---print("static DTOR(sp_dtor) {\n  sp_destroy(&sp);\n}")
 
 print("\nstatic DTOR(ftbl_dtor) {")
 print("  if(FTBL(o))\n    sp_ftbl_destroy(&FTBL(o));")

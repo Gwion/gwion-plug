@@ -23,7 +23,6 @@
 #include "import.h"
 
 static Type t_fann_connect, t_fann_data;
-extern m_int o_fileio_file;
 
 static m_int o_fann_error, o_fann_from, o_fann_to, o_fann_weight;
 
@@ -162,10 +161,6 @@ static MFUN(layer) {
 }
 
 static MFUN(layers) {
-  if(!FANN(o)) {
-    handle(shred, "NoFANN");
-    return;
-  }
   m_uint i, size = fann_get_num_layers(FANN(o));
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret = new_array(shred->info->mp, t, size);
@@ -175,11 +170,8 @@ static MFUN(layers) {
     m_vector_set(ARRAY(ret), i, (char*)&j[i]);
   *(m_uint*)RETURN = (m_uint)ret;
 }
+
 static MFUN(bias) {
-  if(!FANN(o)) {
-    handle(shred, "NoFANN");
-    return;
-  }
   m_uint i, size = fann_get_num_layers(FANN(o));
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret = new_array(shred->info->mp, t, size);
@@ -199,7 +191,7 @@ static struct fann_connection to_fann(M_Object o) {
 }
 
 static M_Object from_fann(const VM_Shred shred, struct fann_connection c) {
-  M_Object o= new_object(shred->info->mp, t_fann_connect);
+  M_Object o = new_object(shred->info->mp, t_fann_connect);
   *(m_uint*)(o->data + o_fann_from)    = c.from_neuron;
   *(m_uint*)(o->data + o_fann_to)      = c.to_neuron;
   *(m_float*)(o->data + o_fann_weight) = c.weight;
@@ -207,10 +199,6 @@ static M_Object from_fann(const VM_Shred shred, struct fann_connection c) {
 }
 
 static MFUN(connection_array){
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
   m_uint i, size = fann_get_total_connections(FANN(o));
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
   M_Object ret = new_array(shred->info->mp, t, size);
@@ -245,10 +233,6 @@ static MFUN(weigth) {
 }
 
 static MFUN(get_weigths) {
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
   m_uint i, size = fann_get_total_connections(FANN(o));
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
   M_Object ret = new_array(shred->info->mp, t, size);
@@ -260,10 +244,6 @@ static MFUN(get_weigths) {
 }
 
 static MFUN(set_weigths) {
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
   m_uint i, size = fann_get_total_connections(FANN(o));
   M_Object ret = *(M_Object*)MEM(SZ_INT);
   if(m_vector_size(ARRAY(ret)) < size)
@@ -290,12 +270,12 @@ static SFUN(enable_seed) {
 /*
 // FIXED POINT only
 
-MFUN(decimal_point)
+static MFUN(decimal_point)
 {
   *(m_uint*)RETURN = fann_get_decimal_point(FANN(o));
 }
 
-MFUN(multiplier)
+static MFUN(multiplier)
 {
   *(m_uint*)RETURN = fann_get_multiplier(FANN(o));
 }
@@ -366,10 +346,6 @@ static MFUN(reset_MSE) {
 
 static MFUN(run) {
   m_uint i, size;
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
   if(!DATA(o)) {
     handle(shred, "NoFannData");
     return;
@@ -670,316 +646,312 @@ static MFUN(train_do_subset) {
 }
 
 // fann parameters
-MFUN(get_training_algorithm) {
+static MFUN(get_training_algorithm) {
   *(m_uint*)RETURN = fann_get_training_algorithm(FANN(o));
 }
 
-MFUN(set_training_algorithm) {
+static MFUN(set_training_algorithm) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_training_algorithm(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_learning_rate) {
+static MFUN(get_learning_rate) {
   *(m_float*)RETURN = fann_get_learning_rate(FANN(o));
 }
 
-MFUN(set_learning_rate) {
+static MFUN(set_learning_rate) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_learning_rate(FANN(o), *(m_float*)RETURN);
 }
 
 
-MFUN(get_learning_momentum) {
+static MFUN(get_learning_momentum) {
   *(m_float*)RETURN = fann_get_learning_momentum(FANN(o));
 }
 
-MFUN(set_learning_momentum) {
+static MFUN(set_learning_momentum) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_learning_momentum(FANN(o), *(m_float*)RETURN);
 }
 
-MFUN(get_activation_function) {
+static MFUN(get_activation_function) {
   *(m_uint*)RETURN = fann_get_activation_function(FANN(o),
     *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2));
 }
 
-MFUN(set_activation_function) {
+static MFUN(set_activation_function) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_function(FANN(o), *(m_uint*)RETURN,
     *(m_int*)MEM(SZ_INT*2), *(m_int*)MEM(SZ_INT*3));
 }
 
-MFUN(set_activation_function_layer) {
+static MFUN(set_activation_function_layer) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_function_layer(FANN(o), *(m_uint*)RETURN,
     *(m_int*)MEM(SZ_INT*2));
 }
 
-MFUN(set_activation_function_hidden) {
+static MFUN(set_activation_function_hidden) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_function_hidden(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(set_activation_function_output) {
+static MFUN(set_activation_function_output) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_function_output(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_activation_steepness) {
+static MFUN(get_activation_steepness) {
   *(m_uint*)RETURN = fann_get_activation_steepness(FANN(o),
     *(m_int*)MEM(SZ_INT), *(m_int*)MEM(SZ_INT*2));
 }
 
-MFUN(set_activation_steepness) {
+static MFUN(set_activation_steepness) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_steepness(FANN(o), *(m_uint*)RETURN,
     *(m_int*)MEM(SZ_INT*2), *(m_int*)MEM(SZ_INT*3));
 }
 
-MFUN(set_activation_steepness_layer) {
+static MFUN(set_activation_steepness_layer) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_steepness_layer(FANN(o), *(m_uint*)RETURN,
     *(m_int*)MEM(SZ_INT*2));
 }
 
-MFUN(set_activation_steepness_hidden) {
+static MFUN(set_activation_steepness_hidden) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_steepness_hidden(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(set_activation_steepness_output) {
+static MFUN(set_activation_steepness_output) {
   *(m_uint*)RETURN = *(m_int*)MEM(SZ_INT);
   fann_set_activation_steepness_output(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_train_error_function) {
+static MFUN(get_train_error_function) {
   *(m_uint*)RETURN = fann_get_train_error_function(FANN(o));
 }
 
-MFUN(set_train_error_function) {
+static MFUN(set_train_error_function) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_train_error_function(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_train_stop_function) {
+static MFUN(get_train_stop_function) {
   *(m_uint*)RETURN = fann_get_train_stop_function(FANN(o));
 }
 
-MFUN(set_train_stop_function) {
+static MFUN(set_train_stop_function) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_train_stop_function(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_bit_fail_limit) {
+static MFUN(get_bit_fail_limit) {
   *(m_float*)RETURN = fann_get_bit_fail_limit(FANN(o));
 }
 
-MFUN(set_bit_fail_limit) {
+static MFUN(set_bit_fail_limit) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_bit_fail_limit(FANN(o), *(m_uint*)RETURN);
 }
 // callback
 
-MFUN(get_quickprop_decay) {
+static MFUN(get_quickprop_decay) {
   *(m_float*)RETURN = fann_get_quickprop_decay(FANN(o));
 }
 
-MFUN(set_quickprop_decay) {
+static MFUN(set_quickprop_decay) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_quickprop_decay(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_quickprop_mu) {
+static MFUN(get_quickprop_mu) {
   *(m_float*)RETURN = fann_get_quickprop_mu(FANN(o));
 }
 
-MFUN(set_quickprop_mu) {
+static MFUN(set_quickprop_mu) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_quickprop_mu(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_rprop_increase_factor) {
+static MFUN(get_rprop_increase_factor) {
   *(m_float*)RETURN = fann_get_rprop_increase_factor(FANN(o));
 }
 
-MFUN(set_rprop_increase_factor) {
+static MFUN(set_rprop_increase_factor) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_rprop_increase_factor(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_rprop_decrease_factor) {
+static MFUN(get_rprop_decrease_factor) {
   *(m_float*)RETURN = fann_get_rprop_decrease_factor(FANN(o));
 }
 
-MFUN(set_rprop_decrease_factor) {
+static MFUN(set_rprop_decrease_factor) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_rprop_decrease_factor(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_rprop_delta_min) {
+static MFUN(get_rprop_delta_min) {
   *(m_float*)RETURN = fann_get_rprop_delta_min(FANN(o));
 }
 
-MFUN(set_rprop_delta_min) {
+static MFUN(set_rprop_delta_min) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_rprop_delta_min(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_rprop_delta_max) {
+static MFUN(get_rprop_delta_max) {
   *(m_float*)RETURN = fann_get_rprop_delta_max(FANN(o));
 }
 
-MFUN(set_rprop_delta_max) {
+static MFUN(set_rprop_delta_max) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_rprop_delta_max(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_rprop_delta_zero) {
+static MFUN(get_rprop_delta_zero) {
   *(m_float*)RETURN = fann_get_rprop_delta_zero(FANN(o));
 }
 
-MFUN(set_rprop_delta_zero) {
+static MFUN(set_rprop_delta_zero) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_rprop_delta_zero(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_sarprop_weight_decay_shift) {
+static MFUN(get_sarprop_weight_decay_shift) {
   *(m_float*)RETURN = fann_get_sarprop_weight_decay_shift(FANN(o));
 }
 
-MFUN(set_sarprop_weight_decay_shift) {
+static MFUN(set_sarprop_weight_decay_shift) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_sarprop_weight_decay_shift(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_sarprop_step_error_threshold_factor) {
+static MFUN(get_sarprop_step_error_threshold_factor) {
   *(m_float*)RETURN = fann_get_sarprop_step_error_threshold_factor(FANN(o));
 }
 
-MFUN(set_sarprop_step_error_threshold_factor) {
+static MFUN(set_sarprop_step_error_threshold_factor) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_sarprop_step_error_threshold_factor(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_sarprop_step_error_shift) {
+static MFUN(get_sarprop_step_error_shift) {
   *(m_float*)RETURN = fann_get_sarprop_step_error_shift(FANN(o));
 }
 
-MFUN(set_sarprop_step_error_shift) {
+static MFUN(set_sarprop_step_error_shift) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_sarprop_step_error_shift(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_sarprop_temperature) {
+static MFUN(get_sarprop_temperature) {
   *(m_float*)RETURN = fann_get_sarprop_temperature(FANN(o));
 }
 
-MFUN(set_sarprop_temperature) {
+static MFUN(set_sarprop_temperature) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_sarprop_temperature(FANN(o), *(m_uint*)RETURN);
 }
 
 // cascade parameters
-MFUN(get_cascade_output_change_fraction) {
+static MFUN(get_cascade_output_change_fraction) {
   *(m_float*)RETURN = fann_get_cascade_output_change_fraction(FANN(o));
 }
 
-MFUN(set_cascade_output_change_fraction) {
+static MFUN(set_cascade_output_change_fraction) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_cascade_output_change_fraction(FANN(o), *(m_uint*)RETURN);
 }
 
 
-MFUN(get_cascade_output_stagnation_epochs) {
+static MFUN(get_cascade_output_stagnation_epochs) {
   *(m_uint*)RETURN = fann_get_cascade_output_stagnation_epochs(FANN(o));
 }
 
-MFUN(set_cascade_output_stagnation_epochs) {
+static MFUN(set_cascade_output_stagnation_epochs) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_cascade_output_stagnation_epochs(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_candidate_change_fraction) {
+static MFUN(get_cascade_candidate_change_fraction) {
   *(m_float*)RETURN = fann_get_cascade_candidate_change_fraction(FANN(o));
 }
 
-MFUN(set_cascade_candidate_change_fraction) {
+static MFUN(set_cascade_candidate_change_fraction) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_cascade_candidate_change_fraction(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_candidate_stagnation_epochs) {
+static MFUN(get_cascade_candidate_stagnation_epochs) {
   *(m_uint*)RETURN = fann_get_cascade_candidate_stagnation_epochs(FANN(o));
 }
 
-MFUN(set_cascade_candidate_stagnation_epochs) {
+static MFUN(set_cascade_candidate_stagnation_epochs) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_cascade_candidate_stagnation_epochs(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_weight_multiplier) {
+static MFUN(get_cascade_weight_multiplier) {
   *(m_float*)RETURN = fann_get_cascade_weight_multiplier(FANN(o));
 }
 
-MFUN(set_cascade_weight_multiplier) {
+static MFUN(set_cascade_weight_multiplier) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_cascade_weight_multiplier(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_candidate_limit) {
+static MFUN(get_cascade_candidate_limit) {
   *(m_float*)RETURN = fann_get_cascade_candidate_limit(FANN(o));
 }
 
-MFUN(set_cascade_candidate_limit) {
+static MFUN(set_cascade_candidate_limit) {
   *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   fann_set_cascade_candidate_limit(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_max_out_epochs) {
+static MFUN(get_cascade_max_out_epochs) {
   *(m_uint*)RETURN = fann_get_cascade_max_out_epochs(FANN(o));
 }
 
-MFUN(set_cascade_max_out_epochs) {
+static MFUN(set_cascade_max_out_epochs) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_cascade_max_out_epochs(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_min_out_epochs) {
+static MFUN(get_cascade_min_out_epochs) {
   *(m_uint*)RETURN = fann_get_cascade_min_out_epochs(FANN(o));
 }
 
-MFUN(set_cascade_min_out_epochs) {
+static MFUN(set_cascade_min_out_epochs) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_cascade_min_out_epochs(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_max_cand_epochs) {
+static MFUN(get_cascade_max_cand_epochs) {
   *(m_uint*)RETURN = fann_get_cascade_max_cand_epochs(FANN(o));
 }
 
-MFUN(set_cascade_max_cand_epochs) {
+static MFUN(set_cascade_max_cand_epochs) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_cascade_max_cand_epochs(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_min_cand_epochs) {
+static MFUN(get_cascade_min_cand_epochs) {
   *(m_uint*)RETURN = fann_get_cascade_min_cand_epochs(FANN(o));
 }
 
-MFUN(set_cascade_min_cand_epochs) {
+static MFUN(set_cascade_min_cand_epochs) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_cascade_min_cand_epochs(FANN(o), *(m_uint*)RETURN);
 }
 
-MFUN(get_cascade_activation_functions_count) {
+static MFUN(get_cascade_activation_functions_count) {
   *(m_uint*)RETURN = fann_get_cascade_activation_functions_count(FANN(o));
 }
 
-MFUN(get_cascade_activation_functions) {
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
+static MFUN(get_cascade_activation_functions) {
   m_uint i, size = fann_get_cascade_activation_functions_count(FANN(o));
   enum fann_activationfunc_enum * tmp = fann_get_cascade_activation_functions(FANN(o));
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
@@ -989,11 +961,7 @@ MFUN(get_cascade_activation_functions) {
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
-MFUN(set_cascade_activation_functions) {
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
+static MFUN(set_cascade_activation_functions) {
   M_Object ret = *(M_Object*)MEM(SZ_INT);
   m_uint index = *(m_uint*)MEM(SZ_INT*2);
   m_uint i, size = m_vector_size(ARRAY(ret));
@@ -1004,15 +972,11 @@ MFUN(set_cascade_activation_functions) {
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
-MFUN(get_cascade_activation_steepnesses_count) {
+static MFUN(get_cascade_activation_steepnesses_count) {
   *(m_uint*)RETURN = fann_get_cascade_activation_steepnesses_count(FANN(o));
 }
 
-MFUN(get_cascade_activation_steepnesses) {
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
+static MFUN(get_cascade_activation_steepnesses) {
   m_uint i, size = fann_get_cascade_activation_steepnesses_count(FANN(o));
   m_float* tmp = fann_get_cascade_activation_steepnesses(FANN(o));
   Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
@@ -1022,11 +986,7 @@ MFUN(get_cascade_activation_steepnesses) {
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
-MFUN(set_cascade_activation_steepnesses) {
-  if(!FANN(o)) {
-    handle(shred, "NoFann");
-    return;
-  }
+static MFUN(set_cascade_activation_steepnesses) {
   M_Object ret = *(M_Object*)MEM(SZ_INT);
   m_uint index = *(m_uint*)MEM(SZ_INT*2);
   m_uint i, size = m_vector_size(ARRAY(ret));
@@ -1037,11 +997,11 @@ MFUN(set_cascade_activation_steepnesses) {
   *(m_uint*)RETURN = (m_uint)ret;
 }
 
-MFUN(get_cascade_num_candidate_groups) {
+static MFUN(get_cascade_num_candidate_groups) {
   *(m_uint*)RETURN = fann_get_cascade_num_candidate_groups(FANN(o));
 }
 
-MFUN(set_cascade_num_candidate_groups) {
+static MFUN(set_cascade_num_candidate_groups) {
   *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
   fann_set_cascade_num_candidate_groups(FANN(o), *(m_uint*)RETURN);
 }
@@ -1214,8 +1174,8 @@ GWION_IMPORT(fann) {
     gwi_func_arg(gwi, "float[]", "in");
   GWI_BB(gwi_func_end(gwi, run, ae_flag_none))
   // FIXED POINT only
-/*  gwi_func_ini(gwi, "void", "decimal_point");
-/*  gwi_func_ini(gwi, "void", "multiplier");
+//  gwi_func_ini(gwi, "void", "decimal_point");
+//  gwi_func_ini(gwi, "void", "multiplier");
 
 // training
   gwi_func_ini(gwi, "void", "train");

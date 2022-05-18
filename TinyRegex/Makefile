@@ -7,5 +7,5 @@ all: tiny-regex-c ${NAME}.so
 
 include ../config_post.mk
 
-tiny-cregex-c:
+tiny-regex-c:
 	git clone https://github.com/kokke/tiny-regex-c

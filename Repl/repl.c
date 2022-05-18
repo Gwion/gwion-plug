@@ -48,18 +48,16 @@ static inline int _bind_cancel(int count __attribute__((unused)), int key __attr
 }
 
 static inline int _bind_add(int count __attribute__((unused)), int key __attribute__((unused))) {
-  accept = rl_done = true;
+  accept = (rl_done = true);
   add = true;
   return 0;
 }
 
-
 static inline int _bind_rem(int count __attribute__((unused)), int key __attribute__((unused))) {
-  accept = rl_done = true;
+  accept = (rl_done = true);
   add = false;
   return 0;
 }
-
 
 static inline int _bind_ctx(int count __attribute__((unused)), int key __attribute__((unused))) {
   printf("\n");
@@ -75,19 +73,13 @@ static inline int _bind_fork(int count __attribute__((unused)), int key __attrib
 static inline int _bind_sys(int count __attribute__((unused)), int key __attribute__((unused))) {
   printf("\n");
   sys = 1;
-  return accept = rl_done = 1;
+  return accept = (rl_done = 1);
 }
 
 static inline VM_Shred repl_shred(MemPool p) {
   const VM_Code code = new_vmcode(p, NULL, NULL, "repl", 0, false, false);
   const VM_Shred shred = new_vm_shred(p, code);
   return shred;
-}
-
-INSTR(EOC2) {
-  shreduler_remove(shred->tick->shreduler, shred, false);
-  shred->pc = 0;
-  vmcode_remref(shred->code, shred->info->vm->gwion);
 }
 
 ANN static bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
@@ -276,6 +268,7 @@ ANN static void* repl_process(void* data) {
 GWMODINI(repl) {
   shreduler_set_loop(gwion->vm->shreduler, 1);
   pthread_create(&repl_thread, NULL, repl_process, gwion->vm);
+  return (void*)true;
 }
 
 GWMODEND(repl) {

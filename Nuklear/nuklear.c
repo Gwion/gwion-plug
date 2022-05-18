@@ -48,7 +48,6 @@
 #include "vm.h"
 
 static m_uint active = 0;
-/*static struct nk_context* CTX = NULL;*/
 typedef struct XWindow XWindow;
 struct XWindow {
     Display *dpy;
@@ -64,20 +63,16 @@ struct XWindow {
     unsigned int height;
 };
 
-typedef struct GWindow
-{
-/*  m_str* name;*/
+typedef struct GWindow {
   struct XWindow*    win;
   struct nk_context* ctx;
   M_Object last_widget;
   Vector widget;
-/*  Vector event;*/
   long started, dt, running;
   pthread_t thread;
 } GWindow;
 
 static GWindow* last_window = NULL;
-//static M_Object last_widget = NULL;
 
 static void // TODO use gw_err instead
 die(const char *fmt, ...)
@@ -148,11 +143,10 @@ static m_int o_nk_fval;
 typedef void (*f_nk)(M_Object o, struct nk_context* ctx);
 
 
-static m_int o_nk_r, o_nk_g, o_nk_b, o_nk_a;
-#define R(o) *(o->data + o_nk_r)
-#define G(o) *(o->data + o_nk_g)
-#define B(o) *(o->data + o_nk_b)
-#define A(o) *(o->data + o_nk_a)
+#define R(o) *(o->data + SZ_INT)
+#define G(o) *(o->data + SZ_INT*2)
+#define B(o) *(o->data + SZ_INT*3)
+#define A(o) *(o->data + SZ_INT*4)
 #define COLOR(o) (struct nk_color){ R(o), G(o), B(o), A(o) }
 
 ANN static void widget_add(const Vector v, const M_Object o) {
@@ -398,37 +392,33 @@ static void button_execute(M_Object o, struct nk_context* ctx)
   }
 }
 
-static CTOR(button_ctor)
-{
+static CTOR(button_ctor) {
   *(f_nk*)(o->data + SZ_INT*2) = button_execute;
 }
-static void group_exec(M_Object o, struct nk_context* ctx)
-{
-  m_uint i = 0;
+
+static void group_exec(M_Object o, struct nk_context* ctx) {
   Vector v = LIST(o);
-  for(i = 0; i < vector_size(v); i++)
-  {
-    M_Object obj = (M_Object)vector_at(v, i);
-    f_nk exec = *(f_nk*)(obj->data + SZ_INT*2);
+  for(m_uint i = 0; i < vector_size(v); i++) {
+    const M_Object obj = (M_Object)vector_at(v, i);
+    const f_nk exec = *(f_nk*)(obj->data + SZ_INT*2);
     exec(obj, ctx);
   }
 }
-static CTOR(group_ctor)
-{
+static CTOR(group_ctor) {
   LIST(o)= new_vector(shred->info->mp);
   last_window->last_widget = o;
 }
+
 static DTOR(group_dtor) {
   free_vector(shred->info->mp, LIST(o));
   last_window->last_widget = *(M_Object*)(o->data + SZ_INT);
 }
-static MFUN(group_end)
-{
+
+static MFUN(group_end) {
   last_window->last_widget = *(M_Object*)(o->data + SZ_INT);
 }
 
-static MFUN(group_begin)
-{
+static MFUN(group_begin) {
   last_window->last_widget = o;
 }
 
@@ -671,13 +661,13 @@ GWION_IMPORT(Nuklear) {
 
   GWI_OB(gwi_class_ini(gwi, "Color", NULL))
   gwi_item_ini(gwi,"int", "r");
-  o_nk_r = gwi_item_end(gwi, ae_flag_none, num, 0);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"int", "g");
-  o_nk_g = gwi_item_end(gwi, ae_flag_none, num, 0);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"int", "b");
-  o_nk_b = gwi_item_end(gwi, ae_flag_none, num, 0);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"int", "a");
-  o_nk_a = gwi_item_end(gwi, ae_flag_none, num, 0);
+  gwi_item_end(gwi, ae_flag_none, num, 0);
   GWI_BB(gwi_class_end(gwi))
 
   DECL_OB(const Type, t_panel, = gwi_class_ini(gwi, "Panel", NULL));

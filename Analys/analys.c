@@ -639,7 +639,7 @@ static MFUN(fc_rem) {
   *(m_uint*)RETURN = (m_uint)obj;
 }
 
-INSTR(fc_connect) {
+static INSTR(fc_connect) {
   POP_REG(shred, SZ_INT * 2);
   M_Object o   = *(M_Object*)REG(0);
   M_Object obj = **(M_Object**)REG(SZ_INT);
@@ -655,7 +655,7 @@ INSTR(fc_connect) {
   PUSH_REG(shred, SZ_INT);
 }
 
-INSTR(fc_disconnect) {
+static INSTR(fc_disconnect) {
   POP_REG(shred, SZ_INT * 2);
   M_Object o   = *(M_Object*)REG(0);
   M_Object obj = *(M_Object*)REG(SZ_INT); // WARN inconsistency

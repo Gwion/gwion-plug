@@ -34,7 +34,6 @@ static MFUN(tinysf_new) {
      return;
    }
    tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
-//   const M_Object o = new_object(shred->info->mp, (Type)instr->m_val);
    UGEN(o) = new_UGen(shred->info->mp);
    UGEN(o)->module.gen.data = TSF(o) = tiny;
    vector_add(&shred->info->vm->ugen, (vtype)UGEN(o));
@@ -44,10 +43,6 @@ static MFUN(tinysf_new) {
 }
 
 static DTOR(tinysf_dtor) { tsf_close(TSF(o)); }
-
-static m_int o_tinysf_member_data;
-static m_int o_tinysf_static_data;
-static m_int* tinysf_static_value;
 
 static MFUN(note_on) {
   tsf_note_on(TSF(o), 1, *(m_int*)MEM(SZ_INT), *(m_float*)MEM(SZ_INT*2));
@@ -61,9 +56,7 @@ GWION_IMPORT(TinySF) {
   DECL_OB(const Type, t_tinysf, = gwi_class_ini(gwi, "TinySF", "UGen"));
   t_tinysf->nspc->offset += sizeof(struct tsf);
   gwi_class_xtor(gwi, NULL, tinysf_dtor);
-  SET_FLAG(t_tinysf, abstract);
 
-// missing effect
   GWI_BB(gwi_func_ini(gwi, "auto", "new"))
   GWI_BB(gwi_func_arg(gwi, "string", "file"))
   GWI_BB(gwi_func_end(gwi, tinysf_new, ae_flag_none))

@@ -48,7 +48,7 @@ ANN static inline Type tuple_base(Type t, const m_uint idx) {
   return t;
 }
 
-INSTR(TupleMember) {
+static INSTR(TupleMember) {
   const M_Object o = *(M_Object*)(shred->reg - SZ_INT);
   const Type base = tuple_base(o->type_ref, instr->m_val);
   const m_bit* byte = shred->code->bytecode + (shred->pc-1) * BYTECODE_SZ;
@@ -172,14 +172,7 @@ static OP_CHECK(opck_at_object_tuple) {
   return bin->rhs->type;
 }
 
-static INSTR(TupleAt) {
-  POP_REG(shred, SZ_INT);
-  if(!*(M_Object*)REG(0)) {
-
-  }
-  exit(3);
-}
-
+/*
 static OP_EMIT(opem_at_object_tuple) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   const Instr instr = emit_add_instr(emit, TupleAt);
@@ -209,10 +202,10 @@ static INSTR(Tuple2Object) {
   const Type t = (Type)instr->m_val;
   if(o && isa(o->type_ref, t) < 0)
   // TODO: pass position by m_val2
-//    handle(shred, "can't cast %s to %s\n", o->type_ref->name, t->name);
     handle(shred, _("TupleCast\n"));
 }
-
+*/
+/*
 // TODO: do not emit Tuple2Object if full match
 static OP_EMIT(opem_cast_tuple_object) {
   const Exp_Cast* exp = (Exp_Cast*)data;
@@ -221,6 +214,7 @@ static OP_EMIT(opem_cast_tuple_object) {
   instr->m_val2 = SZ_INT;
   return GW_OK;
 }
+*/
 
 static OP_CHECK(opck_cast_tuple) {
   const Exp_Cast *cast = (Exp_Cast*)data;
@@ -234,7 +228,7 @@ static OP_CHECK(opck_impl_tuple) {
   return imp->t;
 }
 
-INSTR(TupleCtor) {
+static INSTR(TupleCtor) {
 // most of this could be expressed with regular instructions
   const Type t = (Type)instr->m_val;
   const M_Object o = new_object(shred->info->mp, t);

@@ -25,7 +25,7 @@ typedef struct Channel {
   bool rampup, rampdown, loopplay, play, bi;
 } Channel;
 
-ANN static inline void channel_ini(Channel *const chan, const m_uint length, const m_uint nchan) {
+ANN static inline void channel_ini(Channel *const chan, const m_uint length /*, const m_uint nchan*/) {
   chan->loop_start = 0;
   chan->loop_end = length;
   chan->pindex = 0;
@@ -74,7 +74,7 @@ ANN static inline void buffer_alloc(LiSa *const l, const m_uint length, const m_
 //  l->sync = INTERNAL;
   l->nchan = nchan;
   for(m_uint i = 0; i < maxvoices; i++)
-    channel_ini(&l->channels[i], length, nchan);
+    channel_ini(&l->channels[i], length/*, nchan*/);
 }
 
 // grab a sample from the buffer, with linear interpolation (add prc's SINC interp later)
@@ -245,11 +245,11 @@ ANN static inline void clear_buf(LiSa *const l) {
 }
 
 ANN static inline m_int get_free_voice(LiSa *const l) {
-  m_int which = 0;
+  m_uint which = 0;
   while(l->channels[which].play && which < l->maxvoices)
     which++;
   return which != l->maxvoices
-      ? which
+      ? (m_int)which
       : -1;
 }
 
@@ -257,7 +257,7 @@ ANN static inline m_int get_free_voice(LiSa *const l) {
 ANN static inline void pokeSample(LiSa *const l, const m_float insample, m_int index) {
   // constrain
   if(index < 0) index = 0;
-  else if(index >= l->mdata_len) index = l->mdata_len;
+  else if(index >= (m_int)l->mdata_len) index = l->mdata_len;
   l->mdata[index] = insample;
 }
 
@@ -270,7 +270,7 @@ ANN static inline m_float grabSample(LiSa *const l, m_float where) {
   const m_int whereTrunc = (m_int) where;
   const m_float whereFrac = where - (m_float)whereTrunc;
   m_int whereNext = whereTrunc + 1;
-  if(whereNext == l->mdata_len) whereNext = 0;
+  if(whereNext == (m_int)l->mdata_len) whereNext = 0;
   const m_float outsample = (m_float)data[whereTrunc] + (m_float)(data[whereNext] - data[whereTrunc]) * whereFrac;
   return (m_float)outsample; // * gain?
 }
@@ -278,11 +278,10 @@ ANN static inline m_float grabSample(LiSa *const l, m_float where) {
 #define GET_LISA(o) (LiSa*)(o->data + SZ_INT)
 #define LISA_CHAN(shred, l) \
   const m_int idx = *(m_int*)MEM(SZ_INT);\
-  if(idx < 0 || idx >= l->maxvoices) {\
+  if(idx < 0 || idx >= (m_int)l->maxvoices) {\
     handle(shred, "InvalidLiSaInit");\
     return;\
   }\
-  struct Channel *const chan = &l->channels[idx];
 
 static TICK(LiSa_tick) {
   LiSa *const l = u->module.gen.data;
@@ -355,6 +354,7 @@ static MFUN(LiSa_set_record) {
 static MFUN(LiSa_set_play) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = chan->play = *(m_uint*)MEM(SZ_INT*2);
   chan->rampdown = false;
   chan->rampup = false;
@@ -363,30 +363,35 @@ static MFUN(LiSa_set_play) {
 static MFUN(LiSa_get_play) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = chan->play;
 }
 
 static MFUN(LiSa_set_rate) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->p_inc = *(m_float*)MEM(SZ_INT*2);
 }
 
 static MFUN(LiSa_get_rate) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->p_inc;
 }
 
 static MFUN(LiSa_set_pindex) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->pindex = *(m_float*)MEM(SZ_INT*2);
 }
 
 static MFUN(LiSa_get_pindex) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = (m_float)chan->pindex;
 }
 
@@ -406,21 +411,25 @@ static MFUN(LiSa_set_lstart) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
 // check loop_start
-  chan->loop_start = (m_int)*(m_float*)MEM(SZ_INT*2);
-	if (chan->loop_start < 0) chan->loop_start = 0;
+  struct Channel *const chan = &l->channels[idx];
+  const m_int loop_start = *(m_float*)MEM(SZ_INT*2);
+	if (loop_start < 0) chan->loop_start = 0;
 	else if (chan->loop_start >= l->mdata_len) chan->loop_start = l->mdata_len-1;
+  else chan->loop_start = loop_start;
   *(m_float*)RETURN = (m_float)chan->loop_start;
 }
 
 static MFUN(LiSa_get_lstart) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = (m_float)chan->loop_start;
 }
 
 static MFUN(LiSa_set_lend) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   chan->loop_end = (m_int)*(m_float*)MEM(SZ_INT*2);
 	//check to make sure loop_end is not too large
 	if (chan->loop_end >= l->mdata_len) chan->loop_end = l->mdata_len - 1;
@@ -430,30 +439,35 @@ static MFUN(LiSa_set_lend) {
 static MFUN(LiSa_get_lend) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = (m_float)chan->loop_end;
 }
 
 static MFUN(LiSa_set_loop) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = chan->loopplay = *(m_uint*)MEM(SZ_INT*2);
 }
 
 static MFUN(LiSa_get_loop) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = (m_int)chan->loopplay;
 }
 
 static MFUN(LiSa_set_bi) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = chan->bi = *(bool*)MEM(SZ_INT*2);
 }
 
 static MFUN(LiSa_get_bi) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = chan->bi;
 }
 
@@ -470,7 +484,7 @@ static MFUN(LiSa_get_loop_end_rec) {
 
 static MFUN(LiSa_set_loop_rec) {
   LiSa *const l = GET_LISA(o);
-  l->looprec = *(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT);
+  l->looprec = (*(m_uint*)RETURN = *(m_uint*)MEM(SZ_INT));
 }
 
 static MFUN(LiSa_get_loop_rec) {
@@ -494,25 +508,28 @@ static MFUN(LiSa_get_sample) {
 static MFUN(LiSa_set_gain) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
-  *(m_float*)RETURN = chan->gain = *(m_float*)MEM(SZ_INT*2);
+  struct Channel *const chan = &l->channels[idx];
+   *(m_float*)RETURN = chan->gain = *(m_float*)MEM(SZ_INT*2);
 }
 
 static MFUN(LiSa_get_gain) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->gain;
 }
 
 static MFUN(LiSa_set_pan) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   chan->pan = *(m_float*)MEM(SZ_INT*2);
   // reset channel gains for voice
   for(m_uint i = 0; i < l->nchan; i++) chan->gains[i] = 0.;
   for(m_uint i = 0; i < l->nchan; i++) {
     Channel *const chan  = &l->channels[i];
     // get truncated value (0.4 -> 0; 5.6 -> 5) as channel index
-    m_int panTrunc = (m_int)chan->pan;
+    m_uint panTrunc = (m_uint)chan->pan;
     // if channel of interest
     if(i == panTrunc) {
       // calculate pan value
@@ -539,6 +556,7 @@ static MFUN(LiSa_set_pan) {
 static MFUN(LiSa_get_pan) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->pan;
 }
 
@@ -565,6 +583,7 @@ static MFUN(LiSa_get_voice) {
 static MFUN(LiSa_set_rampup) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
+  struct Channel *const chan = &l->channels[idx];
   const m_float len = *(m_float*)RETURN = *(m_float*)MEM(SZ_INT*2);
   ramp_up(chan, len);
 }
@@ -573,6 +592,7 @@ static MFUN(LiSa_set_rampdown) {
   LiSa *const l = GET_LISA(o);
   LISA_CHAN(shred, l);
   const m_float len = *(m_float*)RETURN = *(m_float*)MEM(SZ_INT*2);
+  struct Channel *const chan = &l->channels[idx];
   ramp_down(chan, len);
 }
 
@@ -632,7 +652,7 @@ GWION_IMPORT(LiSa) {
   GWI_BB(gwi_func_end(gwi, LiSa_get_##func, ae_flag_none));
 
   // set/get buffer size
-  SET("dur", "duration", size);
+  SETGET("dur", "duration", size);
 
   // start/stop recording
   SET("bool", "record", record);
@@ -703,7 +723,7 @@ GWION_IMPORT(LiSa) {
   GWI_BB(gwi_enum_add(gwi, "internal", INTERNAL));
   GWI_BB(gwi_enum_add(gwi, "position", POSITION));
   GWI_BB(gwi_enum_add(gwi, "duration", DURATION));
-  GWI_BB(gwi_enum_end(gwi));
+  GWI_OB(gwi_enum_end(gwi));
   // sync
   SETGET("Sync", "sync", sync);
 

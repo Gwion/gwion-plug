@@ -41,6 +41,7 @@ static struct sr_data* new_sr_data(M_Object obj, const m_uint rate) {
   sr->idx = 0;
   sr->state = 0;
   sr->ini = 0;
+  return sr;
 }
 
 static void free_sr_data(struct sr_data* sr) {
@@ -83,7 +84,7 @@ static CTOR(tinysr_ctor) {
   ugen_ini(shred->info->vm->gwion, UGEN(o), 1, 1);
   ugen_gen(shred->info->vm->gwion, UGEN(o), tinysr_tick, sr, 0);
   const M_Object ev = TINY_EV(o) = new_object(shred->info->mp, shred->info->vm->gwion->type[et_event]);
-  EV_SHREDS(ev) = new_vector(shred->info->mp);
+  vector_init(&EV_SHREDS(ev));
 }
 
 static DTOR(tinysr_dtor) {
@@ -120,11 +121,11 @@ static MFUN(state) {
   const m_int idx = *(m_int*)MEM(SZ_INT);
   const UGen u = UGEN(o);
   struct sr_data* sr = (struct sr_data*)u->module.gen.data;
-  *(m_int*)RETURN = sr->state;
+  *(m_int*)RETURN = (sr->state = idx);
 }
 
 GWION_IMPORT(tinysr) {
-  const Type t_tinysr = gwi_mk_type(gwi, "TinySR", SZ_INT, "UGen");
+  GWI_OB(gwi_mk_type(gwi, "TinySR", SZ_INT, "UGen"));
 
   GWI_OB(gwi_class_ini(gwi, "Tinysr", "UGen"))
   gwi_class_xtor(gwi, tinysr_ctor, tinysr_dtor);
@@ -149,7 +150,8 @@ GWION_IMPORT(tinysr) {
   GWI_BB(gwi_func_arg(gwi, "int", "index"))
   GWI_BB(gwi_func_end(gwi, word_index, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "state"))
+  GWI_BB(gwi_func_ini(gwi, "bool", "state"))
+  GWI_BB(gwi_func_ini(gwi, "bool", "arg"))
   GWI_BB(gwi_func_end(gwi, state, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
