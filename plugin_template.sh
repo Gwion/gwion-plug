@@ -14,9 +14,7 @@ PARENT_CLASS=Object
 
 mkdir "$1"
 cat << EOF >> "$1/Makefile"
-#USE_LD=1 # needed for e.g. sporth static lib
 include ../config.mk
-NAME=$1
 #CFLAGS+=-I<more include>
 #LDFLAGS+=-l<more LIBS>
 include ../config_post.mk
@@ -63,24 +61,24 @@ static MFUN(mfun) { /*code here */ }
 static SFUN(sfun) { /*code here */ }
 
 GWION_IMPORT($1) {
-  DECL_OB(const Type, t_${1,,}, = gwi_class_ini(gwi, "${1,,}", "$PARENT_CLASS"))
+  DECL_OB(const Type, t_${1,,}, = gwi_class_ini(gwi, "${1,,}", "$PARENT_CLASS"));
   gwi_class_xtor(gwi, ${1,,}_ctor, ${1,,}_dtor);
 
-  GWI_BB(gwi_item_ini(gwi, "int", "member"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0)))
+  GWI_BB(gwi_item_ini(gwi, "int", "member"));
+  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0)));
 
-  GWI_BB(gwi_item_ini(gwi, "int", "static"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 1234)))
+  GWI_BB(gwi_item_ini(gwi, "int", "static"));
+  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 1234)));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "mfun"))
-  GWI_BB(gwi_func_arg(gwi, "int", "arg"))
-  GWI_BB(gwi_func_end(gwi, mfun, ae_flag_none))
+  GWI_BB(gwi_func_ini(gwi, "int", "mfun"));
+  GWI_BB(gwi_func_arg(gwi, "int", "arg"));
+  GWI_BB(gwi_func_end(gwi, mfun, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "sfun"))
-  GWI_BB(gwi_func_arg(gwi, "int", "arg"))
-  GWI_BB(gwi_func_end(gwi, sfun, ae_flag_static))
+  GWI_BB(gwi_func_ini(gwi, "int", "sfun"));
+  GWI_BB(gwi_func_arg(gwi, "int", "arg"));
+  GWI_BB(gwi_func_end(gwi, sfun, ae_flag_static));
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_BB(gwi_class_end(gwi));
   return GW_OK;
 }
 EOF

@@ -17,6 +17,7 @@ function gwionWsOnOpen()  {
 }
 
 function gwionWsOnMessage(e)  {
+/*
   if (e.data instanceof Blob)
     reader = new FileReader()
     reader.onload = function() {
@@ -24,6 +25,7 @@ function gwionWsOnMessage(e)  {
   }
   reader.readAsText(e.data)
   ws.send("next");
+*/
 }
 
 function gwionWsOnClose()  {
@@ -34,11 +36,10 @@ function gwionWsInit() {
   ws = new WebSocket(URL);
   if(!ws)
     alert("Web socket server not found at url: " + URL);
-  console.log("init");
   ws.onopen = gwionWsOnOpen;
   ws.onmessage = gwionWsOnMessage;
   ws.onclose = gwionWsOnClose;
-//  ws.binaryType = "binary";
+  ws.binaryType = "binary";
 //  ws.binaryType = "blob"; // the default
 }
 

@@ -383,7 +383,7 @@ GWION_IMPORT(Cytosol) {
 
   // define operators at global scope
 
-  GWI_BB(gwi_oper_ini(gwi, "Cytosol", "@function", "Cytosol"))
+  GWI_BB(gwi_oper_ini(gwi, "Cytosol", "function", "Cytosol"))
   GWI_BB(gwi_oper_add(gwi, opck_func2cyt))
   GWI_BB(gwi_oper_emi(gwi, opem_func2cyt))
   GWI_BB(gwi_oper_end(gwi, "<<", NULL))

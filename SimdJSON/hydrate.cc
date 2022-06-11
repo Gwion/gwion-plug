@@ -149,7 +149,7 @@ ANN static void iterate_object(Hydrate *const &h,
   for(m_uint i = 0; i < map_size(m); i++) {
     const Value value = (Value)map_at(m, i);
     if(is_class(h->gwion, value->type))continue;
-    if(is_func(h->gwion, value->type) && !is_fptr(h->gwion, value->type))continue; // is_func
+    if(is_func(h->gwion, value->type))continue; // is_func
     if(!vflag(value, vflag_member))continue;
     m_bit *ptr = !tflag(t, tflag_struct) ? h->obj->data : (m_bit*)h->data;
     hydrate(h->gwion, h->shred, dom_object[value->name], value->type, ptr + value->from->offset);

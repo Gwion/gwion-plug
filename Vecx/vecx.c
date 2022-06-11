@@ -165,7 +165,7 @@ static OP_EMIT(opem_vecx_ctor) {
   const Instr instr = emit_add_instr(emit, RegMove);
 //  instr->m_val = -SZ_COMPLEX;
   instr->m_val = SZ_INT;
-  return GW_OK;
+  return 2;
 }
 
 ANN static m_bool import_complex(const Gwi gwi) {
@@ -400,7 +400,10 @@ OP_CHECK(opck_vecx_ctor) {
     last = e;
     e = e->next;
   }
-  const Type t = _class_base(call->func->type);
+//  const Type t = _class_base(call->func->type);
+  const Type t = call->func->type;
+printf("t %p\n", call->func->type);
+//exit(3);
   if(i > t->size) {
     env_err(env, last->pos, "extraneous component of %s value", t->name);
     return NULL;
@@ -415,7 +418,9 @@ OP_CHECK(opck_vecx_ctor) {
     last->type = t_float;
     i += SZ_FLOAT;
   }
-  return t;
+exp_self(call)->type = t;
+  return NULL;
+//  return t;
 }
 
 ANN static m_bool import_vec3(const Gwi gwi) {
@@ -457,13 +462,25 @@ gwi_class_xtor(gwi, ctor, NULL);
   gwi_func_arg(gwi, "float", "goalAndValue");
   gwi_func_arg(gwi, "float", "slew");
   GWI_BB(gwi_func_end(gwi, vec3_update_set_slew, ae_flag_none))
+
+  gwi_func_ini(gwi, "auto", "new");
+  gwi_func_arg(gwi, "float", "...");
+  GWI_BB(gwi_func_end(gwi, vec3_update_set_slew, ae_flag_none))
+
   GWI_BB(gwi_class_end(gwi))
 
+const Func f = (Func)vector_back(&t_vec3->nspc->vtable);
+  GWI_BB(gwi_oper_ini(gwi, NULL, "Vec3.new", NULL))
+  GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
+  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
+  GWI_BB(gwi_oper_end(gwi, "@func_check", NULL))
+
+/*
   GWI_BB(gwi_oper_ini(gwi, NULL, "Vec3", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
   GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
   GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
-
+*/
   GWI_BB(gwi_oper_ini(gwi, "Vec3", "Vec3", "bool"))
   GWI_BB(gwi_oper_end(gwi, "==",          vec3_eq))
   GWI_BB(gwi_oper_end(gwi, "!=",          vec3_ne))

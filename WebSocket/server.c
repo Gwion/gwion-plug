@@ -9,21 +9,21 @@
 #include "driver.h"
 
 #define PORT 1111
-#define BUFLEN 512
+#define BUFLEN 1024
 #define NCHAN 2
 
 static void send_data(struct lws *wsi) {
   VM *vm = lws_context_user(lws_get_context(wsi));
-  unsigned char _c[NCHAN * BUFLEN * sizeof(float) + LWS_SEND_BUFFER_PRE_PADDING + LWS_SEND_BUFFER_POST_PADDING];
+  static unsigned char _c[NCHAN * BUFLEN * sizeof(float) + LWS_SEND_BUFFER_PRE_PADDING + LWS_SEND_BUFFER_POST_PADDING];
   void *c = &_c[LWS_SEND_BUFFER_PRE_PADDING];
-  float*data = (void*)&_c[ LWS_SEND_BUFFER_PRE_PADDING];
-  for(m_uint i = 0; i < BUFLEN; ++i) {
+  float*data = (float*)&_c[ LWS_SEND_BUFFER_PRE_PADDING];
+  for(m_uint i = 0; i < BUFLEN; i++) {
     vm->bbq->run(vm);
     next_bbq_pos(vm);
-    for(int chan = 0; chan < NCHAN; ++chan)
-      data[i + BUFLEN*chan] = vm->bbq->out[chan];
+    for(int chan = 0; chan < NCHAN; chan++)
+      data[i + chan*BUFLEN] = vm->bbq->out[chan];
   }
-  lws_write( wsi, c, sizeof(float) * BUFLEN * NCHAN, LWS_WRITE_BINARY );
+  lws_write(wsi, c, sizeof(float) * BUFLEN * NCHAN, LWS_WRITE_BINARY );
 }
 
 static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len){

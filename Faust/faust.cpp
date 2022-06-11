@@ -53,35 +53,35 @@ public:
   void addCheckButton(const char *label, FAUSTFLOAT *zone) {
     insertMap(buildPath(label), zone);
   }
-  void addVerticalSlider(const char *label, FAUSTFLOAT *zone, FAUSTFLOAT init,
-                         FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step) {
+  void addVerticalSlider(const char *label, FAUSTFLOAT *zone NUSED, FAUSTFLOAT init NUSED,
+                         FAUSTFLOAT fmin NUSED, FAUSTFLOAT fmax NUSED, FAUSTFLOAT step NUSED) {
     insertMap(buildPath(label), zone);
   }
-  void addHorizontalSlider(const char *label, FAUSTFLOAT *zone, FAUSTFLOAT init,
-                           FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step) {
+  void addHorizontalSlider(const char *label, FAUSTFLOAT *zone, FAUSTFLOAT init NUSED,
+                           FAUSTFLOAT fmin NUSED, FAUSTFLOAT fmax NUSED, FAUSTFLOAT step NUSED) {
     insertMap(buildPath(label), zone);
   }
-  void addNumEntry(const char *label, FAUSTFLOAT *zone, FAUSTFLOAT init,
-                   FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step) {
+  void addNumEntry(const char *label, FAUSTFLOAT *zone, FAUSTFLOAT init NUSED,
+                   FAUSTFLOAT fmin NUSED, FAUSTFLOAT fmax NUSED, FAUSTFLOAT step NUSED) {
     insertMap(buildPath(label), zone);
   }
 
   // -- passive widgets
   void addHorizontalBargraph(const char *label, FAUSTFLOAT *zone,
-                             FAUSTFLOAT fmin, FAUSTFLOAT fmax) {
+                             FAUSTFLOAT fmin NUSED, FAUSTFLOAT fmax NUSED) {
     insertMap(buildPath(label), zone);
   }
-  void addVerticalBargraph(const char *label, FAUSTFLOAT *zone, FAUSTFLOAT fmin,
-                           FAUSTFLOAT fmax) {
+  void addVerticalBargraph(const char *label, FAUSTFLOAT *zone, FAUSTFLOAT fmin NUSED,
+                           FAUSTFLOAT fmax NUSED) {
     insertMap(buildPath(label), zone);
   }
 
   // -- soundfiles
-  void addSoundfile(const char *label, const char *filename,
-                    Soundfile **sf_zone) {}
+  void addSoundfile(const char *label NUSED, const char *filename NUSED,
+                    Soundfile **sf_zone NUSED) {}
 
   // -- metadata declarations
-  void declare(FAUSTFLOAT *zone, const char *key, const char *val) {}
+  void declare(FAUSTFLOAT *zone NUSED, const char *key NUSED, const char *val NUSED) {}
 
   // set/get
   void setValue(const std::string &path, FAUSTFLOAT value) {
@@ -324,7 +324,7 @@ static SFUN(faust_eval) {
   const M_Object gwobj = new_object(shred->info->mp, vmcode->ret_type);
   UGEN(gwobj) = new_UGen(shred->info->mp);
   vector_add(&shred->info->vm->ugen, (vtype)UGEN(gwobj));
-  const Faust *faust = Faust::eval(shred, gwobj, code);
+  Faust::eval(shred, gwobj, code);
   *(M_Object*)RETURN = gwobj;
 }
 
@@ -335,7 +335,7 @@ static SFUN(faust_compile) {
   const M_Object gwobj = new_object(shred->info->mp, vmcode->ret_type);
   UGEN(gwobj) = new_UGen(shred->info->mp);
   vector_add(&shred->info->vm->ugen, (vtype)UGEN(gwobj));
-  const Faust *faust = Faust::compile(shred, gwobj, path);
+  Faust::compile(shred, gwobj, path);
   *(M_Object*)RETURN = gwobj;
 }
 

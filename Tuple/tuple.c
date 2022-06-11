@@ -510,13 +510,19 @@ static OP_EMIT(opem_tuple_access) {
 
 GWION_IMPORT(tuple) {
   const Type t_tuple = gwi_class_ini(gwi, TUPLE_NAME, "Object");
-  gwi_class_end(gwi);
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
+//  GWI_BB(gwi_oper_add(gwi, opck_tuple_ctor))
+//  GWI_BB(gwi_oper_emi(gwi, opem_tuple_ctor))
+  GWI_BB(gwi_func_end(gwi, NULL, ae_flag_none))
+  GWI_BB(gwi_class_end(gwi));
+
   const Type t_undef = gwi_mk_type(gwi, "@Undefined", SZ_INT, NULL);
   gwi_add_type(gwi, t_undef);
   SET_FLAG(t_tuple, abstract);
   set_tflag(t_tuple, tflag_tmpl);
   set_tflag(t_tuple, tflag_ntmpl);
-  GWI_BB(gwi_oper_ini(gwi, NULL, TUPLE_NAME, NULL))
+
+  GWI_BB(gwi_oper_ini(gwi, NULL, TUPLE_NAME, NULL));
   GWI_BB(gwi_oper_add(gwi, opck_tuple_ctor))
   GWI_BB(gwi_oper_emi(gwi, opem_tuple_ctor))
   GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
