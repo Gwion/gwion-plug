@@ -105,7 +105,7 @@ ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str nam
 //  
 //  const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
   struct Var_Decl_ decl = { .xid = insert_symbol(gwion->st, name), .pos = pos };
-  const Var_Decl_List vlist = new_mp_vector(gwion->mp, sizeof(struct Var_Decl_), 1);
+  const Var_Decl_List vlist = new_mp_vector(gwion->mp, struct Var_Decl_, 1);
   mp_vector_set(vlist, struct Var_Decl_, 0, decl);
 //  const Var_Decl_List vlist = new_var_decl_list(gwion->mp, var, NULL);
   SET_FLAG(td, static);
@@ -209,7 +209,7 @@ static OP_CHECK(opck_ffi_ctor) {
   Arg_List args = NULL;
   const Type cffi = nspc_lookup_type0(ffi->nspc, insert_symbol(env->gwion->st, "CFFI"));
   if(exp) {
-    args = new_mp_vector(env->gwion->mp, sizeof(Arg), 0);
+    args = new_mp_vector(env->gwion->mp, Arg, 0);
     do {
       const Type actual = actual_type(env->gwion, exp->type);
       if(!is_class(env->gwion, exp->type) || isa(actual, cffi) < 0)
@@ -231,10 +231,10 @@ static OP_CHECK(opck_ffi_ctor) {
     set_fbflag(fb, fbflag_variadic);
   Func_Def fdef = new_func_def(mp, fb, NULL);
   Section section = { .d = { .func_def = fdef }, .section_type = ae_section_func };
-  Ast body = new_mp_vector(env->gwion->mp, sizeof(Section), 2);
+  Ast body = new_mp_vector(env->gwion->mp, Section, 2);
   mp_vector_set(body, Section, 0, section);
 {
-  Stmt_List slist = new_mp_vector(env->gwion->mp, sizeof(struct Stmt_), 3);
+  Stmt_List slist = new_mp_vector(env->gwion->mp, struct Stmt_, 3);
   stmt_list_from_id(env->gwion, slist, "cif", "ffi_cif", exp_self(call)->pos, 0);
   stmt_list_from_id(env->gwion, slist, "int", "func", exp_self(call)->pos, 1);
   stmt_list_from_id(env->gwion, slist, "int", "sz", exp_self(call)->pos, 2);

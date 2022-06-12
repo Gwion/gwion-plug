@@ -275,26 +275,6 @@ static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list)
   return list->len;
 }
 
-static OP_CHECK(opck_record_check) {
-  const Class_Def cdef = (Class_Def)data;
-  const Type t = cdef->base.type;
-  Ast ast = cdef->body;
-  if(ast) {
-    Section * section = mp_vector_at(ast, Section, 0);
-    if (section->section_type != ae_section_stmt)
-      ERR_N(cdef->pos, "Invalid section in Cytosol.Field");
-    const Type fields = t->info->parent;
-    CHECK_BN(cytosol_stmt_list(env, fields, section->d.stmt_list));
-    for(uint32_t i = 1; i < ast->len; i++) {
-      Section * section = mp_vector_at(ast, Section, i);
-      if (section->section_type == ae_section_stmt)
-        ERR_N(cdef->pos, "Declaration must be at the top of Cytosol.Record declaration");
-    }
-  }
-  SET_FLAG(cdef->base.type, abstract | ae_flag_final);
-  return t;
-}
-
 static OP_CHECK(opck_record_ctor) {
   Exp_Call *call = (Exp_Call*)data;
   Exp arg = call->args;
@@ -387,10 +367,6 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_oper_add(gwi, opck_func2cyt))
   GWI_BB(gwi_oper_emi(gwi, opem_func2cyt))
   GWI_BB(gwi_oper_end(gwi, "<<", NULL))
-
-  GWI_BB(gwi_oper_ini(gwi, "Cytosol.Record", NULL, NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_record_check))
-  GWI_BB(gwi_oper_end(gwi, "@class_check", NULL))
 
   GWI_BB(gwi_oper_ini(gwi, NULL, "Cytosol.Record", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_record_ctor))

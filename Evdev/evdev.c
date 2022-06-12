@@ -28,7 +28,7 @@ static DTOR(evdev_dtor) {
     pthread_mutex_destroy(&info->mutex);
     close(info->fd);
   }
-  free_mp_vector(shred->info->mp, sizeof(struct input_event), info->args);
+  free_mp_vector(shred->info->mp, struct input_event, info->args);
 }
 
 ANN static void* evdev_process(void* arg) {
@@ -58,7 +58,7 @@ ANN static void* evdev_process(void* arg) {
 static MFUN(evdev_index) {
   EvdevInfo* info = INFO(o);
   info->evdev = libevdev_new();
-  info->args  = new_mp_vector(shred->info->mp, sizeof(struct input_event), 0);
+  info->args  = new_mp_vector(shred->info->mp, struct input_event, 0);
   info->bbq = shred->info->vm->shreduler->mutex;
   info->mp = shred->info->mp;
   const m_int index = *(m_int*)MEM(SZ_INT);

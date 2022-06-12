@@ -267,7 +267,7 @@ ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, con
       new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
   td->flag -= ae_flag_late;
   struct Var_Decl_ var = { .xid = name, .pos = pos };
-  Var_Decl_List vlist = new_mp_vector(gwion->mp, sizeof(struct Var_Decl_), 1);
+  Var_Decl_List vlist = new_mp_vector(gwion->mp, struct Var_Decl_, 1);
   mp_vector_set(vlist, struct Var_Decl_, 0, var);
   return new_exp_decl(gwion->mp, td, vlist, pos);
 }
@@ -292,7 +292,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
     if(base) {
       mp_vector_add(env->gwion->mp, &base, struct Stmt_, stmt);
     } else {
-      base = new_mp_vector(env->gwion->mp, sizeof(struct Stmt_), 1);
+      base = new_mp_vector(env->gwion->mp, struct Stmt_, 1);
       mp_vector_set(base, struct Stmt_, 0, stmt);
     }
   }
@@ -300,7 +300,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
     .section_type = ae_section_stmt,
     .d = { .stmt_list = base }
   };
-  Ast body = new_mp_vector(env->gwion->mp, sizeof(Section), 1);
+  Ast body = new_mp_vector(env->gwion->mp, Section, 1);
   mp_vector_set(body, Section, 0, section);
   Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), pos);
   Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none, sym, td, body, pos);
@@ -382,7 +382,7 @@ static OP_CHECK(unpack_ck) {
       e->d.exp_decl.type = env->gwion->type[et_auto];
       e->exp_type = ae_exp_decl;
       e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, e->pos);
-      e->d.exp_decl.list = new_mp_vector(env->gwion->mp, sizeof(struct Var_Decl_), 1);
+      e->d.exp_decl.list = new_mp_vector(env->gwion->mp, struct Var_Decl_, 1);
       struct Var_Decl_ vd = { .xid = var, .pos = e->pos};
       mp_vector_set(e->d.exp_decl.list, struct Var_Decl_, 0, vd);
     } else {
