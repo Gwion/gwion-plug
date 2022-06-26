@@ -96,7 +96,7 @@ ANN static void unpack_instr_decl(const Emitter emit, struct TupleEmit *te) {
   te->obj_offset = te->tmp_offset;
   do {
     if(te->e->exp_type == ae_exp_decl) {
-      const Value value = (mp_vector_at(te->e->d.exp_decl.list, struct Var_Decl_, 0))->value;
+      const Value value = te->e->d.exp_decl.vd.value;
       te->sz += value->type->size;
       sz += value->type->size;
       value->from->offset = emit_local(emit, value->type);
@@ -263,13 +263,10 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
 ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t pos) {
   Type_Decl *td = type != (Type)1 ?
       type2td(gwion, type, pos) :
-//      new_type_decl(gwion->mp, insert_symbol(gwion->st, "auto"), pos);
       new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
   td->flag -= ae_flag_late;
-  struct Var_Decl_ var = { .xid = name, .pos = pos };
-  Var_Decl_List vlist = new_mp_vector(gwion->mp, struct Var_Decl_, 1);
-  mp_vector_set(vlist, struct Var_Decl_, 0, var);
-  return new_exp_decl(gwion->mp, td, vlist, pos);
+  struct Var_Decl_ vd = { .xid = name, .pos = pos };
+  return new_exp_decl(gwion->mp, td, &vd, pos);
 }
 
 ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
@@ -382,12 +379,11 @@ static OP_CHECK(unpack_ck) {
       e->d.exp_decl.type = env->gwion->type[et_auto];
       e->exp_type = ae_exp_decl;
       e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, e->pos);
-      e->d.exp_decl.list = new_mp_vector(env->gwion->mp, struct Var_Decl_, 1);
-      struct Var_Decl_ vd = { .xid = var, .pos = e->pos};
-      mp_vector_set(e->d.exp_decl.list, struct Var_Decl_, 0, vd);
+      e->d.exp_decl.vd = (Var_Decl){ .xid = var, .pos = e->pos};
     } else {
       e->d.prim.prim_type = ae_prim_nil;
-      e->type = env->gwion->type[et_auto];
+//      e->type = env->gwion->type[et_auto];
+      e->type = env->gwion->type[et_void];
     }
     e = e->next;
   }

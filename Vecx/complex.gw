@@ -1,6 +1,7 @@
 #import Vecx
 
-var complex a, b;
+var complex a;
+var complex b;
 a;
 a.re;
 a.im;

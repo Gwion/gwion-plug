@@ -4,7 +4,9 @@ new MidiIn(1) => var auto min;
 
 while(true) {
   min => now;
-  var int status, data1, data2;
+  var int status;
+  var int data1;
+  var int data2;
   while(min.read(status, data1, data2)) {
     <<<status, " ", data1, " ", data2>>>;
   }

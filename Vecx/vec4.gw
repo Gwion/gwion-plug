@@ -1,6 +1,7 @@
 #import Vecx
 
-var Vec4 v, w;
+var Vec4 v;
+var Vec4 w;
 <<<v>>>;
 
 <<< v.x >>>;
