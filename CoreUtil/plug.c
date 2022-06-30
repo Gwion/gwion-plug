@@ -105,11 +105,54 @@ static SFUN(core_envset) {
 #undef setenv
 #endif
 
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+
+#define PATH_MAX_STRING_SIZE 256
+
+#ifndef BUILD_ON_WINDOWS
+/* recursive mkdir */
+int mkdir_p(const char *dir, const mode_t mode) {
+    char tmp[PATH_MAX_STRING_SIZE];
+    char *p = NULL;
+    struct stat sb;
+    size_t len = strlen (dir);
+    if (len >PATH_MAX_STRING_SIZE) len = PATH_MAX_STRING_SIZE;
+    if (len == 0 || len == PATH_MAX_STRING_SIZE)
+        return -1;
+    memcpy (tmp, dir, len);
+    tmp[len] = '\0';
+    if(tmp[len - 1] == '/')
+      tmp[len - 1] = '\0';
+    if (stat (tmp, &sb) == 0 && S_ISDIR (sb.st_mode))
+      return 0;
+    for(p = tmp + 1; *p; p++) {
+        if(*p == '/') {
+            *p = 0;
+            if (stat(tmp, &sb) != 0) {
+                if (mkdir(tmp, mode) < 0)
+                  return -1;
+            } else if (!S_ISDIR(sb.st_mode))
+                return -1;
+            *p = '/';
+        }
+    }
+    if (stat(tmp, &sb) != 0) {
+        if (mkdir(tmp, mode) < 0)
+            return -1;
+    } else if (!S_ISDIR(sb.st_mode))
+        return -1;
+    return 0;
+}
+#endif
 
 static SFUN(core_mkdir) {
   const m_str dirname = STRING(*(M_Object*)MEM(0));
 #ifndef BUILD_ON_WINDOWS
-  *(m_uint*)RETURN = !mkdir(dirname, 0777);
+  *(m_uint*)RETURN = !mkdir_p(dirname, 0777);
 #else
   *(m_uint*)RETURN = CreateDirectoryA(dirname, NULL);
 #endif
