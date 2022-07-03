@@ -111,7 +111,10 @@ static SFUN(core_envset) {
 #include <sys/stat.h>
 #include <string.h>
 
-#define PATH_MAX_STRING_SIZE 256
+static SFUN(core_realpath) {
+  m_str path = realpath(STRING(ME(o)), NULL);
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, path);
+}
 
 #ifndef BUILD_ON_WINDOWS
 /* recursive mkdir */
@@ -317,6 +320,10 @@ GWION_IMPORT(CoreUtil) {
   GWI_BB(gwi_func_arg(gwi, "string", "key"))
   GWI_BB(gwi_func_arg(gwi, "string", "val"))
   GWI_BB(gwi_func_end(gwi, core_envset, ae_flag_static))
+
+  GWI_BB(gwi_func_ini(gwi, "string", "realpath"))
+  GWI_BB(gwi_func_arg(gwi, "string", "path"))
+  GWI_BB(gwi_func_end(gwi, core_realpath, ae_flag_static))
 
   GWI_BB(gwi_func_ini(gwi, "bool", "mkdir"))
   GWI_BB(gwi_func_arg(gwi, "string", "dir"))
