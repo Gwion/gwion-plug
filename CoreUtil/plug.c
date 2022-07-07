@@ -117,6 +117,8 @@ static SFUN(core_realpath) {
 }
 
 #ifndef BUILD_ON_WINDOWS
+
+#define PATH_MAX_STRING_SIZE 1024
 /* recursive mkdir */
 int mkdir_p(const char *dir, const mode_t mode) {
     char tmp[PATH_MAX_STRING_SIZE];
