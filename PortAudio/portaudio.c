@@ -43,29 +43,36 @@ static DRVINI(portaudio_ini) {
     gw_err("Error: No default output device.\n");
     goto error;
   }
+  info->outputParameters.channelCount = di->si->out;
   info->outputParameters.channelCount = 2;
-//  info->outputParameters.sampleFormat = di->format;
+#ifndef USE_DOUBLE
   info->outputParameters.sampleFormat = paFloat32;
+#else
+  info->outputParameters.sampleFormat = paFloat64;
+#endif
   info->outputParameters.suggestedLatency = Pa_GetDeviceInfo(info->outputParameters.device)->defaultLowOutputLatency;
   info->outputParameters.hostApiSpecificStreamInfo = NULL;
-/*
-  info->inputParameters.device = Pa_GetDefaultInputDevice(); // default output device
+
+  info->inputParameters.device = Pa_GetDefaultInputDevice();
   if(info->inputParameters.device == paNoDevice) {
     gw_err("Error: No default input device.\n");
     goto error;
   }
-  info->inputParameters.channelCount = 2;
-//  info->inputParameters.sampleFormat = di->format;
-  info->inputParameters.sampleFormat = paFloat32;
+  info->inputParameters.channelCount = di->si->in;
+#ifndef USE_DOUBLE
+  info->outputParameters.sampleFormat = paFloat32;
+#else
+  info->outputParameters.sampleFormat = paFloat64;
+#endif
   info->inputParameters.suggestedLatency = Pa_GetDeviceInfo(info->inputParameters.device)->defaultLowOutputLatency;
   info->inputParameters.hostApiSpecificStreamInfo = NULL;
-*/
+
   if(Pa_OpenStream(
         &info->stream,
-NULL,//        &info->inputParameters,
+        &info->inputParameters,
         &info->outputParameters,
         di->si->sr,
-        256,//        di->bufsize,
+        512,
         paClipOff,
         callback,
         vm) != paNoError)
