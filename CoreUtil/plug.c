@@ -112,7 +112,7 @@ static SFUN(core_envset) {
 #include <string.h>
 
 static SFUN(core_realpath) {
-  m_str path = realpath(STRING(ME(o)), NULL);
+  const m_str path = realpath(STRING(*(M_Object*)REG(0)), NULL);
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, path);
 }
 
