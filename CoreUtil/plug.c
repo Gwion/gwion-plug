@@ -7,6 +7,7 @@
   #include <sys/stat.h>
   #include <stdio.h>
   #include <ftw.h>
+  #include <libgen.h>
 #endif
 #include "unistd.h"
 #include "gwion_util.h"
@@ -282,6 +283,15 @@ static SFUN(core_unlink) {
 #endif
 }
 
+static SFUN(core_dirname) {
+  const m_str filename = STRING(*(M_Object*)MEM(0));
+#ifndef BUILD_ON_WINDOWS
+  const m_str dir = dirname(filename);
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, dir);
+#else
+  handle(shred, "UnImplementedFunction");
+#endif
+}
 GWION_IMPORT(CoreUtil) {
   gwidoc(gwi, "Provide file system utilities");
   DECL_OB(const Type, t_coreutil, = gwi_struct_ini(gwi, "CoreUtil"));
@@ -351,6 +361,11 @@ GWION_IMPORT(CoreUtil) {
   GWI_BB(gwi_func_ini(gwi, "int", "unlink"));
   GWI_BB(gwi_func_arg(gwi, "string", "file"))
   GWI_BB(gwi_func_end(gwi, core_unlink, ae_flag_static))
+
+  gwidoc(gwi, "get the directory path of a file");
+  GWI_BB(gwi_func_ini(gwi, "string", "dirname"));
+  GWI_BB(gwi_func_arg(gwi, "string", "file"))
+  GWI_BB(gwi_func_end(gwi, core_dirname, ae_flag_static))
 
   GWI_BB(gwi_struct_end(gwi))
   return GW_OK;

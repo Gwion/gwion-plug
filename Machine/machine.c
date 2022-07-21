@@ -20,13 +20,16 @@
 static SFUN(machine_add) {
   const M_Object obj = *(M_Object*)MEM(0);
   const m_str str = STRING(obj);
-  *(m_uint*)RETURN = compile_filename(shred->info->vm->gwion, str);
+  const m_uint ret = compile_filename(shred->info->vm->gwion, str);
+  if(ret > 0) *(m_int*)RETURN = ret;
+  else handle(shred, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_remove) {
   const VM* vm = shred->info->vm;
   const m_int xid = *(m_int*)MEM(0);
-  *(m_int*)RETURN = vm_remove(vm, xid);
+  if(!vm_remove(vm, xid))
+    handle(shred, "InvalidShredRemove");
 }
 
 static SFUN(machine_replace) {
@@ -34,7 +37,7 @@ static SFUN(machine_replace) {
   const m_int xid = *(m_int*)MEM(0);
   *(m_int*)RETURN = vm_remove(vm, xid);
   const M_Object str = *(M_Object*)MEM(SZ_INT);
-  compile_filename_xid(shred->info->vm->gwion, STRING(str), xid);
+  *(m_int*)RETURN = compile_filename_xid(vm->gwion, STRING(str), xid);
 }
 
 static SFUN(machine_check) {
@@ -99,7 +102,7 @@ GWION_IMPORT(machine) {
   gwi_func_arg(gwi, "string",  "filename");
   GWI_BB(gwi_func_end(gwi, machine_add, ae_flag_static))
 
-  gwi_func_ini(gwi, "int",  "remove");
+  gwi_func_ini(gwi, "void",  "remove");
   gwi_func_arg(gwi, "int", "id");
   GWI_BB(gwi_func_end(gwi, machine_remove, ae_flag_static))
 
