@@ -152,6 +152,7 @@ ANN static void iterate_object(Hydrate *const &h,
     if(is_func(h->gwion, value->type))continue; // is_func
     if(!vflag(value, vflag_member))continue;
     m_bit *ptr = !tflag(t, tflag_struct) ? h->obj->data : (m_bit*)h->data;
+    if(!h->obj || h->data) continue;
     hydrate(h->gwion, h->shred, dom_object[value->name], value->type, ptr + value->from->offset);
   }
 }
