@@ -30,7 +30,7 @@ static SFUN(core_glob) {
 #ifndef BUILD_ON_WINDOWS
   glob_t results;
   if (glob(name, 0, NULL, &results)) {
-     *(M_Object*)RETURN = new_array(shred->info->mp, shred->code->ret_type, 0);
+     *(M_Object*)RETURN = new_array(shred->info->mp, code->ret_type, 0);
     return;
   }
   const M_Object ret = *(M_Object*)RETURN = new_array(shred->info->mp, code->ret_type, results.gl_pathc);
