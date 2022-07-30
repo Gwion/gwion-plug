@@ -251,7 +251,7 @@ static OP_CHECK(opck_ffi_ctor) {
   CHECK_BN(traverse_ffi(env, ffi, cdef));
   const Type t = cdef->base.type;
   const Func func = (Func)vector_front(&t->nspc->vtable);
-  builtin_func(mp, func, !variadic ? ffi_do_call : ffivar_do_call);
+  builtin_func(env->gwion, func, !variadic ? ffi_do_call : ffivar_do_call);
   const struct Op_Func opfunc = { .ck=ctor_as_call };
   const struct Op_Import opi = { .rhs=t, .ret=ret_type,
     .func=&opfunc, .data=(uintptr_t)func, .pos=call->func->pos, .op=insert_symbol(env->gwion->st, "@ctor") };
