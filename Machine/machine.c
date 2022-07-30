@@ -26,6 +26,46 @@ static SFUN(machine_add) {
   else handle(shred, "InvalidRuntimeCompilation");
 }
 
+static MP_Vector *get_values(const VM_Shred shred, const M_Vector names) {
+  const m_uint code_offset = ((Instr)vector_at(&shred->code->instr, shred->pc-3))->m_val;
+  const VM_Code code = *(VM_Code*)REG(-code_offset - SZ_INT);
+  const uint32_t clen = code->types->len;
+  const uint32_t nlen = ARRAY_LEN(names);
+  const uint32_t len = clen <= nlen ? clen : nlen;
+  MP_Vector *const values = new_mp_vector(shred->info->mp, Value, code->types->len);
+  m_uint offset = SZ_INT*2;
+  for(uint32_t i = 0; i < len; i++) {
+    const Type t = *mp_vector_at(code->types, Type, i);
+    const M_Object o = *(M_Object*)(names->ptr + ARRAY_OFFSET + i * SZ_INT);
+    m_bit *data = MEM(offset);
+    if(isa(t, shred->info->vm->gwion->type[et_compound]) > 0) {
+      if(!tflag(t, tflag_struct)) (*(M_Object*)data)->ref++;
+      else struct_addref(shred->info->vm->gwion, t, data);
+    }
+    const Value v = new_value(shred->info->vm->gwion->env, t, STRING(o), (loc_t){});
+    if(t->size <= SZ_INT)
+      v->d.ptr = *(void**)data;
+    else {
+      v->d.ptr = mp_calloc2(shred->info->mp, t->size);
+      memcpy(v->d.ptr, data, t->size);
+    }
+    mp_vector_set(values, Value, i, v);
+    offset += t->size;
+  }
+  return values;
+}
+
+static SFUN(machine_add_values) {
+  const M_Object obj = *(M_Object*)MEM(0);
+  const m_str filename = STRING(obj);
+  const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT));
+  MP_Vector *const values = get_values(shred, names);
+  const m_uint ret = compile_filename_values(shred->info->vm->gwion, filename, values);
+  free_mp_vector(shred->info->mp, Value, values);
+  if(ret > 0) *(m_int*)RETURN = ret;
+  else handle(shred, "InvalidRuntimeCompilation");
+}
+
 static SFUN(machine_remove) {
   const VM* vm = shred->info->vm;
   const m_int xid = *(m_int*)MEM(0);
@@ -41,6 +81,20 @@ static SFUN(machine_replace) {
   const M_Object str = *(M_Object*)MEM(SZ_INT);
   if(!compile_filename_xid(vm->gwion, STRING(str), xid))
     handle(shred, "InvalidRuntimeCompilation");
+}
+
+static SFUN(machine_replace_values) {
+  const VM* vm = shred->info->vm;
+  const m_int xid = *(m_int*)MEM(0);
+  if(!vm_remove(vm, xid))
+    handle(shred, "InvalidShredRemove");
+  const M_Object str = *(M_Object*)MEM(SZ_INT);
+  const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT*2));
+  MP_Vector *const values = get_values(shred, names);
+  const m_bool ret = compile_filename_xid_values(vm->gwion, STRING(str), xid, values);
+  free_mp_vector(shred->info->mp, Value, values);
+  if(ret > 0) *(m_int*)RETURN = ret;
+  else handle(shred, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_check) {
@@ -59,10 +113,41 @@ static SFUN(machine_check) {
   else handle(shred, "InvalidRuntimeCompilation");
 }
 
+static SFUN(machine_check_values) {
+  const M_Object code_obj = *(M_Object*)MEM(0);
+  const m_str line = STRING(code_obj);
+  struct Vector_ v;
+  struct Vector;
+  Vector back = vector_copy(shred->info->mp, &shred->info->vm->gwion->data->passes->vec);
+  vector_init(&v);
+  vector_add(&v, (vtype)"check");
+  pass_set(shred->info->vm->gwion, &v);
+  vector_release(&v);
+  const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT));
+  MP_Vector *const values = get_values(shred, names);
+  const m_uint ret = compile_string_values(shred->info->vm->gwion, "Machine.check", line, values);
+  free_mp_vector(shred->info->mp, Value, values);
+  pass_set(shred->info->vm->gwion, back);
+  free_vector(shred->info->mp, back);
+  if(ret > 0) *(m_int*)RETURN = ret;
+  else handle(shred, "InvalidRuntimeCompilation");
+}
+
 static SFUN(machine_compile) {
   const M_Object code_obj = *(M_Object*)MEM(0);
   const m_str line = STRING(code_obj);
   const m_uint ret = compile_string(shred->info->vm->gwion, "Machine.compile", line);
+  if(ret > 0) *(m_int*)RETURN = ret;
+  else handle(shred, "InvalidRuntimeCompilation");
+}
+
+static SFUN(machine_compile_values) {
+  const M_Object code_obj = *(M_Object*)MEM(0);
+  const m_str line = STRING(code_obj);
+  const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT));
+  MP_Vector *const values = get_values(shred, names);
+  const m_uint ret = compile_string_values(shred->info->vm->gwion, "Machine.compile", line, values);
+  free_mp_vector(shred->info->mp, Value, values);
   if(ret > 0) *(m_int*)RETURN = ret;
   else handle(shred, "InvalidRuntimeCompilation");
 }
@@ -73,8 +158,23 @@ static SFUN(machine_compile_replace) {
     handle(shred, "InvalidShredRemove");
   const M_Object code_obj = *(M_Object*)MEM(SZ_INT);
   const m_str line = STRING(code_obj);
-  if(!compile_string_xid(shred->info->vm->gwion, "Machine.compile", line, xid))
-    handle(shred, "InvalidRuntimeCompilation");
+  const m_uint ret = compile_string_xid(shred->info->vm->gwion, "Machine.compile", line, xid);
+  if(ret > 0) *(m_int*)RETURN = ret;
+  else handle(shred, "InvalidRuntimeCompilation");
+}
+
+static SFUN(machine_compile_replace_values) {
+  const m_int xid = *(m_int*)MEM(0);
+  if(!vm_remove(shred->info->vm, xid))
+    handle(shred, "InvalidShredRemove");
+  const M_Object code_obj = *(M_Object*)MEM(SZ_INT);
+  const m_str line = STRING(code_obj);
+  const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT*2));
+  MP_Vector *const values = get_values(shred, names);
+  const m_uint ret = compile_string_xid_values(shred->info->vm->gwion, "Machine.compile", line, xid, values);
+  free_mp_vector(shred->info->mp, Value, values);
+  if(ret > 0) *(m_int*)RETURN = ret;
+  else handle(shred, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_shreds) {
@@ -106,11 +206,18 @@ static SFUN(machine_pass) {
 GWION_IMPORT(machine) {
   gwidoc(gwi, "A namespace for machine operations");
 
-  gwidoc(gwi, "compile and add a file");
   GWI_OB(gwi_struct_ini(gwi, "Machine"))
+
+  gwidoc(gwi, "compile and add a file");
   gwi_func_ini(gwi, "int",  "add");
   gwi_func_arg(gwi, "string",  "filename");
   GWI_BB(gwi_func_end(gwi, machine_add, ae_flag_static))
+
+  gwidoc(gwi, "compile and add a file with values");
+  gwi_func_ini(gwi, "int",  "add_values:[...]");
+  gwi_func_arg(gwi, "string",  "filename");
+  gwi_func_arg(gwi, "string[]",  "varnames");
+  GWI_BB(gwi_func_end(gwi, machine_add_values, ae_flag_static))
 
   gwidoc(gwi, "remove a shred by id");
   gwi_func_ini(gwi, "void",  "remove");
@@ -123,6 +230,13 @@ GWION_IMPORT(machine) {
   gwi_func_arg(gwi, "string", "filename");
   GWI_BB(gwi_func_end(gwi, machine_replace, ae_flag_static))
 
+  gwidoc(gwi, "replace a shred with a new one from file with values");
+  gwi_func_ini(gwi, "void",  "replace_values");
+  gwi_func_arg(gwi, "int", "id");
+  gwi_func_arg(gwi, "string", "filename");
+  gwi_func_arg(gwi, "string[]",  "varnames");
+  GWI_BB(gwi_func_end(gwi, machine_replace_values, ae_flag_static))
+
   gwidoc(gwi, "get an array of active shred ids");
   gwi_func_ini(gwi, "int[]", "shreds");
   GWI_BB(gwi_func_end(gwi, machine_shreds, ae_flag_static))
@@ -132,16 +246,35 @@ GWION_IMPORT(machine) {
   gwi_func_arg(gwi, "string", "code");
   GWI_BB(gwi_func_end(gwi, machine_check, ae_flag_static))
 
+  gwidoc(gwi, "compile code with values");
+  gwi_func_ini(gwi, "int",  "check");
+  gwi_func_arg(gwi, "string", "code");
+  gwi_func_arg(gwi, "string[]",  "varnames");
+  GWI_BB(gwi_func_end(gwi, machine_check_values, ae_flag_static))
+
   gwidoc(gwi, "compile file");
   gwi_func_ini(gwi, "int", "compile");
   gwi_func_arg(gwi, "string", "code");
   GWI_BB(gwi_func_end(gwi, machine_compile, ae_flag_static))
+
+  gwidoc(gwi, "compile file with values");
+  gwi_func_ini(gwi, "int", "compile");
+  gwi_func_arg(gwi, "string", "code");
+  gwi_func_arg(gwi, "string[]",  "varnames");
+  GWI_BB(gwi_func_end(gwi, machine_compile_values, ae_flag_static))
 
   gwidoc(gwi, "remove a shred and replace it by compiling file");
   gwi_func_ini(gwi, "void", "compile_replace");
   gwi_func_arg(gwi, "int", "xid");
   gwi_func_arg(gwi, "string", "filename");
   GWI_BB(gwi_func_end(gwi, machine_compile_replace, ae_flag_static))
+
+  gwidoc(gwi, "remove a shred and replace it by compiling file with values");
+  gwi_func_ini(gwi, "void", "compile_replace");
+  gwi_func_arg(gwi, "int", "xid");
+  gwi_func_arg(gwi, "string", "filename");
+  gwi_func_arg(gwi, "string[]",  "varnames");
+  GWI_BB(gwi_func_end(gwi, machine_compile_replace_values, ae_flag_static))
 
   gwidoc(gwi, "get list of passes as a string");
   gwi_func_ini(gwi, "void", "pass");
