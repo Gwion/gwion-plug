@@ -7,8 +7,8 @@ a ~< dac;
 
 #! testing 'init'
 {
-	128 => var int ihopsize;
-	50 => var int ipeaks;
+	128 :=> var int ihopsize;
+	50 :=> var int ipeaks;
 
 	a.init(ihopsize, ipeaks);a.init(ihopsize, ipeaks);
 }

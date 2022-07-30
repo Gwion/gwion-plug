@@ -1,16 +1,16 @@
 #import Evdev
 
-new Evdev(4) => var auto dev;
+new Evdev(4) :=> var auto dev;
 
 try {
-  dev.get_absinfo(0) => const auto ev_abs;
+  dev.get_absinfo(0) :=> const auto ev_abs;
   <<<ev_abs>>>;
   <<<ev_abs.value()>>>;
   <<<12 => ev_abs.value>>>;
 } handle { <<< "no abs info found" >>>; }
 
 
-<<< dev.name() => var auto s >>>;
+<<< dev.name() :=> var auto s >>>;
 var Evdev.Ev ev;
 dev => now;
 <<<dev.recv(ev)>>>;

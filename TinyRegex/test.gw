@@ -2,14 +2,14 @@
 
 #import TinyRegex
 
-new TinyRegex("test") => var auto re;
+new TinyRegex("test") :=> var auto re;
 
 var int length;
 
-re.run("foobartest", length) => const auto start0;
+re.run("foobartest", length) :=> const auto start0;
 
 <<< "${start0} ${length}" >>>;
 
-TinyRegex.get("foobartest", length) => const auto start1;
+TinyRegex.get("foobartest", length) :=> const auto start1;
 
 <<< "${start1} ${length}" >>>;

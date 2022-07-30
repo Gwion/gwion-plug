@@ -1,14 +1,14 @@
 #import SimdJSON
 
-<<< SimdJSON.load("test.json") => var auto json >>>;
-json.get_i("x") => var auto x;
-json.get_f("y") => var auto y;
-json.get_b("b") => var auto b;
-json.get_s("s") => var auto s;
-<<< json.get_o("o") => var auto o >>>;
+<<< SimdJSON.load("test.json") :=> var auto json >>>;
+json.get_i("x") :=> var auto x;
+json.get_f("y") :=> var auto y;
+json.get_b("b") :=> var auto b;
+json.get_s("s") :=> var auto s;
+<<< json.get_o("o") :=> var auto o >>>;
 <<< x >>>;
 <<< y >>>;
 <<< b >>>;
 <<< s >>>;
 <<< o >>>;
-<<< o.get("bar") => var string baz>>>;
+<<< o.get("bar") :=> var string baz>>>;

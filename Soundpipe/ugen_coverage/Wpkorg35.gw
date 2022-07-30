@@ -10,7 +10,7 @@ var Noise n ~> var Wpkorg35 a ~> dac;
 
 #! testing 'cutoff'
 {
-	1000 => var float	cutoff;
+	1000 :=> var float	cutoff;
 
 	a.cutoff(cutoff);
 }
@@ -23,7 +23,7 @@ var Noise n ~> var Wpkorg35 a ~> dac;
 
 #! testing 'res'
 {
-	1.99 => var float	res;
+	1.99 :=> var float	res;
 
 	a.res(res);
 }
@@ -36,7 +36,7 @@ var Noise n ~> var Wpkorg35 a ~> dac;
 
 #! testing 'saturation'
 {
-	1 => var float	saturation;
+	1 :=> var float	saturation;
 
 	a.saturation(saturation);
 }

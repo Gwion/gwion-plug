@@ -7,7 +7,7 @@ a ~< dac;
 
 #! testing 'init'
 {
-	"/tmp/gwion_test.spa" => var string	filename;
+	"/tmp/gwion_test.spa" :=> var string	filename;
 
 	a.init(filename);a.init(filename);
 }

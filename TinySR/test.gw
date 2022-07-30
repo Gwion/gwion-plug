@@ -1,16 +1,16 @@
 #import TinySR
 
 "djay_model"
-    => const string model;
-var int try;
+    :=> const string model;
+var int _try;
 if(me.args())
-  Std.atoi(me.arg(0)) => try;
+  Std.atoi(me.arg(0)) :=> _try;
 
 
 adc ~> var Dcblock dc ~> var TinySR sr ~> blackhole;
 
 fun void load(string model) {
-  model => sr.load => const int loaded;
+  model => sr.load :=> const int loaded;
   if(loaded == -1) {
     <<<"failed to load ", model, ".">>>;
     me.exit();
@@ -26,7 +26,7 @@ fun void load(string model) {
 fun void check() {
   .5::second => now;
   if(sr.state()) {
-    ++try => var string n;
+    ++_try :=> var string n;
     Machine.add(me.path() + ":" + n);
     me.exit();
   }

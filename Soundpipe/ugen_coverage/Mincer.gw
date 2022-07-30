@@ -9,7 +9,7 @@ a ~< dac;
 {
 	var ftbl	ft;
 	ft.gen_sine(1024);
-	1024 => var int	winsize;
+	1024 :=> var int	winsize;
 
 	a.init(ft, winsize);a.init(ft, winsize);
 }

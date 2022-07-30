@@ -1,10 +1,10 @@
 #import Lo
 
-new OscIn(7777) => var OscIn oin;
+new OscIn(7777) :=> var OscIn oin;
 <<< "Created OscIn Object ", oin >>>;
 
 oin.add("/name", "d");
 
 oin => now;
 oin.recv();
-<<< oin => var float f >>>;
+<<< oin :=> var float f >>>;

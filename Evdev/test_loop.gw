@@ -4,7 +4,7 @@
 #import Modules
 #import Soundpipe
 
-new Evdev(6) => var Evdev dev;
+new Evdev(6) :=> var Evdev dev;
 
 var SinOsc s ~> dac;
 s ~> var Jcrev rev ~> dac;

@@ -7,8 +7,8 @@ a ~< dac;
 
 #! testing 'init'
 {
-	1 => var float	maxdel;
-	2 => var int	interp;
+	1 :=> var float	maxdel;
+	2 :=> var int	interp;
 
 	a.init(maxdel, interp);a.init(maxdel, interp);
 }
@@ -34,7 +34,7 @@ a ~< dac;
 
 #! testing 'del'
 {
-	 1=> var float	del;
+	 1:=> var float	del;
 
 	a.del(del);
 }

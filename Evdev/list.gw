@@ -3,7 +3,7 @@
 try {
   var int i;
   do {
-    new Evdev(i) => var Evdev evdev;
+    new Evdev(i) :=> var Evdev evdev;
     <<<i, " ", evdev.name()>>>;
   } while(++i);
 } handle EvdevCreateException {}

@@ -1,12 +1,12 @@
 #import TinySR
 
 class Speech extends TinySR {
-  var private int try;
+  var private int _try;
   if(me.args())
-    Std.atoi(me.arg(0)) => try;
+    Std.atoi(me.arg(0)) :=> try;
 
   fun int load(const string model) {
-    model => (this $ TinySR).load => const int loaded;
+    model => (this $ TinySR).load :=> const int loaded;
     if(loaded == -1) {
       <<<"failed to load ", model, ".">>>;
       me.exit();
@@ -24,7 +24,7 @@ class Speech extends TinySR {
   fun void check() {
     .5::second => now;
     if(state()) {
-      ++try => var string n;
+      ++_try :=> var string n;
       Machine.add(me.path() + ":" + n);
       me.exit();
     }

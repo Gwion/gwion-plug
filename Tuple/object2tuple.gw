@@ -1,9 +1,9 @@
 #import Tuple
 class Person {
-  "Phil" => var string name;
-  45 => var int age;
+  "Phil" :=> var string name;
+  45 :=> var int age;
 }
 
-var Person p => late Tuple:[string,int] t;
+var Person p :=> late Tuple:[string,int] t;
 #!<<<t[0]>>>;
 #!<<<t[1]>>>;

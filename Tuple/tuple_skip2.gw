@@ -1,7 +1,7 @@
 #import Tuple
-Tuple("Tom", 2, "Taxi driver") => var Tuple:[string,_, string] t;
+Tuple("Tom", 2, "Taxi driver") :=> var Tuple:[string,_, string] t;
 <<< t>>>;
 <<< t[0]>>>;
-Tuple("Tom", 2.3, "Cook") => t;
+Tuple("Tom", 2.3, "Cook") :=> t;
 #!<<< t[1]>>>;
 <<< t[2]>>>;

@@ -7,7 +7,7 @@ a ~< dac;
 
 #! testing 'init'
 {
-	1 => var float	size;
+	1 :=> var float	size;
 
 	a.init(size);a.init(size);
 }

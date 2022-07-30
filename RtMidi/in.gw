@@ -4,7 +4,7 @@
 fun RtMidi.In open(const string name) {
 
   #! get names of all available devices
-  RtMidi.In.names() => const auto names;
+  RtMidi.In.names() :=> const auto names;
 
   #! check full match
   foreach(i, a: names) {
@@ -34,5 +34,5 @@ while(true) {
 }
 }
 
-"Launch" => open => const auto min => read;
+"Launch" => open :=> const auto min => read;
 

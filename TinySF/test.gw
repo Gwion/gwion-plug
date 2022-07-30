@@ -1,6 +1,6 @@
 #import TinySF
 
-TinySF("Drums.sf2") => const TinySF tsf ~> dac;
+TinySF("Drums.sf2") :=> const TinySF tsf ~> dac;
 repeat(100) {
   tsf.noteOn([30 ... 70].random(), .5);
   .075::second => now;

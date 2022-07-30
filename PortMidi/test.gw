@@ -1,6 +1,6 @@
 #import PortMidi
 
-new MidiIn(1) => const auto min;
+new MidiIn(1) :=> const auto min;
 min => now;
 
     var int status;

@@ -1,13 +1,13 @@
 #import BMI
 
-new BMI(256, 256, 0) => const auto bmi;
+new BMI(256, 256, 0) :=> const auto bmi;
 
 #! we ll have a constructor, but for now ...
 
 bmi.fill_rect(new BMI.Rect(0, 0, 256, 256),   BMI.RGB.Yellow);
 
 
-BMI.newRGB(0, 0, 0) => const auto black;
+BMI.newRGB(0, 0, 0) :=> const auto black;
 bmi.fill_rect(new BMI.Rect(32, 32, 48, 48),   black);
 bmi.fill_rect(new BMI.Rect(176, 32, 48, 48),  black);
 bmi.fill_rect(new BMI.Rect(32, 124, 48, 96),  black);

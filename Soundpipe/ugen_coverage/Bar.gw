@@ -7,8 +7,8 @@ a ~< dac;
 
 #! testing 'init'
 {
-	3 => var float	iK;
-	0.001 => var float	ib;
+	3 :=> var float	iK;
+	0.001 :=> var float	ib;
 
 	a.init(iK, ib);a.init(iK, ib);
 }

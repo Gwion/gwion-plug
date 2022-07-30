@@ -11,8 +11,8 @@ a ~< dac;
 	sine.gen_sine(1024);
 	var ftbl	win;
 	win.gen_sine(1024);
-	12 => var int	iolaps;
-	12.3 => var float	iphs;
+	12 :=> var int	iolaps;
+	12.3 :=> var float	iphs;
 
 	a.init(sine, win, iolaps, iphs);a.init(sine, win, iolaps, iphs);
 }

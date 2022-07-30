@@ -11,7 +11,7 @@ var Metro m :~> var Tenv2 a ~> g ~> dac;
 
 #! testing 'atk'
 {
-	1 => var float	atk;
+	1 :=> var float	atk;
 
 	a.atk(atk);
 }
@@ -24,7 +24,7 @@ var Metro m :~> var Tenv2 a ~> g ~> dac;
 
 #! testing 'rel'
 {
-	1 => var float	rel;
+	1 :=> var float	rel;
 
 	a.rel(rel);
 }

@@ -1,5 +1,5 @@
 #import Evdev
-new Evdev(10) => var Evdev  ev;
-ev.uinput() => const auto ui;
+new Evdev(10) :=> var Evdev  ev;
+ev.uinput() :=> const auto ui;
 <<< ui.fd(), " ", ui.syspath(), " ", ui.devnode() >>>;
 ui.write(2, 0, 16);

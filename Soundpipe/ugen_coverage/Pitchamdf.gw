@@ -7,8 +7,8 @@ a ~< dac;
 
 #! testing 'init'
 {
-	200 => var float min;
-	500 => var float max;
+	200 :=> var float min;
+	500 :=> var float max;
 
 	a.init(min, max);a.init(min, max);
 }

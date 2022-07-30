@@ -1,14 +1,14 @@
 #import K
 var int i;
 var int label[150];
-for(0 => i; i < 50; i++) {
-	0 => label[i];
-	1 => label[i+50];
-	2 => label[i+ 100];
+for(0 :=> i; i < 50; i++) {
+	0 :=> label[i];
+	1 :=> label[i+50];
+	2 :=> label[i+ 100];
 }
 
 var float instance[2][4];
-[5.1,3.5,1.4,0.2] => instance[0];
+[5.1,3.5,1.4,0.2] :=> instance[0];
 
 K.nn([
 [5.1,3.5,1.4,0.2],

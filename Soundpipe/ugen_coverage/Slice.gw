@@ -23,7 +23,7 @@ a ~< dac;
 
 #! testing 'id'
 {
-	1 => var float	id;
+	1 :=> var float	id;
 
 	a.id(id);
 }

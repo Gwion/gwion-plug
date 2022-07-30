@@ -1,8 +1,8 @@
 #import TinySR
 
 "djay_model"
-    => const string model;
--20 => const float seuil;
+    :=> const string model;
+-20 :=> const float seuil;
 
 adc ~> var Dcblock dc ~> var Speech sr ~> blackhole;
 (model, me.path()) => sr.load;

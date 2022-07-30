@@ -11,7 +11,7 @@ var Peaklim a ~> dac;
 
 #! testing 'atk'
 {
-	1 => var float	atk;
+	1 :=> var float	atk;
 
 	a.atk(atk);
 }
@@ -24,7 +24,7 @@ var Peaklim a ~> dac;
 
 #! testing 'rel'
 {
-	1 => var float	rel;
+	1 :=> var float	rel;
 
 	a.rel(rel);
 }
@@ -37,7 +37,7 @@ var Peaklim a ~> dac;
 
 #! testing 'thresh'
 {
-	.3 => var float	thresh;
+	.3 :=> var float	thresh;
 
 	a.thresh(thresh);
 }

@@ -12,7 +12,7 @@ while(ls.status() < 100)
 	.25::second => now;
 
 #! play for 10 seconds
-now + 10::second => var time t;
+now + 10::second :=> var time t;
 while(now < t) {
 	(Math.rand2(50,76), Math.rand2(50,80) )=> ls.noteOn;
 	.25::second => now;

@@ -19,7 +19,7 @@ var Gbuzz a ~> dac;
 
 #! testing 'freq'
 {
-	200 => var float	freq;
+	200 :=> var float	freq;
 
 	a.freq(freq);
 }
@@ -32,7 +32,7 @@ var Gbuzz a ~> dac;
 
 #! testing 'amp'
 {
-	1 => var float	amp;
+	1 :=> var float	amp;
 
 	a.amp(amp);
 }
@@ -45,7 +45,7 @@ var Gbuzz a ~> dac;
 
 #! testing 'nharm'
 {
-	2 => var float	nharm;
+	2 :=> var float	nharm;
 
 	a.nharm(nharm);
 }
@@ -58,7 +58,7 @@ var Gbuzz a ~> dac;
 
 #! testing 'lharm'
 {
-	2 => var float	lharm;
+	2 :=> var float	lharm;
 
 	a.lharm(lharm);
 }
@@ -71,7 +71,7 @@ var Gbuzz a ~> dac;
 
 #! testing 'mul'
 {
-	.5 => var float	mul;
+	.5 :=> var float	mul;
 
 	a.mul(mul);
 }

@@ -7,7 +7,7 @@ new SimdJSON(
   "b": true,
   "s": "foo"
 }"#
-) => var auto json;
+) :=> var auto json;
 
 <<< json.get_i("x") >>>;
 <<< json.get_f("y") >>>;

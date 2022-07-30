@@ -7,7 +7,7 @@ a ~< dac;
 
 #! testing 'init'
 {
-	1 => var float	looptime;
+	1 :=> var float	looptime;
 
 	a.init(looptime);a.init(looptime);
 }

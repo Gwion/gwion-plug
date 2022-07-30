@@ -8,7 +8,7 @@ var SinOsc a ~> dac;
 	var int	size;
 
 	a.init(size);
-	17 => size;
+	17 :=> size;
 
 	a.init(size);
 }
@@ -19,7 +19,7 @@ var SinOsc a ~> dac;
 	var float	phase;
 
 	a.init(size, phase);
-    12 => size;
+    12 :=> size;
 	a.init(size, phase);
 }
 

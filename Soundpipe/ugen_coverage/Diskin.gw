@@ -7,7 +7,7 @@ a ~< dac;
 
 #! testing 'init'
 {
-	"examples/data/oneart.wav" => var string	filename;
+	"examples/data/oneart.wav" :=> var string	filename;
 
 	a.init(filename);a.init(filename);
 }

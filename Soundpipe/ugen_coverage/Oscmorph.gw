@@ -11,7 +11,7 @@ a ~< dac;
 	tbl[0].gen_sine(1024);
 	tbl[1].gen_sine(1024);
 
-	2 => var int	nft;
+	2 :=> var int	nft;
 	var float	phase;
 
 	a.init(tbl, nft, phase);a.init(tbl, nft, phase);
@@ -25,7 +25,7 @@ a ~< dac;
 
 #! testing 'freq'
 {
-	400 => var float	freq;
+	400 :=> var float	freq;
 
 	a.freq(freq);
 }
@@ -38,7 +38,7 @@ a ~< dac;
 
 #! testing 'amp'
 {
-	.2 => var float	amp;
+	.2 :=> var float	amp;
 
 	a.amp(amp);
 }

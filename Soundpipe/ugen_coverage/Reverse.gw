@@ -7,7 +7,7 @@ a ~< dac;
 
 #! testing 'init'
 {
-	1 => var float delay;
+	1 :=> var float delay;
 
 	a.init(delay);a.init(delay);
 }

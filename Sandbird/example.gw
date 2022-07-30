@@ -1,0 +1,19 @@
+#import Sandbird
+
+var Sandbird server;
+
+while(server => now) {
+  <<< "recv" >>>;
+  var Sandbird.Event ev;
+  while(server.recv(ev)) {
+<<< ev.type, Sandbird.Type.request >>>;
+if (ev.type == Sandbird.Type.request) {
+    ev.send_status(200, "OK");
+#!    ev.send_header("Content-Type", "text/plain");
+#!    ev.write("Hello world");
+#!    <<< ev.path >>>;
+#!    <<< ev.method >>>;
+#!    <<< ev.address >>>;
+}
+  }
+}

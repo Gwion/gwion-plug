@@ -1,6 +1,6 @@
 #import WebSocket
 
-new WebSocket(1111) => const auto ws;
+new WebSocket(1111) :=> const auto ws;
 while(true) {
   #"{ "i" : 1 }"# => ws.send;
   second => now;

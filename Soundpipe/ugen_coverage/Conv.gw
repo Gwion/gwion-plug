@@ -9,7 +9,7 @@ a ~< dac;
 {
 	var ftbl	ft;
 	ft.gen_file(8192, "examples/data/imp.wav");
-	8192 => var float	iPartLen;
+	8192 :=> var float	iPartLen;
 
 	a.init(ft, iPartLen);a.init(ft, iPartLen);
 }

@@ -9,6 +9,6 @@ class C extends A {
   var int[2] array;
 }
 class D extends C {}
-"simple.json" => SimdJSON.load => const auto json;
+"simple.json" => SimdJSON.load :=> const auto json;
 
 <<< json.hydrate:[D]() => SimdJSON.tojson >>>;

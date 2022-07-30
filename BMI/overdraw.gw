@@ -3,31 +3,31 @@
 
 #define SIZE 256
 
-new BMI(SIZE, SIZE, 0) => const auto bmi;
+new BMI(SIZE, SIZE, 0) :=> const auto bmi;
 
 const BMI.Point matrix[SIZE][SIZE];
 
-new BMI.Rect(0, 0, SIZE, SIZE) => const auto  rect;
+new BMI.Rect(0, 0, SIZE, SIZE) :=> const auto  rect;
 
 bmi.fill_rect(rect, BMI.newRGB(0,0,0));
 
-new BMI(32, 32, 0) => const auto layer;
-new BMI.Rect(0, 0, 32, 32) => const auto rect0;
+new BMI(32, 32, 0) :=> const auto layer;
+new BMI.Rect(0, 0, 32, 32) :=> const auto rect0;
 
-new BMI.Rect(8, 8, 16, 16) => const auto rect1;
+new BMI.Rect(8, 8, 16, 16) :=> const auto rect1;
 
 layer.fill_rect(rect0, BMI.newRGB(255, 0, 0));
 layer.fill_rect(rect1, BMI.newRGB(0, 255, 0));
 
-new BMI.Rect(32, 32, 32, 32) => const auto over;
+new BMI.Rect(32, 32, 32, 32) :=> const auto over;
 
 bmi.overdraw(over, layer);
-196 => over.x;
+196 :=> over.x;
 bmi.overdraw(over, layer);
-196 => over.y;
+196 :=> over.y;
 bmi.overdraw(over, layer);
-32 => over.x;
-196 => over.y;
+32 :=> over.x;
+196 :=> over.y;
 bmi.overdraw(over, layer);
 
 bmi.to_ppm("overdraw.ppm");

@@ -11,8 +11,8 @@ a ~< dac;
 	wav.gen_sine(1024);
 	var ftbl	win;
 	win.gen_sine(1024);
-	2 => var int	iolaps;
-	.4 => var float	iphs;
+	2 :=> var int	iolaps;
+	.4 :=> var float	iphs;
 
 	a.init(wav, win, iolaps, iphs);a.init(wav, win, iolaps, iphs);
 }

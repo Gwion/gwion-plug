@@ -4,7 +4,7 @@
 fun RtMidi.Out open(const string name) {
 
   #! get names of all available devices
-  RtMidi.Out.names() => const auto names;
+  RtMidi.Out.names() :=> const auto names;
 
   #! check full match
   foreach(i, a: names) {
@@ -28,4 +28,4 @@ fun void send(const RtMidi.Out mout) {
   mout.send();
 }
 
-"aseqdump" => open => const auto mout => send;
+"aseqdump" => open :=> const auto mout => send;
