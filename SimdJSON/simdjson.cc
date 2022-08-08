@@ -133,7 +133,21 @@ static SFUN(simdjson_load) {
     s->parser = new dom::parser();
     s->element = s->parser->load(STRING(arg));
   } catch (const simdjson_error &e) {
-    handle(shred, (m_str)"SimdJSONOpen");
+    handle(shred, (m_str)"SimdJSONLoad");
+  }
+}
+
+static SFUN(simdjson_parse) {
+  const M_Object arg = *(M_Object *)MEM(0);
+  const VM_Code code = *(VM_Code *)REG(SZ_INT);
+  const M_Object ret = new_object(shred->info->mp, code->ret_type);
+  *(M_Object *)RETURN = ret;
+  try {
+    auto s = SIMDJSON(ret);
+    s->parser = new dom::parser();
+    s->element = s->parser->parse(STRING(arg), strlen(STRING(arg)));
+  } catch (const simdjson_error &e) {
+    handle(shred, (m_str)"SimdJSONParse");
   }
 }
 
@@ -407,6 +421,10 @@ GWION_IMPORT(SimdJSON) {
   GWI_BB(gwi_func_ini(gwi, "SimdJSON", "load"))
   GWI_BB(gwi_func_arg(gwi, "string", "json_file"))
   GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_load, ae_flag_static))
+
+  GWI_BB(gwi_func_ini(gwi, "SimdJSON", "parse"))
+  GWI_BB(gwi_func_arg(gwi, "string", "json_string"))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_parse, ae_flag_static))
 
   GWI_BB(gwi_func_ini(gwi, "SimdJSON", "new"))
   GWI_BB(gwi_func_arg(gwi, "string", "data"))
