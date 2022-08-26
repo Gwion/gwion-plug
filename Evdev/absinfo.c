@@ -38,7 +38,6 @@ describe_absinfo(resolution)
 ANN m_bool import_absinfo(const Gwi gwi) {
   DECL_OB(const Type, t_abs, = gwi_class_ini(gwi, "AbsInfo", NULL));
   t_abs->nspc->offset += SZ_INT;
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0))
   _import_absinfo(value)
   _import_absinfo(minimum)
   _import_absinfo(maximum)

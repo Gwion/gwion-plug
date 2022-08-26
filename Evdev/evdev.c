@@ -48,8 +48,8 @@ ANN static void* evdev_process(void* arg) {
     if(rc == LIBEVDEV_READ_STATUS_SUCCESS  && event.type) {
       pthread_mutex_lock(&info->mutex);
       mp_vector_add(info->mp, &info->args, struct input_event, event);
-      pthread_mutex_unlock(&info->mutex);
       broadcast(o);
+      pthread_mutex_unlock(&info->mutex);
     }
   } while((rc == 1 || rc == 0 || rc == -11));
   return NULL;
@@ -59,7 +59,6 @@ static MFUN(evdev_index) {
   EvdevInfo* info = INFO(o);
   info->evdev = libevdev_new();
   info->args  = new_mp_vector(shred->info->mp, struct input_event, 0);
-  info->bbq = shred->info->vm->shreduler->mutex;
   info->mp = shred->info->mp;
   const m_int index = *(m_int*)MEM(SZ_INT);
   char c[strlen(EVDEV_PREFIX) + num_digit(index) + 1];
@@ -285,7 +284,6 @@ describe_abs(resolution)
 static MFUN(evdev_get_abs_info) {
   const EvdevInfo* info = INFO(o);
   const VM_Code code = *(VM_Code*)REG(SZ_INT*2);
-printf("code %s\n", code->ret_type->name);
   const M_Object obj = new_object(shred->info->mp, code->ret_type);
   *(M_Object*)RETURN = obj;
   const struct input_absinfo* abs = libevdev_get_abs_info(info->evdev, *(m_int*)MEM(SZ_INT));
