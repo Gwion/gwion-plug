@@ -1,19 +1,2 @@
 #import Pipewire
-#!var Pipewire pw;
-#!pw.list() :=> var auto list;
-#!var Pipewire.Node[0] nodes;
-
-fun void pwlist() {
-  foreach(node : list) {
-    <<< "Node ${nodes.size()}" >>>;
-    <<< "\tid:${node.id} permissions:${node.permissions}" >>>;
-    <<< "\ttype:${node.type} version:${node.version}" >>>;
-    <<< "\tprops:" >>>;
-      foreach(prop : node.props)
-#!        <<< "\t\t${ prop.key } ${ prop.value }" >>>;
-    nodes << node;
-  }
-}
-
-#!pwlist();
-<<< Pipewire.connect("-d alsa_output.usb-Focusrite_Scarlett_8i6_USB_F8B5YQ51309E69-00.analog-surround-21:monitor_FL alsa_output.usb-Generic_USB_Audio-00.iec958-stereo:playback_FL") >>>;
+<<< "-lio" => Pipewire.connect >>>;
