@@ -1,2 +1,7 @@
 #import Pipewire
-<<< "-lio" => Pipewire.connect >>>;
+
+1::second => now;
+<<< "start list" >>>;
+<<< Pipewire.list(Pipewire.Type.INPUT).size() >>>;
+<<< "end list" >>>;
+1::second => now;
