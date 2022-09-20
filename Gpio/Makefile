@@ -1,16 +1,7 @@
 include ../config.mk
 
+LDFLAGS += -lperiphery
 
-CPPSRC += CppGPIO/src/*.cxx
-CXXSRC += *.cc
-
-GPIO_LIB := CppGpio/
-ifeq ($(wilcard ${GPIO_LIB}), )
-endif
-
-all: GPIO.checklib ${NAME}.so
+all: ${NAME}.so
 
 include ../config_post.mk
-
-get-GPIO:
-	git clone https://github.com/JoachimSchurig/CppGPIO/
