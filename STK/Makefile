@@ -17,4 +17,4 @@ include ../config_post.mk
 get-stk:
 	git clone https://github.com/thestk/stk
 #	cd stk && export CXXFLAGS="" && export LDFLAGS="" && (which autoconf && autoconf || true ) && ./configure && make -C src
-	cd stk && export CXXFLAGS="" && export LDFLAGS="" && true ) && mkdir build && cd build && cmake .. && make
+	cd stk && export CXXFLAGS="" && export LDFLAGS="" && mkdir build && cd build && cmake .. && make
