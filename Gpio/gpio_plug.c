@@ -202,12 +202,33 @@ static MFUN(gw_gpio_write) {
     handle(shred, "GpioError");
 }
 
+#include <threads.h>
+struct poll_data {
+  VM_Shred shred;
+  gpio_t *gpio;
+  int timeout_ms;
+};
+
+static int threaded_gpio_poll(void *data) {
+  struct poll_data *pd = (struct poll_data*)data;
+  const VM_Shred shred = pd->shred;
+  gpio_t *gpio = pd->gpio;
+  const int timeout_ms = pd->timeout_ms;
+  mp_free2(shred->info->mp, sizeof(struct poll_data), data);
+  const m_bool ret = gpio_poll(gpio, timeout_ms);
+  if(ret >= 0) shredule(shred->tick->shreduler, shred, GWION_EPSILON);
+  else handle(shred, "GpioError");
+  return ret;
+}
+
 static MFUN(gw_gpio_poll) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  gpio_t * arg1 = *(gpio_t **)(temp1->data);
-  int arg2 = (int)*(m_int*)MEM(0+SZ_INT);
-  if(gpio_poll(arg1,arg2) < 0)
-    handle(shred, "GpioError");
+  struct poll_data *pd = mp_calloc2(shred->info->mp, sizeof(struct poll_data));
+  pd->shred = shred;
+  pd->gpio = *(gpio_t **)(o->data);
+  pd->timeout_ms = (int)*(m_int*)MEM(SZ_INT);
+  thrd_t thrd;
+  thrd_create(&thrd, threaded_gpio_poll, pd);
+  thrd_detach(thrd);
 }
 
 static MFUN(gw_gpio_close) {
@@ -521,7 +542,8 @@ GWION_IMPORT(Gpio) {
   CHECK_BB(gwi_func_ini(gwi, "int", "write"));
   CHECK_BB(gwi_func_arg(gwi, "bool", "value"));
   CHECK_BB(gwi_func_end(gwi, gw_gpio_write, ae_flag_none));
-  CHECK_BB(gwi_func_ini(gwi, "int", "poll"));
+  gwidoc(gwi, "this function suspends the shred");
+  CHECK_BB(gwi_func_ini(gwi, "void", "poll"));
   CHECK_BB(gwi_func_arg(gwi, "int", "timeout_ms"));
   CHECK_BB(gwi_func_end(gwi, gw_gpio_poll, ae_flag_none));
   CHECK_BB(gwi_func_ini(gwi, "int", "close"));
