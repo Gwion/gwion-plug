@@ -16,145 +16,140 @@
 
 #define GW_gpio_config_t(o) *(void**)(o->data)
 static MFUN(gw_gpio_config_t_direction_set) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
+  struct gpio_config *config = GW_gpio_config_t(o);
   gpio_direction_t arg2 = *(gpio_direction_t*)MEM(SZ_INT);
-  arg1->direction = arg2;
+  config->direction = arg2;
 }
 
 static MFUN(gw_gpio_config_t_direction_get) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
-  gpio_direction_t result = (gpio_direction_t) ((arg1)->direction);
+  struct gpio_config *config = GW_gpio_config_t(o);
+  gpio_direction_t result = config->direction;
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_gpio_config_t_edge_set) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
+  struct gpio_config *config = GW_gpio_config_t(o);
   gpio_edge_t arg2 = *(gpio_edge_t*)MEM(SZ_INT);
-  arg1->edge = arg2;
+  config->edge = arg2;
 }
 
 static MFUN(gw_gpio_config_t_edge_get) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
-  gpio_edge_t result = (gpio_edge_t) ((arg1)->edge);
-  *(m_int*)RETURN = (m_int)result;
+  struct gpio_config *config = GW_gpio_config_t(o);
+  *(m_int*)RETURN = config->edge;
 }
 
 static MFUN(gw_gpio_config_t_bias_set) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
+  struct gpio_config *config = GW_gpio_config_t(o);
   gpio_bias_t arg2 = *(gpio_bias_t*)MEM(SZ_INT);
-  arg1->bias = arg2;
+  config->bias = arg2;
 }
 
 static MFUN(gw_gpio_config_t_bias_get) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
-  gpio_bias_t result = (gpio_bias_t) ((arg1)->bias);
-  *(m_int*)RETURN = (m_int)result;
+  struct gpio_config *config = GW_gpio_config_t(o);
+  *(m_int*)RETURN = config->bias;
 }
 
 static MFUN(gw_gpio_config_t_drive_set) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
+  struct gpio_config *config = GW_gpio_config_t(o);
   gpio_drive_t arg2 = *(gpio_drive_t*)MEM(SZ_INT);
-  arg1->drive = arg2;
+  config->drive = arg2;
 }
 
 static MFUN(gw_gpio_config_t_drive_get) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
-  gpio_drive_t result = (gpio_drive_t) ((arg1)->drive);
-  *(m_int*)RETURN = (m_int)result;
+  struct gpio_config *config = GW_gpio_config_t(o);
+  *(m_int*)RETURN = config->drive;
 }
 
 static MFUN(gw_gpio_config_t_inverted_set) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
+  struct gpio_config *config = GW_gpio_config_t(o);
   bool arg2 = (bool)*(m_int*)MEM(SZ_INT);
-  arg1->inverted = arg2;
+  config->inverted = arg2;
 }
 
 static MFUN(gw_gpio_config_t_inverted_get) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
-  bool result = (bool) ((arg1)->inverted);
-  *(m_int*)RETURN = (m_int)result;
+  struct gpio_config *config = GW_gpio_config_t(o);
+  *(m_int*)RETURN = config->inverted;
 }
 
 // unset function?
 static MFUN(gw_gpio_config_t_label_set) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
+  struct gpio_config *config = GW_gpio_config_t(o);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   {
     if (arg2) {
-      arg1->label = (char const *) malloc(strlen((const char *)arg2)+1);
-      strcpy((char *)arg1->label, (const char *)arg2);
+      config->label = (char const *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)config->label, (const char *)arg2);
     } else {
-      arg1->label = 0;
+      config->label = 0;
     }
   }
 }
 
 static MFUN(gw_gpio_config_t_label_get) {
-  struct gpio_config * arg1 = *(struct gpio_config **)(o->data);
-  char const * result = (char *) ((arg1)->label);
-  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)result ?: (m_str)"");
+  struct gpio_config *config = GW_gpio_config_t(o);
+  *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (const m_str)config->label ?: "");
 }
 
 static MFUN(gw_gpio_new) {
   gpio_t * result = (gpio_t *)gpio_new();
-  // VM_Code code = *(VM_Code*)REG(0);
-  // M_Object o = new_object(shred->info->mp, code->ret_type);
   *(gpio_t **)o->data = result; // TODO: handle offset
   *(M_Object*)RETURN = o;
 }
 
 static MFUN(gw_gpio_open) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   unsigned int arg3 = (unsigned int)*(m_int*)MEM(SZ_INT*2);
   gpio_direction_t arg4 = *(gpio_direction_t*)MEM(SZ_INT*3);
-  if(gpio_open(arg1,(char const *)arg2,arg3,arg4) < 0)
+  if(gpio_open(gpio,(char const *)arg2,arg3,arg4) < 0)
     handle(shred, "GpioError");
   *(M_Object*)RETURN = o;
 }
 
 static MFUN(gw_gpio_open_name) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   M_Object temp3 = *(M_Object*)MEM(SZ_INT*2);
   char * arg3 = (char *)STRING(temp3);
   gpio_direction_t arg4 = *(gpio_direction_t*)MEM(SZ_INT*3);
-  if(gpio_open_name(arg1,(char const *)arg2,(char const *)arg3,arg4) < 0)
+  if(gpio_open_name(gpio,(char const *)arg2,(char const *)arg3,arg4) < 0)
     handle(shred, "GpioError");
   *(M_Object*)RETURN = o;
 }
 
 static MFUN(gw_gpio_open_advanced) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   unsigned int arg3 = (unsigned int)*(m_int*)MEM(SZ_INT*2);
-  gpio_config_t * arg4 = *(gpio_config_t **)MEM(SZ_INT*3);
-  if(gpio_open_advanced(arg1,(char const *)arg2,arg3,(struct gpio_config const *)arg4) < 0)
+  M_Object temp4 = *(M_Object*)MEM(SZ_INT*3);
+  gpio_config_t * arg4 = GW_gpio_config_t(temp4);
+  if(gpio_open_advanced(gpio,(char const *)arg2,arg3,(struct gpio_config const *)arg4) < 0)
     handle(shred, "GpioError");
   *(M_Object*)RETURN = o;
 }
 
 static MFUN(gw_gpio_open_name_advanced) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   M_Object temp3 = *(M_Object*)MEM(SZ_INT*2);
   char * arg3 = (char *)STRING(temp3);
-  gpio_config_t * arg4 = *(gpio_config_t **)MEM(SZ_INT*3);
-  if(gpio_open_name_advanced(arg1,(char const *)arg2,(char const *)arg3,(struct gpio_config const *)arg4) < 0)
+  M_Object temp4 = *(M_Object*)MEM(SZ_INT*3);
+  gpio_config_t * arg4 = GW_gpio_config_t(temp4);
+  if(gpio_open_name_advanced(gpio,(char const *)arg2,(char const *)arg3,(struct gpio_config const *)arg4) < 0)
     handle(shred, "GpioError");
   *(M_Object*)RETURN = o;
 }
 
 static MFUN(gw_gpio_open_sysfs) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   unsigned int arg2 = (unsigned int)*(m_int*)MEM(SZ_INT);
   gpio_direction_t arg3 = *(gpio_direction_t*)MEM(SZ_INT*2);
-  if(gpio_open_sysfs(arg1,arg2,arg3) < 0)
+  if(gpio_open_sysfs(gpio,arg2,arg3) < 0)
     handle(shred, "GpioError");
   *(M_Object*)RETURN = o;
 }
@@ -168,9 +163,9 @@ static MFUN(gw_gpio_read) {
 }
 
 static MFUN(gw_gpio_write) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   bool arg2 = (bool)*(m_int*)MEM(SZ_INT);
-  if(gpio_write(arg1,arg2) < 0)
+  if(gpio_write(gpio,arg2) < 0)
     handle(shred, "GpioError");
 }
 
@@ -203,15 +198,10 @@ static MFUN(gw_gpio_poll) {
   thrd_detach(thrd);
 }
 
-static MFUN(gw_gpio_close) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
-  int result = (int)gpio_close(arg1);
-  *(m_int*)RETURN = (m_int)result;
-}
-
 static MFUN(gw_gpio_free) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
-  gpio_free(arg1);
+  gpio_t * gpio = *(gpio_t **)(o->data);
+  (void)gpio_close(gpio);
+  gpio_free(gpio);
 }
 
 static MFUN(gw_gpio_read_event) {
@@ -224,161 +214,161 @@ static MFUN(gw_gpio_read_event) {
 }
 /*
 static MFUN(gw_gpio_poll_multiple) {
-  gpio_t ** arg1 = ARRAY_PTR(o);
+  gpio_t ** gpio = ARRAY_PTR(o);
   size_t arg2 = (size_t)*(m_int*)MEM(SZ_INT);
   int arg3 = (int)*(m_int*)MEM(SZ_INT*2);
 //  bool * arg4 = *(bool **)MEM(SZ_INT*3);
-  if(gpio_poll_multiple(arg1,arg2,arg3,arg4) < 0)
+  if(gpio_poll_multiple(gpio,arg2,arg3,arg4) < 0)
     handle(shred, "GpioError");
 }
 */
 static MFUN(gw_gpio_get_direction) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_direction_t arg2;
-  if(gpio_get_direction(arg1, &arg2) < 0)
+  if(gpio_get_direction(gpio, &arg2) < 0)
     handle(shred, "GpioError");
   *(m_int*)RETURN = arg2;
 }
 
 static MFUN(gw_gpio_get_edge) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_edge_t arg2;
-  if(gpio_get_edge(arg1, &arg2) < 0)
+  if(gpio_get_edge(gpio, &arg2) < 0)
     handle(shred, "GpioError");
   *(m_int*)RETURN = arg2;
 }
 
 static MFUN(gw_gpio_get_bias) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_bias_t arg2;
-  if(gpio_get_bias(arg1, &arg2) < 0)
+  if(gpio_get_bias(gpio, &arg2) < 0)
     handle(shred, "GpioError");
   *(m_int*)RETURN = arg2;
 }
 
 static MFUN(gw_gpio_get_drive) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_drive_t arg2;
-  if(gpio_get_drive(arg1, &arg2) < 0)
+  if(gpio_get_drive(gpio, &arg2) < 0)
     handle(shred, "GpioError");
   *(m_int*)RETURN = arg2;
 }
 
 static MFUN(gw_gpio_get_inverted) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   bool arg2;
-  if(gpio_get_inverted(arg1, &arg2) < 0)
+  if(gpio_get_inverted(gpio, &arg2) < 0)
     handle(shred, "GpioError");
   *(m_int*)RETURN = arg2;
 }
 
 static MFUN(gw_gpio_set_direction) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_direction_t arg2 = *(gpio_direction_t*)MEM(SZ_INT);
-  if(gpio_set_direction(arg1,arg2) < 0)
+  if(gpio_set_direction(gpio,arg2) < 0)
     handle(shred, "GpioError");
 }
 
 static MFUN(gw_gpio_set_edge) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_edge_t arg2 = *(gpio_edge_t*)MEM(SZ_INT);
-  if(gpio_set_edge(arg1,arg2) < 0)
+  if(gpio_set_edge(gpio,arg2) < 0)
     handle(shred, "GpioError");
 }
 
 static MFUN(gw_gpio_set_bias) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_bias_t arg2 = *(gpio_bias_t*)MEM(SZ_INT);
-  if(gpio_set_bias(arg1,arg2) < 0)
+  if(gpio_set_bias(gpio,arg2) < 0)
     handle(shred, "GpioError");
 }
 
 static MFUN(gw_gpio_set_drive) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   gpio_drive_t arg2 = *(gpio_drive_t*)MEM(SZ_INT);
-  if(gpio_set_drive(arg1,arg2) < 0)
+  if(gpio_set_drive(gpio,arg2) < 0)
     handle(shred, "GpioError");
 }
 
 static MFUN(gw_gpio_set_inverted) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   bool arg2 = (bool)*(m_int*)MEM(SZ_INT);
-  if(gpio_set_inverted(arg1,arg2) < 0)
+  if(gpio_set_inverted(gpio,arg2) < 0)
     handle(shred, "GpioError");
 }
 
 static MFUN(gw_gpio_line) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
-  unsigned int result = (unsigned int)gpio_line(arg1);
+  gpio_t * gpio = *(gpio_t **)(o->data);
+  unsigned int result = (unsigned int)gpio_line(gpio);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_gpio_fd) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
-  int result = (int)gpio_fd(arg1);
+  gpio_t * gpio = *(gpio_t **)(o->data);
+  int result = (int)gpio_fd(gpio);
   *(m_int*)RETURN = (m_int)result;
 }
 /*
 static MFUN(gw_gpio_name) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   size_t arg3 = (size_t)*(m_int*)MEM(SZ_INT*2);
-  int result = (int)gpio_name(arg1,arg2,arg3);
+  int result = (int)gpio_name(gpio,arg2,arg3);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_gpio_label) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   size_t arg3 = (size_t)*(m_int*)MEM(SZ_INT*2);
-  int result = (int)gpio_label(arg1,arg2,arg3);
+  int result = (int)gpio_label(gpio,arg2,arg3);
   *(m_int*)RETURN = (m_int)result;
 }
 */
 static MFUN(gw_gpio_chip_fd) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
-  int result = (int)gpio_chip_fd(arg1);
+  gpio_t * gpio = *(gpio_t **)(o->data);
+  int result = (int)gpio_chip_fd(gpio);
   *(m_int*)RETURN = (m_int)result;
 }
 /*
 static MFUN(gw_gpio_chip_name) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   size_t arg3 = (size_t)*(m_int*)MEM(SZ_INT*2);
-  int result = (int)gpio_chip_name(arg1,arg2,arg3);
+  int result = (int)gpio_chip_name(gpio,arg2,arg3);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_gpio_chip_label) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   size_t arg3 = (size_t)*(m_int*)MEM(SZ_INT*2);
-  int result = (int)gpio_chip_label(arg1,arg2,arg3);
+  int result = (int)gpio_chip_label(gpio,arg2,arg3);
   *(m_int*)RETURN = (m_int)result;
 }
 */
 static MFUN(gw_gpio_tostring) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
+  gpio_t * gpio = *(gpio_t **)(o->data);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   size_t arg3 = (size_t)*(m_int*)MEM(SZ_INT*2);
-  int result = (int)gpio_tostring(arg1,arg2,arg3);
+  int result = (int)gpio_tostring(gpio,arg2,arg3);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_gpio_errno) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
-  int result = (int)gpio_errno(arg1);
+  gpio_t * gpio = *(gpio_t **)(o->data);
+  int result = (int)gpio_errno(gpio);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_gpio_errmsg) {
-  gpio_t * arg1 = *(gpio_t **)(o->data);
-  char const * result = (char *)gpio_errmsg(arg1);
+  gpio_t * gpio = *(gpio_t **)(o->data);
+  char const * result = (char *)gpio_errmsg(gpio);
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)result ?: (m_str)"");
 }
 
@@ -488,8 +478,8 @@ GWION_IMPORT(Gpio) {
   CHECK_BB(gwi_func_ini(gwi, "void", "poll"));
   CHECK_BB(gwi_func_arg(gwi, "int", "timeout_ms"));
   CHECK_BB(gwi_func_end(gwi, gw_gpio_poll, ae_flag_none));
-  CHECK_BB(gwi_func_ini(gwi, "int", "close"));
-  CHECK_BB(gwi_func_end(gwi, gw_gpio_close, ae_flag_none));
+//  CHECK_BB(gwi_func_ini(gwi, "int", "close"));
+//  CHECK_BB(gwi_func_end(gwi, gw_gpio_close, ae_flag_none));
 
 // this works only if sizeof(void*) == sizeof(uint64_t);
   CHECK_BB(gwi_func_ini(gwi, "Edge", "read_event"));
