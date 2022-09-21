@@ -121,7 +121,7 @@ static DTOR(gw_i2c_dtor) {
 static MFUN(gw_i2c_ctor) {
   const M_Object bus_name = *(M_Object*)MEM(SZ_INT);
   int bus;
-  if ((bus = i2c_open(bus_name)) == -1)
+  if ((bus = i2c_open(STRING(bus_name))) == -1)
     return handle(shred, "I2CBusError");
   I2CDevice *dev = GW_I2CDevice(o);
   i2c_init_device(dev); // optimize call out
@@ -252,7 +252,7 @@ GWION_IMPORT(I2C) {
   CHECK_BB(gwi_func_end(gwi, gw_i2c_select, ae_flag_static));
 */
   gwidoc(gwi, "for I2Cs using ioctl");
-  GWI_OB(gwi_class_ini(gwi, "I2C", "Object"));
+  GWI_OB(gwi_class_ini(gwi, "Ioctl", "I2C"));
   CHECK_BB(gwi_func_ini(gwi, "int", "ioctl_read"));
   CHECK_BB(gwi_func_arg(gwi, "int", "iaddr"));
   CHECK_BB(gwi_func_arg(gwi, "u8[]", "buf"));
