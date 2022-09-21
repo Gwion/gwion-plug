@@ -119,12 +119,8 @@ static DTOR(gw_i2c_dtor) {
 }
 
 static MFUN(gw_i2c_ctor) {
-  int bus_num = (int)*(m_int*)MEM(SZ_INT);
+  const M_Object bus_name = *(M_Object*)MEM(SZ_INT);
   int bus;
-  char bus_name[32];
-  memset(bus_name, 0, sizeof(bus_name));
-  if (snprintf(bus_name, sizeof(bus_name), "/dev/i2c-%u", bus_num) < 0)
-    return handle(shred, "I2CNameError");
   if ((bus = i2c_open(bus_name)) == -1)
     return handle(shred, "I2CBusError");
   I2CDevice *dev = GW_I2CDevice(o);
@@ -230,7 +226,7 @@ GWION_IMPORT(I2C) {
   CHECK_BB(gwi_func_ini(gwi, "int", "iaddr_bytes"));
   CHECK_BB(gwi_func_end(gwi, gw_I2CDevice_iaddr_bytes_get, ae_flag_none));
   CHECK_BB(gwi_func_ini(gwi, "auto", "new"));
-  CHECK_BB(gwi_func_arg(gwi, "int", "bus"));
+  CHECK_BB(gwi_func_arg(gwi, "string", "bus"));
   CHECK_BB(gwi_func_arg(gwi, "int", "addr"));
   CHECK_BB(gwi_func_arg(gwi, "int", "iaddr_bytes"));
   CHECK_BB(gwi_func_arg(gwi, "int", "page_bytes"));
