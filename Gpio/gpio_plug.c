@@ -193,6 +193,7 @@ static MFUN(gw_gpio_poll) {
   pd->shred = shred;
   pd->gpio = *(gpio_t **)(o->data);
   pd->timeout_ms = (int)*(m_int*)MEM(SZ_INT);
+  shreduler_remove(shred->tick->shreduler, shred, 0);
   thrd_t thrd;
   thrd_create(&thrd, threaded_gpio_poll, pd);
   thrd_detach(thrd);
@@ -442,9 +443,6 @@ GWION_IMPORT(Gpio) {
   CHECK_BB(gwi_func_end(gwi, gw_gpio_config_t_label_get, ae_flag_none));
   CHECK_BB(gwi_class_end(gwi)); // gpio_config_t
 
-// should be ctor?
-//  CHECK_BB(gwi_func_ini(gwi, "auto", "new"));
-//  CHECK_BB(gwi_func_end(gwi, gw_gpio_new, ae_flag_none));
   CHECK_BB(gwi_func_ini(gwi, "auto", "new"));
   CHECK_BB(gwi_func_arg(gwi, "string", "path"));
   CHECK_BB(gwi_func_arg(gwi, "int", "line"));
@@ -478,13 +476,12 @@ GWION_IMPORT(Gpio) {
   CHECK_BB(gwi_func_ini(gwi, "void", "poll"));
   CHECK_BB(gwi_func_arg(gwi, "int", "timeout_ms"));
   CHECK_BB(gwi_func_end(gwi, gw_gpio_poll, ae_flag_none));
-//  CHECK_BB(gwi_func_ini(gwi, "int", "close"));
-//  CHECK_BB(gwi_func_end(gwi, gw_gpio_close, ae_flag_none));
 
 // this works only if sizeof(void*) == sizeof(uint64_t);
-  CHECK_BB(gwi_func_ini(gwi, "Edge", "read_event"));
-  CHECK_BB(gwi_func_arg(gwi, "&int", "timestamp"));
-  CHECK_BB(gwi_func_end(gwi, gw_gpio_read_event, ae_flag_none));
+//  CHECK_BB(gwi_func_ini(gwi, "Edge", "read_event"));
+//  CHECK_BB(gwi_func_arg(gwi, "&int", "timestamp"));
+//  CHECK_BB(gwi_func_end(gwi, gw_gpio_read_event, ae_flag_none));
+
 /*
   CHECK_BB(gwi_func_ini(gwi, "int", "poll_multiple"));
   CHECK_BB(gwi_func_arg(gwi, "int", "count"));
