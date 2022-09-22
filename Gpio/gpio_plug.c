@@ -182,6 +182,7 @@ static int threaded_gpio_poll(void *data) {
   gpio_t *gpio = pd->gpio;
   const int timeout_ms = pd->timeout_ms;
   mp_free2(shred->info->mp, sizeof(struct poll_data), data);
+printf("[THRD] shred:%p gpio:%p timeout_ms:%i\n", shred, gpio, timeout_ms);
   const m_bool ret = gpio_poll(gpio, timeout_ms);
   if(ret >= 0) shredule(shred->tick->shreduler, shred, GWION_EPSILON);
   else handle(shred, "GpioError");
@@ -193,6 +194,7 @@ static MFUN(gw_gpio_poll) {
   pd->shred = shred;
   pd->gpio = *(gpio_t **)(o->data);
   pd->timeout_ms = (int)*(m_int*)MEM(SZ_INT);
+printf("[MFUN] shred:%p gpio:%p timeout_ms:%i (object:%p)\n", pd->shred, pd->gpio, pd->timeout_ms, o);
   shreduler_remove(shred->tick->shreduler, shred, 0);
   thrd_t thrd;
   thrd_create(&thrd, threaded_gpio_poll, pd);
