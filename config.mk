@@ -17,7 +17,11 @@ CFLAGS   += -Wall -Wextra
 LDFLAGS  += -shared -fPIC
 AUTO_INSTALL_DEPS ?= 0
 
+ifneq (${BUILD_ON_WINDOWS}, 1)
 NAME = $(shell basename `pwd`)
+else
+NAME = $(shell for /F %i in ("%cd%") do @echo %~ni)
+end
 
 ifeq (${BUILD_ON_WINDOWS}, 1)
 CFLAGS += -DBUILD_ON_WINDOWS=1
