@@ -265,6 +265,5 @@ GWION_IMPORT(I2C) {
   gwi_class_end(gwi);
   gwi_class_xtor(gwi, NULL, gw_i2c_dtor);
   gwi_class_end(gwi);
-  gwi_class_end(gwi);
   return GW_OK;
 }
