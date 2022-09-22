@@ -36,80 +36,69 @@ static MFUN(gw_I2CDevice_addr_set) {
 }
 
 static MFUN(gw_I2CDevice_addr_get) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned short result = (unsigned short) ((arg1)->addr);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_I2CDevice_tenbit_set) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   const M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   unsigned char arg2 = *(unsigned char*)(temp2->data);
   if (arg1) (arg1)->tenbit = arg2;
 }
 
 static MFUN(gw_I2CDevice_tenbit_get) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned char result = (unsigned char) ((arg1)->tenbit);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_I2CDevice_delay_set) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   const M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   unsigned char arg2 = *(unsigned char*)(temp2->data);
   if (arg1) (arg1)->delay = arg2;
 }
 
 static MFUN(gw_I2CDevice_delay_get) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned char result = (unsigned char) ((arg1)->delay);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_I2CDevice_flags_set) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned short arg2 = *(m_int*)MEM(SZ_INT); // could be u16
   if (arg1) (arg1)->flags = arg2;
 }
 
 static MFUN(gw_I2CDevice_flags_get) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned short result = (unsigned short) ((arg1)->flags);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_I2CDevice_page_bytes_set) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned int arg2 = (unsigned int)*(m_int*)MEM(0+SZ_INT);
   if (arg1) (arg1)->page_bytes = arg2;
 }
 
 static MFUN(gw_I2CDevice_page_bytes_get) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned int result = (unsigned int) ((arg1)->page_bytes);
   *(m_int*)RETURN = (m_int)result;
 }
 
 static MFUN(gw_I2CDevice_iaddr_bytes_set) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned int arg2 = (unsigned int)*(m_int*)MEM(0+SZ_INT);
   if (arg1) (arg1)->iaddr_bytes = arg2;
 }
 
 static MFUN(gw_I2CDevice_iaddr_bytes_get) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  struct i2c_device * arg1 = *(struct i2c_device **)(temp1->data);
+  I2CDevice *arg1 = GW_I2CDevice(o);
   unsigned int result = (unsigned int) ((arg1)->iaddr_bytes);
   *(m_int*)RETURN = (m_int)result;
 }
@@ -133,8 +122,7 @@ static MFUN(gw_i2c_ctor) {
 }
 /*
 static MFUN(gw_i2c_get_device_desc) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  I2CDevice * arg1 = *(I2CDevice **)(temp1->data);
+  I2CDevice * arg1 = GW_I2CDevice(o);
   M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   char * arg2 = (char *)STRING(temp2);
   size_t arg3 = (size_t)*(m_int*)MEM(0+SZ_INT+SZ_INT);
@@ -152,8 +140,7 @@ static MFUN(gw_i2c_select) {
 */
 
 static MFUN(gw_i2c_read) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  I2CDevice * arg1 = *(I2CDevice **)(temp1->data);
+  I2CDevice * arg1 = GW_I2CDevice(o);
   unsigned int arg2 = (unsigned int)*(m_int*)MEM(SZ_INT);
   const M_Vector array = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   ssize_t result = i2c_read((struct i2c_device const *)arg1,arg2,(void*)ARRAY_PTR(array), ARRAY_LEN(array));
@@ -161,8 +148,7 @@ static MFUN(gw_i2c_read) {
 }
 
 static MFUN(gw_i2c_write) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  I2CDevice * arg1 = *(I2CDevice **)(temp1->data);
+  I2CDevice * arg1 = GW_I2CDevice(o);
   unsigned int arg2 = (unsigned int)*(m_int*)MEM(SZ_INT);
   const M_Vector array = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   ssize_t result = i2c_write((struct i2c_device const *)arg1,arg2,(void const *)ARRAY_PTR(array), ARRAY_LEN(array));
@@ -170,8 +156,7 @@ static MFUN(gw_i2c_write) {
 }
 
 static MFUN(gw_i2c_ioctl_read) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  I2CDevice * arg1 = *(I2CDevice **)(temp1->data);
+  I2CDevice * arg1 = GW_I2CDevice(o);
   unsigned int arg2 = (unsigned int)*(m_int*)MEM(SZ_INT);
   const M_Vector array = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   ssize_t result = i2c_ioctl_read((struct i2c_device const *)arg1,arg2,(void*)ARRAY_PTR(array), ARRAY_LEN(array));
@@ -179,8 +164,7 @@ static MFUN(gw_i2c_ioctl_read) {
 }
 
 static MFUN(gw_i2c_ioctl_write) {
-  const M_Object temp1 = *(M_Object*)MEM(0);
-  I2CDevice * arg1 = *(I2CDevice **)(temp1->data);
+  I2CDevice * arg1 = GW_I2CDevice(o);
   unsigned int arg2 = (unsigned int)*(m_int*)MEM(SZ_INT);
   const M_Vector array = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   ssize_t result = i2c_ioctl_write((struct i2c_device const *)arg1,arg2,(void const*)ARRAY_PTR(array), ARRAY_LEN(array));
