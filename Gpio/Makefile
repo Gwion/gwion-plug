@@ -1,6 +1,6 @@
 include ../config.mk
 
-CFLAGS += -Ic-periphery/include
+CFLAGS += -Ic-periphery/src
 SRC += c-periphery/src/gpio.c
 
 all:

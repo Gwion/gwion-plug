@@ -9,7 +9,7 @@
 #include "import.h"
 #include "gwi.h"
 
-#include "periphery/gpio.h"
+#include "gpio.h"
 
 
 #include <string.h>
