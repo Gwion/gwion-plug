@@ -1,7 +1,10 @@
 include ../config.mk
 
-LDFLAGS += -lperiphery
+CFLAGS += -Ic-periphery/include
+SRC += c-periphery/src/gpio.c
 
-all: ${NAME}.so
+all:
+	[ -d c-periphery ] || git clone https://github.com/vsergeev/c-periphery/ || true
+	${MAKE} ${NAME}.so
 
 include ../config_post.mk
