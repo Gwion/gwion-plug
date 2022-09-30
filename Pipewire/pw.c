@@ -744,7 +744,7 @@ ANN static void clear(struct data *data) {
 /*static */SFUN(gwpw_link) {
   struct data data = {};
   if(!start(&data)) {
-    handle(shred, "PwInit");
+    xfun_handle(shred, SZ_INT*2, "PwInit");
     return;
   }
   regex_t out_port_regex;
@@ -756,14 +756,14 @@ ANN static void clear(struct data *data) {
   if (regcomp(&in_port_regex, data.opt_input, REG_EXTENDED | REG_NOSUB) == 0)
                 data.in_regex = &in_port_regex;
   if (do_link_ports(&data) < 0)
-    handle(shred, "PwLink");
+    xfun_handle(shred, SZ_INT*2, "PwLink");
   clear(&data);
 }
 
 /*static */SFUN(gwpw_unlink) {
   struct data data = { .opt_mode = MODE_DISCONNECT };
   if(!start(&data)) {
-    handle(shred, "PwInit");
+    xfun_handle(shred, SZ_INT*2, "PwInit");
     return;
   }
   regex_t out_port_regex;
@@ -775,7 +775,7 @@ ANN static void clear(struct data *data) {
   if (regcomp(&in_port_regex, data.opt_input, REG_EXTENDED | REG_NOSUB) == 0)
                 data.in_regex = &in_port_regex;
   if (do_unlink_ports(&data) < 0) {
-    handle(shred, "PwLink");
+    xfun_handle(shred, SZ_INT*2, "PwLink");
   }
   if (data.out_regex)
     regfree(data.out_regex);
@@ -787,7 +787,7 @@ ANN static void clear(struct data *data) {
 /*static */SFUN(gwpw_list) {
   struct data data = { .opt_mode = *(uint32_t*)MEM(0) };
   if(!start(&data)) {
-    handle(shred, "PwInit");
+    xfun_handle(shred, SZ_INT, "PwInit");
     return;
   }
   if ((data.opt_mode & (MODE_LIST_PORTS|MODE_LIST_LINKS)) == MODE_LIST_LINKS)
