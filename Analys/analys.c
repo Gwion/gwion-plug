@@ -101,7 +101,7 @@ static MFUN(fft_init) {
   Fft* ana = (Fft*)UGEN(o)->module.gen.data;
   m_int size = *(m_int*)MEM(SZ_INT);
   if(size <= 0 || size % 2) {
-    handle(shred, "FftInvalidSizehandleion.");
+    xfun_handle(shred, SZ_INT*2, "FftInvalidSizehandleion.");
     return;
   }
   if(ana->buf)
