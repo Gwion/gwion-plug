@@ -106,16 +106,16 @@ ANN static void min_init(struct MidiIn *min, const M_Object o) {
   m_vector_init(&min->msgs, 4 * sizeof(m_bit), 0);
 }
 
-#define MIN_INIT(name, open)                        \
-static MFUN(rtmidiin_##name) {                      \
-  *(M_Object*)RETURN = o;                           \
-  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT); \
-  try {                                             \
-    min_init(min, o);                               \
-    min->in->open;                                  \
-  } catch (RtMidiError &e) {                        \
-    handle(shred, (m_str)"MidiInException");        \
-  }                                                 \
+#define MIN_INIT(name, open)                              \
+static MFUN(rtmidiin_##name) {                            \
+  *(M_Object*)RETURN = o;                                 \
+  struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);       \
+  try {                                                   \
+    min_init(min, o);                                     \
+    min->in->open;                                        \
+  } catch (RtMidiError &e) {                              \
+    xfun_handle(shred, SZ_INT, (m_str)"MidiInException"); \
+  }                                                       \
 }
 
 MIN_INIT(new0, openPort())
@@ -175,9 +175,9 @@ static SFUN(rtmidi##io##_count) {\
     RtMidi##IO io(RtMidi::Api::UNSPECIFIED, "Gwion " #IO);\
    *(m_int*)RETURN = io.getPortCount();\
   } catch (RtMidiError &e) {\
-    handle(shred, (m_str)"MidiOutException");\
+    xfun_handle(shred, 0, (m_str)"MidiOutException");\
   }\
-}\
+} \
 \
 static SFUN(rtmidi##io##_name) {                                                   \
   try{\
@@ -185,7 +185,7 @@ static SFUN(rtmidi##io##_name) {                                                
     std::string str = io.getPortName(*(m_int*)MEM(0));                           \
     *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)str.data()); \
   } catch (RtMidiError &e) {\
-    handle(shred, (m_str)"MidiOutException");\
+    xfun_handle(shred, SZ_INT, (m_str)"MidiOutException");\
   }\
 	}                                                                              \
 \
@@ -202,7 +202,7 @@ static SFUN(rtmidi##io##_names) {\
     }\
     *(M_Object*)RETURN = ret;\
   } catch (RtMidiError &e) {\
-    handle(shred, (m_str)"MidiOutException");\
+    xfun_handle(shred, 0, (m_str)"MidiOutException");\
   }\
 }\
 
@@ -225,7 +225,7 @@ static MFUN(rtmidiout_send) {
   try {
     out->sendMessage(&msg);
   } catch (RtMidiError &e) {
-    handle(shred, (m_str)"MidiOutException");
+    xfun_handle(shred, SZ_INT, (m_str)"MidiOutException");
   }
   ARRAY_LEN(array) = 0;
 }
@@ -239,7 +239,7 @@ static MFUN(rtmidiout_##name) {                                \
     mout->setErrorCallback(error_callback, o);                 \
     mout->open;                                                \
   } catch (RtMidiError &e) {                                   \
-    handle(shred, (m_str)"MidiOutException");                  \
+    xfun_handle(shred, 0, (m_str)"MidiOutException");                  \
   }                                                            \
 }
 
