@@ -83,8 +83,10 @@ static DTOR(gw_i2c_dtor) {
 static MFUN(gw_i2c_ctor) {
   const M_Object bus_name = *(M_Object*)MEM(SZ_INT);
   int bus;
-  if ((bus = i2c_open(STRING(bus_name))) == -1)
-    return handle(shred, "I2CBusError");
+  if ((bus = i2c_open(STRING(bus_name))) == -1) {
+    xfun_handle(shred, SZ_INT*5, "I2CBusError");
+    return;
+  }
   I2CDevice *dev = GW_I2CDevice(o);
   i2c_init_device(dev); // optimize call out
   dev->bus = bus;
@@ -115,9 +117,9 @@ static MFUN(gw_i2c_select) {
 static MFUN(gw_i2c_read1) {
   unsigned int iaddr = *(m_int*)MEM(SZ_INT);
   uint8_t value;
-  if(i2c_read(GW_I2CDevice(o), iaddr, &value, 1) < 0)
-    handle(shred, "I2CWriteError");
-  *(m_int*)RETURN = value;
+  if(i2c_read(GW_I2CDevice(o), iaddr, &value, 1) >= 0)
+    *(m_int*)RETURN = value;
+  else xfun_handle(shred, SZ_INT*2, "I2CWriteError");
 }
 
 static MFUN(gw_i2c_read) {
@@ -128,27 +130,27 @@ static MFUN(gw_i2c_read) {
   *(M_Object*)RETURN = array;
   void *buf = ARRAY(array);
   if(i2c_read(GW_I2CDevice(o), iaddr, buf, len) < 0)
-    handle(shred, "I2CWriteError");
+    xfun_handle(shred, SZ_INT*3, "I2CWriteError");
 }
 
 static MFUN(gw_i2c_write1) {
   unsigned int iaddr = (unsigned int)*(m_int*)MEM(SZ_INT);
   if(i2c_write(GW_I2CDevice(o), iaddr, (void const*)MEM(SZ_INT*2), 1) < 0)
-    handle(shred, "I2CWriteError");
+    xfun_handle(shred, SZ_INT*3, "I2CWriteError");
 }
 
 static MFUN(gw_i2c_write) {
   unsigned int iaddr = (unsigned int)*(m_int*)MEM(SZ_INT);
   const M_Vector array = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   if(i2c_write(GW_I2CDevice(o), iaddr,(void const *)ARRAY_PTR(array), ARRAY_LEN(array)) < 0)
-    handle(shred, "I2CWriteError");
+    xfun_handle(shred, SZ_INT*3, "I2CWriteError");
 }
 
 static MFUN(gw_i2c_ioctl_read1) {
   unsigned int iaddr = *(m_int*)MEM(SZ_INT);
   uint8_t value;
   if(i2c_ioctl_read(GW_I2CDevice(o), iaddr, &value, 1) < 0)
-    handle(shred, "I2CReadError");
+    xfun_handle(shred, SZ_INT*2, "I2CReadError");
   *(m_int*)RETURN = value;
 }
 
@@ -160,20 +162,20 @@ static MFUN(gw_i2c_ioctl_read) {
   *(M_Object*)RETURN = array;
   void *buf = ARRAY(array);
   if(i2c_ioctl_read(GW_I2CDevice(o), iaddr, buf, len) < 0)
-    handle(shred, "I2CReadError");
+    xfun_handle(shred, SZ_INT*3, "I2CReadError");
 }
 
 static MFUN(gw_i2c_ioctl_write1) {
   unsigned int iaddr = *(m_int*)MEM(SZ_INT);
   if(i2c_ioctl_write(GW_I2CDevice(o), iaddr,(void const*)MEM(SZ_INT*2), 1) < 0)
-    handle(shred, "I2CWriteError");
+    xfun_handle(shred, SZ_INT*2, "I2CWriteError");
 }
 
 static MFUN(gw_i2c_ioctl_write) {
   unsigned int iaddr = *(m_int*)MEM(SZ_INT);
   const M_Vector array = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   if(i2c_ioctl_write(GW_I2CDevice(o), iaddr,(void const*)ARRAY_PTR(array), ARRAY_LEN(array)) < 0)
-    handle(shred, "I2CWriteError");
+    xfun_handle(shred, SZ_INT*3, "I2CWriteError");
 }
 
 GWION_IMPORT(I2C) {
