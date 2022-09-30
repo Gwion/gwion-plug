@@ -20,14 +20,10 @@
 #include "gwion.h"
 #include "fmsynth.h"
 
-#define SYNTH(o) *(fmsynth_t**)(o->data + SZ_INT)
-#define NAME(o) *(M_Object*)(o->data + SZ_INT*2)
-#define AUTHOR(o) *(M_Object*)(o->data + SZ_INT*3)
+#define SYNTH(o) UGEN(o)->module.gen.data
+#define NAME(o) *(M_Object*)(o->data + SZ_INT)
+#define AUTHOR(o) *(M_Object*)(o->data + SZ_INT*2)
 #define POLYPHONY 64
-
-static inline void set_synth(M_Object o, fmsynth_t* t) {
-  UGEN(o)->module.gen.data = SYNTH(o) = t;
-}
 
 static TICK(fmsynth_tick) {
   float left = 0.;
@@ -38,21 +34,8 @@ static TICK(fmsynth_tick) {
   u->out = (m_float)((left + right) / 2);
 }
 
-static CTOR(ctor) {
-  NAME(o) = new_string(shred->info->vm->gwion, "name");
-  AUTHOR(o) = new_string(shred->info->vm->gwion, "author");
-  SYNTH(o) = fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY);
-  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
-  ugen_gen(shred->info->vm->gwion, UGEN(o), fmsynth_tick, SYNTH(o), 0);
-}
-
 static DTOR(dtor) {
   fmsynth_free(SYNTH(o));
-}
-
-static MFUN(init) {
-  fmsynth_free(SYNTH(o));
-  set_synth(o, fmsynth_new(shred->info->vm->bbq->si->sr, *(m_uint*)MEM(SZ_INT)));
 }
 
 static MFUN(parameter) {
@@ -97,8 +80,7 @@ static MFUN(load) {
   const m_uint size = fmsynth_preset_size();
   char* buf[size];
   struct fmsynth_preset_metadata metadata;
-  fmsynth_free(SYNTH(o));
-  const m_str filename = STRING( *(M_Object*)MEM(SZ_INT) );
+  const m_str filename = STRING(*(M_Object*)MEM(SZ_INT));
   FILE* file = fopen(filename, "r");
 
   if(!file) {
@@ -110,14 +92,14 @@ static MFUN(load) {
     *(m_uint*)RETURN = -1;
     return;
   }
-  set_synth(o, fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY));
   fclose(file);
+  SYNTH(o) = fmsynth_new(shred->info->vm->bbq->si->sr, POLYPHONY);
+  ugen_ini(shred->info->vm->gwion, UGEN(o), 0, 2);
+  ugen_gen(shred->info->vm->gwion, UGEN(o), fmsynth_tick, SYNTH(o), 0);
   *(m_uint*)RETURN = fmsynth_preset_load(SYNTH(o), &metadata,
       buf, fmsynth_preset_size());
-//  free(STRING(NAME(o)));
-//  free(STRING(AUTHOR(o)));
-//  STRING(NAME(o)) = s_name(insert_symbol(strdup(metadata.name)));
-//  STRING(AUTHOR(o)) = strdup(metadata.author);
+  NAME(o) = new_string(shred->info->vm->gwion, metadata.name);
+  AUTHOR(o) = new_string(shred->info->vm->gwion, metadata.author);
   STRING(NAME(o)) = metadata.name;
   STRING(AUTHOR(o)) = metadata.author;
 }
@@ -130,7 +112,7 @@ static MFUN(save) {
     *(m_uint*)RETURN = -1;
     return;
   }
-  void* buf;
+  char buf[1024];
   struct fmsynth_preset_metadata metadata = {};
   strcpy(metadata.name, STRING(NAME(o)));
   strcpy(metadata.author, STRING(AUTHOR(o)));
@@ -147,8 +129,8 @@ static MFUN(save) {
 
 GWION_IMPORT(fmsynth) {
   DECL_OB(const Type, t_fmsynth, = gwi_class_ini(gwi, "FMSynth", "UGen"));
-  gwi_class_xtor(gwi, ctor, dtor);
-  t_fmsynth->nspc->offset += SZ_INT;
+  gwi_class_xtor(gwi, NULL, dtor);
+  t_fmsynth->nspc->offset += SZ_INT*2;
   gwi_item_ini(gwi,"string", "name");
   gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"string", "author");
@@ -219,9 +201,6 @@ GWION_IMPORT(fmsynth) {
   gwi_item_ini(gwi,"int", "UNKNOWN");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, FMSYNTH_STATUS_MESSAGE_UNKNOWN);
 
-  gwi_func_ini(gwi, "void", "init");
-    gwi_func_arg(gwi, "int", "plyphony");
-  GWI_BB(gwi_func_end(gwi, init, ae_flag_none));
   gwi_func_ini(gwi, "void", "parameter");
     gwi_func_arg(gwi, "int", "parameter");
     gwi_func_arg(gwi, "int", "operator_index");
@@ -251,7 +230,7 @@ GWION_IMPORT(fmsynth) {
   GWI_BB(gwi_func_end(gwi, bend, ae_flag_none));
   gwi_func_ini(gwi, "void", "release");
   GWI_BB(gwi_func_end(gwi, release_all, ae_flag_none));
-  gwi_func_ini(gwi, "int", "load");
+  gwi_func_ini(gwi, "auto", "new");
     gwi_func_arg(gwi, "string", "filename");
   GWI_BB(gwi_func_end(gwi, load, ae_flag_none));
   gwi_func_ini(gwi, "int", "save");
