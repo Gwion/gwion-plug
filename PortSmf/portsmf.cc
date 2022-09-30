@@ -114,7 +114,7 @@ static MFUN(midifile_event)
   m_int n     = *(m_int*)MEM(SZ_INT*2);
   Alg_track* tr = seq->track(track);
   if(track < 0 || track >= seq->tracks()) {
-    handle(shred, (m_str)"PortSmfTrackError");
+    xfun_handle(shred, SZ_INT*3, (m_str)"PortSmfTrackError");
     return;
   }
   M_Object obj = new_object(shred->info->mp, t_midifileev);
@@ -141,7 +141,7 @@ static MFUN(midifile_add_note)
   Alg_seq* seq = SEQ(o);
   M_Object obj = *(M_Object*)MEM(SZ_INT);
   if(TYPE(obj) != 'n')
-    handle(shred, (m_str)"not a note.");
+    xfun_handle(shred, SZ_INT*3, (m_str)"not a note.");
   Alg_note* ev = new Alg_note();
   ev->pitch = PITCH(obj);
   ev->loud  = LOUD(obj);
