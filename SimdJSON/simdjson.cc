@@ -128,12 +128,13 @@ static SFUN(simdjson_load) {
   const VM_Code code = *(VM_Code *)REG(SZ_INT);
   const M_Object ret = new_object(shred->info->mp, code->ret_type);
   *(M_Object *)RETURN = ret;
+  auto s = SIMDJSON(ret);
   try {
-    auto s = SIMDJSON(ret);
     s->parser = new dom::parser();
     s->element = s->parser->load(STRING(arg));
   } catch (const simdjson_error &e) {
-    handle(shred, (m_str)"SimdJSONLoad");
+    if(s->parser) delete s->parser;
+    xfun_handle(shred, SZ_INT, (m_str)"SimdJSONLoad");
   }
 }
 
@@ -142,37 +143,39 @@ static SFUN(simdjson_parse) {
   const VM_Code code = *(VM_Code *)REG(SZ_INT);
   const M_Object ret = new_object(shred->info->mp, code->ret_type);
   *(M_Object *)RETURN = ret;
+  auto s = SIMDJSON(ret);
   try {
-    auto s = SIMDJSON(ret);
     s->parser = new dom::parser();
     s->element = s->parser->parse(STRING(arg), strlen(STRING(arg)));
   } catch (const simdjson_error &e) {
-    handle(shred, (m_str)"SimdJSONParse");
+    if(s->parser) delete s->parser;
+    xfun_handle(shred, SZ_INT, (m_str)"SimdJSONParse");
   }
 }
 
 static MFUN(simdjson_new) {
   const M_Object arg = *(M_Object *)MEM(SZ_INT);
   *(M_Object *)RETURN = o;
+  auto s = SIMDJSON(o);
   try {
-    auto s = SIMDJSON(o);
     s->parser = new dom::parser();
     s->element = s->parser->parse(STRING(arg), strlen(STRING(arg)));
   } catch (const simdjson_error &e) {
-    handle(shred, (m_str)"SimdJSONOpen");
+    if(s->parser) delete s->parser;
+    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONOpen");
   }
 
 }
 
-#define getx(name, body)                         \
-static MFUN(simdjson_get##name) {                \
-  const M_Object arg = *(M_Object *)MEM(SZ_INT); \
-  const char *str = STRING(arg);                 \
-  try {                                          \
-    body                                         \
-  } catch (const simdjson_error &e) {            \
-    handle(shred, (m_str)"SimdJSONDocumentInvalid");     \
-  }                                              \
+#define getx(name, body)                                            \
+static MFUN(simdjson_get##name) {                                   \
+  const M_Object arg = *(M_Object *)MEM(SZ_INT);                    \
+  const char *str = STRING(arg);                                    \
+  try {                                                             \
+    body                                                            \
+  } catch (const simdjson_error &e) {                               \
+    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONDocumentInvalid"); \
+  }                                                                 \
 }
 
 getx(i,
@@ -201,15 +204,15 @@ getx(a,
    *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;)
 
-#define obj_getx(name, body)                     \
-static MFUN(simdjson_obj_get##name) {            \
-  const M_Object arg = *(M_Object *)MEM(SZ_INT); \
-  const char *str = STRING(arg);                 \
-  try {                                          \
-    body                                         \
-  } catch (const simdjson_error &e) {            \
-    handle(shred, (m_str)"SimdJSONObjectInvalid");     \
-  }                                              \
+#define obj_getx(name, body)                                      \
+static MFUN(simdjson_obj_get##name) {                             \
+  const M_Object arg = *(M_Object *)MEM(SZ_INT);                  \
+  const char *str = STRING(arg);                                  \
+  try {                                                           \
+    body                                                          \
+  } catch (const simdjson_error &e) {                             \
+    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONObjectInvalid"); \
+  }                                                               \
 }
 
 obj_getx(i,
@@ -238,22 +241,22 @@ obj_getx(a,
    *(dom::array**)ret->data = val;
    *(M_Object*)RETURN = ret;)
 
-#define arr_getx(name, body)                      \
-static MFUN(simdjson_arr_get##name) {             \
-  const size_t idx = *(m_int *)MEM(SZ_INT);       \
-  try {                                           \
-    auto iter = SIMDJSON_ARR(o).begin();          \
-    m_uint i = 0;                                 \
-    while(iter != SIMDJSON_ARR(o).end()) {        \
-      if(i == idx) {                              \
-        body                                      \
-      }                                           \
-      i++;                                        \
-      ++iter;                                     \
-    }                                             \
-  } catch (const simdjson_error &e) {             \
-    handle(shred, (m_str)"SimdJSONArrayInvalid"); \
-  }                                               \
+#define arr_getx(name, body)                                     \
+static MFUN(simdjson_arr_get##name) {                            \
+  const size_t idx = *(m_int *)MEM(SZ_INT);                      \
+  try {                                                          \
+    auto iter = SIMDJSON_ARR(o).begin();                         \
+    m_uint i = 0;                                                \
+    while(iter != SIMDJSON_ARR(o).end()) {                       \
+      if(i == idx) {                                             \
+        body                                                     \
+      }                                                          \
+      i++;                                                       \
+      ++iter;                                                    \
+    }                                                            \
+  } catch (const simdjson_error &e) {                            \
+    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONArrayInvalid"); \
+  }                                                              \
 }
 
 arr_getx(i,
@@ -287,7 +290,7 @@ static MFUN(Hydrate) {
   try {
     hydrate(shred->info->vm->gwion, shred, SIMDJSON(o)->element, code->ret_type, (m_bit*)RETURN);
   } catch (const simdjson_error &e) {
-    handle(shred, (m_str)"JsonHydrateError");
+    xfun_handle(shred, SZ_INT, (m_str)"JsonHydrateError");
   }
 }
 
