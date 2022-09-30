@@ -304,7 +304,7 @@ static MFUN(LiSa_new) {
   const m_int   voices   = *(m_int*)MEM(SZ_INT*2);
   const m_float length   = *(m_float*)MEM(SZ_INT*3);
   if(nchans < 0 || voices < 0 || length < 0) {
-    handle(shred, "InvalidLiSaInit");
+    xfun_handle(shred, SZ_INT*4, "InvalidLiSaInit");
     return;
   }
   l->nchan = nchans;
