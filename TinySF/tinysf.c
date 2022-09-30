@@ -30,7 +30,7 @@ static MFUN(tinysf_new) {
    tsf* tiny = tsf_load_filename(STRING(*(M_Object*)MEM(SZ_INT)));
    if(!tiny) {
      gw_err("file '%s' can't opened file for reading", STRING(*(M_Object*)MEM(SZ_INT)));
-     handle(shred, "TinySFException");
+     xfun_handle(shred, SZ_INT*2, "TinySFException");
      return;
    }
    tsf_set_output(tiny, TSF_STEREO_INTERLEAVED, shred->info->vm->bbq->si->sr, 0);
