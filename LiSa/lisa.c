@@ -276,10 +276,10 @@ ANN static inline m_float grabSample(LiSa *const l, m_float where) {
 }
 
 #define GET_LISA(o) (LiSa*)(o->data + SZ_INT)
-#define LISA_CHAN(shred, l) \
+#define LISA_CHAN(shred, l, offset) \
   const m_int idx = *(m_int*)MEM(SZ_INT);\
   if(idx < 0 || idx >= (m_int)l->maxvoices) {\
-    handle(shred, "InvalidLiSaInit");\
+    xfun_handle(shred, offset, "InvalidLiSaInit");\
     return;\
   }\
 
@@ -353,51 +353,51 @@ static MFUN(LiSa_set_record) {
 
 static MFUN(LiSa_set_play) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT*2);
   struct Channel *const chan = &l->channels[idx];
-  *(m_uint*)RETURN = chan->play = *(m_uint*)MEM(SZ_INT*2);
+  *(m_uint*)RETURN = chan->play = *(m_uint*)MEM(SZ_INT);
   chan->rampdown = false;
   chan->rampup = false;
 }
 
 static MFUN(LiSa_get_play) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = chan->play;
 }
 
 static MFUN(LiSa_set_rate) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT + SZ_FLOAT);
   struct Channel *const chan = &l->channels[idx];
-  *(m_float*)RETURN = chan->p_inc = *(m_float*)MEM(SZ_INT*2);
+  *(m_float*)RETURN = chan->p_inc = *(m_float*)MEM(SZ_INT);
 }
 
 static MFUN(LiSa_get_rate) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->p_inc;
 }
 
 static MFUN(LiSa_set_pindex) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT+SZ_FLOAT);
   struct Channel *const chan = &l->channels[idx];
-  *(m_float*)RETURN = chan->pindex = *(m_float*)MEM(SZ_INT*2);
+  *(m_float*)RETURN = chan->pindex = *(m_float*)MEM(SZ_INT);
 }
 
 static MFUN(LiSa_get_pindex) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = (m_float)chan->pindex;
 }
 
 static MFUN(LiSa_set_rindex) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT+ SZ_FLOAT);
 // check rindex
   *(m_float*)RETURN = (l->rindex = (m_int)*(m_float*)MEM(SZ_INT));
 }
@@ -409,10 +409,10 @@ static MFUN(LiSa_get_rindex) {
 
 static MFUN(LiSa_set_lstart) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT*2);
 // check loop_start
   struct Channel *const chan = &l->channels[idx];
-  const m_int loop_start = *(m_float*)MEM(SZ_INT*2);
+  const m_int loop_start = *(m_float*)MEM(SZ_INT);
 	if (loop_start < 0) chan->loop_start = 0;
 	else if (chan->loop_start >= l->mdata_len) chan->loop_start = l->mdata_len-1;
   else chan->loop_start = loop_start;
@@ -421,16 +421,16 @@ static MFUN(LiSa_set_lstart) {
 
 static MFUN(LiSa_get_lstart) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = (m_float)chan->loop_start;
 }
 
 static MFUN(LiSa_set_lend) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT+SZ_FLOAT);
   struct Channel *const chan = &l->channels[idx];
-  chan->loop_end = (m_int)*(m_float*)MEM(SZ_INT*2);
+  chan->loop_end = (m_int)*(m_float*)MEM(SZ_INT);
 	//check to make sure loop_end is not too large
 	if (chan->loop_end >= l->mdata_len) chan->loop_end = l->mdata_len - 1;
 	*(m_float*)RETURN = (m_float)chan->loop_end;
@@ -438,35 +438,35 @@ static MFUN(LiSa_set_lend) {
 
 static MFUN(LiSa_get_lend) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = (m_float)chan->loop_end;
 }
 
 static MFUN(LiSa_set_loop) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT*2);
   struct Channel *const chan = &l->channels[idx];
-  *(m_uint*)RETURN = chan->loopplay = *(m_uint*)MEM(SZ_INT*2);
+  *(m_uint*)RETURN = chan->loopplay = *(m_uint*)MEM(SZ_INT);
 }
 
 static MFUN(LiSa_get_loop) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = (m_int)chan->loopplay;
 }
 
 static MFUN(LiSa_set_bi) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT*2);
   struct Channel *const chan = &l->channels[idx];
-  *(m_uint*)RETURN = chan->bi = *(bool*)MEM(SZ_INT*2);
+  *(m_uint*)RETURN = chan->bi = *(bool*)MEM(SZ_INT);
 }
 
 static MFUN(LiSa_get_bi) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_uint*)RETURN = chan->bi;
 }
@@ -507,23 +507,23 @@ static MFUN(LiSa_get_sample) {
 
 static MFUN(LiSa_set_gain) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT+SZ_FLOAT);
   struct Channel *const chan = &l->channels[idx];
-   *(m_float*)RETURN = chan->gain = *(m_float*)MEM(SZ_INT*2);
+   *(m_float*)RETURN = chan->gain = *(m_float*)MEM(SZ_INT);
 }
 
 static MFUN(LiSa_get_gain) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->gain;
 }
 
 static MFUN(LiSa_set_pan) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT+SZ_FLOAT);
   struct Channel *const chan = &l->channels[idx];
-  chan->pan = *(m_float*)MEM(SZ_INT*2);
+  chan->pan = *(m_float*)MEM(SZ_INT);
   // reset channel gains for voice
   for(m_uint i = 0; i < l->nchan; i++) chan->gains[i] = 0.;
   for(m_uint i = 0; i < l->nchan; i++) {
@@ -555,7 +555,7 @@ static MFUN(LiSa_set_pan) {
 
 static MFUN(LiSa_get_pan) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   *(m_float*)RETURN = chan->pan;
 }
@@ -582,16 +582,16 @@ static MFUN(LiSa_get_voice) {
 
 static MFUN(LiSa_set_rampup) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
+  LISA_CHAN(shred, l, SZ_INT+SZ_FLOAT);
   struct Channel *const chan = &l->channels[idx];
-  const m_float len = *(m_float*)RETURN = *(m_float*)MEM(SZ_INT*2);
+  const m_float len = *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   ramp_up(chan, len);
 }
 
 static MFUN(LiSa_set_rampdown) {
   LiSa *const l = GET_LISA(o);
-  LISA_CHAN(shred, l);
-  const m_float len = *(m_float*)RETURN = *(m_float*)MEM(SZ_INT*2);
+  LISA_CHAN(shred, l, SZ_INT+ SZ_FLOAT);
+  const m_float len = *(m_float*)RETURN = *(m_float*)MEM(SZ_INT);
   struct Channel *const chan = &l->channels[idx];
   ramp_down(chan, len);
 }
