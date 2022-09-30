@@ -63,16 +63,16 @@ static double dbtorms(double f) {
     return (exp((LOGTEN * 0.05) * (f - 100.)));
 }
 
-#define GETSTRING(a, b)                          \
+#define GETSTRING(a, c, b)                       \
   const M_Object a##_obj = *(M_Object*)MEM((b)); \
   if(!a##_obj) {                                 \
-    handle(shred, "NullPtrException");           \
+    xfun_handle(shred, c, "NullPtrException");   \
     return;                                      \
   }                                              \
   const m_str a = STRING(a##_obj);               \
 
 static SFUN(std_system) {
-  GETSTRING(str, 0);
+  GETSTRING(str, 0, SZ_INT);
   *(m_uint*)RETURN = system(str);
 }
 
@@ -99,7 +99,7 @@ static SFUN(std_scale) {
 }
 
 static SFUN(std_getenv) {
-  GETSTRING(env, 0)
+  GETSTRING(env, 0, SZ_INT);
   const m_str str = getenv(env);
   *(M_Object*)RETURN = str ? new_string(shred->info->vm->gwion, str) : 0;
 }
@@ -108,8 +108,8 @@ static SFUN(std_getenv) {
 #define setenv(a,b,c) _putenv_s(a,b)
 #endif
 static SFUN(std_setenv) {
-  GETSTRING(key, 0)
-  GETSTRING(val, SZ_INT)
+  GETSTRING(key, 0, SZ_INT*2);
+  GETSTRING(val, SZ_INT, SZ_INT*2);
   *(m_uint*)RETURN = setenv(key, val, 1);
 }
 #ifdef BUILD_ON_WINDOWS
@@ -117,17 +117,17 @@ static SFUN(std_setenv) {
 #endif
 
 static SFUN(std_atoi) {
-  GETSTRING(key, 0)
+  GETSTRING(key, 0, SZ_INT);
   *(m_int*)RETURN = atoi(key);
 }
 
 static SFUN(std_atof) {
-  GETSTRING(key, 0)
+  GETSTRING(key, 0, SZ_INT);
   *(m_float*)RETURN = (m_float)atof(key);
 }
 
 static SFUN(std_atoi2) {
-  GETSTRING(key, 0)
+  GETSTRING(key, 0, SZ_INT);
   char *endptr;
   *(m_int*)RETURN = strtol(key, &endptr, 10);
   **(m_uint**)MEM(SZ_INT) = endptr - key;
@@ -140,7 +140,7 @@ static SFUN(std_atoi2) {
 #endif
 
 static SFUN(std_atof2) {
-  GETSTRING(key, 0)
+  GETSTRING(key, 0, SZ_INT*2);
   char *endptr;
   *(m_float*)RETURN = (m_float)str2float(key, &endptr);
   **(m_uint**)MEM(SZ_INT) = endptr - key;
