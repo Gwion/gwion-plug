@@ -23,7 +23,7 @@ static SFUN(machine_add) {
   const m_str str = STRING(obj);
   const m_uint ret = compile_filename(shred->info->vm->gwion, str);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT, "InvalidRuntimeCompilation");
 }
 
 static MP_Vector *get_values(const VM_Shred shred, const M_Vector names) {
@@ -63,38 +63,38 @@ static SFUN(machine_add_values) {
   const m_uint ret = compile_filename_values(shred->info->vm->gwion, filename, values);
   free_mp_vector(shred->info->mp, Value, values);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT*2, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_remove) {
   const VM* vm = shred->info->vm;
   const m_int xid = *(m_int*)MEM(0);
   if(!vm_remove(vm, xid))
-    handle(shred, "InvalidShredRemove");
+    xfun_handle(shred, SZ_INT, "InvalidShredRemove");
 }
 
 static SFUN(machine_replace) {
   const VM* vm = shred->info->vm;
   const m_int xid = *(m_int*)MEM(0);
   if(!vm_remove(vm, xid))
-    handle(shred, "InvalidShredRemove");
+    xfun_handle(shred, SZ_INT*2, "InvalidShredRemove");
   const M_Object str = *(M_Object*)MEM(SZ_INT);
   if(!compile_filename_xid(vm->gwion, STRING(str), xid))
-    handle(shred, "InvalidRuntimeCompilation");
+    xfun_handle(shred, SZ_INT*2, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_replace_values) {
   const VM* vm = shred->info->vm;
   const m_int xid = *(m_int*)MEM(0);
   if(!vm_remove(vm, xid))
-    handle(shred, "InvalidShredRemove");
+    xfun_handle(shred, SZ_INT*3, "InvalidShredRemove");
   const M_Object str = *(M_Object*)MEM(SZ_INT);
   const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   MP_Vector *const values = get_values(shred, names);
   const m_bool ret = compile_filename_xid_values(vm->gwion, STRING(str), xid, values);
   free_mp_vector(shred->info->mp, Value, values);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT*3, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_check) {
@@ -110,7 +110,7 @@ static SFUN(machine_check) {
   pass_set(shred->info->vm->gwion, back);
   free_vector(shred->info->mp, back);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_check_values) {
@@ -130,7 +130,7 @@ static SFUN(machine_check_values) {
   pass_set(shred->info->vm->gwion, back);
   free_vector(shred->info->mp, back);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT*2, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_compile) {
@@ -138,7 +138,7 @@ static SFUN(machine_compile) {
   const m_str line = STRING(code_obj);
   const m_uint ret = compile_string(shred->info->vm->gwion, "Machine.compile", line);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_compile_values) {
@@ -149,24 +149,24 @@ static SFUN(machine_compile_values) {
   const m_uint ret = compile_string_values(shred->info->vm->gwion, "Machine.compile", line, values);
   free_mp_vector(shred->info->mp, Value, values);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT*2, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_compile_replace) {
   const m_int xid = *(m_int*)MEM(0);
   if(!vm_remove(shred->info->vm, xid))
-    handle(shred, "InvalidShredRemove");
+    xfun_handle(shred, SZ_INT*2, "InvalidShredRemove");
   const M_Object code_obj = *(M_Object*)MEM(SZ_INT);
   const m_str line = STRING(code_obj);
   const m_uint ret = compile_string_xid(shred->info->vm->gwion, "Machine.compile", line, xid);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT*2, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_compile_replace_values) {
   const m_int xid = *(m_int*)MEM(0);
   if(!vm_remove(shred->info->vm, xid))
-    handle(shred, "InvalidShredRemove");
+    xfun_handle(shred, SZ_INT*3, "InvalidShredRemove");
   const M_Object code_obj = *(M_Object*)MEM(SZ_INT);
   const m_str line = STRING(code_obj);
   const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT*2));
@@ -174,7 +174,7 @@ static SFUN(machine_compile_replace_values) {
   const m_uint ret = compile_string_xid_values(shred->info->vm->gwion, "Machine.compile", line, xid, values);
   free_mp_vector(shred->info->mp, Value, values);
   if(ret > 0) *(m_int*)RETURN = ret;
-  else handle(shred, "InvalidRuntimeCompilation");
+  else xfun_handle(shred, SZ_INT*3, "InvalidRuntimeCompilation");
 }
 
 static SFUN(machine_shreds) {
@@ -200,7 +200,7 @@ static SFUN(machine_pass) {
   }
   const m_bool ret = pass_set(shred->info->vm->gwion, &v);
   vector_release(&v);
-  if(ret == GW_ERROR) handle(shred, "InvalidPassSet");
+  if(ret == GW_ERROR) xfun_handle(shred, SZ_INT, "InvalidPassSet");
 }
 
 GWION_IMPORT(machine) {
