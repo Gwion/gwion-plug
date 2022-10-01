@@ -1,18 +1,15 @@
 function declare_c_param(param, offset)
-  local increment = "SZ_INT"
   if string.match(param.type, "int") then
-    print("  m_int "..param.name.." = *(m_int*)(shred->mem + gw_offset);")
+    print("  m_int "..param.name.." = *(m_int*)(shred->mem+"..offset..");")
   elseif string.match(param.type, "SPFLOAT$") then
-    print("  m_float "..param.name.." = *(m_float*)(shred->mem + gw_offset);")
-    increment = "SZ_FLOAT"
+    print("  m_float "..param.name.." = *(m_float*)(shred->mem+"..offset..");")
   elseif string.match(param.type, "SPFLOAT*") then
-    print("  m_float "..param.name.." = *(m_float*)(shred->mem + gw_offset);")
-    increment = "SZ_FLOAT"
+    print("  m_float "..param.name.." = *(m_float*)(shred->mem+"..offset..");")
   elseif string.match(param.type, "char%s*") then
-    print("  M_Object "..param.name.."_obj = *(M_Object*)(shred->mem + gw_offset);")
+    print("  M_Object "..param.name.."_obj = *(M_Object*)(shred->mem+"..offset..");")
     print("  m_str "..param.name.." = STRING("..param.name.."_obj);")
   elseif string.match(param.type, "sp_ftbl%s%*%*") then
-    print("  M_Object "..param.name.."_ptr = *(M_Object*)(shred->mem + gw_offset);")
+    print("  M_Object "..param.name.."_ptr = *(M_Object*)(shred->mem+"..offset..");")
     print("  m_uint "..param.name.."_iter;")
     print("  sp_ftbl** "..param.name.." = (sp_ftbl**)xmalloc(m_vector_size(ARRAY("..param.name.."_ptr)) * SZ_INT);")
     print("  for("..param.name.."_iter = 0; "..param.name.."_iter < m_vector_size(ARRAY("..param.name.."_ptr)); "..param.name.."_iter++) {")
@@ -21,27 +18,26 @@ function declare_c_param(param, offset)
     print("      "..param.name.."["..param.name.."_iter] = FTBL("..param.name.."_ftl_obj);\n  }")
     print("  ++"..param.name.."_ptr->ref;")
   elseif string.match(param.type, "&sp_ftbl%s*") then
-    print("  M_Object "..param.name.."_obj = *(M_Object*)(shred->mem + gw_offset);")
+    print("  M_Object "..param.name.."_obj = *(M_Object*)(shred->mem+"..offset..");")
     print("  sp_ftbl** "..param.name.." = &FTBL("..param.name.."_obj);")
   elseif string.match(param.type, "sp_ftbl%s*") then
-    print("  const M_Object "..param.name.."_obj = *(M_Object*)(shred->mem + gw_offset);")
+    print("  const M_Object "..param.name.."_obj = *(M_Object*)(shred->mem+"..offset..");")
     print("  sp_ftbl* "..param.name.." = FTBL("..param.name.."_obj);")
     print("  ++"..param.name.."_obj->ref;")
   else
     print("unknown type:", param.type, ".")
     os.exit(1)
   end
-  if offset == false then
-    print("  gw_offset +="..increment..";")
-  end
 end
 
 function mkdoc(param) 
   if param.description then
     description = param.description:gmatch("([^\n]*)\n?")
---    description = description:gsub("\"", "`")
     for desc in description do
-    print("     gwinote(gwi, \""..desc:gsub("\"", "`").."\");")
+      d = desc:gsub("\"", "`");
+      if d:len() > 0
+      then print("     gwinote(gwi, \""..d.."\");")
+      end
     end
   end
 end
@@ -66,22 +62,22 @@ function declare_gw_param(param)
   else print("unknown "..param.type)
     os.exit(1);
   end
-  -- make_doc("    arg", param)
 end
 
 function print_gen_func(name, func)
   print("static MFUN(ftbl_"..name..") {")
   print("  sp_ftbl* ftbl = FTBL(o);")
-  if(func.params ~= nil) then
-    print("  m_uint gw_offset = SZ_INT*2;")
-  end
   print("  if(FTBL(o))\n    sp_ftbl_destroy(&ftbl);")
   print("  m_int size = *(m_int*)(shred->mem + SZ_INT);")
   local args = "";
   if(func.params ~= nil) then
+    local offset = "SZ_INT*2"
     for i, v in pairs(func.params) do
-      --		while func.params[i]  do
-      declare_c_param(v, i == #func.params)
+      declare_c_param(v, offset)
+      if string.match(v.type, "SPFLOAT") or string.match(v.type, "SP_FLOAT$") or string.match(v.type, "SP_FLOAT*") then
+           offset = offset.."+SZ_FLOAT"
+      else offset = offset.."+SZ_INT"
+      end
       args =	string.format("%s, %s", args , v.name)
     end
   end
@@ -90,10 +86,8 @@ function print_gen_func(name, func)
   print("  sp_ftbl_create(sp, &ftbl, size);")
   print("  sp_"..name.."(sp, ftbl"..args..");")
   print("  FTBL(o) = ftbl;")
-  --	print("error:\n  sp_ftbl_destroy(&ftbl);")
   print("}\n")
 end
-
 
 function print_mod_func(name, mod)
   if string.match(name, "^foo$") then
@@ -116,7 +110,6 @@ function print_mod_func(name, mod)
   end
   print("typedef struct {\n  sp_data* sp;\n  sp_"..name.."* osc;")
   if(nmandatory > 0) then
-    print("  m_bool is_init;")
     local tbl = mod.params.mandatory
     if tbl then
       for _, v in pairs(tbl) do
@@ -133,9 +126,6 @@ function print_mod_func(name, mod)
   print("} GW_"..name..";\n")
   print("static TICK("..name.."_tick) {")
   print("  const GW_"..name.."* ug = (GW_"..name.."*)u->module.gen.data;")
-  if(nmandatory > 0) then
-    print("  if(!ug->is_init) { // LCOV_EXCL_START\n    u->out = 0;\n    return;\n  } // LCOV_EXCL_STOP")
-  end
   local args = ""
   if ninputs > 1 or mod.noutputs > 1 then
     for i = 1, ninputs do
@@ -157,71 +147,42 @@ function print_mod_func(name, mod)
     args = string.format("%s, &u->out", args)
   end
   print("  sp_"..name.."_compute(ug->sp, ug->osc"..args..");")
-  print("\n}\n")
-  print("static CTOR("..name.."_ctor) {\n  GW_"..name.."* ug = (GW_"..name.."*)xcalloc(1, sizeof(GW_"..name.."));")
-  print("  ug->sp = get_module(shred->info->vm->gwion, \"Soundpipe\");")
-  if(nmandatory > 0) then
-    print("  ug->is_init = 0;")
-    print("  ug->osc = NULL;")
-  else
-    --[=====[
-    -- check errors
-    print("  if(sp_"..name.."_create(&ug->osc) == SP_NOT_OK) {\n    xfree(ug);\n    handle(shred);\n  }")
-    print("  if(sp_"..name.."_init(ug->sp, ug->osc) == SP_NOT_OK) {\n    xfree(ug);\n    handle(shred);\n  }")
-    --]=====]
-    print("  sp_"..name.."_create(&ug->osc);")
-    print("  sp_"..name.."_init(ug->sp, ug->osc);")
-  end
-  print("  ugen_ini(shred->info->vm->gwion, UGEN(o), "..mod.ninputs..", "..mod.noutputs..");")
-  print("  ugen_gen(shred->info->vm->gwion, UGEN(o), "..name.."_tick, ug, "..ntrig..");")
   print("}\n")
   print("static DTOR("..name.."_dtor) {\n  GW_"..name.."* ug = UGEN(o)->module.gen.data;")
   if(nmandatory > 0) then
-    print("  if(ug->is_init) {\n")
     local  arg = mod.params.mandatory
     if arg then
       for _, v in pairs(arg) do
         if string.match(v.type, "sp_ftbl%s%*%*") then
-          print("    xfree(ug->osc->"..v.name..");\n")
-          print("    release(ug->"..v.name.."_ptr, shred);\n")
+          print("  xfree(ug->osc->"..v.name..");\n")
+          print("  release(ug->"..v.name.."_ptr, shred);\n")
         else if string.match(v.type, "sp_ftbl%s%*") then
-          print("    release(ug->"..v.name.."_obj, shred);\n")
+          print("  release(ug->"..v.name.."_obj, shred);\n")
           end
         end
       end
-      print("    sp_"..name.."_destroy(&ug->osc);\n  }")
+      print("  sp_"..name.."_destroy(&ug->osc);")
     end
   else
     print("  sp_"..name.."_destroy(&ug->osc);")
   end
-  print("  xfree(ug);");
+  print("  mp_free2(shred->info->mp, sizeof(GW_"..name.."), ug);");
   print("}\n")
-  if nmandatory > 0 then
     print("static MFUN("..name.."_init) {")
-  if nmandatory > 1 then
-    print("  m_uint gw_offset = SZ_INT;")
-  else
-    print("  const m_uint gw_offset = SZ_INT;")
-end
-    print("  GW_"..name.."* ug = (GW_"..name.."*)UGEN(o)->module.gen.data;")
+    print("  GW_"..name.."* ug = mp_malloc2(shred->info->mp, sizeof(GW_"..name.."));")
+    print("  ugen_ini(shred->info->vm->gwion, UGEN(o), "..mod.ninputs..", "..mod.noutputs..");")
+    print("  ugen_gen(shred->info->vm->gwion, UGEN(o), "..name.."_tick, ug, "..ntrig..");")
     local args = ""
     local tbl = mod.params.mandatory
-    print("  if(ug->osc) {\n    sp_"..name.."_destroy(&ug->osc);")
     if tbl then
-      for _, v in pairs(tbl) do
-        if string.match(v.type, "sp_ftbl%s%*%*") then
-          print("    xfree(ug->"..v.name..");")
-          print("    release(ug->"..v.name.."_ptr, shred);")
-        else if string.match(v.type, "sp_ftbl%s%*") then
-          print("    release(ug->"..v.name.."_obj, shred);")
-          end
-        end
-      end
-    end
-    print("    ug->osc = NULL;\n  }");
-    if tbl then
+      args = " "
+      local offset = "SZ_INT"
       for i, v in pairs(tbl) do
-        declare_c_param(v, i == #tbl)
+        declare_c_param(v, offset)
+        if string.match(v.type, "SPFLOAT") or string.match(v.type, "SP_FLOAT$") or string.match(v.type, "SP_FLOAT*") then
+             offset = offset.."+SZ_FLOAT"
+        else offset = offset.."+SZ_INT"
+        end
         if string.match(args, "^$") then
           args = v.name
         else
@@ -229,9 +190,19 @@ end
         end
       end
     end
+    print("  *(M_Object*)RETURN = o;")
     local tbl = mod.params.mandatory
-    print("  if(sp_"..name.."_create(&ug->osc) == SP_NOT_OK || sp_"..name.."_init(ug->sp, ug->osc, "..args..") == SP_NOT_OK) {")
+    print("  if(sp_"..name.."_create(&ug->osc) == SP_NOT_OK || sp_"..name.."_init(ug->sp, ug->osc"..args..") == SP_NOT_OK) {")
+local offset = "SZ_INT"
     local tbl = mod.params.mandatory
+if tbl then
+  for _, v in pairs(tbl) do
+        if string.match(v.type, "SPFLOAT$") then
+offset = offset.."+SZ_FLOAT"
+else offset = offset.."+SZ_INT"
+end
+  end
+end
     if tbl then
       for _, v in pairs(tbl) do
         if string.match(v.type, "sp_ftbl%s%*%*") then
@@ -243,7 +214,7 @@ end
         end
       end
     end
-    print("    handle(shred, \"UgenCreateException\") // LCOV_EXCL_LINE\n  }")
+    print("    sp_handle(shred, "..offset..", \"UgenCreateException\") // LCOV_EXCL_LINE\n  }")
     local tbl = mod.params.mandatory
     if tbl then
       for _, v in pairs(tbl) do
@@ -256,8 +227,7 @@ end
         end
       end
     end
-    print("  ug->is_init = 1;\n}\n")
-  end
+  print("}\n")
   local opt = mod.params.optional
   if opt then
     for _, v in pairs(opt) do
@@ -279,9 +249,8 @@ end
       end
       print("}\n")
       print("static MFUN("..name.."_set_"..v.name..") {")
-      print("  const m_uint gw_offset = SZ_INT;")
       print("  const GW_"..name.."* ug = (GW_"..name.."*)UGEN(o)->module.gen.data;")
-      declare_c_param(v, true)
+      declare_c_param(v, "SZ_INT")
       if string.match(v.type, "int") then
         print("  *(m_uint*)RETURN = (ug->osc->"..v.name.." = "..v.name..");")
       elseif string.match(v.type, "SPFLOAT$") then
@@ -305,7 +274,6 @@ if not arg[1] then
   os.exit(1)
 end
 
---local dir = io.popen("dir "..arg[1])
 local dir = io.popen("ls "..arg[1])
 if dir then
   for filename in string.gmatch(dir:read("*a"), '([^%s]+)') do
@@ -340,7 +308,7 @@ print('#include <stdlib.h>\
 
 print("#define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)")
 print("#define CHECK_SIZE(size)  if(size <= 0){fprintf(stderr, \"'gen_ftbl' size argument must be more than 0\");return;}")
-print("#define handle(a,b) { handle(a,b); return; }")
+print("#define sp_handle(a,b,c) { xfun_handle(a,b,c); return; }")
 
 print("\nstatic DTOR(ftbl_dtor) {")
 print("  if(FTBL(o))\n    sp_ftbl_destroy(&FTBL(o));")
@@ -412,7 +380,7 @@ for n in ipairs(a) do
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
     print("  DECL_OB(const Type, t_"..mod_name..", = gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"));")
     print("  SET_FLAG(t_"..mod_name..", final);")
-    print("  gwi_class_xtor(gwi, "..mod_name.."_ctor, "..mod_name.."_dtor);")
+    print("  gwi_class_xtor(gwi, NULL, "..mod_name.."_dtor);")
     local nmandatory = 0
     local tbl = object.params.mandatory
     if tbl then
@@ -420,16 +388,14 @@ for n in ipairs(a) do
         nmandatory = nmandatory + 1
       end
     end
-    if nmandatory > 0 then
-      print("  gwi_func_ini(gwi, \"void\", \"init\");")
-      local tbl = object.params.mandatory
-      if tbl then
-        for _, v in pairs(tbl) do
-          declare_gw_param(v)
-        end
+    print("  gwi_func_ini(gwi, \"auto\", \"new\");")
+    local tbl = object.params.mandatory
+    if tbl then
+      for _, v in pairs(tbl) do
+        declare_gw_param(v)
       end
-      print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_init, ae_flag_none))")
     end
+    print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_init, ae_flag_none))")
     local tbl = object.params.optional
     if tbl then
       for _, v in pairs(tbl) do
@@ -464,5 +430,4 @@ for n in ipairs(a) do
     print("  GWI_BB(gwi_class_end(gwi))\n")
   end
 end
---print("  CHECK_BB(import_modules(gwi))")
-print("  return 1;\n}")
+print("  return GW_OK;\n}")
