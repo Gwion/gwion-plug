@@ -1,10 +1,10 @@
 include ../config.mk
 
-CFLAGS += -Ic-periphery/src
-SRC += c-periphery/src/gpio.c
-
+CFLAGS += -Ilibgpiod/include
+LDFLAGS += libgpiod/lib/.libs/libgpiod.a
 all:
-	[ -d c-periphery ] || git clone https://github.com/vsergeev/c-periphery/ || true
+	[ -d libgpiod ] || git clone https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/ && true
+	[ -f libgpiod/lib/.libs/libgpiod.a ] || (cd libgpiod && ./autogen.sh && ./configure --disable-shared --disable-bindings-cxx --disable-bindings-python --disable-tests --disable-tools && make)
 	${MAKE} ${NAME}.so
 
 include ../config_post.mk
