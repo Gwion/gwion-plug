@@ -92,7 +92,7 @@ static MFUN(ffivar_do_call) {
   }
   if(ffi_prep_cif_var(&FFI_CIF(t), FFI_DEFAULT_ABI,
         FFI_CIF(t).nargs, FFI_CIF(t).nargs + nvariadic, &ffi_type_sint, trash) != FFI_OK) {
-      xfun_handle(shred, FFI_SZ(t) + SZ_INT*3, "can't prepare variadic func");
+      xfun_handle(shred, "can't prepare variadic func");
       return;
   }
   ffi_call(&FFI_CIF(t), FFI_FN(FFI_DL(t)), (m_bit*)RETURN, data);

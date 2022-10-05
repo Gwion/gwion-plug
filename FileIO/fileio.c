@@ -42,7 +42,7 @@ static int fileio_read(void *data) {
     *(M_Object*)(shred->reg - SZ_INT) = s;
     shredule(shred->tick->shreduler, shred, GWION_EPSILON);
   } else
-    xfun_handle(shred, SZ_INT, "FileReadException");
+    xfun_handle(shred, "FileReadException");
   return 0;
 }
 
@@ -56,7 +56,7 @@ static int fileio_write(void *data) {
   if(fwrite(str, sz, 1,  file) > 0)
     shredule(shred->tick->shreduler, shred, 1);
   else
-    xfun_handle(shred, SZ_INT*2, "FileWriteException");
+    xfun_handle(shred, "FileWriteException");
   return 0;
 }
 
@@ -94,7 +94,7 @@ static MFUN(file_open) {
   if((IO_FILE(o) = fopen(STRING(file), STRING(mode))))
     *(M_Object*)RETURN = o;
   else
-    xfun_handle(shred, SZ_INT*3, "FileCtorException");
+    xfun_handle(shred, "FileCtorException");
 }
 
 static void cfile(const Gwi gwi, const Type t, const m_str name, FILE *const file) {

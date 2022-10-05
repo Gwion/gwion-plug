@@ -15,7 +15,7 @@
 #include "array.h"
 #define FTBL(o) *((sp_ftbl**)((M_Object)o)->data)
 #define CHECK_SIZE(size)  if(size <= 0){fprintf(stderr, "'gen_ftbl' size argument must be more than 0");return;}
-#define sp_handle(a,b,c) { xfun_handle(a,b,c); return; }
+#define sp_handle(a,c) { xfun_handle(a,c); return; }
 
 static DTOR(ftbl_dtor) {
   if(FTBL(o))
@@ -44,7 +44,7 @@ static MFUN(adsr_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), adsr_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_adsr_create(&ug->osc) == SP_NOT_OK || sp_adsr_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -115,7 +115,7 @@ static MFUN(allpass_init) {
   m_float looptime = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_allpass_create(&ug->osc) == SP_NOT_OK || sp_allpass_init(ug->sp, ug->osc , looptime) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -152,7 +152,7 @@ static MFUN(atone_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), atone_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_atone_create(&ug->osc) == SP_NOT_OK || sp_atone_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -189,7 +189,7 @@ static MFUN(autowah_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), autowah_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_autowah_create(&ug->osc) == SP_NOT_OK || sp_autowah_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -248,7 +248,7 @@ static MFUN(bal_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), bal_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_bal_create(&ug->osc) == SP_NOT_OK || sp_bal_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -276,7 +276,7 @@ static MFUN(bar_init) {
   m_float ib = *(m_float*)(shred->mem+SZ_INT+SZ_FLOAT);
   *(M_Object*)RETURN = o;
   if(sp_bar_create(&ug->osc) == SP_NOT_OK || sp_bar_init(ug->sp, ug->osc , iK, ib) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -379,7 +379,7 @@ static MFUN(biquad_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), biquad_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_biquad_create(&ug->osc) == SP_NOT_OK || sp_biquad_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -471,7 +471,7 @@ static MFUN(biscale_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), biscale_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_biscale_create(&ug->osc) == SP_NOT_OK || sp_biscale_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -519,7 +519,7 @@ static MFUN(bitcrush_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), bitcrush_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_bitcrush_create(&ug->osc) == SP_NOT_OK || sp_bitcrush_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -567,7 +567,7 @@ static MFUN(blsaw_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), blsaw_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_blsaw_create(&ug->osc) == SP_NOT_OK || sp_blsaw_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -615,7 +615,7 @@ static MFUN(blsquare_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), blsquare_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_blsquare_create(&ug->osc) == SP_NOT_OK || sp_blsquare_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -674,7 +674,7 @@ static MFUN(bltriangle_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), bltriangle_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_bltriangle_create(&ug->osc) == SP_NOT_OK || sp_bltriangle_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -722,7 +722,7 @@ static MFUN(brown_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), brown_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_brown_create(&ug->osc) == SP_NOT_OK || sp_brown_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -748,7 +748,7 @@ static MFUN(butbp_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), butbp_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_butbp_create(&ug->osc) == SP_NOT_OK || sp_butbp_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -796,7 +796,7 @@ static MFUN(butbr_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), butbr_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_butbr_create(&ug->osc) == SP_NOT_OK || sp_butbr_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -844,7 +844,7 @@ static MFUN(buthp_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), buthp_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_buthp_create(&ug->osc) == SP_NOT_OK || sp_buthp_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -881,7 +881,7 @@ static MFUN(butlp_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), butlp_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_butlp_create(&ug->osc) == SP_NOT_OK || sp_butlp_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -918,7 +918,7 @@ static MFUN(clip_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), clip_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_clip_create(&ug->osc) == SP_NOT_OK || sp_clip_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -955,7 +955,7 @@ static MFUN(clock_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), clock_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_clock_create(&ug->osc) == SP_NOT_OK || sp_clock_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1004,7 +1004,7 @@ static MFUN(comb_init) {
   m_float looptime = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_comb_create(&ug->osc) == SP_NOT_OK || sp_comb_init(ug->sp, ug->osc , looptime) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1041,7 +1041,7 @@ static MFUN(compressor_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), compressor_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_compressor_create(&ug->osc) == SP_NOT_OK || sp_compressor_init(ug->sp, ug->osc ) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1120,7 +1120,7 @@ static MFUN(conv_init) {
   *(M_Object*)RETURN = o;
   if(sp_conv_create(&ug->osc) == SP_NOT_OK || sp_conv_init(ug->sp, ug->osc , ft, iPartLen) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
 }
@@ -1147,7 +1147,7 @@ static MFUN(count_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), count_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_count_create(&ug->osc) == SP_NOT_OK || sp_count_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1195,7 +1195,7 @@ static MFUN(crossfade_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), crossfade_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_crossfade_create(&ug->osc) == SP_NOT_OK || sp_crossfade_init(ug->sp, ug->osc ) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1232,7 +1232,7 @@ static MFUN(dcblock_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), dcblock_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_dcblock_create(&ug->osc) == SP_NOT_OK || sp_dcblock_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1259,7 +1259,7 @@ static MFUN(delay_init) {
   m_float time = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_delay_create(&ug->osc) == SP_NOT_OK || sp_delay_init(ug->sp, ug->osc , time) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1296,7 +1296,7 @@ static MFUN(diode_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), diode_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_diode_create(&ug->osc) == SP_NOT_OK || sp_diode_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1346,7 +1346,7 @@ static MFUN(diskin_init) {
   m_str filename = STRING(filename_obj);
   *(M_Object*)RETURN = o;
   if(sp_diskin_create(&ug->osc) == SP_NOT_OK || sp_diskin_init(ug->sp, ug->osc , filename) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1372,7 +1372,7 @@ static MFUN(dist_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), dist_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_dist_create(&ug->osc) == SP_NOT_OK || sp_dist_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1442,7 +1442,7 @@ static MFUN(dmetro_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), dmetro_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_dmetro_create(&ug->osc) == SP_NOT_OK || sp_dmetro_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1480,7 +1480,7 @@ static MFUN(drip_init) {
   m_float dettack = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_drip_create(&ug->osc) == SP_NOT_OK || sp_drip_init(ug->sp, ug->osc , dettack) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1591,7 +1591,7 @@ static MFUN(dtrig_init) {
   *(M_Object*)RETURN = o;
   if(sp_dtrig_create(&ug->osc) == SP_NOT_OK || sp_dtrig_init(ug->sp, ug->osc , ft) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
 }
@@ -1651,7 +1651,7 @@ static MFUN(dust_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), dust_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_dust_create(&ug->osc) == SP_NOT_OK || sp_dust_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1710,7 +1710,7 @@ static MFUN(eqfil_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), eqfil_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_eqfil_create(&ug->osc) == SP_NOT_OK || sp_eqfil_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1769,7 +1769,7 @@ static MFUN(expon_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), expon_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_expon_create(&ug->osc) == SP_NOT_OK || sp_expon_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -1846,7 +1846,7 @@ static MFUN(fof_init) {
   if(sp_fof_create(&ug->osc) == SP_NOT_OK || sp_fof_init(ug->sp, ug->osc , sine, win, iolaps, iphs) == SP_NOT_OK) {
     release(sine_obj, shred); // LCOV_EXCL_LINE
     release(win_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_INT+SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->sine_obj = sine_obj;
   ug->win_obj = win_obj;
@@ -1962,7 +1962,7 @@ static MFUN(fofilt_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), fofilt_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_fofilt_create(&ug->osc) == SP_NOT_OK || sp_fofilt_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2039,7 +2039,7 @@ static MFUN(fog_init) {
   if(sp_fog_create(&ug->osc) == SP_NOT_OK || sp_fog_init(ug->sp, ug->osc , wav, win, iolaps, iphs) == SP_NOT_OK) {
     release(wav_obj, shred); // LCOV_EXCL_LINE
     release(win_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_INT+SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->wav_obj = wav_obj;
   ug->win_obj = win_obj;
@@ -2166,7 +2166,7 @@ static MFUN(fold_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), fold_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_fold_create(&ug->osc) == SP_NOT_OK || sp_fold_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2211,7 +2211,7 @@ static MFUN(fosc_init) {
   *(M_Object*)RETURN = o;
   if(sp_fosc_create(&ug->osc) == SP_NOT_OK || sp_fosc_init(ug->sp, ug->osc , tbl) == SP_NOT_OK) {
     release(tbl_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl_obj = tbl_obj;
 }
@@ -2302,7 +2302,7 @@ static MFUN(gbuzz_init) {
   *(M_Object*)RETURN = o;
   if(sp_gbuzz_create(&ug->osc) == SP_NOT_OK || sp_gbuzz_init(ug->sp, ug->osc , ft, iphs) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
 }
@@ -2537,7 +2537,7 @@ static MFUN(hilbert_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), hilbert_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_hilbert_create(&ug->osc) == SP_NOT_OK || sp_hilbert_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2563,7 +2563,7 @@ static MFUN(in_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), in_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_in_create(&ug->osc) == SP_NOT_OK || sp_in_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2590,7 +2590,7 @@ static MFUN(incr_init) {
   m_float val = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_incr_create(&ug->osc) == SP_NOT_OK || sp_incr_init(ug->sp, ug->osc , val) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2649,7 +2649,7 @@ static MFUN(jcrev_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), jcrev_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_jcrev_create(&ug->osc) == SP_NOT_OK || sp_jcrev_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2675,7 +2675,7 @@ static MFUN(jitter_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), jitter_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_jitter_create(&ug->osc) == SP_NOT_OK || sp_jitter_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2734,7 +2734,7 @@ static MFUN(line_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), line_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_line_create(&ug->osc) == SP_NOT_OK || sp_line_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2794,7 +2794,7 @@ static MFUN(lpc_init) {
   m_int framesize = *(m_int*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_lpc_create(&ug->osc) == SP_NOT_OK || sp_lpc_init(ug->sp, ug->osc , framesize) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2820,7 +2820,7 @@ static MFUN(lpf18_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), lpf18_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_lpf18_create(&ug->osc) == SP_NOT_OK || sp_lpf18_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2879,7 +2879,7 @@ static MFUN(maygate_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), maygate_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_maygate_create(&ug->osc) == SP_NOT_OK || sp_maygate_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2927,7 +2927,7 @@ static MFUN(metro_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), metro_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_metro_create(&ug->osc) == SP_NOT_OK || sp_metro_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -2973,7 +2973,7 @@ static MFUN(mincer_init) {
   *(M_Object*)RETURN = o;
   if(sp_mincer_create(&ug->osc) == SP_NOT_OK || sp_mincer_init(ug->sp, ug->osc , ft, winsize) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
 }
@@ -3033,7 +3033,7 @@ static MFUN(mode_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), mode_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_mode_create(&ug->osc) == SP_NOT_OK || sp_mode_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3081,7 +3081,7 @@ static MFUN(moogladder_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), moogladder_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_moogladder_create(&ug->osc) == SP_NOT_OK || sp_moogladder_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3129,7 +3129,7 @@ static MFUN(noise_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), noise_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_noise_create(&ug->osc) == SP_NOT_OK || sp_noise_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3172,7 +3172,7 @@ static MFUN(nsmp_init) {
   m_str init = STRING(init_obj);
   *(M_Object*)RETURN = o;
   if(sp_nsmp_create(&ug->osc) == SP_NOT_OK || sp_nsmp_init(ug->sp, ug->osc , ft, sr, init) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3218,7 +3218,7 @@ static MFUN(osc_init) {
   *(M_Object*)RETURN = o;
   if(sp_osc_create(&ug->osc) == SP_NOT_OK || sp_osc_init(ug->sp, ug->osc , tbl, phase) == SP_NOT_OK) {
     release(tbl_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl_obj = tbl_obj;
 }
@@ -3288,7 +3288,7 @@ static MFUN(oscmorph_init) {
   if(sp_oscmorph_create(&ug->osc) == SP_NOT_OK || sp_oscmorph_init(ug->sp, ug->osc , tbl, nft, phase) == SP_NOT_OK) {
     xfree(tbl); // LCOV_EXCL_LINE
     release(tbl_ptr, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl = tbl;
   ug->tbl_ptr = tbl_ptr;
@@ -3349,7 +3349,7 @@ static MFUN(pan2_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), pan2_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_pan2_create(&ug->osc) == SP_NOT_OK || sp_pan2_init(ug->sp, ug->osc ) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3397,7 +3397,7 @@ static MFUN(panst_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), panst_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_panst_create(&ug->osc) == SP_NOT_OK || sp_panst_init(ug->sp, ug->osc ) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3445,7 +3445,7 @@ static MFUN(pareq_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), pareq_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_pareq_create(&ug->osc) == SP_NOT_OK || sp_pareq_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3525,7 +3525,7 @@ static MFUN(paulstretch_init) {
   *(M_Object*)RETURN = o;
   if(sp_paulstretch_create(&ug->osc) == SP_NOT_OK || sp_paulstretch_init(ug->sp, ug->osc , ft, windowsize, stretch) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_FLOAT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
 }
@@ -3552,7 +3552,7 @@ static MFUN(pdhalf_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), pdhalf_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_pdhalf_create(&ug->osc) == SP_NOT_OK || sp_pdhalf_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3589,7 +3589,7 @@ static MFUN(peaklim_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), peaklim_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_peaklim_create(&ug->osc) == SP_NOT_OK || sp_peaklim_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3648,7 +3648,7 @@ static MFUN(phaser_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), phaser_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_phaser_create(&ug->osc) == SP_NOT_OK || sp_phaser_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3785,7 +3785,7 @@ static MFUN(phasor_init) {
   m_float iphs = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_phasor_create(&ug->osc) == SP_NOT_OK || sp_phasor_init(ug->sp, ug->osc , iphs) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3822,7 +3822,7 @@ static MFUN(pinknoise_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), pinknoise_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_pinknoise_create(&ug->osc) == SP_NOT_OK || sp_pinknoise_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3861,7 +3861,7 @@ static MFUN(pitchamdf_init) {
   m_float max = *(m_float*)(shred->mem+SZ_INT+SZ_FLOAT);
   *(M_Object*)RETURN = o;
   if(sp_pitchamdf_create(&ug->osc) == SP_NOT_OK || sp_pitchamdf_init(ug->sp, ug->osc , min, max) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3888,7 +3888,7 @@ static MFUN(pluck_init) {
   m_float ifreq = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_pluck_create(&ug->osc) == SP_NOT_OK || sp_pluck_init(ug->sp, ug->osc , ifreq) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3937,7 +3937,7 @@ static MFUN(port_init) {
   m_float htime = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_port_create(&ug->osc) == SP_NOT_OK || sp_port_init(ug->sp, ug->osc , htime) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -3982,7 +3982,7 @@ static MFUN(posc3_init) {
   *(M_Object*)RETURN = o;
   if(sp_posc3_create(&ug->osc) == SP_NOT_OK || sp_posc3_init(ug->sp, ug->osc , tbl) == SP_NOT_OK) {
     release(tbl_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->tbl_obj = tbl_obj;
 }
@@ -4031,7 +4031,7 @@ static MFUN(progress_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), progress_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_progress_create(&ug->osc) == SP_NOT_OK || sp_progress_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4081,7 +4081,7 @@ static MFUN(prop_init) {
   m_str str = STRING(str_obj);
   *(M_Object*)RETURN = o;
   if(sp_prop_create(&ug->osc) == SP_NOT_OK || sp_prop_init(ug->sp, ug->osc , str) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4118,7 +4118,7 @@ static MFUN(pshift_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), pshift_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_pshift_create(&ug->osc) == SP_NOT_OK || sp_pshift_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4179,7 +4179,7 @@ static MFUN(ptrack_init) {
   m_int ipeaks = *(m_int*)(shred->mem+SZ_INT+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_ptrack_create(&ug->osc) == SP_NOT_OK || sp_ptrack_init(ug->sp, ug->osc , ihopsize, ipeaks) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4205,7 +4205,7 @@ static MFUN(randh_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), randh_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_randh_create(&ug->osc) == SP_NOT_OK || sp_randh_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4264,7 +4264,7 @@ static MFUN(randi_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), randi_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_randi_create(&ug->osc) == SP_NOT_OK || sp_randi_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4334,7 +4334,7 @@ static MFUN(random_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), random_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_random_create(&ug->osc) == SP_NOT_OK || sp_random_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4382,7 +4382,7 @@ static MFUN(reson_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), reson_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_reson_create(&ug->osc) == SP_NOT_OK || sp_reson_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4431,7 +4431,7 @@ static MFUN(reverse_init) {
   m_float delay = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_reverse_create(&ug->osc) == SP_NOT_OK || sp_reverse_init(ug->sp, ug->osc , delay) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4457,7 +4457,7 @@ static MFUN(revsc_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), revsc_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_revsc_create(&ug->osc) == SP_NOT_OK || sp_revsc_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4505,7 +4505,7 @@ static MFUN(rms_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), rms_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_rms_create(&ug->osc) == SP_NOT_OK || sp_rms_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4543,7 +4543,7 @@ static MFUN(rpt_init) {
   m_float maxdur = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_rpt_create(&ug->osc) == SP_NOT_OK || sp_rpt_init(ug->sp, ug->osc , maxdur) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4569,7 +4569,7 @@ static MFUN(rspline_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), rspline_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_rspline_create(&ug->osc) == SP_NOT_OK || sp_rspline_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4639,7 +4639,7 @@ static MFUN(samphold_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), samphold_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_samphold_create(&ug->osc) == SP_NOT_OK || sp_samphold_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4665,7 +4665,7 @@ static MFUN(saturator_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), saturator_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_saturator_create(&ug->osc) == SP_NOT_OK || sp_saturator_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4713,7 +4713,7 @@ static MFUN(scale_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), scale_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_scale_create(&ug->osc) == SP_NOT_OK || sp_scale_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4762,7 +4762,7 @@ static MFUN(sdelay_init) {
   m_float size = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_sdelay_create(&ug->osc) == SP_NOT_OK || sp_sdelay_init(ug->sp, ug->osc , size) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4804,7 +4804,7 @@ static MFUN(slice_init) {
   if(sp_slice_create(&ug->osc) == SP_NOT_OK || sp_slice_init(ug->sp, ug->osc , vals, buf) == SP_NOT_OK) {
     release(vals_obj, shred); // LCOV_EXCL_LINE
     release(buf_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->vals_obj = vals_obj;
   ug->buf_obj = buf_obj;
@@ -4845,7 +4845,7 @@ static MFUN(smoothdelay_init) {
   m_int interp = *(m_int*)(shred->mem+SZ_INT+SZ_FLOAT);
   *(M_Object*)RETURN = o;
   if(sp_smoothdelay_create(&ug->osc) == SP_NOT_OK || sp_smoothdelay_init(ug->sp, ug->osc , maxdel, interp) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4895,7 +4895,7 @@ static MFUN(spa_init) {
   m_str filename = STRING(filename_obj);
   *(M_Object*)RETURN = o;
   if(sp_spa_create(&ug->osc) == SP_NOT_OK || sp_spa_init(ug->sp, ug->osc , filename) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4923,7 +4923,7 @@ static MFUN(sparec_init) {
   m_str filename = STRING(filename_obj);
   *(M_Object*)RETURN = o;
   if(sp_sparec_create(&ug->osc) == SP_NOT_OK || sp_sparec_init(ug->sp, ug->osc , filename) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4949,7 +4949,7 @@ static MFUN(streson_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), streson_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_streson_create(&ug->osc) == SP_NOT_OK || sp_streson_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -4997,7 +4997,7 @@ static MFUN(switch_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), switch_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_switch_create(&ug->osc) == SP_NOT_OK || sp_switch_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5032,7 +5032,7 @@ static MFUN(tabread_init) {
   *(M_Object*)RETURN = o;
   if(sp_tabread_create(&ug->osc) == SP_NOT_OK || sp_tabread_init(ug->sp, ug->osc , ft, mode) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
 }
@@ -5092,7 +5092,7 @@ static MFUN(tadsr_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tadsr_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_tadsr_create(&ug->osc) == SP_NOT_OK || sp_tadsr_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5162,7 +5162,7 @@ static MFUN(talkbox_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), talkbox_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_talkbox_create(&ug->osc) == SP_NOT_OK || sp_talkbox_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5207,7 +5207,7 @@ static MFUN(tblrec_init) {
   *(M_Object*)RETURN = o;
   if(sp_tblrec_create(&ug->osc) == SP_NOT_OK || sp_tblrec_init(ug->sp, ug->osc , bar) == SP_NOT_OK) {
     release(bar_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->bar_obj = bar_obj;
 }
@@ -5234,7 +5234,7 @@ static MFUN(tbvcf_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tbvcf_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_tbvcf_create(&ug->osc) == SP_NOT_OK || sp_tbvcf_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5304,7 +5304,7 @@ static MFUN(tdiv_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tdiv_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_tdiv_create(&ug->osc) == SP_NOT_OK || sp_tdiv_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5352,7 +5352,7 @@ static MFUN(tenv_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tenv_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_tenv_create(&ug->osc) == SP_NOT_OK || sp_tenv_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5411,7 +5411,7 @@ static MFUN(tenv2_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tenv2_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_tenv2_create(&ug->osc) == SP_NOT_OK || sp_tenv2_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5459,7 +5459,7 @@ static MFUN(tenvx_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tenvx_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_tenvx_create(&ug->osc) == SP_NOT_OK || sp_tenvx_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5518,7 +5518,7 @@ static MFUN(tgate_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tgate_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_tgate_create(&ug->osc) == SP_NOT_OK || sp_tgate_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5555,7 +5555,7 @@ static MFUN(thresh_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), thresh_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_thresh_create(&ug->osc) == SP_NOT_OK || sp_thresh_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5603,7 +5603,7 @@ static MFUN(timer_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), timer_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_timer_create(&ug->osc) == SP_NOT_OK || sp_timer_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5629,7 +5629,7 @@ static MFUN(tin_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tin_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_tin_create(&ug->osc) == SP_NOT_OK || sp_tin_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5655,7 +5655,7 @@ static MFUN(tone_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), tone_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_tone_create(&ug->osc) == SP_NOT_OK || sp_tone_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5692,7 +5692,7 @@ static MFUN(trand_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), trand_tick, ug, 1);
   *(M_Object*)RETURN = o;
   if(sp_trand_create(&ug->osc) == SP_NOT_OK || sp_trand_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5741,7 +5741,7 @@ static MFUN(tseg_init) {
   m_float ibeg = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_tseg_create(&ug->osc) == SP_NOT_OK || sp_tseg_init(ug->sp, ug->osc , ibeg) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5808,7 +5808,7 @@ static MFUN(tseq_init) {
   *(M_Object*)RETURN = o;
   if(sp_tseq_create(&ug->osc) == SP_NOT_OK || sp_tseq_init(ug->sp, ug->osc , ft) == SP_NOT_OK) {
     release(ft_obj, shred); // LCOV_EXCL_LINE
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
   ug->ft_obj = ft_obj;
 }
@@ -5847,7 +5847,7 @@ static MFUN(vdelay_init) {
   m_float maxdel = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_vdelay_create(&ug->osc) == SP_NOT_OK || sp_vdelay_init(ug->sp, ug->osc , maxdel) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5895,7 +5895,7 @@ static MFUN(voc_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), voc_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_voc_create(&ug->osc) == SP_NOT_OK || sp_voc_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5921,7 +5921,7 @@ static MFUN(vocoder_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), vocoder_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_vocoder_create(&ug->osc) == SP_NOT_OK || sp_vocoder_init(ug->sp, ug->osc ) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -5981,7 +5981,7 @@ static MFUN(waveset_init) {
   m_float ilen = *(m_float*)(shred->mem+SZ_INT);
   *(M_Object*)RETURN = o;
   if(sp_waveset_create(&ug->osc) == SP_NOT_OK || sp_waveset_init(ug->sp, ug->osc , ilen) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_FLOAT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -6020,7 +6020,7 @@ static MFUN(wavin_init) {
   m_str filename = STRING(filename_obj);
   *(M_Object*)RETURN = o;
   if(sp_wavin_create(&ug->osc) == SP_NOT_OK || sp_wavin_init(ug->sp, ug->osc , filename) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -6048,7 +6048,7 @@ static MFUN(wavout_init) {
   m_str filename = STRING(filename_obj);
   *(M_Object*)RETURN = o;
   if(sp_wavout_create(&ug->osc) == SP_NOT_OK || sp_wavout_init(ug->sp, ug->osc , filename) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT+SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -6074,7 +6074,7 @@ static MFUN(wpkorg35_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), wpkorg35_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_wpkorg35_create(&ug->osc) == SP_NOT_OK || sp_wpkorg35_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 
@@ -6133,7 +6133,7 @@ static MFUN(zitarev_init) {
   ugen_gen(shred->info->vm->gwion, UGEN(o), zitarev_tick, ug, 0);
   *(M_Object*)RETURN = o;
   if(sp_zitarev_create(&ug->osc) == SP_NOT_OK || sp_zitarev_init(ug->sp, ug->osc) == SP_NOT_OK) {
-    sp_handle(shred, SZ_INT, "UgenCreateException") // LCOV_EXCL_LINE
+    sp_handle(shred, "UgenCreateException") // LCOV_EXCL_LINE
   }
 }
 

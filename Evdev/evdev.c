@@ -65,7 +65,7 @@ static MFUN(evdev_index) {
   sprintf(c, "%s%"INT_F, EVDEV_PREFIX, index);
   *(M_Object*)RETURN = o;
   if((info->fd = open((const char*)c, O_RDONLY)) == -1) {
-    xfun_handle(shred, SZ_INT*2, "EvdevCreateException");
+    xfun_handle(shred, "EvdevCreateException");
     return;
   }
   libevdev_set_fd(info->evdev, info->fd);
@@ -288,7 +288,7 @@ static MFUN(evdev_get_abs_info) {
   *(M_Object*)RETURN = obj;
   const struct input_absinfo* abs = libevdev_get_abs_info(info->evdev, *(m_int*)MEM(SZ_INT));
   if(abs) ABSINFO(obj) = (struct input_absinfo*)abs;
-  else xfun_handle(shred, SZ_INT*2, "InvalidEvdevInfoRequest");
+  else xfun_handle(shred, "InvalidEvdevInfoRequest");
 }
 
 #define import_abs(name)                                                  \
@@ -382,7 +382,7 @@ static MFUN(uinput_create) {
   const VM_Code code = *(VM_Code*)REG(SZ_INT);
   const M_Object uinput = *(M_Object*)RETURN = new_object(shred->info->mp, code->ret_type);
   if(libevdev_uinput_create_from_device(info->evdev, uifd, &UINPUT(uinput)))
-    xfun_handle(shred, SZ_INT, "UinputCreationError");
+    xfun_handle(shred, "UinputCreationError");
 }
 
 GWION_IMPORT(evdev) {

@@ -279,7 +279,7 @@ ANN static inline m_float grabSample(LiSa *const l, m_float where) {
 #define LISA_CHAN(shred, l, offset) \
   const m_int idx = *(m_int*)MEM(SZ_INT);\
   if(idx < 0 || idx >= (m_int)l->maxvoices) {\
-    xfun_handle(shred, offset, "InvalidLiSaInit");\
+    xfun_handle(shred, "InvalidLiSaInit");\
     return;\
   }\
 
@@ -304,7 +304,7 @@ static MFUN(LiSa_new) {
   const m_int   voices   = *(m_int*)MEM(SZ_INT*2);
   const m_float length   = *(m_float*)MEM(SZ_INT*3);
   if(nchans < 0 || voices < 0 || length < 0) {
-    xfun_handle(shred, SZ_INT*4, "InvalidLiSaInit");
+    xfun_handle(shred, "InvalidLiSaInit");
     return;
   }
   l->nchan = nchans;

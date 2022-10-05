@@ -105,7 +105,7 @@ static MFUN(gwbmi_get_pixel) {
     *(bmi_pixel*)RETURN = pixel;
   else {
     const m_str error = (const m_str)bmi_last_error();
-    xfun_handle(shred, SZ_INT*2, error);
+    xfun_handle(shred, error);
   }
 }
 
@@ -203,7 +203,7 @@ static MFUN(gwbmi_create) {
   const m_uint flags = *(m_uint*)MEM(SZ_INT*3);
   bmi_buffer *buffer = bmi_buffer_new(width, height, flags);
   if(!buffer) {
-    xfun_handle(shred, SZ_INT*4, "[{+R}BMI{0}] can't create buffer.");
+    xfun_handle(shred, "[{+R}BMI{0}] can't create buffer.");
     return;
   }
   *(bmi_buffer**)o->data = buffer;
@@ -216,7 +216,7 @@ static MFUN(gwbmi_from_file) {
   FILE *f = fopen(STRING(*(M_Object*)MEM(SZ_INT)), "r");
   bmi_buffer* buffer = bmi_buffer_from_file(f);
   if(!buffer) {
-    xfun_handle(shred, SZ_INT*2, "[{+R}BMI{0}] can't open file.");
+    xfun_handle(shred, "[{+R}BMI{0}] can't open file.");
     return;
   }
   *(bmi_buffer**)o->data = buffer;

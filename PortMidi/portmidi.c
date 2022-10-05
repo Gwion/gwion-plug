@@ -16,7 +16,7 @@
 static MFUN(pm_info) {
   const PmDeviceInfo* info = Pm_GetDeviceInfo(*(m_int*)MEM(SZ_INT));
   if(!info) {
-    xfun_handle(shred, SZ_INT*2, "InvalidPortMidiInfo");
+    xfun_handle(shred, "InvalidPortMidiInfo");
     return;
   }
   *(m_int*)   (o->data)            = info->structVersion;
@@ -54,7 +54,7 @@ static DTOR(pmout_dtor) {
 
 static MFUN(midiout_new) {
   if(Pm_OpenOutput(&OUT_INFO(o), *(m_uint*)MEM(SZ_INT), 0, 0, NULL, NULL, 0)) {
-    xfun_handle(shred, SZ_INT*2, "InvalidMidiOut");
+    xfun_handle(shred, "InvalidMidiOut");
     return;
   }
   *(M_Object*)RETURN = o;
@@ -102,7 +102,7 @@ ANN static void* pm_recv(void* data) {
 static MFUN(midiin_new) {
   MidiIn* info = IN_INFO(o);
   if(Pm_OpenInput(&info->stream, *(m_uint*)MEM(SZ_INT), 0, 0, NULL, NULL)) {
-    xfun_handle(shred, SZ_INT*2, "InvalidMidiIn");
+    xfun_handle(shred, "InvalidMidiIn");
     return;
   }
   m_vector_init(&info->msg, sizeof(PmMessage), 0);

@@ -96,7 +96,7 @@ static MFUN(cytosol_add_record) {
   const M_Object record = *(M_Object*)MEM(SZ_INT*2);
   struct cyt_record_id out_id = {};
   if(!cyt_program_record_by_name(PROG(o), record->type_ref->name, &out_id)) {
-    xfun_handle(shred, SZ_INT*3, "Invalid record Creation");
+    xfun_handle(shred, "Invalid record Creation");
     return;
   }
   cyt_value_buffer *buf = cytosol_buffer(shred->info->vm->gwion->type, record);
@@ -106,7 +106,7 @@ static MFUN(cytosol_add_record) {
 static MFUN(cytosol_run) {
   const m_int bound = *(m_int*)MEM(SZ_INT);
   if(bound < 0) {
-    xfun_handle(shred, SZ_INT*2, "Negative iteration requested");
+    xfun_handle(shred, "Negative iteration requested");
     return;
   }
   cyt_driver_runner_run(

@@ -134,7 +134,7 @@ static SFUN(simdjson_load) {
     s->element = s->parser->load(STRING(arg));
   } catch (const simdjson_error &e) {
     if(s->parser) delete s->parser;
-    xfun_handle(shred, SZ_INT, (m_str)"SimdJSONLoad");
+    xfun_handle(shred, (m_str)"SimdJSONLoad");
   }
 }
 
@@ -149,7 +149,7 @@ static SFUN(simdjson_parse) {
     s->element = s->parser->parse(STRING(arg), strlen(STRING(arg)));
   } catch (const simdjson_error &e) {
     if(s->parser) delete s->parser;
-    xfun_handle(shred, SZ_INT, (m_str)"SimdJSONParse");
+    xfun_handle(shred, (m_str)"SimdJSONParse");
   }
 }
 
@@ -162,7 +162,7 @@ static MFUN(simdjson_new) {
     s->element = s->parser->parse(STRING(arg), strlen(STRING(arg)));
   } catch (const simdjson_error &e) {
     if(s->parser) delete s->parser;
-    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONOpen");
+    xfun_handle(shred, (m_str)"SimdJSONOpen");
   }
 
 }
@@ -174,7 +174,7 @@ static MFUN(simdjson_get##name) {                                   \
   try {                                                             \
     body                                                            \
   } catch (const simdjson_error &e) {                               \
-    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONDocumentInvalid"); \
+    xfun_handle(shred, (m_str)"SimdJSONDocumentInvalid"); \
   }                                                                 \
 }
 
@@ -211,7 +211,7 @@ static MFUN(simdjson_obj_get##name) {                             \
   try {                                                           \
     body                                                          \
   } catch (const simdjson_error &e) {                             \
-    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONObjectInvalid"); \
+    xfun_handle(shred, (m_str)"SimdJSONObjectInvalid"); \
   }                                                               \
 }
 
@@ -255,7 +255,7 @@ static MFUN(simdjson_arr_get##name) {                            \
       ++iter;                                                    \
     }                                                            \
   } catch (const simdjson_error &e) {                            \
-    xfun_handle(shred, SZ_INT*2, (m_str)"SimdJSONArrayInvalid"); \
+    xfun_handle(shred, (m_str)"SimdJSONArrayInvalid"); \
   }                                                              \
 }
 
@@ -290,7 +290,7 @@ static MFUN(Hydrate) {
   try {
     hydrate(shred->info->vm->gwion, shred, SIMDJSON(o)->element, code->ret_type, (m_bit*)RETURN);
   } catch (const simdjson_error &e) {
-    xfun_handle(shred, SZ_INT, (m_str)"JsonHydrateError");
+    xfun_handle(shred, (m_str)"JsonHydrateError");
   }
 }
 

@@ -289,7 +289,7 @@ static SFUN(core_dirname) {
   const m_str dir = dirname(filename);
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, dir);
 #else
-  xfun_handle(shred, SZ_INT, "UnImplementedFunction");
+  xfun_handle(shred, "UnImplementedFunction");
 #endif
 }
 
