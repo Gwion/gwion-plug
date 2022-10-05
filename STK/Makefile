@@ -2,13 +2,12 @@ include ../config.mk
 
 STK_LIB := stk/build/libstk.a
 ifeq ($(wilcard ${STK_LIB}), )
-LDFLAGS += -L$(shell dirname ${STK_LIB}/build)
+LDFLAGS += -L$(shell dirname ${STK_LIB})
 CFLAGS += -Istk/include
 else
 CFLAGS += -I/usr/include/stk
-endif
-
 LDFLAGS += -lstk
+endif
 
 all: stk.checklib ${NAME}.so
 
