@@ -669,7 +669,7 @@ GWION_IMPORT(Gpiod) {
 
       mk_request(input, input, "Reserve and set the direction to input.");
       mk_request(rising, rising_edge_events, "Request rising edge event.");
-      mk_request(rising, falling_edge_events, "Request falling edge event.");
+      mk_request(falling, falling_edge_events, "Request falling edge event.");
       mk_request(both_edges, both_edges_events, "Request all type events.");
 
       gwidoc(gwi, "Reserve and set the direction to output.");
@@ -758,7 +758,7 @@ GWION_IMPORT(Gpiod) {
 
       mk_request(input, bulk_input, "Reserve and set the direction to input.");
       mk_request(rising, bulk_rising_edge_events, "Request rising edge event.");
-      mk_request(rising, bulk_falling_edge_events, "Request falling edge event.");
+      mk_request(falling, bulk_falling_edge_events, "Request falling edge event.");
       mk_request(both_edges, bulk_both_edges_events, "Request all type events.");
 
       gwidoc(gwi, "Reserve a set of GPIO lines, set the direction to output.");
