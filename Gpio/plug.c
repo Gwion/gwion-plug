@@ -276,7 +276,7 @@ static int line2nowrun(void *data) {
 }
 
 static INSTR(line2now) {
-  POP_REG(shred, SZ_INT + SZ_FLOAT);
+  POP_REG(shred, SZ_FLOAT);
   const M_Object o = *(M_Object*)REG(0);
   struct line2nowdata *l2nd = mp_malloc2(shred->info->mp, sizeof(struct line2nowdata));
   l2nd->shred = shred;
@@ -429,7 +429,7 @@ static int bulk2nowrun(void *data) {
 }
 
 static INSTR(bulk2now) {
-  POP_REG(shred, SZ_INT + SZ_FLOAT);
+  POP_REG(shred, SZ_FLOAT);
   const M_Object o = *(M_Object*)REG(0);
   struct bulk2nowdata *b2nd = mp_malloc2(shred->info->mp, sizeof(struct bulk2nowdata));
   b2nd->shred = shred;
