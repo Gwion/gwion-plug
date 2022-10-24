@@ -253,7 +253,7 @@ static SFUN(core_cp) {
     return;
   FILE *fileOut = fopen(STRING(*(M_Object*)MEM(SZ_INT)), "wb");
   if (fileOut) {
-    char ch;
+    int ch;
     while ((ch=fgetc(fileIn))!=EOF)
 	    fputc(ch, fileOut);
 		fclose(fileOut);

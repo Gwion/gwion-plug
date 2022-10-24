@@ -162,8 +162,7 @@ static CTOR(ctor) {
 }
 
 static OP_EMIT(opem_vecx_ctor) {
-  const Instr instr = emit_add_instr(emit, RegMove);
-//  instr->m_val = -SZ_COMPLEX;
+  emit_regmove(emit, SZ_INT);
   instr->m_val = SZ_INT;
   return 2;
 }

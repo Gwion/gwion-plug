@@ -242,8 +242,7 @@ static OP_CHECK(opck_func2cyt) {
 static OP_EMIT(opem_func2cyt) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   const Func func = bin->rhs->type->info->func;
-  const Instr pop = emit_add_instr(emit, RegMove);
-  pop->m_val = -SZ_INT;
+  emit_regmove(emit, -SZ_INT);
   const Instr instr = emit_add_instr(emit, func2cyt);
   struct Vector_ v;
   vector_init(&v);
