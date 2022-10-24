@@ -1,6 +1,6 @@
 #include  <threads.h>
 #include  <unistd.h>
-#include "libgpiod/include/gpiod.h"
+#include "gpiod.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "gwion_env.h"

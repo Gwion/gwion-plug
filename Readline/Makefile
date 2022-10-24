@@ -1,3 +1,4 @@
 include ../config.mk
-LDFLAGS += -lgpiod
+#CFLAGS+=-I<more include>
+LDFLAGS+=-lreadline
 include ../config_post.mk
