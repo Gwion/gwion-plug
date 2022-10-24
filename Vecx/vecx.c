@@ -231,11 +231,11 @@ ANN static m_bool import_complex(const Gwi gwi) {
   GWI_BB(gwi_oper_ini(gwi, "complex", (m_str)OP_ANY_TYPE, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_object_dot))
   GWI_BB(gwi_oper_emi(gwi, opem_complex_dot))
-  GWI_BB(gwi_oper_end(gwi, "@dot", NULL))
+  GWI_BB(gwi_oper_end(gwi, ".", NULL))
   GWI_BB(gwi_oper_ini(gwi, "polar", (m_str)OP_ANY_TYPE, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_object_dot))
   GWI_BB(gwi_oper_emi(gwi, opem_polar_dot))
-  GWI_BB(gwi_oper_end(gwi, "@dot", NULL))
+  GWI_BB(gwi_oper_end(gwi, ".", NULL))
 */
   return GW_OK;
 }
