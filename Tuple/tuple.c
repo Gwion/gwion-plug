@@ -548,7 +548,7 @@ GWION_IMPORT(tuple) {
   GWI_BB(gwi_oper_ini(gwi, "int", TUPLE_NAME, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_tuple))
   GWI_BB(gwi_oper_emi(gwi, opem_tuple_access))
-  GWI_BB(gwi_oper_end(gwi, "@array", NULL))
+  GWI_BB(gwi_oper_end(gwi, "[]", NULL))
   gwi_register_freearg(gwi, TupleUnpack, freearg_tuple_at);
 
   const Type t_unpack = gwi_mk_type(gwi, "Unpack", 0, NULL);
