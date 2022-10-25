@@ -152,28 +152,25 @@ opem(polar, mod)
 OP_CHECK(opck_object_dot);
 */
 
-static CTOR(ctor) {
-  m_float *ptr = (m_float*)o;
-  *(m_float*)(ptr) = 12;
-  *(m_float*)(ptr + 1) = 13;
-  *(m_float*)(ptr + 2) = 14;
-//  *(m_float*)(shred->mem) = 12;
-//  *(m_float*)(*(m_bit*)o + SZ_INT) = 12;
-}
-
-static OP_EMIT(opem_vecx_ctor) {
-  emit_regmove(emit, SZ_INT);
-  instr->m_val = SZ_INT;
-  return 2;
+static MFUN(vec2_set) {
+  **(m_complex**)MEM(0) = cexpf(
+       *(m_float*)MEM(SZ_INT) +
+       *(m_float*)MEM(SZ_INT + SZ_FLOAT) * I);
 }
 
 ANN static m_bool import_complex(const Gwi gwi) {
   const Type t_complex = gwi_struct_ini(gwi, "complex");
+SET_FLAG(t_complex, abstract);
   GWI_BB(gwi_gack(gwi, t_complex, gack_complex))
-	gwi_item_ini(gwi, "float", "re");
+  gwi_item_ini(gwi, "float", "re");
   GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
-	gwi_item_ini(gwi, "float", "im");
+  gwi_item_ini(gwi, "float", "im");
   GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
+  gwi_func_ini(gwi, "auto", "new");
+  gwi_func_arg(gwi, "float", "re");
+  gwi_func_arg(gwi, "float", "im");
+  GWI_BB(gwi_func_end(gwi, vec2_set, ae_flag_none))
+
   GWI_BB(gwi_class_end(gwi))
   const Type t_polar   = gwi_struct_ini(gwi, "polar");
   GWI_BB(gwi_gack(gwi, t_polar, gack_polar))
@@ -181,16 +178,12 @@ ANN static m_bool import_complex(const Gwi gwi) {
   GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
   GWI_BB(gwi_item_ini(gwi, "float", "phase"))
   GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
+  gwi_func_ini(gwi, "auto", "new");
+  gwi_func_arg(gwi, "float", "mod");
+  gwi_func_arg(gwi, "float", "phase");
+  GWI_BB(gwi_func_end(gwi, vec2_set, ae_flag_none))
   GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, NULL, "complex", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
-  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
-  GWI_BB(gwi_oper_end(gwi, "@ctor",   NULL))
-  GWI_BB(gwi_oper_ini(gwi, NULL, "polar", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
-  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
-  GWI_BB(gwi_oper_end(gwi, "@ctor",   NULL))
   GWI_BB(gwi_oper_ini(gwi, "complex", "complex", "bool"))
   GWI_BB(gwi_oper_end(gwi, "==",          complex_eq))
   GWI_BB(gwi_oper_end(gwi, "!=",          complex_ne))
@@ -200,7 +193,7 @@ ANN static m_bool import_complex(const Gwi gwi) {
   GWI_BB(gwi_oper_end(gwi, "*",         ComplexMul))
   GWI_BB(gwi_oper_end(gwi, "/",        ComplexDiv))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "=>",         ComplexRAssign))
+  GWI_BB(gwi_oper_end(gwi, ":=>",         ComplexRAssign))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
   GWI_BB(gwi_oper_end(gwi, "+=>",    ComplexRAdd))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
@@ -214,7 +207,7 @@ ANN static m_bool import_complex(const Gwi gwi) {
   GWI_BB(gwi_oper_end(gwi, "!=",          complex_ne))
   GWI_BB(gwi_oper_ini(gwi, "polar", "polar", "polar"))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "=>",         ComplexRAssign))
+  GWI_BB(gwi_oper_end(gwi, ":=>",         ComplexRAssign))
   GWI_BB(gwi_oper_end(gwi, "+",          PolarAdd))
   GWI_BB(gwi_oper_end(gwi, "-",         PolarSub))
   GWI_BB(gwi_oper_end(gwi, "*",         PolarMul))
@@ -227,16 +220,6 @@ ANN static m_bool import_complex(const Gwi gwi) {
   GWI_BB(gwi_oper_end(gwi, "*=>",   PolarRMul))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
   GWI_BB(gwi_oper_end(gwi, "/=>",  PolarRDiv))
-/*
-  GWI_BB(gwi_oper_ini(gwi, "complex", (m_str)OP_ANY_TYPE, NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_object_dot))
-  GWI_BB(gwi_oper_emi(gwi, opem_complex_dot))
-  GWI_BB(gwi_oper_end(gwi, ".", NULL))
-  GWI_BB(gwi_oper_ini(gwi, "polar", (m_str)OP_ANY_TYPE, NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_object_dot))
-  GWI_BB(gwi_oper_emi(gwi, opem_polar_dot))
-  GWI_BB(gwi_oper_end(gwi, ".", NULL))
-*/
   return GW_OK;
 }
 
@@ -264,6 +247,7 @@ static MFUN(vec3_set) {
   v->x = *(m_float*)MEM(SZ_INT);
   v->y = *(m_float*)MEM(SZ_INT + SZ_FLOAT);
   v->z = *(m_float*)MEM(SZ_INT + SZ_FLOAT * 2);
+  *(m_vec3*)RETURN = *v;
 }
 
 static MFUN(vec3_setAll) {
@@ -371,11 +355,11 @@ static INSTR(Vec3RAssign) {
 }
 
 static void vecx_base(const Gwi gwi) {
-	gwi_item_ini(gwi, "float", "x");
+  gwi_item_ini(gwi, "float", "x");
   gwi_item_end(gwi, ae_flag_none, num, 0);
-	gwi_item_ini(gwi, "float", "y");
+  gwi_item_ini(gwi, "float", "y");
   gwi_item_end(gwi, ae_flag_none, num, 0);
-	gwi_item_ini(gwi, "float", "z");
+  gwi_item_ini(gwi, "float", "z");
   gwi_item_end(gwi, ae_flag_none, num, 0);
 }
 
@@ -424,7 +408,6 @@ exp_self(call)->type = t;
 
 ANN static m_bool import_vec3(const Gwi gwi) {
   const Type t_vec3 = gwi_struct_ini(gwi, "Vec3");
-gwi_class_xtor(gwi, ctor, NULL);
   GWI_BB(gwi_gack(gwi, t_vec3, gack_vec3))
   vecx_base(gwi);
   gwi_func_ini(gwi, "void", "set");
@@ -463,23 +446,13 @@ gwi_class_xtor(gwi, ctor, NULL);
   GWI_BB(gwi_func_end(gwi, vec3_update_set_slew, ae_flag_none))
 
   gwi_func_ini(gwi, "auto", "new");
-  gwi_func_arg(gwi, "float", "...");
-  GWI_BB(gwi_func_end(gwi, vec3_update_set_slew, ae_flag_none))
+  gwi_func_arg(gwi, "float", "x");
+  gwi_func_arg(gwi, "float", "y");
+  gwi_func_arg(gwi, "float", "z");
+  GWI_BB(gwi_func_end(gwi, vec3_set, ae_flag_none))
 
   GWI_BB(gwi_class_end(gwi))
 
-const Func f = (Func)vector_back(&t_vec3->nspc->vtable);
-  GWI_BB(gwi_oper_ini(gwi, NULL, "Vec3.new", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
-  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
-  GWI_BB(gwi_oper_end(gwi, "@func_check", NULL))
-
-/*
-  GWI_BB(gwi_oper_ini(gwi, NULL, "Vec3", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
-  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
-  GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
-*/
   GWI_BB(gwi_oper_ini(gwi, "Vec3", "Vec3", "bool"))
   GWI_BB(gwi_oper_end(gwi, "==",          vec3_eq))
   GWI_BB(gwi_oper_end(gwi, "!=",          vec3_ne))
@@ -489,7 +462,7 @@ const Func f = (Func)vector_back(&t_vec3->nspc->vtable);
   GWI_BB(gwi_oper_end(gwi, "*", Vec3Mul))
   GWI_BB(gwi_oper_end(gwi, "/", Vec3Div))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "=>", Vec3RAssign))
+  GWI_BB(gwi_oper_end(gwi, ":=>", Vec3RAssign))
   GWI_BB(gwi_oper_ini(gwi, "Vec3", "float", "Vec3"))
   GWI_BB(gwi_oper_end(gwi, "+",  Vec3AddFloat))
   GWI_BB(gwi_oper_end(gwi, "-", Vec3SubFloat))
@@ -596,7 +569,7 @@ ANN static m_bool import_vec4(const Gwi gwi) {
   const Type t_vec4 = gwi_struct_ini(gwi, "Vec4");
   GWI_BB(gwi_gack(gwi, t_vec4, gack_vec4))
   vecx_base(gwi);
-	gwi_item_ini(gwi, "float", "w");
+  gwi_item_ini(gwi, "float", "w");
   gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "void", "set");
   gwi_func_arg(gwi, "float", "x");
@@ -611,12 +584,14 @@ ANN static m_bool import_vec4(const Gwi gwi) {
   GWI_BB(gwi_func_end(gwi, vec4_magnitude, ae_flag_none))
     gwi_func_ini(gwi, "void", "normalize");
   GWI_BB(gwi_func_end(gwi, vec4_normalize, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, NULL, "Vec4", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_vecx_ctor))
-  GWI_BB(gwi_oper_emi(gwi, opem_vecx_ctor))
-  GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
+  gwi_func_ini(gwi, "auto", "new");
+  gwi_func_arg(gwi, "float", "x");
+  gwi_func_arg(gwi, "float", "y");
+  gwi_func_arg(gwi, "float", "z");
+  gwi_func_arg(gwi, "float", "w");
+  GWI_BB(gwi_func_end(gwi, vec4_set, ae_flag_none))
+  GWI_BB(gwi_struct_end(gwi))
 
   GWI_BB(gwi_oper_ini(gwi, "Vec4", "Vec4", "bool"))
   GWI_BB(gwi_oper_end(gwi, "==",          vec4_eq))
@@ -627,7 +602,7 @@ ANN static m_bool import_vec4(const Gwi gwi) {
   GWI_BB(gwi_oper_end(gwi, "*", Vec4Mul))
   GWI_BB(gwi_oper_end(gwi, "/", Vec4Div))
   GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "=>", Vec4RAssign))
+  GWI_BB(gwi_oper_end(gwi, ":=>", Vec4RAssign))
   GWI_BB(gwi_oper_ini(gwi, "Vec4", "float", "Vec4"))
   GWI_BB(gwi_oper_end(gwi, "+", Vec4AddFloat))
   GWI_BB(gwi_oper_end(gwi, "-", Vec4SubFloat))

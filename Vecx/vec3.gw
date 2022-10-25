@@ -1,16 +1,20 @@
 #import Vecx
 
-<<< new Vec3(2, 1, 1) >>>;
-#!new Vec3(2, 1, 1);
 
-#!var Vec3 v, w;
-#!<<< 12. :=> v.z >>>;
-#!<<<v.z>>>;
-#!<<<v>>>;
-#!<<<v.z>>>;
-#!v + w;
-#!v *2.;
-#!<<<v.z>>>;
-#!v.setAll(2);
-#!<<<v.magnitude()>>>;
-#!<<<v.z>>>;
+Vec3(2, 1, 1);
+<<<Vec3(2, 1, 1) >>>;
+<<< Vec3(2, 1, 1) :=> const auto v >>>;
+13 :=> var float f;
+<<< v >>>;
+new Vec3(2, 1, 1);
+var Vec3 w;
+<<< 12. :=> v.z >>>;
+<<<v.z>>>;
+<<<v>>>;
+<<<v.z>>>;
+v + w;
+v *2.;
+<<<v.z>>>;
+v.setAll(2);
+<<<v.magnitude()>>>;
+<<<v.z>>>;
