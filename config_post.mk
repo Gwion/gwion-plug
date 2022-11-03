@@ -13,10 +13,10 @@ clean:
 	${CC} -fPIC ${CFLAGS} -c $< -o $(<:.c=.o)
 
 .cpp.o:
-	${CC} -lstdc++ -fPIC ${CFLAGS} -c $< -o $(<:.cpp=.o)
+	${CXX} -fPIC ${CFLAGS} -c $< -o $(<:.cpp=.o)
 
 .cc.o:
-	${CC} -lstdc++ -fPIC ${CFLAGS} -c $< -o $(<:.cc=.o)
+	${CXX} -fPIC ${CFLAGS} -c $< -o $(<:.cc=.o)
 
 install: ${NAME}.so
 	install ${NAME}.so ${PLUG_DIR}

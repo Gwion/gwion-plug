@@ -354,7 +354,7 @@ static OP_EMIT(opem_tuple_ctor) {
   m_int sz = -exp_self(call)->type->nspc->offset;
   while(exp) {
 //    const Type t = exp->cast_to ?: exp->type;
-//    if(isa(t, emit->gwion->type[et_compound]) > 0)
+//    if(tflag(t, tflag_compound))
 //      (void)emit_compound_addref(emit, t, sz, 0);
     sz += exp->type->size;
     exp = exp->next;

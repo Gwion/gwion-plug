@@ -67,7 +67,7 @@ ANN static void tojson_pp(ToJson *const json, const Type t, const m_bit* data) {
     if(code)
       *json->str << "\"" << (*(VM_Code*)data)->name << "\"" ;
     else *json->str << "null";
-  } else if(isa(t, type[et_compound]) > 0) {
+  } else if(tflag(t, tflag_compound)) {
     m_bit *const next = !tflag(t, tflag_struct)
       ? *(m_bit**)data : (m_bit*)&data;
     real_tojson(json, t, next);

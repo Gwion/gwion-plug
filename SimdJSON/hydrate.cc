@@ -124,7 +124,7 @@ ANN void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, con
         break;
       }
     } while((f = f->next));
-  } else if(isa(t, gwion->type[et_compound]) > 0) {
+  } else if(tflag(t, tflag_compound)) {
     if(!elem.is_null()) {
       Hydrate h = { .gwion=gwion, .shred=shred, .data=data};
       hydrate_compound(&h, elem, t);

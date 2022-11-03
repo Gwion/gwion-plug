@@ -38,7 +38,7 @@ static MP_Vector *get_values(const VM_Shred shred, const M_Vector names) {
     const Type t = *mp_vector_at(code->types, Type, i);
     const M_Object o = *(M_Object*)(names->ptr + ARRAY_OFFSET + i * SZ_INT);
     m_bit *data = MEM(offset);
-    if(isa(t, shred->info->vm->gwion->type[et_compound]) > 0) {
+    if(tflag(t, tflag_compound)) {
       if(!tflag(t, tflag_struct)) (*(M_Object*)data)->ref++;
       else struct_addref(shred->info->vm->gwion, t, data);
     }

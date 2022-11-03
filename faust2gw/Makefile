@@ -18,7 +18,7 @@ gwion_faust.template.h: gwion_faust.template.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf faust2gw *.o gwion_faust.template.h
+	rm -rf faust2gw *.o
 
 install: faust2ck
 	cp -f faust2ck /usr/local/bin/
