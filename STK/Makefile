@@ -5,10 +5,10 @@ ifeq ($(wilcard ${STK_LIB}), )
 LDFLAGS += -L$(shell dirname ${STK_LIB})
 CFLAGS += -Istk/include
 else
-LDFLAGS += -lstk
 CFLAGS += -I/usr/include/stk
 CFLAGS += -I/usr/local/include/stk
 endif
+LDFLAGS += -lstk
 
 include ../config_post.mk
 
