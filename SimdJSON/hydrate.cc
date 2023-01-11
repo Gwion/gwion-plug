@@ -168,7 +168,8 @@ ANN static void _hydrate(Hydrate *const h, dom::element elem, /*const M_Object o
   if(t->info->parent)
     _hydrate(h, elem, t->info->parent);
   if(vflag(t->info->value, vflag_builtin) && tflag(t, tflag_ctor)) {
-    f_xtor ctor = (f_xtor)t->nspc->pre_ctor->native_func;
+    const Func f = (Func)vector_front(&t->nspc->vtable);
+    f_xtor ctor = (f_xtor)f->code->native_func;
     ctor(h->obj, h->shred->mem, h->shred); // beware mem
   }
   dom::object dom_object = elem.get_object();

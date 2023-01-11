@@ -129,7 +129,7 @@ static OP_CHECK(ctor_as_call) {
   Exp_Dot *dot = &e->d.exp_dot;
   dot->base = func;
   dot->xid = insert_symbol(env->gwion->st, "call");
-  dot->is_call = call;
+  e->is_call = true;
   call->func->type = NULL;
   return check_exp_call1(env, call) ?: env->gwion->type[et_error];
 }

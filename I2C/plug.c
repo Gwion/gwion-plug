@@ -180,6 +180,7 @@ static MFUN(gw_i2c_ioctl_write) {
 
 GWION_IMPORT(I2C) {
   const Type t_I2CDevice = gwi_class_ini(gwi, "I2C", "Object");
+  gwi_class_xtor(gwi, NULL, gw_i2c_dtor);
   t_I2CDevice->nspc->offset += sizeof(I2CDevice);
   CHECK_BB(gwi_func_ini(gwi, "void", "bus"));
   CHECK_BB(gwi_func_arg(gwi, "int", "bus"));
@@ -265,7 +266,6 @@ GWION_IMPORT(I2C) {
   CHECK_BB(gwi_func_arg(gwi, "u8[]", "buf"));
   CHECK_BB(gwi_func_end(gwi, gw_i2c_ioctl_write, ae_flag_none));
   gwi_class_end(gwi);
-  gwi_class_xtor(gwi, NULL, gw_i2c_dtor);
   gwi_class_end(gwi);
   return GW_OK;
 }
