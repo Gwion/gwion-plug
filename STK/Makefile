@@ -2,13 +2,14 @@ include ../config.mk
 
 STK_LIB := stk/build/libstk.a
 ifeq ($(wilcard ${STK_LIB}), )
-LDFLAGS += -L$(shell dirname ${STK_LIB})
-CFLAGS += -Istk/include
+#LDFLAGS += -L$(shell dirname ${STK_LIB})
+CXXFLAGS += -Istk/include
+LDFLAGS += ${STK_LIB}
 else
-CFLAGS += -I/usr/include/stk
-CFLAGS += -I/usr/local/include/stk
-endif
+CXXFLAGS += -I/usr/include/stk
+CXXFLAGS += -I/usr/local/include/stk
 LDFLAGS += -lstk
+endif
 
 include ../config_post.mk
 
