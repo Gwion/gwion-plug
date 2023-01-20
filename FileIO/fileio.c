@@ -32,7 +32,8 @@ static int fileio_read(void *data) {
   const M_Object o = *(M_Object*)(shred->mem + offset);
   char *c = NULL;
   size_t n;
-  GwText txt = { .mp = shred->info->mp };
+  GwText txt;
+  text_init(&txt, shred->info->mp);
   if(getline(&c, &n, IO_FILE(o)) > 0 ) {
     text_add(&txt, c);
     xfree(c);

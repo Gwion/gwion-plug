@@ -2,3 +2,4 @@
 *.so
 list.txt
 Cytosol/Cytosol
+I2C/libi2c

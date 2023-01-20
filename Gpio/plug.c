@@ -15,36 +15,67 @@
 
 #define CHIP(o) (*(struct gpiod_chip **)(o)->data)
 #define LINE(o) (*(struct gpiod_line **)(o)->data)
-#define BULK(o) (*(struct gpiod_line_bulk **)(o)->data)
+#define BULK(o) ((struct gpiod_line_bulk *)(o)->data)
 
-
-static SFUN(gw_gpiod_is_gpiochip_device) {
-  *(m_int*)RETURN = gpiod_is_gpiochip_device(STRING(o));
-}
-
-static MFUN(gw_gpiod_chip_open) {
+static MFUN(gw_gpiod_chip_new) {
   const M_Object path = *(M_Object*)MEM(SZ_INT);
   *(M_Object*)RETURN = o;
-  if(!(CHIP(o) = gpiod_chip_open(STRING(path))))
+  if(!(CHIP(o) = gpiod_chip_open_lookup(STRING(path))))
+    xfun_handle(shred, "GpioChip");
+}
+
+static SFUN(gw_gpiod_chip_open_by_path) {
+  const M_Object path = *(M_Object*)MEM(0);
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  const M_Object obj = new_object(shred->info->mp, code->ret_type);
+  *(M_Object*)RETURN = obj;
+  if(!(CHIP(obj) = gpiod_chip_open(STRING(path))))
+    xfun_handle(shred, "GpioChip");
+}
+
+static SFUN(gw_gpiod_chip_open_by_name) {
+  const M_Object name = *(M_Object*)MEM(0);
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  const M_Object obj = new_object(shred->info->mp, code->ret_type);
+  *(M_Object*)RETURN = obj;
+  if(!(CHIP(obj) = gpiod_chip_open_by_name(STRING(name))))
+    xfun_handle(shred, "GpioChip");
+}
+
+static SFUN(gw_gpiod_chip_open_by_number) {
+  const m_int num = *(m_int*)MEM(0);
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  const M_Object obj = new_object(shred->info->mp, code->ret_type);
+  *(M_Object*)RETURN = obj;
+  if(!(CHIP(obj) = gpiod_chip_open_by_number(num)))
+    xfun_handle(shred, "GpioChip");
+}
+
+static SFUN(gw_gpiod_chip_open_by_label) {
+  const M_Object label = *(M_Object*)MEM(0);
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  const M_Object obj = new_object(shred->info->mp, code->ret_type);
+  *(M_Object*)RETURN = obj;
+  if(!(CHIP(obj) = gpiod_chip_open_by_label(STRING(label))))
     xfun_handle(shred, "GpioChip");
 }
 
 static MFUN(gw_gpiod_dtor) {
-  gpiod_chip_unref(CHIP(o));
+  gpiod_chip_close(CHIP(o));
 }
 
-static MFUN(gw_gpiod_chip_get_name) {
-  const char *result = gpiod_chip_get_name(CHIP(o));
+static MFUN(gw_gpiod_chip_name) {
+  const char *result = gpiod_chip_name(CHIP(o));
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)result);
 }
 
-static MFUN(gw_gpiod_chip_get_label) {
-  char const * result = gpiod_chip_get_label(CHIP(o));
+static MFUN(gw_gpiod_chip_label) {
+  char const * result = gpiod_chip_label(CHIP(o));
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)result);
 }
 
-static MFUN(gw_gpiod_chip_get_num_lines) {
-  *(m_int*)RETURN = gpiod_chip_get_num_lines(CHIP(o));
+static MFUN(gw_gpiod_chip_num_lines) {
+  *(m_int*)RETURN = gpiod_chip_num_lines(CHIP(o));
 }
 
 static MFUN(gw_gpiod_chip_get_line) {
@@ -59,50 +90,54 @@ static MFUN(gw_gpiod_chip_get_line) {
 static MFUN(gw_gpiod_chip_get_lines) {
   const M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   M_Vector arg2 = ARRAY(temp2);
-  struct gpiod_line_bulk * result = gpiod_chip_get_lines(CHIP(o), (unsigned int*)ARRAY_PTR(arg2), ARRAY_LEN(arg2));
   const VM_Code code = *(VM_Code*)REG(SZ_INT*3);
   M_Object ret_obj = new_object(shred->info->mp, code->ret_type);
-  BULK(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;
-  if(!result) xfun_handle(shred, "GpioBulk");
-}
-
-static MFUN(gw_gpiod_chip_get_all_lines) {
-  struct gpiod_line_bulk * result = gpiod_chip_get_all_lines(CHIP(o));
-  const VM_Code code = *(VM_Code*)REG(SZ_INT);
-  M_Object ret_obj = new_object(shred->info->mp, code->ret_type);
-  BULK(ret_obj) = result;
-  *(M_Object*)RETURN = ret_obj;
-  if(!result) xfun_handle(shred, "GpioBulk");
-}
-
-static MFUN(gw_gpiod_chip_find_line) {
-  M_Object name = *(M_Object*)MEM(SZ_INT);
-  int result = (int)gpiod_chip_find_line(CHIP(o), STRING(name));
-  *(m_int*)RETURN = (m_int)result;
-  if(result < 0) xfun_handle(shred, "GpioLine");
-}
-
-static MFUN(gw_gpiod_line_bulk_new) {
-  unsigned int arg1 = (unsigned int)*(m_int*)MEM(SZ_INT);
-  *(M_Object*)RETURN = o;
-  if(!(BULK(o) = gpiod_line_bulk_new(arg1)))
+  if(gpiod_chip_get_lines(CHIP(o), (unsigned int*)ARRAY_PTR(arg2), ARRAY_LEN(arg2), BULK(ret_obj)) == -1)
     xfun_handle(shred, "GpioBulk");
 }
 
-static MFUN(gw_gpiod_line_bulk_reset) {
-  gpiod_line_bulk_reset(BULK(o));
+static MFUN(gw_gpiod_chip_get_all_lines) {
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  M_Object ret_obj = new_object(shred->info->mp, code->ret_type);
+  *(M_Object*)RETURN = ret_obj;
+  if(gpiod_chip_get_all_lines(CHIP(o), BULK(ret_obj)) == -1)
+    xfun_handle(shred, "GpioBulk");
 }
 
-static DTOR(gw_gpiod_line_bulk_free) {
-  gpiod_line_bulk_free(BULK(o));
+static MFUN(gw_gpiod_chip_find_line) {
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  M_Object name = *(M_Object*)MEM(SZ_INT);
+  M_Object ret_obj = new_object(shred->info->mp, code->ret_type);
+  *(M_Object*)RETURN = ret_obj;
+  LINE(ret_obj) = gpiod_chip_find_line(CHIP(o), STRING(name));
+  if(!LINE(ret_obj)) xfun_handle(shred, "GpioLine");
+}
+
+static MFUN(gw_gpiod_chip_find_lines) {
+  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  M_Object names = *(M_Object*)MEM(SZ_INT);
+  M_Vector array = ARRAY(names);
+  const char *tmp[ARRAY_LEN(array)];
+  for(m_uint i = 0; i < ARRAY_LEN(array); i++) {
+    const M_Object name = *(M_Object*)ARRAY_PTR(array) + i * SZ_INT;
+    tmp[i] = STRING(name);
+  }
+  M_Object ret_obj = new_object(shred->info->mp, code->ret_type);
+  *(M_Object*)RETURN = ret_obj;
+  if(gpiod_chip_find_lines(CHIP(o), tmp, BULK(ret_obj)) == -1)
+    xfun_handle(shred, "GpioLine");
+}
+
+
+static MFUN(gw_gpiod_line_bulk_reset) {
+  gpiod_line_bulk_init(BULK(o));
 }
 
 static MFUN(gw_gpiod_line_bulk_add_line) {
   const M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   struct gpiod_line * arg2 = LINE(temp2);
-  if(gpiod_line_bulk_add_line(BULK(o),arg2) < 0)
-    xfun_handle(shred, "GpioBulk");
+  gpiod_line_bulk_add(BULK(o), arg2);
 }
 
 static MFUN(gw_gpiod_line_bulk_get_line) {
@@ -145,8 +180,8 @@ static MFUN(gw_gpiod_line_direction) {
   *(m_int*)RETURN = gpiod_line_direction(LINE(o));
 }
 
-static MFUN(gw_gpiod_line_is_active_low) {
-  *(m_int*)RETURN = gpiod_line_is_active_low(LINE(o));
+static MFUN(gw_gpiod_line_state) {
+  *(m_int*)RETURN = gpiod_line_active_state(LINE(o));
 }
 
 static MFUN(gw_gpiod_line_bias) {
@@ -157,13 +192,31 @@ static MFUN(gw_gpiod_line_is_used) {
   *(m_int*)RETURN = gpiod_line_is_used(LINE(o));
 }
 
-static MFUN(gw_gpiod_line_drive) {
-  *(m_int*)RETURN = gpiod_line_drive(LINE(o));
+static MFUN(gw_gpiod_line_is_open_drain) {
+  *(m_int*)RETURN = gpiod_line_is_open_drain(LINE(o));
 }
+
+static MFUN(gw_gpiod_line_is_open_source) {
+  *(m_int*)RETURN = gpiod_line_is_open_source(LINE(o));
+}
+
 /*
+// we'd need a way to read error number
+static MFUN(gw_gpiod_line_update) {
+  *(m_int*)RETURN = gpiod_line_update(LINE(o));
+}
+static MFUN(gw_gpiod_line_needs_update) {
+  *(m_int*)RETURN = gpiod_line_needs_update(LINE(o));
+}
+*/
+
+/*
+static MFUN(gw_gpiod_line_close_chip) {
+  gpiod_line_close_chip(LINE(o));
+}
 static MFUN(gw_gpiod_line_get_chip) {
   struct gpiod_chip * result = gpiod_line_get_chip(LINE(o));
-  const VM_Code code = *(VM_Code*)REG(SZ_INT);
+  const VM_Code code = *(vm_code*)REG(SZ_INT);
   M_Object ret_obj = new_object(shred->info->mp, code->ret_type);
   CHIP(ret_obj) = result;
   *(M_Object*)RETURN = ret_obj;
@@ -215,6 +268,14 @@ static MFUN(gw_gpiod_line_request_output_flags) {
 
 static MFUN(gw_gpiod_line_release) {
   gpiod_line_release(LINE(o));
+}
+
+static MFUN(gw_gpiod_line_is_requested) {
+  *(m_int*)RETURN = gpiod_line_is_requested(LINE(o));
+}
+
+static MFUN(gw_gpiod_line_is_free) {
+  *(m_int*)RETURN = gpiod_line_is_free(LINE(o));
 }
 
 static MFUN(gw_gpiod_line_get_value) {
@@ -385,7 +446,7 @@ static MFUN(gw_gpiod_line_event_event_type_get) {
 }
 
 static MFUN(gw_gpiod_line_event_offset_get) {
-  *(m_int*)RETURN = LINEEV(o)->offset;
+  //*(m_int*)RETURN = LINEEV(o)->offset;
 }
 
 static MFUN(gw_gpiod_line_event_wait) {
@@ -519,26 +580,31 @@ GWION_IMPORT(Gpiod) {
     gwidoc(gwi, "Get the API version of the library as a human-readable string.  ");
     CHECK_BB(gwi_func_ini(gwi, "string", "version"));
     CHECK_BB(gwi_func_end(gwi, gw_gpiod_version_string, ae_flag_static));
-
+/*
     CHECK_BB(gwi_enum_ini(gwi, (m_str)"CB"));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"NEXT", (m_uint)GPIOD_LINE_BULK_CB_NEXT));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"STOP", (m_uint)GPIOD_LINE_BULK_CB_STOP));
     CHECK_OB(gwi_enum_end(gwi));
-
+*/
     CHECK_BB(gwi_enum_ini(gwi, (m_str)"Direction"));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"INPUT", (m_uint)GPIOD_LINE_DIRECTION_INPUT));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"OUTPUT", (m_uint)GPIOD_LINE_DIRECTION_OUTPUT));
     CHECK_OB(gwi_enum_end(gwi));
 
+    CHECK_BB(gwi_enum_ini(gwi, (m_str)"State"));
+    CHECK_BB(gwi_enum_add(gwi, (m_str)"HIGH", (m_uint)GPIOD_LINE_ACTIVE_STATE_HIGH));
+    CHECK_BB(gwi_enum_add(gwi, (m_str)"LOW", (m_uint)GPIOD_LINE_ACTIVE_STATE_LOW));
+    CHECK_OB(gwi_enum_end(gwi));
+/*
     CHECK_BB(gwi_enum_ini(gwi, (m_str)"Drive"));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"PUSH_PULL", (m_uint)GPIOD_LINE_DRIVE_PUSH_PULL));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_DRAIN", (m_uint)GPIOD_LINE_DRIVE_OPEN_DRAIN));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_SOURCE", (m_uint)GPIOD_LINE_DRIVE_OPEN_SOURCE));
     CHECK_OB(gwi_enum_end(gwi));
-
+*/
     CHECK_BB(gwi_enum_ini(gwi, (m_str)"Bias"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"UNKNOWN", (m_uint)GPIOD_LINE_BIAS_UNKNOWN));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"DISABLED", (m_uint)GPIOD_LINE_BIAS_DISABLED));
+    CHECK_BB(gwi_enum_add(gwi, (m_str)"AS_IS", (m_uint)GPIOD_LINE_BIAS_AS_IS));
+    CHECK_BB(gwi_enum_add(gwi, (m_str)"DISABLE", (m_uint)GPIOD_LINE_BIAS_DISABLE));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"PULL_UP", (m_uint)GPIOD_LINE_BIAS_PULL_UP));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"PULL_DOWN", (m_uint)GPIOD_LINE_BIAS_PULL_DOWN));
     CHECK_OB(gwi_enum_end(gwi));
@@ -556,7 +622,7 @@ GWION_IMPORT(Gpiod) {
     CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_DRAIN", (m_uint)GPIOD_LINE_REQUEST_FLAG_OPEN_DRAIN));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_SOURCE", (m_uint)GPIOD_LINE_REQUEST_FLAG_OPEN_SOURCE));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"ACTIVE_LOW", (m_uint)GPIOD_LINE_REQUEST_FLAG_ACTIVE_LOW));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"BIAS_DISABLED", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_DISABLED));
+    CHECK_BB(gwi_enum_add(gwi, (m_str)"BIAS_DISABLE", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_DISABLE));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"BIAS_PULL_DOWN", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_DOWN));
     CHECK_BB(gwi_enum_add(gwi, (m_str)"BIAS_PULL_UP", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP));
     CHECK_OB(gwi_enum_end(gwi));
@@ -566,27 +632,42 @@ GWION_IMPORT(Gpiod) {
     CHECK_BB(gwi_enum_add(gwi, (m_str)"FALLING_EDGE", (m_uint)GPIOD_LINE_EVENT_FALLING_EDGE));
     CHECK_OB(gwi_enum_end(gwi));
 
-    gwidoc(gwi, "Check if the file pointed to by path is a GPIO chip character device.");
-    CHECK_BB(gwi_func_ini(gwi, "bool", "is_chip"));
-    CHECK_BB(gwi_func_arg(gwi, "string", "path"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_is_gpiochip_device, ae_flag_static));
-
-    gwidoc(gwi, "Open a gpiochip by path.  ");
+    gwidoc(gwi, "Open a gpiochip using smart function.");
     CHECK_BB(gwi_func_ini(gwi, "auto", "new"));
     CHECK_BB(gwi_func_arg(gwi, "string", "path"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open, ae_flag_none));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_new, ae_flag_none));
+
+    gwidoc(gwi, "Open a gpiochip by path.");
+    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_path"));
+    CHECK_BB(gwi_func_arg(gwi, "string", "path"));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_path, ae_flag_static));
+
+    gwidoc(gwi, "Open a gpiochip by name.");
+    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_name"));
+    CHECK_BB(gwi_func_arg(gwi, "string", "name"));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_name, ae_flag_static));
+
+    gwidoc(gwi, "Open a gpiochip by label.");
+    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_label"));
+    CHECK_BB(gwi_func_arg(gwi, "string", "label"));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_label, ae_flag_static));
+
+    gwidoc(gwi, "Open a gpiochip by number.");
+    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_label"));
+    CHECK_BB(gwi_func_arg(gwi, "string", "label"));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_number, ae_flag_static));
 
     gwidoc(gwi, "Get the GPIO chip name as represented in the kernel.");
     CHECK_BB(gwi_func_ini(gwi, "string", "name"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_get_name, ae_flag_none));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_name, ae_flag_none));
 
     gwidoc(gwi, "Get the GPIO chip label as represented in the kernel.");
     CHECK_BB(gwi_func_ini(gwi, "string", "label"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_get_label, ae_flag_none));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_label, ae_flag_none));
 
     gwidoc(gwi, "Get the number of GPIO lines exposed by this chip.");
     CHECK_BB(gwi_func_ini(gwi, "int", "num_lines"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_get_num_lines, ae_flag_none));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_num_lines, ae_flag_none));
 
     gwidoc(gwi, "Structure holding event info.");
     const Type t_lineev = gwi_class_ini(gwi, "LineEv", "Object");
@@ -631,9 +712,9 @@ GWION_IMPORT(Gpiod) {
       CHECK_BB(gwi_func_ini(gwi, "Direction", "direction"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_direction, ae_flag_none));
 
-      gwidoc(gwi, "Check if the signal of this line is inverted.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "is_active_low"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_active_low, ae_flag_none));
+      gwidoc(gwi, "Read the GPIO line state setting.");
+      CHECK_BB(gwi_func_ini(gwi, "State", "state"));
+      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_state, ae_flag_none));
 
       gwidoc(gwi, "Read the GPIO line bias setting.");
       CHECK_BB(gwi_func_ini(gwi, "Bias", "bias"));
@@ -643,9 +724,13 @@ GWION_IMPORT(Gpiod) {
       CHECK_BB(gwi_func_ini(gwi, "bool", "is_used"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_used, ae_flag_none));
 
-      gwidoc(gwi, "Read the GPIO line drive setting.");
-      CHECK_BB(gwi_func_ini(gwi, "Drive", "drive"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_drive, ae_flag_none));
+      gwidoc(gwi, "Check if the line is a open drain gpio.");
+      CHECK_BB(gwi_func_ini(gwi, "bool", "is_open_drain"));
+      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_open_drain, ae_flag_none));
+
+      gwidoc(gwi, "Check if the line is a open source gpio.");
+      CHECK_BB(gwi_func_ini(gwi, "bool", "is_open_source"));
+      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_open_source, ae_flag_none));
 
       gwidoc(gwi, "Update the configuration flags of a single GPIO line.");
       CHECK_BB(gwi_func_ini(gwi, "void", "flags"));
@@ -687,7 +772,7 @@ GWION_IMPORT(Gpiod) {
 
       gwidoc(gwi, "Update the configuration of a single GPIO line.");
       CHECK_BB(gwi_func_ini(gwi, "void", "config"));
-      CHECK_BB(gwi_func_arg(gwi, "Direction", "direction"));
+      CHECK_BB(gwi_func_arg(gwi, "Direction", "state"));
       CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
       CHECK_BB(gwi_func_arg(gwi, "int", "value"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_config, ae_flag_none));
@@ -710,6 +795,14 @@ GWION_IMPORT(Gpiod) {
       CHECK_BB(gwi_func_ini(gwi, "void", "release"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_release, ae_flag_none));
 
+      gwidoc(gwi, "check if the calling user has ownership of the line.");
+      CHECK_BB(gwi_func_ini(gwi, "bool", "is_requested"));
+      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_requested, ae_flag_none));
+
+      gwidoc(gwi, "check if the line is free.");
+      CHECK_BB(gwi_func_ini(gwi, "bool", "is_free"));
+      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_free, ae_flag_none));
+
       gwidoc(gwi, "Read next pending event from the GPIO line.  ");
       CHECK_BB(gwi_func_ini(gwi, "LineEv", "read"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_read, ae_flag_none));
@@ -726,21 +819,20 @@ GWION_IMPORT(Gpiod) {
     CHECK_BB(gwi_func_arg(gwi, "int", "offset"));
     CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_get_line, ae_flag_none));
 
-    gwidoc(gwi, "Map a GPIO line's name to its offset within the chip.");
+    gwidoc(gwi, "Find a Gpio line by name.");
     CHECK_BB(gwi_func_ini(gwi, "int", "find_line"));
     CHECK_BB(gwi_func_arg(gwi, "string", "name"));
     CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_find_line, ae_flag_none));
 
+    gwidoc(gwi, "Find a set of Gpio lines by names.");
+    CHECK_BB(gwi_func_ini(gwi, "int", "find_line"));
+    CHECK_BB(gwi_func_arg(gwi, "string[]", "name"));
+    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_find_lines, ae_flag_none));
+
     gwidoc(gwi, "Holds several lines");
     const Type t_bulk = gwi_class_ini(gwi, "Bulk", "Object");
-    t_bulk->nspc->offset += SZ_INT;
+    t_bulk->nspc->offset += sizeof(struct gpiod_line_bulk);
     SET_FLAG(t_line, abstract);
-    gwi_class_xtor(gwi, NULL, gw_gpiod_line_bulk_free);
-
-      gwidoc(gwi, "Allocate and initialize a new line bulk object.");
-      CHECK_BB(gwi_func_ini(gwi, "auto", "new"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "max_lines"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bulk_new, ae_flag_none));
 
       gwidoc(gwi, "Reset a bulk object. Remove all lines and set size to 0.");
       CHECK_BB(gwi_func_ini(gwi, "void", "reset"));
@@ -769,7 +861,7 @@ GWION_IMPORT(Gpiod) {
 
       gwidoc(gwi, "Update the configuration of a set of GPIO lines.");
       CHECK_BB(gwi_func_ini(gwi, "void", "config"));
-      CHECK_BB(gwi_func_arg(gwi, "Direction", "direction"));
+      CHECK_BB(gwi_func_arg(gwi, "Direction", "state"));
       CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
       CHECK_BB(gwi_func_arg(gwi, "u32[]", "values"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_config_bulk, ae_flag_none));

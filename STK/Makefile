@@ -1,7 +1,7 @@
 include ../config.mk
 
 STK_LIB := stk/build/libstk.a
-ifeq ($(wilcard ${STK_LIB}), )
+ifeq (,$(wilcard ${STK_LIB}))
 #LDFLAGS += -L$(shell dirname ${STK_LIB})
 CXXFLAGS += -Istk/include
 LDFLAGS += ${STK_LIB}

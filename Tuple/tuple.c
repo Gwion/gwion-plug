@@ -239,7 +239,8 @@ static INSTR(TupleCtor) {
 }
 
 ANN static Symbol tuple_sym(const Env env, const Vector v) {
-  GwText text = { .mp=env->gwion->mp };
+  GwText text;
+  text_init(&text, env->gwion->mp);
   text_add(&text, TUPLE_NAME);
   text_add(&text, ":[");
   for(m_uint i = 0; i < vector_size(v); ++i) {

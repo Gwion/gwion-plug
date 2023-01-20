@@ -12,8 +12,7 @@ CXX_SRC  += $(wildcard *.cc)
 OBJ       = $(SRC:.c=.o)
 OBJ      += $(CPP_SRC:.cpp=.o)
 OBJ      += $(CXX_SRC:.cc=.o)
-CFLAGS   += -I${INC}
-CFLAGS   += -I..
+CFLAGS   += -I${INC} -I..
 CFLAGS   += -Wall -Wextra
 LDFLAGS  += -shared -fPIC
 AUTO_INSTALL_DEPS ?= 0
@@ -37,6 +36,7 @@ LDLAGS += ${BASEDIR}/ast/libgwion_ast.a
 #LDLAGS += ${BASEDIR}/util/libgwion_util.dll.a
 LDLAGS += ${BASEDIR}/util/libgwion_util.a
 endif
+
 #CFLAGS += -DBUILD_ON_WINDOWS=1 -D_XOPEN_SOURCE=700 -Wl,--export-all-symbols -static
 #LDFLAGS += -shared -lpsapi -fPIC -Wl,--export-all -Wl,--enable-auto-import
 #LDFLAGS += -L${BASEDIR} -lgwion
@@ -59,6 +59,8 @@ endif
 ifeq (${USE_DOUBLE}, 1)
 CFLAGS +=-DUSE_DOUBLE
 endif
+
+CXXFLAGS += ${CFLAGS}
 
 %.checklib:
 	@echo "int main(){}" > tmp.c
