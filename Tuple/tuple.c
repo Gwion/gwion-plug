@@ -509,7 +509,7 @@ GWION_IMPORT(tuple) {
   GWI_BB(gwi_func_ini(gwi, "auto", "new"))
 //  GWI_BB(gwi_oper_add(gwi, opck_tuple_ctor))
 //  GWI_BB(gwi_oper_emi(gwi, opem_tuple_ctor))
-  GWI_BB(gwi_func_end(gwi, NULL, ae_flag_none))
+  GWI_BB(gwi_func_end(gwi, (f_xfun)1, ae_flag_none))
   GWI_BB(gwi_class_end(gwi));
 
   const Type t_undef = gwi_mk_type(gwi, "@Undefined", SZ_INT, NULL);

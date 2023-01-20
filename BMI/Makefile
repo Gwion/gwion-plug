@@ -15,5 +15,5 @@ all: bmi.checklib ${NAME}.so
 include ../config_post.mk
 
 get-bmi:
-	git clone https://github.com/euppal/bmi
+	git clone https://github.com/fennecdjay/bmi
 	cd bmi && make static
