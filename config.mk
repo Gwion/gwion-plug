@@ -17,6 +17,17 @@ CFLAGS   += -Wall -Wextra
 LDFLAGS  += -shared -fPIC
 AUTO_INSTALL_DEPS ?= 0
 
+
+ifeq ($(shell uname), Darwin)
+AR = /usr/bin/libtool
+AR_OPT = -static $^ -o $@
+LDFLAGS += -undefined dynamic_lookup
+else
+AR = ar
+AR_OPT = rcs $@ $^
+endif
+
+
 ifneq (${BUILD_ON_WINDOWS}, 1)
 NAME = $(shell basename `pwd`)
 else

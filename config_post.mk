@@ -6,6 +6,12 @@ else
 	${CC} $^ -o ${NAME}.so ${LDFLAGS}
 endif
 
+static: lib${NAME}.a
+
+lib${NAME}.a: ${OBJ}
+	${AR} ${AR_OPT}
+
+
 clean:
 	rm -f ${OBJ} ${NAME}.so
 

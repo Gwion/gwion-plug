@@ -42,7 +42,7 @@ static MFUN(gwpd_close) {
     libpd_closefile(PDFILE(o));
 }
 
-GWION_IMPORT(pd) {
+GWION_IMPORT(Pd) {
   DECL_OB(const Type, t_pd, = gwi_class_ini(gwi, "PD", "UGen"));
   gwi_class_xtor(gwi, pd_ctor, pd_dtor);
   t_pd->nspc->offset += SZ_INT;

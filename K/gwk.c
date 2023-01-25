@@ -96,7 +96,7 @@ static SFUN(gw_kmeans_refine) {
   matrix_release(data);
 }
 
-GWION_IMPORT(gwk) {
+GWION_IMPORT(K) {
   GWI_OB(gwi_class_ini(gwi, "K", NULL))
 
   gwi_func_ini(gwi, "int[]", "nn");

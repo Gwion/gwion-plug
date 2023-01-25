@@ -23,7 +23,7 @@ static MFUN(midifile_event);
 static MFUN(midifile_add_track);
 static MFUN(midifile_add_note);
 static MFUN(midifile_write);
-GWION_IMPORT(portsmf) {
+GWION_IMPORT(PortSmf) {
   GWI_OB(gwi_class_ini(gwi, "MidiFileEv", "Event"))
 	gwi_item_ini(gwi,"int", "type");
   gwi_item_end(gwi, ae_flag_const, num, 0);

@@ -124,7 +124,7 @@ static MFUN(state) {
   *(m_int*)RETURN = (sr->state = idx);
 }
 
-GWION_IMPORT(tinysr) {
+GWION_IMPORT(TinySR) {
   GWI_OB(gwi_mk_type(gwi, "TinySR", SZ_INT, "UGen"));
 
   GWI_OB(gwi_class_ini(gwi, "Tinysr", "UGen"))

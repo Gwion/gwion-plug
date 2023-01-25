@@ -1006,7 +1006,7 @@ static MFUN(set_cascade_num_candidate_groups) {
   fann_set_cascade_num_candidate_groups(FANN(o), *(m_uint*)RETURN);
 }
 
-GWION_IMPORT(fann) {
+GWION_IMPORT(Fann) {
   GWI_OB(gwi_class_ini(gwi, "FANN_connect", NULL));
   gwi_item_ini(gwi,"int",  "from");
   o_fann_from = gwi_item_end(gwi, ae_flag_none, num, 0);

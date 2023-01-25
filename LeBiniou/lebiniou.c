@@ -53,4 +53,4 @@ GWION_IMPORT(LeBiniou) {
 }
 
 static const m_str deps[] = { "Lo", NULL };
-GWDEPEND{ return deps; }
+GWDEPEND(LeBiniou){ return deps; }

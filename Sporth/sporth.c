@@ -172,7 +172,7 @@ static MFUN(sporth_parse_file) {
   }
 }
 
-GWION_IMPORT(sporth) {
+GWION_IMPORT(Sporth) {
   GWI_OB(gwi_class_ini(gwi, "Sporth", "UGen"))
   gwi_class_xtor(gwi, sporth_ctor, sporth_dtor);
 
@@ -209,4 +209,4 @@ GWION_IMPORT(sporth) {
 }
 
 static const m_str deps[] = { "Soundpipe", NULL };
-GWDEPEND{ return deps; }
+GWDEPEND(Sporth){ return deps; }

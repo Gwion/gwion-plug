@@ -203,7 +203,7 @@ static SFUN(machine_pass) {
   if(ret == GW_ERROR) xfun_handle(shred, "InvalidPassSet");
 }
 
-GWION_IMPORT(machine) {
+GWION_IMPORT(Machine) {
   gwidoc(gwi, "A namespace for machine operations");
 
   GWI_OB(gwi_struct_ini(gwi, "Machine"))

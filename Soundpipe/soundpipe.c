@@ -6278,7 +6278,7 @@ GWION_IMPORT(Soundpipe) {
   if(!sp) {
     sp_createn(&sp, gwi->gwion->vm->bbq->si->out); 
     sp->sr = gwi->gwion->vm->bbq->si->sr;
-    set_module(vm->gwion, "Soundpipe", sp);
+    CHECK_BB(set_module(vm->gwion, "Soundpipe", sp));
   }
   const M_Object o = new_M_UGen(gwi->gwion);
   ugen_ini(gwi->gwion, UGEN(o), 1, 1);

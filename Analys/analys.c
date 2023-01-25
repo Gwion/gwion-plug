@@ -687,7 +687,7 @@ static m_bool import_fc(Gwi gwi) {
   return GW_OK;
 }
 
-GWION_IMPORT(analys) {
+GWION_IMPORT(Analys) {
   GWI_BB(import_fft(gwi))
   GWI_BB(import_ana(gwi))
   GWI_BB(import_centroid(gwi))

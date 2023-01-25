@@ -155,7 +155,7 @@ static void jack_del(VM* vm __attribute__((unused)), Driver* di) {
   xfree(info);
 }
 
-GWDRIVER(jack) {
+GWDRIVER(Jack) {
   d->ini = jack_ini;
   d->run = jack_run;
   d->del = jack_del;

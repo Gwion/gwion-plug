@@ -385,7 +385,7 @@ static MFUN(uinput_create) {
     xfun_handle(shred, "UinputCreationError");
 }
 
-GWION_IMPORT(evdev) {
+GWION_IMPORT(Evdev) {
 
   DECL_OB(const Type, t_evdev, = gwi_class_ini(gwi, "Evdev", "Event"));
   gwi_class_xtor(gwi, NULL, evdev_dtor);

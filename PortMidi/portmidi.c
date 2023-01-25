@@ -224,7 +224,7 @@ GWION_IMPORT(PortMidi) {
   GWI_BB(gwi_class_end(gwi))
 
   if(!get_module(gwi->gwion, "PortMidi"))
-    set_module(gwi->gwion, "PortMidi", GWMODINI_NAME(gwi->gwion, NULL));
+    CHECK_BB(set_module(gwi->gwion, "PortMidi", GWMODINI_NAME(PortMidi)(gwi->gwion, NULL)));
   return GW_OK;
 }
 

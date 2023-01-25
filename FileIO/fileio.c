@@ -105,7 +105,7 @@ static void cfile(const Gwi gwi, const Type t, const m_str name, FILE *const fil
   gwi_item_end(gwi, ae_flag_const, obj, o);
 }
 
-GWION_IMPORT(fileio) {
+GWION_IMPORT(FileIO) {
   gwidoc(gwi, "Reading and writing text from/to a file.");
   DECL_OB(const Type, t_fileio, = gwi_class_ini(gwi, "FileIO", "Object"));
   gwi_class_xtor(gwi, NULL, fileio_dtor);

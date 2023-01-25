@@ -85,7 +85,7 @@ static MFUN(gw_lsys_get) {
   *(m_uint*)RETURN = (m_uint)new_string(shred->info->vm->gwion, str);
 }
 
-GWION_IMPORT(lsys) {
+GWION_IMPORT(Lsys) {
   GWI_OB(gwi_class_ini(gwi, "Lsys", "UGen"))
   gwi_class_xtor(gwi, NULL, dtor);
 

@@ -1,4 +1,5 @@
 *.o
+*.a
 *.so
 list.txt
 Cytosol/Cytosol

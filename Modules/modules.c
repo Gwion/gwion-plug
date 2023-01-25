@@ -281,7 +281,7 @@ ANN static m_bool import_zerox(const Gwi gwi) {
   return 1;
 }
 
-GWION_IMPORT(modules) {
+GWION_IMPORT(Modules) {
   GWI_BB(import_sinosc(gwi))
   GWI_BB(import_gain(gwi))
   GWI_BB(import_impulse(gwi))
@@ -300,4 +300,4 @@ GWION_IMPORT(modules) {
 }
 
 static m_str deps[] = { "Soundpipe", NULL };
-GWDEPEND{ return deps; }
+GWDEPEND(Modules){ return deps; }

@@ -158,7 +158,7 @@ static void pw_del(VM* vm __attribute__((unused)), Driver* di) {
   pw_deinit();
 }
 
-GWDRIVER(pipewire) {
+GWDRIVER(Pipewire) {
   d->ini = pw_ini;
   d->run = pw_run;
   d->del = pw_del;
@@ -803,7 +803,7 @@ ANN static void clear(struct data *data) {
   clear(&data);
 }
 
-GWION_IMPORT(pipewire) {
+GWION_IMPORT(Pipewire) {
   GWI_OB(gwi_struct_ini(gwi, "Pipewire"));
 
   GWI_BB(gwi_func_ini(gwi, "void", "link"));

@@ -157,7 +157,7 @@ static MFUN(linuxsampler_setpan) {
 
 extern "C"
 {
-GWION_IMPORT(linuxsampler) {
+GWION_IMPORT(LinuxSampler) {
   GWI_OB(gwi_class_ini(gwi, "LinuxSampler", "UGen"));
   gwi_class_xtor(gwi, linuxsampler_ctor, linuxsampler_dtor);
 	gwi_item_ini(gwi,(m_str)"int", (m_str)"@sampler");

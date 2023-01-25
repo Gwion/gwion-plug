@@ -233,7 +233,7 @@ static DRVDEL(alsa_del) {
   free(info);
 }
 
-GWDRIVER(alsa) {
+GWDRIVER(Alsa) {
   d->ini = alsa_ini;
   d->run = alsa_run;
   d->del = alsa_del;

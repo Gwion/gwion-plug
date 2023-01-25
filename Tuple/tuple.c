@@ -504,7 +504,7 @@ static OP_EMIT(opem_tuple_access) {
   return emit_array_access(emit, info);
 }
 
-GWION_IMPORT(tuple) {
+GWION_IMPORT(Tuple) {
   const Type t_tuple = gwi_class_ini(gwi, TUPLE_NAME, "Object");
   GWI_BB(gwi_func_ini(gwi, "auto", "new"))
 //  GWI_BB(gwi_oper_add(gwi, opck_tuple_ctor))

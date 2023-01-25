@@ -88,7 +88,7 @@ static DRVDEL(pa_del) {
   xfree(info);
 }
 
-GWDRIVER(pulseaudio) {
+GWDRIVER(Pulseaudio) {
   d->ini = pa_ini;
   d->run = pa_run;
   d->del = pa_del;

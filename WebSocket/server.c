@@ -75,7 +75,7 @@ static DRVDEL(ws_del) {
 	lws_context_destroy(context);
 }
 
-GWDRIVER(ws) {
+GWDRIVER(WebSocket) {
   d->ini = ws_ini;
   d->run = ws_run;
   d->del = ws_del;
@@ -182,7 +182,7 @@ static DTOR(ws_dtor) {
 	lws_context_destroy(ws->ctx);
 }
 
-GWION_IMPORT(ws) {
+GWION_IMPORT(WebSocket) {
 
   lws_set_log_level(LLL_ERR, NULL);
 

@@ -502,11 +502,11 @@ static ANN m_bool import_oscin(const Gwi gwi) {
 GWMODINI(Lo) { return new_map(gwion->mp); }
 GWMODEND(Lo) { return free_map(gwion->mp, (Map)self); }
 
-GWION_IMPORT(lo) {
+GWION_IMPORT(Lo) {
   GWI_BB(import_oscout(gwi));
   GWI_BB(import_oscin(gwi));
   if(!get_module(gwi->gwion, "Lo"))
-    set_module(gwi->gwion, "Lo", GWMODINI_NAME(gwi->gwion, NULL));
+    CHECK_BB(set_module(gwi->gwion, "Lo", GWMODINI_NAME(Lo)(gwi->gwion, NULL)));
   return GW_OK;
 }
 

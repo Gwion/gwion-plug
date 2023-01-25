@@ -138,7 +138,7 @@ static INSTR(op_ifpower) {
   *(m_float*)REG(-SZ_FLOAT) = pow((m_float)*(m_int*)REG(SZ_FLOAT - SZ_INT), *(m_float*)REG(SZ_INT-SZ_FLOAT));
 }
 
-GWION_IMPORT(math) {
+GWION_IMPORT(Math) {
   GWI_OB(gwi_struct_ini(gwi, "Math"))
 
   gwi_func_ini(gwi, "int", "abs");

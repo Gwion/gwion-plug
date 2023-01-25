@@ -127,7 +127,7 @@ static MFUN(save) {
   fclose(file);
 }
 
-GWION_IMPORT(fmsynth) {
+GWION_IMPORT(FMSynth) {
   DECL_OB(const Type, t_fmsynth, = gwi_class_ini(gwi, "FMSynth", "UGen"));
   gwi_class_xtor(gwi, NULL, dtor);
   t_fmsynth->nspc->offset += SZ_INT*2;
