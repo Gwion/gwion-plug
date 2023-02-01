@@ -59,6 +59,7 @@ static MFUN(evdev_index) {
   EvdevInfo* info = INFO(o);
   info->evdev = libevdev_new();
   info->args  = new_mp_vector(shred->info->mp, struct input_event, 0);
+  info->bbq = shred->info->vm->shreduler->mutex;
   info->mp = shred->info->mp;
   const m_int index = *(m_int*)MEM(SZ_INT);
   char c[strlen(EVDEV_PREFIX) + num_digit(index) + 1];

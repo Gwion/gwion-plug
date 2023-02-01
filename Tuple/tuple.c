@@ -521,7 +521,7 @@ GWION_IMPORT(Tuple) {
   GWI_BB(gwi_oper_ini(gwi, NULL, TUPLE_NAME, NULL));
   GWI_BB(gwi_oper_add(gwi, opck_tuple_ctor))
   GWI_BB(gwi_oper_emi(gwi, opem_tuple_ctor))
-  GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
+  GWI_BB(gwi_oper_end(gwi, "call_type", NULL))
   GWI_BB(gwi_oper_ini(gwi, TUPLE_NAME, NULL, NULL))
   GWI_BB(gwi_oper_add(gwi, opck_tuple_scan))
   GWI_BB(gwi_oper_end(gwi, "class", NULL))

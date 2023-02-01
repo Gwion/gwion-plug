@@ -110,9 +110,9 @@ ANN static void tojson_compound(ToJson *const json, const Type t) {
     *json->str << "\"" << value->name << "\":";
     if(!tflag(t, tflag_struct))
       tojson_pp(json, value->type, json->obj->data + value->from->offset);
-    else if (*(m_bit**)json->data + value->from->offset)
+    else //if ((*(m_bit**)json->data + value->from->offset))
       tojson_pp(json, value->type, *(m_bit**)json->data + value->from->offset);
-    else *json->str << "null";
+//    else *json->str << "null";
     json->init = true;
   }
 }

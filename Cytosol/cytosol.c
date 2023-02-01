@@ -370,7 +370,7 @@ GWION_IMPORT(Cytosol) {
   GWI_BB(gwi_oper_ini(gwi, NULL, "Cytosol.Record", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_record_ctor))
   GWI_BB(gwi_oper_emi(gwi, opem_record_ctor))
-  GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
+  GWI_BB(gwi_oper_end(gwi, "call_type", NULL))
 
   return GW_OK;
 }

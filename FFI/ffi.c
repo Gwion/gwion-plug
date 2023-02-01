@@ -254,7 +254,7 @@ static OP_CHECK(opck_ffi_ctor) {
   builtin_func(env->gwion, func, !variadic ? ffi_do_call : ffivar_do_call);
   const struct Op_Func opfunc = { .ck=ctor_as_call };
   const struct Op_Import opi = { .rhs=t, .ret=ret_type,
-    .func=&opfunc, .data=(uintptr_t)func, .pos=call->func->pos, .op=insert_symbol(env->gwion->st, "@ctor") };
+    .func=&opfunc, .data=(uintptr_t)func, .pos=call->func->pos, .op=insert_symbol(env->gwion->st, "call_type") };
   CHECK_BN(add_op(env->gwion, &opi));
   if(variadic) {
     const struct Op_Func opfunc = { .ck=ffi_var_cast };
