@@ -44,11 +44,11 @@ ANN static void tojson_dict(ToJson *const json, const Type t) {
 }
 
 ANN static void tojson_union(ToJson *const json, const Type t) {
-    const m_uint   idx = *(m_uint*)json->obj->data;
+    const m_uint   idx = **(m_uint**)json->data;
     if(idx) {
       const Value    val = (Value)map_at(&t->nspc->info->value->map, idx);
       *json->str << "\"" << val->name << "\":";
-      tojson_pp(json, val->type, json->obj->data + SZ_INT);
+      tojson_pp(json, val->type, *(m_bit**)json->data + SZ_INT);
   } else *json->str << "\"@unset\":null";
 }
 
@@ -119,7 +119,7 @@ ANN static void tojson_compound(ToJson *const json, const Type t) {
 
 ANN static void _tojson(ToJson *const json, const Type t) {
   if(!t->nspc)return;
-  if(isa(t, json->gwion->type[et_union]) > 0) {
+  if(tflag(t, tflag_union)) {
     tojson_union(json, t);
     return;
   }

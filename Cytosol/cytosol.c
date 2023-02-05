@@ -305,8 +305,8 @@ static OP_EMIT(opem_record_ctor) {
   const size_t sz = vector_size(v);
   for(m_uint i = 0; i < sz; i++) {
     const Type t = (Type)vector_at(v, i);
-    if(isa(t, emit->gwion->type[et_object]) > 0)
-      emit_object_addref(emit, (-sz + i - 1) * SZ_INT, 0);
+    if(tflag(t, tflag_release))
+      emit_compound_addref(emit, t, (-sz + i - 1) * SZ_INT, false);
   }
   const Instr instr = emit_add_instr(emit, RecordCtor);
   instr->m_val = sz * SZ_INT;

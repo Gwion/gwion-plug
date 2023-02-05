@@ -52,8 +52,8 @@ ANN static void hydrate_union(Hydrate *const h, dom::element elem, const Type t)
     for(m_uint i = 0; i < map_size(map); i++) {
       const Value val = (Value)map_at(map, i);
       if(!strcmp(val->name, key_value.key.data())) {
-        *(m_uint*)h->obj->data = i;
-        hydrate(h->gwion, h->shred, key_value.value, val->type, h->obj->data + SZ_INT);
+        *(m_uint*)h->data = i;
+        hydrate(h->gwion, h->shred, key_value.value, val->type, h->data + SZ_INT);
         return;
       }
     }
@@ -63,29 +63,16 @@ ANN static void hydrate_union(Hydrate *const h, dom::element elem, const Type t)
 ANN static void hydrate_object(Hydrate *const h, dom::element elem, const Type t) {
   const M_Object tmp = new_object(h->gwion->mp, t);
   Hydrate next = { .gwion=h->gwion, .shred=h->shred, .obj=tmp };
-  if(isa(t, h->gwion->type[et_union]) > 0)
-    hydrate_union(&next, elem, t);
-  else if(isa(t, h->gwion->type[et_dict]) > 0)
+  if(isa(t, h->gwion->type[et_dict]) > 0)
     hydrate_dict(&next, elem, t);
-  else {
-//    if(isa(t, h->gwion->type[et_event]) > 0)
-//      vector_init(&EV_SHREDS(tmp));
-    _hydrate(&next, elem, t);
-  }
-/*
-  if(t == h->gwion->type[et_event])
-    vector_init(&EV_SHREDS(tmp));
-  else if(isa(t, h->gwion->type[et_union]) > 0)
-    hydrate_union(&next, elem, t);
-  else
-    _hydrate(&next, elem, t);
-*/
+  else _hydrate(&next, elem, t);
   *(M_Object*)(h->data) = tmp;
 }
 
 ANN static void hydrate_struct(Hydrate *const h, dom::element elem, const Type t) {
   Hydrate next = { .gwion=h->gwion, .shred=h->shred, .data=h->data };
-  _hydrate(&next, elem, t);
+  if(tflag(t, tflag_union)) hydrate_union(&next, elem, t);
+  else _hydrate(&next, elem, t);
 }
 
 ANN static void hydrate_compound(Hydrate *const h, dom::element elem, const Type t) {
@@ -152,7 +139,7 @@ ANN static void iterate_object(Hydrate *const &h,
     if(is_func(h->gwion, value->type))continue; // is_func
     if(!vflag(value, vflag_member))continue;
     m_bit *ptr = !tflag(t, tflag_struct) ? h->obj->data : (m_bit*)h->data;
-    if(!h->obj || h->data) continue;
+    if(!h->obj || !h->data) continue;
     hydrate(h->gwion, h->shred, dom_object[value->name], value->type, ptr + value->from->offset);
   }
 }

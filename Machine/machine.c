@@ -38,10 +38,7 @@ static MP_Vector *get_values(const VM_Shred shred, const M_Vector names) {
     const Type t = *mp_vector_at(code->types, Type, i);
     const M_Object o = *(M_Object*)(names->ptr + ARRAY_OFFSET + i * SZ_INT);
     m_bit *data = MEM(offset);
-    if(tflag(t, tflag_compound)) {
-      if(!tflag(t, tflag_struct)) (*(M_Object*)data)->ref++;
-      else struct_addref(shred->info->vm->gwion, t, data);
-    }
+    anytype_addref(t, data);
     const Value v = new_value(shred->info->vm->gwion->env, t, STRING(o), (loc_t){});
     if(t->size <= SZ_INT)
       v->d.ptr = *(void**)data;
