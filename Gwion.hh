@@ -22,6 +22,8 @@ extern "C"
 #define gwi_func_ini(a, b, c)         gwi_func_ini(a, (m_str)b, (m_str)c)
 #define gwi_func_arg(a, b, c)         gwi_func_arg(a, (m_str)b , (m_str)c)
 #define gwi_func_end(a, b, c)         gwi_func_end(a, (f_xfun)b , c)
+#define gwi_oper_ini(a, b, c, d)      gwi_oper_ini(a, (m_str)b, (m_str)c, (m_str)d)
+#define gwi_oper_end(a, b, c)         gwi_oper_end(a, (m_str)b , c)
 
 }
 

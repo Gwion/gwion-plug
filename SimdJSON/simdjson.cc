@@ -132,9 +132,10 @@ ANN static int load(void *data) {
     JSON_ELEMENT(ret) = parser->load(STRING(arg));
   } catch (const simdjson_error &e) {
     xfun_handle(shred, (m_str)"SimdJSONLoad");
+    return EXIT_FAILURE;
   }
   shredule(shred->tick->shreduler, shred, 0);
-
+  return EXIT_SUCCESS;
 }
 
 static SFUN(simdjson_load) {
@@ -156,7 +157,9 @@ ANN static int _parse(void *data) {
     JSON_ELEMENT(ret) = parser->parse(STRING(arg), strlen(STRING(arg)));
   } catch (const simdjson_error &e) {
     xfun_handle(shred, (m_str)"SimdJSONParse");
+    return EXIT_FAILURE;
   }
+  return EXIT_SUCCESS;
 }
 
 static SFUN(simdjson_parse) {
@@ -254,19 +257,18 @@ static INSTR(getoff) {
 }
 
 static OP_CHECK(opck_json_array_each_val) {
-  const Exp exp = (const Exp)data;
-  const Type t = str2type(env->gwion, "SimdJSON.element", exp->pos);
+  const Exp exp = (Exp)data;
+  const Type t = str2type(env->gwion, (m_str)"SimdJSON.element", exp->pos);
   return t;
-  //iexit(3);
 }
+
 static OP_EMIT(opem_json_array_each_init) {
     Looper *loop = (Looper *)data;
   //const Instr instr = emit_add_instr(emit, AutoUnrollInit);
   const Instr instr = emit_add_instr(emit, getoff);
   instr->m_val = loop->offset;
   //loop->instr = instr;
-  //return GW_OK;
-exit(13);
+  return GW_OK;
 }
 
 static INSTR(json_array_loop) {
@@ -286,7 +288,6 @@ static INSTR(json_array_loop) {
     M_Object ret = 
     *(M_Object*)MEM(instr->m_val2 + SZ_INT) = new_object(shred->info->vm->gwion->mp, (Type)instr->m_val);
     JSON_ELEMENT(ret) = JSON_ARRAY(o).at(idx);
-//iexit(23);
   }
   *(m_uint*)shred->reg = end;
   shred->reg += SZ_INT;
@@ -299,7 +300,7 @@ static OP_EMIT(opem_json_array_each) {
    // pp
   const Instr instr = emit_add_instr(emit, json_array_loop);
   //puts(loop->exp->type->name);exit(12);
-  const Type t = str2type(emit->gwion, "SimdJSON.element", loop->exp->pos);
+  const Type t = str2type(emit->gwion, (m_str)"SimdJSON.element", loop->exp->pos);
   printf("t %s %p\n", t->name, t);
   instr->m_val = (m_uint)t;
   instr->m_val2 = loop->offset + SZ_INT;
