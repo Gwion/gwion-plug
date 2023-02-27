@@ -1,0 +1,7 @@
+#import SimdJSON
+
+SimdJSON.load("array.json").as_array():=> var auto json;
+<<< json.at_int(0) >>>;
+
+foreach(a : json)
+  <<< a.as_int()  >>>;

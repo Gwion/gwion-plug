@@ -1,6 +1,6 @@
 #import SimdJSON
 
-<<< SimdJSON.load("test.json") :=> var auto json >>>;
+<<< SimdJSON.load("test.json").as_o() :=> var auto json >>>;
 json.get("x") :=> var int x;
 json.get("y") :=> var float y;
 json.get("b") :=> var bool b;
@@ -9,3 +9,4 @@ json.get("s") :=> var string s;
 <<< y >>>;
 <<< b >>>;
 <<< s >>>;
+<<< json.pp() >>>;

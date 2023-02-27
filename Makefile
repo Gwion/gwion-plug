@@ -7,6 +7,9 @@ DIR=$(wildcard */)
 _list:
 	+@ $(foreach dir,$(shell cat list.txt), echo "building $(dir)"; ${MAKE} -s -C $(dir);)
 
+static:
+	+@ $(foreach dir,$(shell cat list.txt), echo "building $(dir)"; ${MAKE} -s -C $(dir) static;)
+
 all:
 	 +@ $(foreach dir,$(DIR), ${MAKE} -s -C $(dir);)
 	exit 0

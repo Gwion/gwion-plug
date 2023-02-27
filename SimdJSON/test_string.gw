@@ -1,13 +1,13 @@
 #import SimdJSON
 
-new SimdJSON(
+SimdJSON.parse(
 #"{
   "x": 1,
   "y": 1.1,
   "b": true,
   "s": "foo"
 }"#
-) :=> var auto json;
+).as_o() :=> var auto json;
 
 <<< json.get_i("x") >>>;
 <<< json.get_f("y") >>>;

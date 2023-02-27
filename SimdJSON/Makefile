@@ -2,4 +2,5 @@
 include ../config.mk
 CFLAGS+= --std=c++17
 LDFLAGS+=-lsimdjson
+CC=g++
 include ../config_post.mk
