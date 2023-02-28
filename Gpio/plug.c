@@ -572,7 +572,7 @@ static MFUN(gw_gpiod_version_string) {
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)result);
 }
 
-GWION_IMPORT(Gpiod) {
+GWION_IMPORT(Gpio) {
   DECL_OB(const Type, t_gpio, = gwi_class_ini(gwi, "Gpio", "Object"));
     t_gpio->nspc->offset += SZ_INT;
     gwi_class_xtor(gwi, NULL, gw_gpiod_dtor);
