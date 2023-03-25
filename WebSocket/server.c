@@ -12,7 +12,7 @@
 #define BUFLEN 1024
 #define NCHAN 2
 
-static void send_data(struct lws *wsi) {
+ANN static void send_data(struct lws *wsi) {
   VM *vm = lws_context_user(lws_get_context(wsi));
   static unsigned char _c[NCHAN * BUFLEN * sizeof(float) + LWS_SEND_BUFFER_PRE_PADDING + LWS_SEND_BUFFER_POST_PADDING];
   void *c = &_c[LWS_SEND_BUFFER_PRE_PADDING];
@@ -96,15 +96,17 @@ struct WsMsg {
 
 typedef struct Ws_ {
   struct Vector_ v;
-	struct lws_context *ctx;
+  struct Vector_ recv;
   MUTEX_TYPE mutex;
   MemPool mp;
   THREAD_TYPE thread;
+  M_Object self;
+  int port;
   volatile bool run;
 } Ws;
 
 static MFUN(ws_send_string) {
-  Ws *const ws = &*(Ws*)o->data;
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
   const m_str s = STRING(*(M_Object*)MEM(SZ_INT));
   const size_t len = strlen(s) + 1;
   const size_t sz = sizeof(struct WsMsg) + len;
@@ -117,23 +119,39 @@ static MFUN(ws_send_string) {
   MUTEX_UNLOCK(ws->mutex);
 }
 
+ANN static void wscb_read(struct lws *wsi, char *in, size_t len) {
+  M_Object o = lws_context_user(lws_get_context(wsi)); 
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
+  m_str str = mp_malloc2(ws->mp, len + 1);
+  strncat(str, (const char*)in, len);
+  str[len] = '\0';
+  MUTEX_LOCK(ws->mutex);
+  vector_add(&ws->recv, (m_uint)str);
+  MUTEX_UNLOCK(ws->mutex);
+  broadcast(o);
+}
+
+ANN static void wscb_write(struct lws *wsi) {
+  M_Object o = lws_context_user(lws_get_context(wsi)); 
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
+  MUTEX_LOCK(ws->mutex);
+  for(m_uint i = 0; i < vector_size(&ws->v); i++) {
+    struct WsMsg *msg = (struct WsMsg*)vector_at(&ws->v, i);
+    lws_write(wsi, msg->data, msg->size, LWS_WRITE_BINARY);
+    mp_free2(ws->mp, msg->capa, msg);
+  }
+  vector_clear(&ws->v);
+  MUTEX_UNLOCK(ws->mutex);
+}
+
 static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user NUSED, void *in, size_t len){
-  (void)in;
-  (void)len;
-  Ws *const ws = lws_context_user(lws_get_context(wsi));
 	switch(reason) {
 		case LWS_CALLBACK_RECEIVE:
+      wscb_read(wsi, (char *)in, len);
 			lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
 			break;
 		case LWS_CALLBACK_SERVER_WRITEABLE:
-      MUTEX_LOCK(ws->mutex);
-      for(m_uint i = 0; i < vector_size(&ws->v); i++) {
-        struct WsMsg *msg = (struct WsMsg*)vector_at(&ws->v, i);
-        lws_write(wsi, msg->data, msg->size, LWS_WRITE_BINARY);
-        mp_free2(ws->mp, msg->capa, msg);
-      }
-      vector_clear(&ws->v);
-      MUTEX_UNLOCK(ws->mutex);
+      wscb_write(wsi);
 			lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
 			break;
 		default:
@@ -148,38 +166,62 @@ static struct lws_protocols ws_protocols[] = {
 };
 
 static void* ws_process(void* data) {
-  Ws *const ws = (Ws*)data;
-  while(ws->run)
-    lws_service(ws->ctx, 0);
+  M_Object o = (M_Object)data;
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
+  struct lws_context_creation_info info =
+    { .port=ws->port, .protocols=ws_protocols, .user=o };
+	struct lws_context *ctx = lws_create_context( &info );
+  while(ws->run) lws_service(ctx, 0);
+	lws_context_destroy(ctx);
   return NULL;
 }
 
 static MFUN(ws_new) {
   *(M_Object*)RETURN = o;
-  Ws *const ws = &*(Ws*)o->data;
-  const m_int port = *(m_int*)MEM(SZ_INT);
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
   vector_init(&ws->v);
+  vector_init(&ws->recv);
+  ws->self = o;
+  ws->port = *(m_int*)MEM(SZ_INT);
   MUTEX_SETUP(ws->mutex);
-  struct lws_context_creation_info info =
-    { .port=port, .protocols=ws_protocols, .user=ws };
-	ws->ctx = lws_create_context( &info );
   ws->mp = shred->info->mp;
   ws->run = true;
-  THREAD_CREATE(ws->thread, ws_process, ws);
+  THREAD_CREATE(ws->thread, ws_process, o);
 }
 
 static DTOR(ws_dtor) {
-  Ws *const ws = &*(Ws*)o->data;
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
   ws->run = false;
-	lws_cancel_service(ws->ctx);
+	//lws_cancel_service(ws->ctx);
   THREAD_JOIN(ws->thread);
   for(m_uint i = 0; i < vector_size(&ws->v); i++) {
     struct WsMsg *msg = (struct WsMsg*)vector_at(&ws->v, i);
     mp_free2(ws->mp, msg->capa, msg);
   }
   vector_release(&ws->v);
+  for(m_uint i = 0; i < vector_size(&ws->recv); i++) {
+    m_str str = (m_str)vector_at(&ws->recv, i);
+    free_mstr(ws->mp, str);
+  }
+  vector_release(&ws->recv);
   MUTEX_CLEANUP(ws->mutex);
-	lws_context_destroy(ws->ctx);
+	//lws_context_destroy(ws->ctx);
+}
+
+static MFUN(ws_recv) {
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
+  *(m_uint*)RETURN = !!vector_size(&ws->recv);
+}
+
+static MFUN(ws_read) {
+  Ws *const ws = &*(Ws*)(o->data + SZ_INT);
+  if(vector_size(&ws->recv)) {
+    const m_str str = (m_str)vector_front(&ws->recv);
+    M_Object ret = new_object(shred->info->mp, shred->info->vm->gwion->type[et_string]);
+    STRING(ret) = str;
+    *(M_Object*)RETURN = ret;
+    vector_rem(&ws->recv, 0);
+  } else xfun_handle(shred, "WebSocketNoMessage");
 }
 
 GWION_IMPORT(WebSocket) {
@@ -187,7 +229,7 @@ GWION_IMPORT(WebSocket) {
   lws_set_log_level(LLL_ERR, NULL);
 
   gwidoc(gwi, "A class To Handle Websockets");
-  DECL_OB(const Type, t_ws, = gwi_class_ini(gwi, "WebSocket", "Object"));
+  DECL_OB(const Type, t_ws, = gwi_class_ini(gwi, "WebSocket", "Event"));
   SET_FLAG(t_ws, abstract);
   gwi_class_xtor(gwi, NULL, ws_dtor);
   t_ws->nspc->offset += sizeof(Ws);
@@ -201,6 +243,14 @@ GWION_IMPORT(WebSocket) {
   GWI_BB(gwi_func_ini(gwi, "void", "send"));
   GWI_BB(gwi_func_arg(gwi, "string", "data"));
   GWI_BB(gwi_func_end(gwi, ws_send_string, ae_flag_none));
+
+  gwidoc(gwi, "returns true if there are messages to read");
+  GWI_BB(gwi_func_ini(gwi, "string", "recv"));
+  GWI_BB(gwi_func_end(gwi, ws_recv, ae_flag_none));
+
+  gwidoc(gwi, "recieve function");
+  GWI_BB(gwi_func_ini(gwi, "string", "read"));
+  GWI_BB(gwi_func_end(gwi, ws_read, ae_flag_none));
   GWI_BB(gwi_class_end(gwi));
 
   return GW_OK;
