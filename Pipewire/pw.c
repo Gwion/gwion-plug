@@ -141,7 +141,7 @@ static m_bool pw_ini(VM* vm, Driver* di) {
   return GW_OK;
 }
 
-static void pw_run(VM* vm, Driver* di) {
+static void pw_run(VM* vm NUSED, Driver* di) {
   struct drv_data *data = (struct drv_data*)di->driver->data;
   pw_main_loop_run(data->loop);
 }
