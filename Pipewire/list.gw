@@ -1,7 +1,12 @@
 #import Pipewire
 
 1::second => now;
-<<< "start list" >>>;
-<<< Pipewire.list(Pipewire.Type.INPUT).size() >>>;
-<<< "end list" >>>;
+foreach(in : Pipewire.list(Pipewire.Type.INPUT))
+  <<< in >>>;
+<<< "" >>>;
+foreach(out : Pipewire.list(Pipewire.Type.OUTPUT))
+  <<< out >>>;
+<<< "" >>>;
+foreach(port : Pipewire.list(Pipewire.Type.PORTS))
+  <<< port >>>;
 1::second => now;

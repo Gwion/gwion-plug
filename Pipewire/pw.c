@@ -77,30 +77,8 @@ static const struct pw_filter_events filter_events = {
         .process = on_process,
 };
 
-static m_bool pw_ini(VM* vm, Driver* di) {
-  int argc; char **argv;
-  pw_init(&argc, &argv);
-  struct drv_data *data = mp_malloc2(vm->gwion->mp, sizeof(struct drv_data) + BUFFER_SIZE);
-  data->loop = pw_main_loop_new(NULL);
-  data->vm = vm;
-  pw_loop_add_signal(pw_main_loop_get_loop(data->loop), SIGINT, do_quit, data);
-  pw_loop_add_signal(pw_main_loop_get_loop(data->loop), SIGTERM, do_quit, data);
-  data->filter = pw_filter_new_simple(
-                   pw_main_loop_get_loop(data->loop),
-                   "audio-filter",
-                   pw_properties_new(
-                     PW_KEY_MEDIA_TYPE, "Audio",
-                     PW_KEY_MEDIA_CATEGORY, "Filter",
-                     PW_KEY_MEDIA_ROLE, "DSP",
-                     PW_KEY_APP_NAME, "Gwion",
-                     NULL),
-                   &filter_events,
-                   data);
-  di->driver->data = data;
-  return GW_OK;
-}
-
 ANN static struct port** mk_port(MemPool mp, struct pw_filter *filter, const m_str name, const uint8_t n, const enum spa_direction dir) {
+
   struct port **ports = mp_calloc2(mp, n * sizeof(struct port*));
   char c[256];
   for(uint8_t i = 0; i < n; i++) {
@@ -121,13 +99,31 @@ ANN static struct port** mk_port(MemPool mp, struct pw_filter *filter, const m_s
   return ports;
 }
 
-static void pw_run(VM* vm, Driver* di) {
-  struct drv_data *data = (struct drv_data*)di->driver->data;
+static m_bool pw_ini(VM* vm, Driver* di) {
   const MemPool mp = vm->gwion->mp;
+  int argc; char **argv;
+  pw_init(&argc, &argv);
+  struct drv_data *data = mp_malloc2(vm->gwion->mp, sizeof(struct drv_data) + BUFFER_SIZE);
+  data->loop = pw_main_loop_new(NULL);
+  data->vm = vm;
+  pw_loop_add_signal(pw_main_loop_get_loop(data->loop), SIGINT, do_quit, data);
+  pw_loop_add_signal(pw_main_loop_get_loop(data->loop), SIGTERM, do_quit, data);
+  data->filter = pw_filter_new_simple(
+                   pw_main_loop_get_loop(data->loop),
+                   "audio-filter",
+                   pw_properties_new(
+                     PW_KEY_MEDIA_TYPE, "Audio",
+                     PW_KEY_MEDIA_CATEGORY, "Filter",
+                     PW_KEY_MEDIA_ROLE, "DSP",
+                     PW_KEY_APP_NAME, "Gwion",
+                     NULL),
+                   &filter_events,
+                   data);
   data->in_port = mk_port(mp, data->filter, "input", di->si->in, PW_DIRECTION_INPUT);
   data->out_port = mk_port(mp, data->filter, "output", di->si->out, PW_DIRECTION_OUTPUT);
   data->in = mp_calloc2(mp, di->si->in * sizeof(m_float*));
   data->out = mp_calloc2(mp, di->si->out * sizeof(m_float*));
+  di->driver->data = data;
   struct spa_pod_builder b = SPA_POD_BUILDER_INIT(data->buffer, BUFFER_SIZE);
   const struct spa_pod *params[1];
   params[0] = spa_process_latency_build(&b,
@@ -139,9 +135,14 @@ static void pw_run(VM* vm, Driver* di) {
   if (pw_filter_connect(data->filter,
                         PW_FILTER_FLAG_RT_PROCESS,
                         params, 1) < 0) {
-    fprintf(stderr, "can't connect\n");
-    return;
+    gw_err("{R}Pipewire{0} can't connect\n");
+    return GW_ERROR;
   }
+  return GW_OK;
+}
+
+static void pw_run(VM* vm, Driver* di) {
+  struct drv_data *data = (struct drv_data*)di->driver->data;
   pw_main_loop_run(data->loop);
 }
 
