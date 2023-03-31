@@ -1,0 +1,18 @@
+#import PausableAudio
+#import Modules
+
+<<< "before" >>>;
+PausableAudio.play(true);
+new SinOsc ~> dac;
+second => now;
+<<< "after" >>>;
+false => PausableAudio.play;
+second => now;
+<<< "hey" >>>;
+second => now;
+<<< "lol" >>>;
+PausableAudio.play(true);
+second => now;
+#!.5::second => now;
+#!<<< "and again" >>>;
+#!<<< "should quit now" >>>;
