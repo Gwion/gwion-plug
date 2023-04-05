@@ -34,6 +34,7 @@ struct port {
 struct drv_data {
   struct pw_main_loop *loop;
   struct pw_filter *filter;
+  struct pw_stream *out_stream;
   struct port **in_port;
   struct port **out_port;
   m_float **in;
@@ -50,6 +51,7 @@ static void do_quit(void *userdata, int signal_number NUSED) {
 }
 
 static void on_process(void *userdata, struct spa_io_position *position) {
+
   struct drv_data *data = userdata;
   uint32_t n_samples = position->clock.duration;
   const VM *vm = data->vm;
@@ -78,7 +80,6 @@ static const struct pw_filter_events filter_events = {
 };
 
 ANN static struct port** mk_port(MemPool mp, struct pw_filter *filter, const m_str name, const uint8_t n, const enum spa_direction dir) {
-
   struct port **ports = mp_calloc2(mp, n * sizeof(struct port*));
   char c[256];
   for(uint8_t i = 0; i < n; i++) {
@@ -98,19 +99,65 @@ ANN static struct port** mk_port(MemPool mp, struct pw_filter *filter, const m_s
   }
   return ports;
 }
+ANN static void out_process(void *userdata) {
+  struct drv_data *data = userdata;
+  pw_filter_trigger_process(data->filter);
+}
+
+static const struct pw_stream_events out_stream_events = {
+    PW_VERSION_STREAM_EVENTS,
+    .process = out_process,
+};
 
 static m_bool pw_ini(VM* vm, Driver* di) {
   const MemPool mp = vm->gwion->mp;
-  int argc; char **argv;
+  int argc = 0; char **argv = NULL;
+  struct drv_data *data = mp_malloc2(mp, sizeof(struct drv_data) + BUFFER_SIZE);
+  di->driver->data = data;
   pw_init(&argc, &argv);
-  struct drv_data *data = mp_malloc2(vm->gwion->mp, sizeof(struct drv_data) + BUFFER_SIZE);
   data->loop = pw_main_loop_new(NULL);
   data->vm = vm;
   pw_loop_add_signal(pw_main_loop_get_loop(data->loop), SIGINT, do_quit, data);
-  pw_loop_add_signal(pw_main_loop_get_loop(data->loop), SIGTERM, do_quit, data);
-  data->filter = pw_filter_new_simple(
+  pw_loop_add_signal(pw_main_loop_get_loop(data->loop), SIGTERM, do_quit, data); 
+  struct spa_pod_builder out_b = SPA_POD_BUILDER_INIT(data->buffer, BUFFER_SIZE);
+  const struct spa_pod *out_params[1] = {
+      spa_format_audio_raw_build(&out_b, SPA_PARAM_EnumFormat, &SPA_AUDIO_INFO_RAW_INIT(
+            .format = GW_FORMAT,
+            .channels = 1,
+            .rate = di->si->sr
+            ))
+  };
+  data->out_stream = pw_stream_new_simple(
+        pw_main_loop_get_loop(data->loop),
+        "Gwion-Blackhole",
+        pw_properties_new(
+            PW_KEY_MEDIA_TYPE, "Audio",
+            PW_KEY_MEDIA_CATEGORY, "Playback",
+            PW_KEY_MEDIA_ROLE, "DSP",
+            NULL),
+        &out_stream_events,
+        data);
+  if (!data->out_stream) {
+    gw_err("{R}Pipewire{0} can't create stream\n");
+    return GW_ERROR;
+  }
+  if(pw_stream_connect(data->out_stream, PW_DIRECTION_OUTPUT, PW_ID_ANY,
+        PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_DRIVER | PW_STREAM_FLAG_RT_PROCESS,
+        out_params, 1) < 0) {
+    gw_err("{R}Pipewire{0} can't connect stream\n");
+    return GW_ERROR;
+  }
+  struct spa_pod_builder b = SPA_POD_BUILDER_INIT(data->buffer, BUFFER_SIZE);
+  const struct spa_pod *params[1];
+  params[0] = spa_process_latency_build(&b,
+                  SPA_PARAM_ProcessLatency,
+                  &SPA_PROCESS_LATENCY_INFO_INIT(
+                  //.ns = 10 * SPA_NSEC_PER_MSEC
+                  ));
+
+  if(!(data->filter = pw_filter_new_simple(
                    pw_main_loop_get_loop(data->loop),
-                   "audio-filter",
+                   "Gwion",
                    pw_properties_new(
                      PW_KEY_MEDIA_TYPE, "Audio",
                      PW_KEY_MEDIA_CATEGORY, "Filter",
@@ -118,26 +165,22 @@ static m_bool pw_ini(VM* vm, Driver* di) {
                      PW_KEY_APP_NAME, "Gwion",
                      NULL),
                    &filter_events,
-                   data);
+                   data))) {
+    gw_err("{R}Pipewire{0} can't create filter\n");
+    return GW_ERROR;
+  }
+  if (pw_filter_connect(data->filter,
+        PW_FILTER_FLAG_DRIVER |
+                        PW_FILTER_FLAG_RT_PROCESS,
+                        params, 1) < 0) {
+    gw_err("{R}Pipewire{0} can't connect filter\n");
+    return GW_ERROR;
+  }
   data->in_port = mk_port(mp, data->filter, "input", di->si->in, PW_DIRECTION_INPUT);
   data->out_port = mk_port(mp, data->filter, "output", di->si->out, PW_DIRECTION_OUTPUT);
   data->in = mp_calloc2(mp, di->si->in * sizeof(m_float*));
   data->out = mp_calloc2(mp, di->si->out * sizeof(m_float*));
-  di->driver->data = data;
-  struct spa_pod_builder b = SPA_POD_BUILDER_INIT(data->buffer, BUFFER_SIZE);
-  const struct spa_pod *params[1];
-  params[0] = spa_process_latency_build(&b,
-                  SPA_PARAM_ProcessLatency,
-                  &SPA_PROCESS_LATENCY_INFO_INIT(
-                  .ns = 10 * SPA_NSEC_PER_MSEC
-                  ));
 
-  if (pw_filter_connect(data->filter,
-                        PW_FILTER_FLAG_RT_PROCESS,
-                        params, 1) < 0) {
-    gw_err("{R}Pipewire{0} can't connect\n");
-    return GW_ERROR;
-  }
   return GW_OK;
 }
 
@@ -149,13 +192,21 @@ static void pw_run(VM* vm NUSED, Driver* di) {
 static void pw_del(VM* vm __attribute__((unused)), Driver* di) {
   struct drv_data* data = (struct drv_data*)di->driver->data;
   if(!data) return;
-  pw_filter_destroy(data->filter);
-  pw_main_loop_destroy(data->loop);
-  mp_free2(vm->gwion->mp, di->si->in * sizeof(struct port*) + BUFFER_SIZE, data->in_port);
-  mp_free2(vm->gwion->mp, di->si->out * sizeof(struct port*) + BUFFER_SIZE, data->out_port);
-  mp_free2(vm->gwion->mp, di->si->in * sizeof(m_float*) + BUFFER_SIZE, data->in);
-  mp_free2(vm->gwion->mp, di->si->out * sizeof(m_float*) + BUFFER_SIZE, data->out);
-  mp_free2(vm->gwion->mp, sizeof(struct drv_data) + BUFFER_SIZE, data);
+  if(data->out_stream) {
+    pw_stream_disconnect(data->out_stream);
+    pw_stream_destroy(data->out_stream);
+  }
+  if(data->filter) {
+    pw_filter_disconnect(data->filter);
+    pw_filter_destroy(data->filter);
+  }
+  if(data->loop) pw_main_loop_destroy(data->loop);
+  MemPool mp = vm->gwion->mp;
+  if(data->in_port)  mp_free2(mp, di->si->in * sizeof(struct port*), data->in_port);
+  if(data->out_port) mp_free2(mp, di->si->out * sizeof(struct port*), data->out_port);
+  if(data->in)       mp_free2(mp, di->si->in * sizeof(m_float*), data->in);
+  if(data->out)      mp_free2(mp, di->si->out * sizeof(m_float*), data->out);
+  mp_free2(mp, sizeof(struct drv_data) + BUFFER_SIZE, data);
   pw_deinit();
 }
 
@@ -217,8 +268,7 @@ struct data {
 	regex_t in_port_regex, *in_regex;
 };
 
-static void link_proxy_error(void *data, int seq NUSED, int res, const char *message NUSED)
-{
+static void link_proxy_error(void *data, int seq NUSED, int res, const char *message NUSED) {
 	struct data *d = data;
 	d->link_res = res;
 }
@@ -228,13 +278,11 @@ static const struct pw_proxy_events link_proxy_events = {
 	.error = link_proxy_error,
 };
 
-static void core_sync(struct data *data)
-{
+static void core_sync(struct data *data) {
 	data->sync = pw_core_sync(data->core, PW_ID_CORE, data->sync);
 }
 
-static int create_link(struct data *data)
-{
+static int create_link(struct data *data) {
 	struct pw_proxy *proxy;
 	struct spa_hook listener;
 
@@ -261,8 +309,7 @@ static int create_link(struct data *data)
 	return data->link_res;
 }
 
-static struct object *find_object(struct data *data, uint32_t type, uint32_t id)
-{
+static struct object *find_object(struct data *data, uint32_t type, uint32_t id) {
 	struct object *o;
 	spa_list_for_each(o, &data->objects, link)
 		if ((type == OBJECT_ANY || o->type == type) && o->id == id)
@@ -270,10 +317,8 @@ static struct object *find_object(struct data *data, uint32_t type, uint32_t id)
 	return NULL;
 }
 
-static struct object *find_node_port(struct data *data, struct object *node, enum pw_direction direction, const char *port_id)
-{
+static struct object *find_node_port(struct data *data, struct object *node, enum pw_direction direction, const char *port_id ) {
 	struct object *o;
-
 	spa_list_for_each(o, &data->objects, link) {
 		const char *o_port_id;
 		if (o->type != OBJECT_PORT)
@@ -287,13 +332,11 @@ static struct object *find_node_port(struct data *data, struct object *node, enu
 		if (spa_streq(o_port_id, port_id))
 			return o;
 	}
-
 	return NULL;
 }
 
-static char *node_name(char *buffer, int size, struct object *n)
-{
-	const char *name;
+static char *node_name(char *buffer, int size, struct object *n) {
+	const char *name; 
 	buffer[0] = '\0';
 	if ((name = pw_properties_get(n->props, PW_KEY_NODE_NAME)) == NULL)
 		return buffer;
@@ -301,8 +344,7 @@ static char *node_name(char *buffer, int size, struct object *n)
 	return buffer;
 }
 
-static char *node_path(char *buffer, int size, struct object *n)
-{
+static char *node_path(char *buffer, int size, struct object *n) {
 	const char *name;
 	buffer[0] = '\0';
 	if ((name = pw_properties_get(n->props, PW_KEY_OBJECT_PATH)) == NULL)
@@ -311,8 +353,7 @@ static char *node_path(char *buffer, int size, struct object *n)
 	return buffer;
 }
 
-static char *port_name(char *buffer, int size, struct object *n, struct object *p)
-{
+static char *port_name(char *buffer, int size, struct object *n, struct object *p) {
 	const char *name1, *name2;
 	buffer[0] = '\0';
 	if ((name1 = pw_properties_get(n->props, PW_KEY_NODE_NAME)) == NULL)
@@ -323,9 +364,7 @@ static char *port_name(char *buffer, int size, struct object *n, struct object *
 	return buffer;
 }
 
-//static char *port_path(char *buffer, int size, struct object *n NUSED, struct object *p)
-static char *port_path(char *buffer, int size, struct object *p)
-{
+static char *port_path(char *buffer, int size, struct object *p) {
 	const char *name;
 	buffer[0] = '\0';
 	if ((name = pw_properties_get(p->props, PW_KEY_OBJECT_PATH)) == NULL)
@@ -334,8 +373,7 @@ static char *port_path(char *buffer, int size, struct object *p)
 	return buffer;
 }
 
-static char *port_alias(char *buffer, int size, struct object *n NUSED, struct object *p)
-{
+static char *port_alias(char *buffer, int size, struct object *n NUSED, struct object *p) {
 	const char *name;
 	buffer[0] = '\0';
 	if ((name = pw_properties_get(p->props, PW_KEY_PORT_ALIAS)) == NULL)
@@ -345,15 +383,15 @@ static char *port_alias(char *buffer, int size, struct object *n NUSED, struct o
 }
 
 static void print_port(struct object *n,
-		struct object *p /*, bool verbose*/, const Gwion gwion, const M_Vector array)
-{
+		struct object *p /*, bool verbose*/, const Gwion gwion, const M_Vector array) {
   char buffer[1024];
-  M_Object str = new_string(gwion, port_name(buffer, sizeof(buffer), n, p));
+  m_str name = port_name(buffer, sizeof(buffer), n, p);
+  if(!strlen(name)) return;
+  M_Object str = new_string(gwion, name);
   m_vector_add(array, &str);
 }
 
-static void print_port_id(struct data *data, uint32_t peer, const Gwion gwion, const M_Vector array)
-{
+static void print_port_id(struct data *data, uint32_t peer, const Gwion gwion, const M_Vector array) {
 	struct object *n, *p;
 	if ((p = find_object(data, OBJECT_PORT, peer)) == NULL)
 		return;
@@ -362,14 +400,11 @@ static void print_port_id(struct data *data, uint32_t peer, const Gwion gwion, c
 	print_port(n, p/*, false*/, gwion, array);
 }
 
-static void do_list_port_links(struct data *data, struct object *node, struct object *port, const Gwion gwion, const M_Vector array)
-{
+static void do_list_port_links(struct data *data, struct object *node, struct object *port, const Gwion gwion, const M_Vector array) {
 	struct object *o;
 	bool first = false;
-
 	if ((data->opt_mode & MODE_LIST_PORTS) == 0)
 		first = true;
-
 	spa_list_for_each(o, &data->objects, link) {
 		uint32_t peer;
 		char prefix[64], id[16] = "";
@@ -401,8 +436,7 @@ static void do_list_port_links(struct data *data, struct object *node, struct ob
 	}
 }
 
-static int node_matches(struct data *data NUSED, struct object *n, const char *name)
-{
+static int node_matches(struct data *data NUSED, struct object *n, const char *name) {
 	char buffer[1024];
 	uint32_t id = atoi(name);
 	if (n->id == id)
@@ -414,8 +448,7 @@ static int node_matches(struct data *data NUSED, struct object *n, const char *n
 	return 0;
 }
 
-static int port_matches(struct object *n, struct object *p, const char *name)
-{
+static int port_matches(struct object *n, struct object *p, const char *name) {
 	char buffer[1024];
 	uint32_t id = atoi(name);
 	if (p->id == id)
@@ -429,8 +462,7 @@ static int port_matches(struct object *n, struct object *p, const char *name)
 	return 0;
 }
 
-static int port_regex(struct object *n, struct object *p, regex_t *regex)
-{
+static int port_regex(struct object *n, struct object *p, regex_t *regex) {
 	char buffer[1024];
 	if (regexec(regex, port_name(buffer, sizeof(buffer), n, p), 0, NULL, 0) == 0)
 		return 1;
@@ -438,8 +470,7 @@ static int port_regex(struct object *n, struct object *p, regex_t *regex)
 }
 
 static void do_list_ports(struct data *data, struct object *node,
-		enum pw_direction direction, regex_t *regex, const Gwion gwion ,const M_Object ret)
-{
+		enum pw_direction direction, regex_t *regex, const Gwion gwion ,const M_Object ret) {
 	struct object *o;
 	spa_list_for_each(o, &data->objects, link) {
 		if (o->type != OBJECT_PORT)
@@ -459,8 +490,7 @@ static void do_list_ports(struct data *data, struct object *node,
 	}
 }
 
-static void do_list(struct data *data, const Gwion gwion, const M_Object ret)
-{
+static void do_list(struct data *data, const Gwion gwion, const M_Object ret) {
 	struct object *n;
 
 	spa_list_for_each(n, &data->objects, link) {
@@ -473,8 +503,7 @@ static void do_list(struct data *data, const Gwion gwion, const M_Object ret)
 	}
 }
 
-static int do_link_ports(struct data *data)
-{
+static int do_link_ports(struct data *data) {
 	uint32_t in_port = 0, out_port = 0;
 	struct object *n, *p;
 	struct object *in_node = NULL, *out_node = NULL;
@@ -541,8 +570,7 @@ static int do_link_ports(struct data *data)
 	return create_link(data);
 }
 
-static int do_unlink_ports(struct data *data)
-{
+static int do_unlink_ports(struct data *data) {
 	struct object *l, *n, *p;
 	bool found_any = false;
 	struct object *in_node = NULL, *out_node = NULL;
@@ -616,8 +644,7 @@ static int do_unlink_ports(struct data *data)
 
 static void registry_event_global(void *data, uint32_t id, uint32_t permissions NUSED,
 				  const char *type, uint32_t version NUSED,
-				  const struct spa_dict *props)
-{
+				  const struct spa_dict *props){
 	struct data *d = data;
 	uint32_t t, extra[2];
 	struct object *obj;
@@ -661,8 +688,7 @@ static void registry_event_global(void *data, uint32_t id, uint32_t permissions 
 	spa_list_append(&d->objects, &obj->link);
 }
 
-static void registry_event_global_remove(void *data, uint32_t id)
-{
+static void registry_event_global_remove(void *data, uint32_t id) {
 	struct data *d = data;
 	struct object *obj;
 
@@ -680,15 +706,13 @@ static const struct pw_registry_events registry_events = {
 	.global_remove = registry_event_global_remove,
 };
 
-static void on_core_done(void *data, uint32_t id NUSED, int seq)
-{
+static void on_core_done(void *data, uint32_t id NUSED, int seq) {
 	struct data *d = data;
 	if (d->sync == seq)
 		pw_main_loop_quit(d->loop);
 }
 
-static void on_core_error(void *data, uint32_t id, int seq, int res, const char *message)
-{
+static void on_core_error(void *data, uint32_t id, int seq, int res, const char *message) {
 	struct data *d = data;
 
 	pw_log_error("error id:%u seq:%d res:%d (%s): %s",
@@ -742,7 +766,7 @@ ANN static void clear(struct data *data) {
   pw_deinit();
 }
 
-/*static */SFUN(gwpw_link) {
+static SFUN(gwpw_link) {
   struct data data = {};
   if(!start(&data)) {
     xfun_handle(shred, "PwInit");
@@ -761,7 +785,7 @@ ANN static void clear(struct data *data) {
   clear(&data);
 }
 
-/*static */SFUN(gwpw_unlink) {
+static SFUN(gwpw_unlink) {
   struct data data = { .opt_mode = MODE_DISCONNECT };
   if(!start(&data)) {
     xfun_handle(shred, "PwInit");
@@ -785,7 +809,7 @@ ANN static void clear(struct data *data) {
   clear(&data);
 }
 
-/*static */SFUN(gwpw_list) {
+static SFUN(gwpw_list) {
   struct data data = { .opt_mode = *(uint32_t*)MEM(0) };
   if(!start(&data)) {
     xfun_handle(shred, "PwInit");

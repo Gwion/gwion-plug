@@ -1,12 +1,22 @@
 #import Pipewire
+#import Modules
 
-1::second => now;
-foreach(in : Pipewire.list(Pipewire.Type.INPUT))
+new SinOsc ~> dac;
+#!10::second => now;
+#!1::second => now;
+Pipewire.list(Pipewire.Type.INPUT) :=> const auto ins;
+foreach(in : ins)
   <<< in >>>;
 <<< "" >>>;
-foreach(out : Pipewire.list(Pipewire.Type.OUTPUT))
-  <<< out >>>;
-<<< "" >>>;
-foreach(port : Pipewire.list(Pipewire.Type.PORTS))
-  <<< port >>>;
-1::second => now;
+#!second => now;
+Pipewire.list(Pipewire.Type.OUTPUT) :=> const auto outs;
+foreach(out : outs)
+  <<< "out: ${out}" >>>;
+
+#!Pipewire.link(ins[0], outs[0]);
+Pipewire.link("Gwion:output0", ins[3]);
+#!foreach(port : Pipewire.list(Pipewire.Type.PORTS))
+#!  <<< port >>>;
+#!10::second => now;
+#!while(true);
+

@@ -1,4 +1,5 @@
 include ../config.mk
+CFLAGS  += -D_REENTRANT
 CFLAGS  += -I/usr/include/pipewire-0.3
 CFLAGS  += -I/usr/include/spa-0.2
 LDFLAGS += -lpipewire-0.3
