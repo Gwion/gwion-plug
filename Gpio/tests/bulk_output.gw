@@ -1,0 +1,6 @@
+#import Gpio
+new Gpio("/dev/gpiochip0") :=> var auto gpio;
+
+[ 17 $ u32 ] => gpio.lines :=> var auto bulk;
+bulk.output("test", [ 1 $ u32 ]);
+

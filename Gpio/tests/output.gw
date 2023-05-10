@@ -1,0 +1,31 @@
+#import Gpio
+var Gpio("/dev/gpiochip0") gpio;
+17 => gpio.line :=> var auto line;
+
+fun void test(Gpio.Line line) {
+  maybe :=> var auto val;
+
+  <<< val => line.value >>>;
+  <<< line.value() >>>;
+  <<< line.offset() >>>;
+  <<< line.name() >>>;
+  <<< line.consumer() >>>;
+  <<< line.direction() >>>;
+  <<< line.state() >>>;
+  <<< line.bias() >>>;
+  <<< line.is_used() >>>;
+  <<< line.is_requested() >>>;
+  <<< "is_free: ${line.is_free()}" >>>;
+  <<< line.is_open_drain() >>>;
+  <<< line.is_open_source() >>>;
+<<< "wait: ${line.wait(minute)}" >>>;
+  <<<line.release() >>>;
+  <<< "is_free: ${line.is_free()}" >>>;
+}
+
+line.output("test_output", 0);
+line => test;
+line.output("test_output", Gpio.Flag.OPEN_SOURCE, 0);
+#!line => test;
+#!line.output(0);
+line => test;

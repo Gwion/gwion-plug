@@ -90,7 +90,7 @@ static MFUN(gw_gpiod_chip_get_line) {
 static MFUN(gw_gpiod_chip_get_lines) {
   const M_Object temp2 = *(M_Object*)MEM(SZ_INT);
   M_Vector arg2 = ARRAY(temp2);
-  const VM_Code code = *(VM_Code*)REG(SZ_INT*3);
+  const VM_Code code = *(VM_Code*)REG(SZ_INT*2);
   M_Object ret_obj = new_object(shred->info->mp, code->ret_type);
   *(M_Object*)RETURN = ret_obj;
   if(gpiod_chip_get_lines(CHIP(o), (unsigned int*)ARRAY_PTR(arg2), ARRAY_LEN(arg2), BULK(ret_obj)) == -1)
@@ -329,16 +329,18 @@ static int line2nowrun(void *data) {
   bool has_ts = l2nd->has_ts;
   mp_free2(shred->info->mp, sizeof(struct line2nowdata), l2nd);
   const int result = gpiod_line_event_wait(line, has_ts ? &ts : NULL);
-  *(m_int*)(shred->reg) = result;
-  if(result >= 0)
+  //shred->reg += SZ_INT;
+  if(result == 1)
     shredule(shred->tick->shreduler, shred, GWION_EPSILON);
-  else xfun_handle(shred, "GpioEvent");
+  else if(result == 0) {
+    xfun_handle(shred, "GpioEventTimeOut");
+  } else xfun_handle(shred, "GpioEventTimeOut");
   return 0;
 }
 
 static INSTR(line2now) {
   POP_REG(shred, SZ_FLOAT);
-  const M_Object o = *(M_Object*)REG(0);
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
   struct line2nowdata *l2nd = mp_malloc2(shred->info->mp, sizeof(struct line2nowdata));
   l2nd->shred = shred;
   l2nd->line = LINE(o);
@@ -346,7 +348,6 @@ static INSTR(line2now) {
   shreduler_remove(shred->tick->shreduler, shred, false);
   thrd_t thrd;
   thrd_create(&thrd, line2nowrun, l2nd);
-  usleep(0);
   thrd_detach(thrd);
 }
 
@@ -445,11 +446,8 @@ static MFUN(gw_gpiod_line_event_event_type_get) {
   *(m_int*)RETURN = LINEEV(o)->event_type;
 }
 
-static MFUN(gw_gpiod_line_event_offset_get) {
-  //*(m_int*)RETURN = LINEEV(o)->offset;
-}
-
 static MFUN(gw_gpiod_line_event_wait) {
+  shreduler_remove(shred->tick->shreduler, shred, false);
   const m_float dur = *(m_float*)MEM(SZ_INT);
   struct timespec ts;
   dur2ts(shred, dur, &ts);
@@ -458,10 +456,8 @@ static MFUN(gw_gpiod_line_event_wait) {
   l2nd->line = LINE(o);
   l2nd->ts = ts;
   l2nd->has_ts = true;
-  shreduler_remove(shred->tick->shreduler, shred, false);
   thrd_t thrd;
   thrd_create(&thrd, line2nowrun, l2nd);
-  usleep(0);
   thrd_detach(thrd);
 }
 
@@ -469,7 +465,7 @@ struct bulk2nowdata {
   VM_Shred shred;
   struct gpiod_line_bulk * bulk;
   struct timespec ts;
-  struct gpiod_line_bulk *out;
+//  struct gpiod_line_bulk *out;
   bool has_ts;
 };
 
@@ -478,29 +474,31 @@ static int bulk2nowrun(void *data) {
   VM_Shred shred = b2nd->shred;
   struct gpiod_line_bulk * bulk = b2nd->bulk;
   struct timespec ts = b2nd->ts;
-  struct gpiod_line_bulk * out = b2nd->out;
+//  struct gpiod_line_bulk * out = b2nd->out;
   bool has_ts = b2nd->has_ts;
   mp_free2(shred->info->mp, sizeof(struct bulk2nowdata), b2nd);
-  const int result = gpiod_line_event_wait_bulk(bulk, has_ts ? &ts : NULL, out);
-  *(m_int*)(shred->reg) = result;
-  if(result >= 0)
+//  const int result = gpiod_line_event_wait_bulk(bulk, has_ts ? &ts : NULL, out);
+  const int result = gpiod_line_event_wait_bulk(bulk, has_ts ? &ts : NULL, NULL);
+//  shred->reg += SZ_INT;
+  if(result == 1)
     shredule(shred->tick->shreduler, shred, GWION_EPSILON);
-  else xfun_handle(shred, "GpioEvent");
+  else if(result == 0) {
+    xfun_handle(shred, "GpioEventTimeOut");
+  } else xfun_handle(shred, "GpioEventTimeOut");
   return 0;
 }
 
 static INSTR(bulk2now) {
   POP_REG(shred, SZ_FLOAT);
-  const M_Object o = *(M_Object*)REG(0);
+  const M_Object o = *(M_Object*)REG(-SZ_INT);
   struct bulk2nowdata *b2nd = mp_malloc2(shred->info->mp, sizeof(struct bulk2nowdata));
   b2nd->shred = shred;
   b2nd->bulk = BULK(o);
   b2nd->has_ts = false;
-  b2nd->out = NULL;
+  //b2nd->out = NULL;
   shreduler_remove(shred->tick->shreduler, shred, false);
   thrd_t thrd;
   thrd_create(&thrd, bulk2nowrun, b2nd);
-  usleep(0);
   thrd_detach(thrd);
 }
 
@@ -540,15 +538,14 @@ static MFUN(gw_gpiod_line_event_wait_bulk) {
   b2nd->shred = shred;
   b2nd->bulk = BULK(o);
   b2nd->ts = ts;
-  b2nd->out = NULL;
+  //b2nd->out = NULL;
   b2nd->has_ts = true;
   shreduler_remove(shred->tick->shreduler, shred, false);
   thrd_t thrd;
   thrd_create(&thrd, bulk2nowrun, b2nd);
-  usleep(0);
   thrd_detach(thrd);
 }
-
+/*
 static MFUN(gw_gpiod_line_event_wait_bulk2) {
   const m_float dur = *(m_float*)MEM(SZ_INT);
   const M_Object out = *(M_Object*)MEM(SZ_INT + SZ_FLOAT);
@@ -558,15 +555,14 @@ static MFUN(gw_gpiod_line_event_wait_bulk2) {
   b2nd->shred = shred;
   b2nd->bulk = BULK(o);
   b2nd->ts = ts;
-  b2nd->out = BULK(out);
+  //b2nd->out = BULK(out);
   b2nd->has_ts = true;
   shreduler_remove(shred->tick->shreduler, shred, false);
   thrd_t thrd;
   thrd_create(&thrd, bulk2nowrun, b2nd);
-  usleep(0);
   thrd_detach(thrd);
 }
-
+*/
 static MFUN(gw_gpiod_version_string) {
   char const * result = gpiod_version_string();
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, (m_str)result);
@@ -678,8 +674,6 @@ GWION_IMPORT(Gpio) {
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_ts_get, ae_flag_none));
       CHECK_BB(gwi_func_ini(gwi, "EvType", "event_type"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_event_type_get, ae_flag_none));
-      CHECK_BB(gwi_func_ini(gwi, "int", "offset"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_offset_get, ae_flag_none));
 
     CHECK_BB(gwi_class_end(gwi)); // LineEv
 
@@ -778,16 +772,16 @@ GWION_IMPORT(Gpio) {
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_config, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a single GPIO line to input.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "input"));
+      CHECK_BB(gwi_func_ini(gwi, "void", "set_input"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_input, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a single GPIO line to output.");
-      CHECK_BB(gwi_func_ini(gwi, "int", "output"));
+      CHECK_BB(gwi_func_ini(gwi, "int", "set_output"));
       CHECK_BB(gwi_func_arg(gwi, "int", "value"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_output, ae_flag_none));
 
       gwidoc(gwi, "Wait for an event on a single line.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "wait"));
+      CHECK_BB(gwi_func_ini(gwi, "void", "wait"));
       CHECK_BB(gwi_func_arg(gwi, "dur", "timeout"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_wait, ae_flag_none));
 
@@ -879,7 +873,7 @@ GWION_IMPORT(Gpio) {
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_flags_bulk, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a set of GPIO lines to input.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "input"));
+      CHECK_BB(gwi_func_ini(gwi, "void", "set_input"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_input_bulk, ae_flag_none));
 
       gwidoc(gwi, "Read current values of a set of GPIO lines.");
@@ -892,7 +886,7 @@ GWION_IMPORT(Gpio) {
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_value_bulk, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a set of GPIO lines to output.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "output"));
+      CHECK_BB(gwi_func_ini(gwi, "void", "set_output"));
       CHECK_BB(gwi_func_arg(gwi, "u32[]", "values"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_output_bulk, ae_flag_none));
 
@@ -907,16 +901,17 @@ GWION_IMPORT(Gpio) {
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bulk_get_line, ae_flag_none));
 
       gwidoc(gwi, "Wait for events on a set of lines.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "wait"));
+      CHECK_BB(gwi_func_ini(gwi, "void", "wait"));
       CHECK_BB(gwi_func_arg(gwi, "dur", "timeout"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_wait_bulk, ae_flag_none));
+/*
 
       gwidoc(gwi, "Wait for events on a set of lines.");
       CHECK_BB(gwi_func_ini(gwi, "bool", "wait"));
       CHECK_BB(gwi_func_arg(gwi, "dur", "timeout"));
       CHECK_BB(gwi_func_arg(gwi, "Bulk", "event_bulk"));
       CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_wait_bulk2, ae_flag_none));
-
+*/
     gwi_class_end(gwi);
 
 /*
@@ -940,11 +935,11 @@ GWION_IMPORT(Gpio) {
   GWI_BB(gwi_class_end(gwi));
 
   gwidoc(gwi, "Wait for an event");
-  CHECK_BB(gwi_oper_ini(gwi, "Gpio.Line", "@now", "bool"));
+  CHECK_BB(gwi_oper_ini(gwi, "Gpio.Line", "@now", "void"));
   CHECK_BB(gwi_oper_end(gwi, "=>", line2now));
 
   gwidoc(gwi, "Wait for an event");
-  CHECK_BB(gwi_oper_ini(gwi, "Gpio.Bulk", "@now", "bool"));
+  CHECK_BB(gwi_oper_ini(gwi, "Gpio.Bulk", "@now", "void"));
   CHECK_BB(gwi_oper_end(gwi, "=>", bulk2now));
 
   // bulk array access?

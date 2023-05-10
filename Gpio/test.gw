@@ -1,0 +1,29 @@
+#import Gpio
+#!var float f;
+new Gpio("/dev/gpiochip0") :=> var auto gpio;
+<<< gpio.name() >>>;
+fun void test_lines(Gpio gpio) {
+  gpio.line(17) :=> var auto line0;
+  gpio.line(22) :=> var auto line1;
+  gpio.line(27) :=> var auto line2;
+  #!line.reserve();
+  <<< line0.output("test0", 0) >>>;
+  <<< line1.output("test0", 0) >>>;
+  <<< line2.output("test0", 0) >>>;
+  <<< line0.value(1) >>>;
+  <<< line1.value(1) >>>;
+  <<< line2.value(1) >>>;
+}
+
+  [
+    17 $ u32,
+    22 $ u32,
+    27 $ u32
+  ] => gpio.lines :=> var auto bulk;
+  bulk.output("test", [ 1 $ u32, 1 $ u32, 1 $ u32 ]);
+  repeat(i, bulk.num_lines()) {
+    <<< i >>>;
+  }
+#!<<< line.value(!line.value()) >>>;
+#!  line.value(maybe);
+#!gpio.line(12).value(1);
