@@ -1,0 +1,123 @@
+ enum global SX1509 { 
+  #! Device and IO Banks
+  RegInputDisableB,#! Input buffer disable register - I/O[15-8] (Bank B) 0000 0000
+  RegInputDisableA,#! Input buffer disable register - I/O[7-0] (Bank A) 0000 0000
+  RegLongSlewB    ,#! Output buffer long slew register - I/O[15-8] (Bank B) 0000 0000
+  RegLongSlewA    ,#! Output buffer long slew register - I/O[7-0] (Bank A) 0000 0000
+  RegLowDriveB    ,#! Output buffer low drive register - I/O[15-8] (Bank B) 0000 0000
+  RegLowDriveA    ,#! Output buffer low drive register - I/O[7-0] (Bank A) 0000 0000
+  RegPullUpB      ,#! Pull-up register - I/O[15-8] (Bank B) 0000 0000
+  RegPullUpA      ,#! Pull-up register - I/O[7-0] (Bank A) 0000 0000
+  RegPullDownB    ,#! Pull-down register - I/O[15-8] (Bank B) 0000 0000
+  RegPullDownA    ,#! Pull-down register - I/O[7-0] (Bank A) 0000 0000
+  RegOpenDrainB   ,#! Open drain register - I/O[15-8] (Bank B) 0000 0000
+  RegOpenDrainA   ,#! Open drain register - I/O[7-0] (Bank A) 0000 0000
+  RegPolarityB    ,#! Polarity register - I/O[15-8] (Bank B) 0000 0000
+  RegPolarityA    ,#! Polarity register - I/O[7-0] (Bank A) 0000 0000
+  RegDirB         ,#! Direction register - I/O[15-8] (Bank B) 1111 1111
+  RegDirA         ,#! Direction register - I/O[7-0] (Bank A) 1111 1111
+  RegDataB        ,#! Data register - I/O[15-8] (Bank B) 1111 1111*
+  RegDataA        ,#! Data register - I/O[7-0] (Bank A) 1111 1111*
+  RegInterruptMaskB  ,#! Interrupt mask register - I/O[15-8] (Bank B) 1111 1111
+  RegInterruptMaskA  ,#! Interrupt mask register - I/O[7-0] (Bank A) 1111 1111
+  RegSenseHighB   ,#! Sense register for I/O[15:12] 0000 0000
+  RegSenseLowB    ,#! Sense register for I/O[11:8] 0000 0000
+  RegSenseHighA   ,#! Sense register for I/O[7:4] 0000 0000
+  RegSenseLowA    ,#! Sense register for I/O[3:0] 0000 0000
+  RegInterruptSourceB,#! Interrupt source register - I/O[15-8] (Bank B) 0000 0000
+  RegInterruptSourceA,#! Interrupt source register - I/O[7-0] (Bank A) 0000 0000
+  RegEventStatusB ,#! Event status register - I/O[15-8] (Bank B) 0000 0000
+  RegEventStatusA ,#! Event status register - I/O[7-0] (Bank A) 0000 0000
+  RegLevelShifter1,#! Level shifter register 0000 0000
+  RegLevelShifter2,#! Level shifter register 0000 0000
+  RegClock        ,#! Clock management register 0000 0000
+  RegMisc         ,#! Miscellaneous device settings register 0000 0000
+  RegLEDDriverEnableB,#! LED driver enable register - I/O[15-8] (Bank B) 0000 0000
+  RegLEDDriverEnableA,#! LED driver enable register - I/O[7-0] (Bank A) 0000 0000
+  #! 
+  #! Debounce and Keypad Engine
+  RegDebounceConfig  ,#! Debounce configuration register 0000 0000
+  RegDebounceEnableB ,#! Debounce enable register - I/O[15-8] (Bank B) 0000 0000
+  RegDebounceEnableA ,#! Debounce enable register - I/O[7-0] (Bank A) 0000 0000
+  RegKeyConfig1   ,#! Key scan configuration register 0000 0000
+  RegKeyConfig2   ,#! Key scan configuration register 0000 0000
+  RegKeyData1     ,#! Key value (column) 1111 1111
+  RegKeyData2     ,#! Key value (row) 1111 1111 
+  #!
+  #! LED Driver (PWM, blinking, breathing)
+  RegTOn0         ,#! ON time register for I/O[0] 0000 0000
+  RegIOn0         ,#! ON intensity register for I/O[0] 1111 1111
+  RegOff0         ,#! OFF time/intensity register for I/O[0] 0000 0000
+  RegTOn1         ,#! ON time register for I/O[1] 0000 0000
+  RegIOn1         ,#! ON intensity register for I/O[1] 1111 1111
+  RegOff1         ,#! OFF time/intensity register for I/O[1] 0000 0000
+  RegTOn2         ,#! ON time register for I/O[2] 0000 0000
+  RegIOn2         ,#! ON intensity register for I/O[2] 1111 1111
+  RegOff2         ,#! OFF time/intensity register for I/O[2] 0000 0000
+  RegTOn3         ,#! ON time register for I/O[3] 0000 0000
+  RegIOn3         ,#! ON intensity register for I/O[3] 1111 1111
+  RegOff3         ,#! OFF time/intensity register for I/O[3] 0000 0000
+  RegTOn4         ,#! ON time register for I/O[4] 0000 0000
+  RegIOn4         ,#! ON intensity register for I/O[4] 1111 1111
+  RegOff4         ,#! OFF time/intensity register for I/O[4] 0000 0000
+  RegTRise4       ,#! Fade in register for I/O[4] 0000 0000 
+  RegTFall4       ,#! Fade out register for I/O[4] 0000 0000
+  RegTOn5         ,#! ON time register for I/O[5] 0000 0000
+  RegIOn5         ,#! ON intensity register for I/O[5] 1111 1111
+  RegOff5         ,#! OFF time/intensity register for I/O[5] 0000 0000
+  RegTRise5       ,#! Fade in register for I/O[5] 0000 0000
+  RegTFall5       ,#! Fade out register for I/O[5] 0000 0000
+  RegTOn6         ,#! ON time register for I/O[6] 0000 0000
+  RegIOn6         ,#! ON intensity register for I/O[6] 1111 1111
+  RegOff6         ,#! OFF time/intensity register for I/O[6] 0000 0000
+  RegTRise6       ,#! Fade in register for I/O[6] 0000 0000
+  RegTFall6       ,#! Fade out register for I/O[6] 0000 0000
+  RegTOn7         ,#! ON time register for I/O[7] 0000 0000
+  RegIOn7         ,#! ON intensity register for I/O[7] 1111 1111
+  RegOff7         ,#! OFF time/intensity register for I/O[7] 0000 0000
+  RegTRise7       ,#! Fade in register for I/O[7] 0000 0000
+  RegTFall7       ,#! Fade out register for I/O[7] 0000 0000
+  RegTOn8         ,#! ON time register for I/O[8] 0000 0000
+  RegIOn8         ,#! ON intensity register for I/O[8] 1111 1111
+  RegOff8         ,#! OFF time/intensity register for I/O[8] 0000 0000
+  RegTOn9         ,#! ON time register for I/O[9] 0000 0000
+  RegIOn9         ,#! ON intensity register for I/O[9] 1111 1111
+  RegOff9         ,#! OFF time/intensity register for I/O[9] 0000 0000
+  RegTOn10        ,#! ON time register for I/O[10] 0000 0000
+  RegIOn10        ,#! ON intensity register for I/O[10] 1111 1111
+  RegOff10        ,#! OFF time/intensity register for I/O[10] 0000 0000
+  RegTOn11        ,#! ON time register for I/O[11] 0000 0000
+  RegIOn11        ,#! ON intensity register for I/O[11] 1111 1111
+  RegOff11        ,#! OFF time/intensity register for I/O[11] 0000 0000
+  RegTOn12        ,#! ON time register for I/O[12] 0000 0000
+  RegIOn12        ,#! ON intensity register for I/O[12] 1111 1111
+  RegOff12        ,#! OFF time/intensity register for I/O[12] 0000 0000
+  RegTRise12      ,#! Fade in register for I/O[12] 0000 0000
+  RegTFall12      ,#! Fade out register for I/O[12] 0000 0000
+  RegTOn13        ,#! ON time register for I/O[13] 0000 0000
+  RegIOn13        ,#! ON intensity register for I/O[13] 1111 1111 
+  RegOff13        ,#! OFF time/intensity register for I/O[13] 0000 0000
+  RegTRise13      ,#! Fade in register for I/O[13] 0000 0000
+  RegTFall13      ,#! Fade out register for I/O[13] 0000 0000
+  RegTOn14        ,#! ON time register for I/O[14] 0000 0000
+  RegIOn14        ,#! ON intensity register for I/O[14] 1111 1111
+  RegOff14        ,#! OFF time/intensity register for I/O[14] 0000 0000
+  RegTRise14      ,#! Fade in register for I/O[14] 0000 0000
+  RegTFall14      ,#! Fade out register for I/O[14] 0000 0000
+  RegTOn15        ,#! ON time register for I/O[15] 0000 0000
+  RegIOn15        ,#! ON intensity register for I/O[15] 1111 1111
+  RegOff15        ,#! OFF time/intensity register for I/O[15] 0000 0000
+  RegTRise15      ,#! Fade in register for I/O[15] 0000 0000
+  RegTFall15      ,#! Fade out register for I/O[15] 0000 0000 
+  #!
+  #! Miscellaneous
+  RegHighInputB   ,#! High input enable register - I/O[15-8] (Bank B) 0000 0000
+  RegHighInputA   ,#! High input enable register - I/O[7-0] (Bank A) 0000 0000
+  #!
+  #! Software Reset 
+  RegReset        ,#! Software reset register
+  #!
+  #! Test (not to be written) 
+  RegTest1        ,#! Test register 0000 0000
+  RegTest2        ,#! Test register
+}
