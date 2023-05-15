@@ -90,7 +90,7 @@ static MFUN(gw_i2c_ctor) {
   I2CDevice *dev = GW_I2CDevice(o);
   i2c_init_device(dev); // optimize call out
   dev->bus = bus;
-  dev->addr = (unsigned short) (*(m_int*)MEM(SZ_INT*2)) & 0x3ff;
+  dev->addr = (unsigned short) (*(m_int*)MEM(SZ_INT*2));
   dev->iaddr_bytes = (unsigned int)*(m_int*)MEM(SZ_INT*3);
   dev->page_bytes = (unsigned int)*(m_int*)MEM(SZ_INT*4);
   *(M_Object*)RETURN = o;
@@ -119,7 +119,7 @@ static MFUN(gw_i2c_read1) {
   uint8_t value;
   if(i2c_read(GW_I2CDevice(o), iaddr, &value, 1) >= 0)
     *(m_int*)RETURN = value;
-  else xfun_handle(shred, "I2CWriteError");
+  else xfun_handle(shred, "I2CReadError");
 }
 
 static MFUN(gw_i2c_read) {
@@ -130,7 +130,7 @@ static MFUN(gw_i2c_read) {
   *(M_Object*)RETURN = array;
   void *buf = ARRAY(array);
   if(i2c_read(GW_I2CDevice(o), iaddr, buf, len) < 0)
-    xfun_handle(shred, "I2CWriteError");
+    xfun_handle(shred, "I2CReadError");
 }
 
 static MFUN(gw_i2c_write1) {
