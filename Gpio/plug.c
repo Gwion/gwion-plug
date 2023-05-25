@@ -326,10 +326,10 @@ static int line2nowrun(void *data) {
   VM_Shred shred = l2nd->shred;
   struct gpiod_line * line = l2nd->line;
   struct timespec ts = l2nd->ts;
-  bool has_ts = l2nd->has_ts;
+  const bool has_ts = l2nd->has_ts;
   mp_free2(shred->info->mp, sizeof(struct line2nowdata), l2nd);
   const int result = gpiod_line_event_wait(line, has_ts ? &ts : NULL);
-  //shred->reg += SZ_INT;
+  if(!has_ts) shred->reg -= SZ_INT;
   if(result == 1)
     shredule(shred->tick->shreduler, shred, GWION_EPSILON);
   else if(result == 0) {
@@ -474,12 +474,10 @@ static int bulk2nowrun(void *data) {
   VM_Shred shred = b2nd->shred;
   struct gpiod_line_bulk * bulk = b2nd->bulk;
   struct timespec ts = b2nd->ts;
-//  struct gpiod_line_bulk * out = b2nd->out;
-  bool has_ts = b2nd->has_ts;
+  const bool has_ts = b2nd->has_ts;
   mp_free2(shred->info->mp, sizeof(struct bulk2nowdata), b2nd);
-//  const int result = gpiod_line_event_wait_bulk(bulk, has_ts ? &ts : NULL, out);
   const int result = gpiod_line_event_wait_bulk(bulk, has_ts ? &ts : NULL, NULL);
-//  shred->reg += SZ_INT;
+  if(!has_ts) shred->reg -= SZ_INT;
   if(result == 1)
     shredule(shred->tick->shreduler, shred, GWION_EPSILON);
   else if(result == 0) {
