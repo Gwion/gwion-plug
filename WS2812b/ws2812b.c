@@ -1,0 +1,164 @@
+#include <linux/spi/spidev.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#include "gwion_util.h"
+#include "gwion_ast.h"
+#include "gwion_env.h"
+#include "vm.h"
+#include "instr.h"
+#include "gwion.h"
+#include "object.h"
+#include "operator.h"
+#include "import.h"
+#include "gwi.h"
+
+#define GWWS_HANDLE(ex) do{handle(shred,"WS2812b"ex);return;}while(0)
+
+typedef struct gwws {
+  m_int nled;
+  uint8_t *buf;
+  int fd;
+  int sz;
+} gwws;
+
+#define GWWS(o) (struct gwws*)((o)->data)
+
+#define GWWS_IOCTL(ws, mode, data) ioctl(ws->fd, mode, data)
+
+static MFUN(ws2812b_new) {
+  *(M_Object*)RETURN = o;
+  gwws *ws = GWWS(o);
+  char *name = STRING(*(M_Object*)MEM(SZ_INT));
+  int mode = *(m_int*)MEM(SZ_INT * 2);
+  int freq = *(m_int*)MEM(SZ_INT * 3);
+  int lsb = 0;
+  int wordsz = 8;
+
+  if((ws->fd = open(name, O_RDWR)) < 0)
+    GWWS_HANDLE("Open");
+
+  if(GWWS_IOCTL(ws, SPI_IOC_WR_MODE, &mode)            < 0 ||
+     GWWS_IOCTL(ws, SPI_IOC_RD_MODE, &mode)            < 0 ||
+     GWWS_IOCTL(ws, SPI_IOC_WR_MAX_SPEED_HZ, &freq)    < 0 ||
+     GWWS_IOCTL(ws, SPI_IOC_RD_MAX_SPEED_HZ, &freq)    < 0 ||
+     GWWS_IOCTL(ws, SPI_IOC_WR_LSB_FIRST, &lsb)        < 0 ||
+     GWWS_IOCTL(ws, SPI_IOC_RD_LSB_FIRST, &lsb)        < 0 ||
+     GWWS_IOCTL(ws, SPI_IOC_WR_BITS_PER_WORD, &wordsz) < 0 ||
+     GWWS_IOCTL(ws, SPI_IOC_RD_BITS_PER_WORD, &wordsz))
+       GWWS_HANDLE("Init");
+
+  const int nled = *(m_int*)MEM(SZ_INT * 4);
+  if(nled <= 0) GWWS_HANDLE("LedNumber");
+  ws->nled = nled;
+  ws->buf = mp_calloc2(shred->info->mp, nled * 48);
+}
+
+static DTOR(ws2812b_dtor) {
+  gwws *ws = GWWS(o);
+  if(ws->fd < 0) return;
+  close(ws->fd);
+  if(ws->buf)
+    mp_free2(shred->info->mp, ws->nled * 48, ws->buf);
+}
+
+static void write_one_frame(uint32_t rgb, uint8_t temp[48]) {
+  const uint16_t one_code = 0xFFF8U;
+  const uint16_t zero_code = 0xE000U;
+
+  const uint8_t r = (uint8_t)((rgb >> 16) & 0xFF);
+  const uint8_t g = (uint8_t)((rgb >> 8) & 0xFF);
+  const uint8_t b = (uint8_t)((rgb >> 0) & 0xFF);
+  const uint32_t c = ((uint32_t)(g) << 16) | ((uint32_t)(r) << 8) | b;
+
+  // is this needed ?
+  memset(temp, 0, sizeof(uint8_t) * 30);
+
+  uint32_t point = 0;
+  for (uint8_t i = 0; i < 24; i++) {
+    if (((c >> (23 - i)) & 0x01) != 0) {
+      for (uint8_t j = 0; j < 16; j ++) {
+        const bool code = ((one_code >> (15 - j)) & 0x01);
+        temp[point / 8] |= code << (7 - (point % 8));
+        point++;
+      }
+    } else {
+      for (uint8_t j = 0; j < 16; j ++) {
+        const bool code = ((zero_code >> (15 - j)) & 0x01);
+        temp[point / 8] |= code << (7 - (point % 8));
+        point++;
+      }
+    }
+  }
+}
+
+static MFUN(ws2812b_write) {
+  gwws *ws = GWWS(o);
+  const m_int nled = ws->nled;
+  const m_int sz = nled * 48;
+  struct spi_ioc_transfer k = {
+    .tx_buf = (__u64)ws->buf,
+    .len = sz,
+  };
+  if(sz != GWWS_IOCTL(ws, SPI_IOC_MESSAGE(1), &k))
+    handle(shred, "WS2812bWrite");
+}
+
+static MFUN(ws2812b_set) {
+  gwws *ws = GWWS(o);
+  write_one_frame(*(uint32_t*)MEM(SZ_INT*2), &ws->buf[*(m_int*)MEM(SZ_INT) * 48]);
+}
+
+static MFUN(ws2812b_setall) {
+  gwws *ws = GWWS(o);
+  for(m_int i = ws->nled + 1; --i;)
+    write_one_frame(*(uint32_t*)MEM(SZ_INT*2), &ws->buf[i * 48]);
+}
+
+GWION_IMPORT(WS2812b) {
+  gwidoc(gwi, "a class to handle ws2812b based led stripes");
+  DECL_OB(const Type, t_ws2812b, = gwi_class_ini(gwi, "WS2812b", "Object"));
+  gwi_class_xtor(gwi, NULL, ws2812b_dtor);
+
+  gwidoc(gwi, "number of leds");
+  GWI_BB(gwi_item_ini(gwi, "int", "n_leds"));
+  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
+
+  t_ws2812b->nspc->offset += sizeof(gwws) - SZ_INT;
+
+  gwidoc(gwi, "spi modes");
+  GWI_BB(gwi_enum_ini(gwi, "Mode"));
+  GWI_BB(gwi_enum_add(gwi, "ZERO", SPI_MODE_0));
+  GWI_BB(gwi_enum_add(gwi, "ONE", SPI_MODE_1));
+  GWI_BB(gwi_enum_add(gwi, "TWO", SPI_MODE_2));
+  GWI_BB(gwi_enum_add(gwi, "THREE", SPI_MODE_3));
+  GWI_OB(gwi_enum_end(gwi));
+
+  gwidoc(gwi, "constructor");
+  GWI_BB(gwi_func_ini(gwi, "auto", "new"));
+  GWI_BB(gwi_func_arg(gwi, "string", "spi_device"));
+  GWI_BB(gwi_func_arg(gwi, "WS2812b.Mode", "mode"));
+  GWI_BB(gwi_func_arg(gwi, "int", "freq"));
+  GWI_BB(gwi_func_arg(gwi, "int", "n_leds"));
+  GWI_OB(gwi_func_end(gwi, ws2812b_new, ae_flag_none));
+
+
+  gwidoc(gwi, "write data");
+  GWI_BB(gwi_func_ini(gwi, "void", "write"));
+  GWI_BB(gwi_func_end(gwi, ws2812b_write, ae_flag_none));
+
+  gwidoc(gwi, "set a specifid led");
+  GWI_BB(gwi_func_ini(gwi, "void", "set"));
+  GWI_BB(gwi_func_arg(gwi, "int", "led"));
+  GWI_BB(gwi_func_arg(gwi, "int", "rgb"));
+  GWI_BB(gwi_func_end(gwi, ws2812b_set, ae_flag_none));
+
+  gwidoc(gwi, "set all leds");
+  GWI_BB(gwi_func_ini(gwi, "void", "set"));
+  GWI_BB(gwi_func_arg(gwi, "int", "rgb"));
+  GWI_BB(gwi_func_end(gwi, ws2812b_setall, ae_flag_none));
+
+  GWI_BB(gwi_class_end(gwi));
+  return GW_OK;
+}
