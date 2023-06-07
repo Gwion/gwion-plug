@@ -79,13 +79,13 @@ static void write_one_frame(uint32_t rgb, uint8_t temp[48]) {
   for (uint8_t i = 0; i < 24; i++) {
     if (((c >> (23 - i)) & 0x01) != 0) {
       for (uint8_t j = 0; j < 16; j ++) {
-        const bool code = ((one_code >> (15 - j)) & 0x01);
+        const bool code = !!((one_code >> (15 - j)) & 0x01);
         temp[point / 8] |= code << (7 - (point % 8));
         point++;
       }
     } else {
       for (uint8_t j = 0; j < 16; j ++) {
-        const bool code = ((zero_code >> (15 - j)) & 0x01);
+        const bool code = !!((zero_code >> (15 - j)) & 0x01);
         temp[point / 8] |= code << (7 - (point % 8));
         point++;
       }
@@ -113,7 +113,7 @@ static MFUN(ws2812b_set) {
 static MFUN(ws2812b_setall) {
   gwws *ws = GWWS(o);
   for(m_int i = ws->nled + 1; --i;)
-    write_one_frame(*(uint32_t*)MEM(SZ_INT*2), &ws->buf[i * 48]);
+    write_one_frame(*(uint32_t*)MEM(SZ_INT), &ws->buf[(i-1) * 48]);
 }
 
 GWION_IMPORT(WS2812b) {
