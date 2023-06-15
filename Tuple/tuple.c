@@ -320,7 +320,7 @@ static OP_CHECK(opck_tuple) {
   if(exp->exp_type != ae_exp_primary ||
      exp->d.prim.prim_type != ae_prim_num)
     ERR_O(exp->pos, _("tuple subscripts must be litteral"))
-  const m_uint idx = exp->d.prim.d.num;
+  const m_uint idx = exp->d.prim.d.gwint.num;
   const Vector v = array->type->info->tuple ?
     &array->type->info->tuple->types : NULL;
   if(!v || idx >= vector_size(v))
@@ -494,7 +494,7 @@ ANN static void tuple_access(const  Emitter emit, const m_uint idx,
 
 static OP_EMIT(opem_tuple_access) {
   struct ArrayAccessInfo *info = (struct ArrayAccessInfo*)data;
-  const m_uint idx = info->array.exp->d.prim.d.num;
+  const m_uint idx = info->array.exp->d.prim.d.gwint.num;
   tuple_access(emit, idx, (info->array.depth -1)? 0 : info->is_var);
   if(!info->array.exp->next)
     return GW_OK;
