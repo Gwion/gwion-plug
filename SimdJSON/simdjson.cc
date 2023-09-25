@@ -120,7 +120,7 @@ static dom::parser *get_parser(const M_Object o) {
   return parser;
 }
 
-ANN static int load(void *data) {
+ANN static void load(void *data) {
   const VM_Shred shred = (VM_Shred)data;
   const M_Object arg = *(M_Object *)MEM(0);
   const VM_Code code = *(VM_Code *)REG(SZ_INT);
@@ -132,20 +132,16 @@ ANN static int load(void *data) {
     JSON_ELEMENT(ret) = parser->load(STRING(arg));
   } catch (const simdjson_error &e) {
     xfun_handle(shred, (m_str)"SimdJSONLoad");
-    return EXIT_FAILURE;
+    return;
   }
   shredule(shred->tick->shreduler, shred, 0);
-  return EXIT_SUCCESS;
 }
 
 static SFUN(simdjson_load) {
-  thrd_t thrd;
-  thrd_create(&thrd, load, shred);
-  thrd_detach(thrd);
-  shreduler_remove(shred->tick->shreduler, shred, false);
+  shred_pool_run(shred, load, shred);
 }
 
-ANN static int _parse(void *data) {
+ANN static void _parse(void *data) {
   const VM_Shred shred = (VM_Shred)data;
   const M_Object arg = *(M_Object *)MEM(0);
   const VM_Code code = *(VM_Code *)REG(SZ_INT);
@@ -157,16 +153,12 @@ ANN static int _parse(void *data) {
     JSON_ELEMENT(ret) = parser->parse(STRING(arg), strlen(STRING(arg)));
   } catch (const simdjson_error &e) {
     xfun_handle(shred, (m_str)"SimdJSONParse");
-    return EXIT_FAILURE;
+    return;
   }
-  return EXIT_SUCCESS;
 }
 
 static SFUN(simdjson_parse) {
-  thrd_t thrd;
-  thrd_create(&thrd, _parse, shred);
-  thrd_detach(thrd);
-  shreduler_remove(shred->tick->shreduler, shred, false);
+  shred_pool_run(shred, _parse, shred);
 }
 
 #define prim2gw(ctype, gwtype) \
@@ -250,7 +242,6 @@ static SFUN(ToJson) {
 
 static INSTR(getoff) {
   const M_Object o = *(M_Object*)MEM(instr->m_val + SZ_INT);
-  printf("o %p\n", o);
   dom::array array = JSON_ARRAY(o);
   *(m_uint*)MEM(instr->m_val) = array.size();
   exit(21);
@@ -273,20 +264,16 @@ static OP_EMIT(opem_json_array_each_init) {
 
 static INSTR(json_array_loop) {
   const M_Object o = *(M_Object*)MEM(instr->m_val2 - SZ_INT);
-  printf("o %p %p  [[ %lu\n", o, *(void**)MEM(instr->m_val2), instr->m_val2);
-  printf("size %li\n", JSON_ARRAY(o).size());
   const m_uint idx = ++*(m_uint*)MEM(instr->m_val2);
   const bool end = idx == JSON_ARRAY(o).size();
-  printf("end %i %lu %lu\n", end, idx, *(m_uint*)MEM(instr->m_val2));
   if(end) {
     // shred->pc = instr->m_val;
   } else { 
     // should be mem counted
     // p
-  const Type t = (Type) instr->m_val;
-  printf("t %p %p\n", t, t);
+    const Type t = (Type) instr->m_val;
     M_Object ret = 
-    *(M_Object*)MEM(instr->m_val2 + SZ_INT) = new_object(shred->info->vm->gwion->mp, (Type)instr->m_val);
+      *(M_Object*)MEM(instr->m_val2 + SZ_INT) = new_object(shred->info->vm->gwion->mp, t);
     JSON_ELEMENT(ret) = JSON_ARRAY(o).at(idx);
   }
   *(m_uint*)shred->reg = end;
@@ -301,7 +288,6 @@ static OP_EMIT(opem_json_array_each) {
   const Instr instr = emit_add_instr(emit, json_array_loop);
   //puts(loop->exp->type->name);exit(12);
   const Type t = str2type(emit->gwion, (m_str)"SimdJSON.element", loop->exp->pos);
-  printf("t %s %p\n", t->name, t);
   instr->m_val = (m_uint)t;
   instr->m_val2 = loop->offset + SZ_INT;
   loop->instr = emit_add_instr(emit, BranchNeqInt);

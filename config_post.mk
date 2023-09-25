@@ -13,7 +13,7 @@ lib${NAME}.a: ${OBJ}
 
 
 clean:
-	rm -f ${OBJ} ${NAME}.so
+	rm -f ${OBJ} ${NAME}.so lib${NAME}.a
 
 .c.o:
 	${CC} -fPIC ${CFLAGS} -c $< -o $(<:.c=.o)

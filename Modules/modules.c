@@ -296,7 +296,7 @@ GWION_IMPORT(Modules) {
   GWI_OB(gwi_typedef_end(gwi, ae_flag_none))
   GWI_BB(gwi_typedef_ini(gwi, "Blsaw", "SawOsc"))
   GWI_OB(gwi_typedef_end(gwi, ae_flag_none))
-  return 1;
+  return GW_OK;
 }
 
 static m_str deps[] = { "Soundpipe", NULL };

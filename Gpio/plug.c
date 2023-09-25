@@ -1,5 +1,4 @@
-#include  <threads.h>
-#include  <unistd.h>
+//#include  <unistd.h>
 #include "gpiod.h"
 #include "gwion_util.h"
 #include "gwion_ast.h"
@@ -321,7 +320,7 @@ struct line2nowdata {
   bool has_ts;
 };
 
-static int line2nowrun(void *data) {
+static void line2nowrun(void *data) {
   struct line2nowdata *l2nd = data;
   VM_Shred shred = l2nd->shred;
   struct gpiod_line * line = l2nd->line;
@@ -335,7 +334,6 @@ static int line2nowrun(void *data) {
   else if(result == 0) {
     xfun_handle(shred, "GpioEventTimeOut");
   } else xfun_handle(shred, "GpioEventTimeOut");
-  return 0;
 }
 
 static INSTR(line2now) {
@@ -345,10 +343,7 @@ static INSTR(line2now) {
   l2nd->shred = shred;
   l2nd->line = LINE(o);
   l2nd->has_ts = false;
-  shreduler_remove(shred->tick->shreduler, shred, false);
-  thrd_t thrd;
-  thrd_create(&thrd, line2nowrun, l2nd);
-  thrd_detach(thrd);
+  shred_pool_run(shred, line2nowrun, l2nd);
 }
 
 static MFUN(gw_gpiod_line_request_bulk_output) {
@@ -447,7 +442,6 @@ static MFUN(gw_gpiod_line_event_event_type_get) {
 }
 
 static MFUN(gw_gpiod_line_event_wait) {
-  shreduler_remove(shred->tick->shreduler, shred, false);
   const m_float dur = *(m_float*)MEM(SZ_INT);
   struct timespec ts;
   dur2ts(shred, dur, &ts);
@@ -456,9 +450,7 @@ static MFUN(gw_gpiod_line_event_wait) {
   l2nd->line = LINE(o);
   l2nd->ts = ts;
   l2nd->has_ts = true;
-  thrd_t thrd;
-  thrd_create(&thrd, line2nowrun, l2nd);
-  thrd_detach(thrd);
+  shred_pool_run(shred, line2nowrun, l2nd);
 }
 
 struct bulk2nowdata {
@@ -469,7 +461,7 @@ struct bulk2nowdata {
   bool has_ts;
 };
 
-static int bulk2nowrun(void *data) {
+static void bulk2nowrun(void *data) {
   struct bulk2nowdata *b2nd = data;
   VM_Shred shred = b2nd->shred;
   struct gpiod_line_bulk * bulk = b2nd->bulk;
@@ -483,7 +475,6 @@ static int bulk2nowrun(void *data) {
   else if(result == 0) {
     xfun_handle(shred, "GpioEventTimeOut");
   } else xfun_handle(shred, "GpioEventTimeOut");
-  return 0;
 }
 
 static INSTR(bulk2now) {
@@ -494,10 +485,7 @@ static INSTR(bulk2now) {
   b2nd->bulk = BULK(o);
   b2nd->has_ts = false;
   //b2nd->out = NULL;
-  shreduler_remove(shred->tick->shreduler, shred, false);
-  thrd_t thrd;
-  thrd_create(&thrd, bulk2nowrun, b2nd);
-  thrd_detach(thrd);
+  shred_pool_run(shred, bulk2nowrun, b2nd);
 }
 
 static MFUN(gw_gpiod_line_event_read) {
@@ -538,10 +526,7 @@ static MFUN(gw_gpiod_line_event_wait_bulk) {
   b2nd->ts = ts;
   //b2nd->out = NULL;
   b2nd->has_ts = true;
-  shreduler_remove(shred->tick->shreduler, shred, false);
-  thrd_t thrd;
-  thrd_create(&thrd, bulk2nowrun, b2nd);
-  thrd_detach(thrd);
+  shred_pool_run(shred, bulk2nowrun, b2nd);
 }
 /*
 static MFUN(gw_gpiod_line_event_wait_bulk2) {
@@ -555,10 +540,7 @@ static MFUN(gw_gpiod_line_event_wait_bulk2) {
   b2nd->ts = ts;
   //b2nd->out = BULK(out);
   b2nd->has_ts = true;
-  shreduler_remove(shred->tick->shreduler, shred, false);
-  thrd_t thrd;
-  thrd_create(&thrd, bulk2nowrun, b2nd);
-  thrd_detach(thrd);
+  shred_pool_run(shred, bulk2nowrun, l2nd);
 }
 */
 static MFUN(gw_gpiod_version_string) {

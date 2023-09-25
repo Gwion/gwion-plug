@@ -223,8 +223,7 @@ struct LoIn {
   LoServer       server;
   struct Vector_ methods;
   struct Vector_ curr;
-  MUTEX_TYPE     mutex;
-  MUTEX_TYPE     bbq;
+  gwtlock_t      mutex;
 };
 #define LOIN(o) (*(struct LoIn *)((o)->data + SZ_INT))
 
@@ -274,13 +273,10 @@ static int osc_method_handler(const char *path NUSED, const char *type, lo_arg *
     struct LoIn    *loin = &LOIN(o);
     struct Vector_ vec = {};
     vector_copy2(&v, &vec);
-    MUTEX_LOCK(loin->mutex);
+    gwt_lock(&loin->mutex);
     vector_add(&loin->args, (m_uint)vec.ptr);
-    MUTEX_UNLOCK(loin->mutex);
-    MUTEX_LOCK(loin->bbq);
+    gwt_unlock(&loin->mutex);
     broadcast(o);
-    MUTEX_UNLOCK(loin->bbq);
-
   }
 
   vector_release(&v);
@@ -352,16 +348,16 @@ static DTOR(loin_dtor) {
   vector_release(&loin.args);
   const Map map = get_module(shred->info->vm->gwion, "Lo");
   release_loserver(map, loin.server);
-  MUTEX_CLEANUP(loin.mutex);
+  gwt_lock_end(&loin.mutex);
 }
 
 static MFUN(osc_recv) {
   struct LoIn *loin = &LOIN(o);
-  MUTEX_LOCK(loin->mutex);
+  gwt_lock(&loin->mutex);
   const Vector c_arg = &loin->args;
   if (!vector_size(c_arg)) {
     *(m_uint *)RETURN = false;
-    MUTEX_UNLOCK(loin->mutex);
+    gwt_unlock(&loin->mutex);
     return;
   }
   if (loin->curr.ptr)
@@ -369,7 +365,7 @@ static MFUN(osc_recv) {
   loin->curr.ptr    = (m_uint*)vector_front(c_arg);
   *(m_uint *)RETURN = true;
   vector_rem(c_arg, 0);
-  MUTEX_UNLOCK(loin->mutex);
+  gwt_unlock(&loin->mutex);
 }
 /*
 static MFUN(oscin_rem) {
@@ -442,8 +438,7 @@ static MFUN(osc_new) {
    struct LoIn *  loin = &LOIN(o);
    vector_init(&loin->args);
    vector_init(&loin->methods);
-   MUTEX_SETUP(loin->mutex);
-   loin->bbq = shred->info->vm->shreduler->mutex;
+   gwt_lock_ini(&loin->mutex);
    const m_int  port = *(m_int *)MEM(SZ_INT);
    const Map _map = get_module(shred->info->vm->gwion, "Lo");
    const LoServer s  = get_server(shred->info->mp, _map, port);

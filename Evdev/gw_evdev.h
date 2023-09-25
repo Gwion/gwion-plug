@@ -4,7 +4,6 @@ typedef struct {
   struct libevdev* evdev;
   pthread_t thread;
   pthread_mutex_t mutex;
-  MUTEX_TYPE bbq;
   MP_Vector *args;
   MemPool mp;
   uint32_t idx;

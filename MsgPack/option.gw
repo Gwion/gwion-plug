@@ -1,0 +1,11 @@
+#import MsgPack
+#!var int?(none) i;
+var int?(val, 5) i;
+i => MsgPack.pack :=> var string msg0;
+MsgPack.unpack:[int?](msg0) :=> var auto unpacked0;
+<<< unpacked0.val >>>;
+
+var int?(none) j;
+j => MsgPack.pack :=> var string msg1;
+MsgPack.unpack:[int?](msg1) :=> var auto unpacked1;
+<<< unpacked1.none >>>;

@@ -1,0 +1,28 @@
+#import MsgPack
+
+class Bar {
+  54 :=> var int i;
+}
+
+class Foo {
+  20 :=> var int i;
+  var Bar bar;
+  "test" :=> var string s;
+
+  operator void @gack() {
+  <<< "${i} ${bar.i} ${s}" >>>;
+  }
+}
+var Foo foo;
+#!var int?(none, None) i;
+#!msg.pack(1);
+#!msg.pack(2.6);
+#!MsgPack.pack("foo")
+foo => MsgPack.pack :=> const auto msg;
+#!MsgPack.pack( {1:2} );
+#![ 1.2, 1.2 ] => MsgPack.pack;
+MsgPack.unpack:[Foo](msg) :=> var auto i;
+#!MsgPack.print_unpack(msg);#! :=> var auto i;
+<<< i >>>;
+#!<<< i.bar.i >>>;
+#!<<< msg => MsgPack.hexa >>>;

@@ -1,7 +1,7 @@
 #import FFI
 
-FFI:[int](puts, pointer) :=> var auto puts;
+var FFI:[int]("puts", FFI.pointer) puts;
 <<< puts.call("test") >>>;
 
-FFIvar:[int](printf, pointer) :=> var auto printf;
-<<< printf("test %i %i\n", 1 $ FFIBASE.int, 2 $ FFIBASE.int) >>>;
+#!FFIvar:[int](printf, pointer) :=> var auto printf;
+#!<<< printf("test %i %i\n", 1 $ FFIBASE.int, 2 $ FFIBASE.int) >>>;

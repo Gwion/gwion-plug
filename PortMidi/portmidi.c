@@ -68,8 +68,7 @@ static MFUN(midiout_send) {
 typedef struct {
   PmStream* stream;
   THREAD_TYPE thread;
-  MUTEX_TYPE mutex;
-  MUTEX_TYPE bbq;
+  gwtlock_t mutex;
   struct M_Vector_ msg;
 } MidiIn;
 
@@ -81,18 +80,12 @@ ANN static void* pm_recv(void* data) {
 
   while(true) {
     while(Pm_Poll(info->stream) == 1) {
-
       PmEvent event;
       Pm_Read(info->stream, &event, 1);
-
-      MUTEX_LOCK(info->mutex);
+      gwt_lock(&info->mutex);
       m_vector_add(&info->msg, &event.message);
-      MUTEX_UNLOCK(info->mutex);
-
-      MUTEX_LOCK(info->bbq);
+      gwt_unlock(&info->mutex);
       broadcast(o);
-      MUTEX_UNLOCK(info->bbq);
-
     }
 
   }
@@ -106,8 +99,7 @@ static MFUN(midiin_new) {
     return;
   }
   m_vector_init(&info->msg, sizeof(PmMessage), 0);
-  info->bbq = shred->info->vm->shreduler->mutex;
-  MUTEX_SETUP(info->mutex);
+  gwt_lock_ini(&info->mutex);
   THREAD_CREATE(info->thread, pm_recv, o);
   *(M_Object*)RETURN = o;
 }
@@ -117,17 +109,17 @@ static DTOR(pmin_dtor) {
   m_vector_release(&info->msg);
   if(info->thread) // find a better way
     pthread_cancel(info->thread);
+  gwt_lock_end(&info->mutex);
   Pm_Close(info->stream);
 }
 
 static MFUN(midiin_read) {
   MidiIn *const info = IN_INFO(o);
-  MUTEX_LOCK(info->mutex);
+  gwt_lock(&info->mutex);
   const m_uint sz = m_vector_size(&info->msg);
   const PmMessage pmsg = *(PmMessage*)(info->msg.ptr + ARRAY_OFFSET);
-  if(sz)
-    m_vector_rem(&info->msg, 0);
-  MUTEX_UNLOCK(info->mutex);
+  if(sz) m_vector_rem(&info->msg, 0);
+  gwt_unlock(&info->mutex);
   if(sz) {
     **(m_int**)MEM(SZ_INT)   = Pm_MessageStatus(pmsg);
     **(m_int**)MEM(SZ_INT*2) = Pm_MessageData1(pmsg);

@@ -20,16 +20,20 @@ static DTOR(fileio_dtor) {
   fclose(IO_FILE(o));
 }
 
-struct FileIOInfo {
-  m_str str;
-  FILE * file;
+struct FileIORead {
   VM_Shred shred;
+  m_bit *reg;
+  m_bit *mem;
 };
 
-static int fileio_read(void *data) {
-  VM_Shred shred = (VM_Shred)data;
-  const m_uint offset = *(m_uint*)(shred->reg + SZ_INT*2);
-  const M_Object o = *(M_Object*)(shred->mem + offset);
+static void fileio_read(void *data) {
+  struct FileIORead *info = data;
+  VM_Shred shred = info->shred;
+  m_bit *reg = info->reg;
+  m_bit *mem = info->mem;
+  mp_free2(shred->info->mp, sizeof(struct FileIORead), data);
+  const m_uint offset = *(m_uint*)(reg + SZ_INT*2);
+  const M_Object o = *(M_Object*)(mem + offset);
   char *c = NULL;
   size_t n;
   GwText txt;
@@ -39,26 +43,28 @@ static int fileio_read(void *data) {
     xfree(c);
  //   txt.str[--txt.len] = '\0'; // remove last '\n'
     const M_Object s = new_string(shred->info->vm->gwion, txt.str);
-    shred->reg += SZ_INT;
-    *(M_Object*)(shred->reg - SZ_INT) = s;
+    *(M_Object*)(reg) = s;
+    shred->reg = reg + SZ_INT;
     shredule(shred->tick->shreduler, shred, GWION_EPSILON);
   } else
     xfun_handle(shred, "FileReadException");
-  return 0;
 }
 
-static int fileio_write(void *data) {
-  struct FileIOInfo *info = data;
-  const size_t sz = strlen(info->str);
-  const VM_Shred shred = info->shred;
-  const m_str str = info->str;
-  FILE *file = info->file;
-  mp_free2(shred->info->mp, sizeof(struct FileIOInfo), info);
+static void fileio_write(void *data) {
+  struct FileIORead *info = data;
+  VM_Shred shred = info->shred;
+  m_bit *reg = info->reg;
+  m_bit *mem = info->mem;
+  mp_free2(shred->info->mp, sizeof(struct FileIORead), data);
+  const M_Object o = *(M_Object*)(mem);
+  FILE *file = IO_FILE(o);
+  const M_Object arg = *(M_Object*)(mem + SZ_INT);
+  const m_str str = STRING(arg);
+  const size_t sz = strlen(str);
   if(fwrite(str, sz, 1,  file) > 0)
     shredule(shred->tick->shreduler, shred, 1);
   else
     xfun_handle(shred, "FileWriteException");
-  return 0;
 }
 
 static MFUN(file_eof) {
@@ -71,22 +77,20 @@ static MFUN(file_flush) {
 
 static MFUN(file2string) {
   shreduler_remove(shred->tick->shreduler, shred, 0);
-//  fileio_read(shred);
-  thrd_t thrd;
-  thrd_create(&thrd, fileio_read, shred);
-  thrd_detach(thrd);
+  struct FileIORead *info = mp_malloc2(shred->info->mp, sizeof(struct FileIORead));
+  info->shred = shred;
+  info->reg = shred->reg;
+  info->mem = shred->mem;
+  threadpool_add(shred->info->vm->gwion->data->tpool, fileio_read, info);
 }
 
 static MFUN(string2file) {
   shreduler_remove(shred->tick->shreduler, shred, 0);
-  struct FileIOInfo *info = mp_calloc2(shred->info->mp, sizeof(struct FileIOInfo));
+  struct FileIORead *info = mp_malloc2(shred->info->mp, sizeof(struct FileIORead));
   info->shred = shred;
-  info->file = IO_FILE(o);
-  const M_Object arg = *(M_Object*)(shred->mem + SZ_INT);
-  info->str = STRING(arg);
-  thrd_t thrd;
-  thrd_create(&thrd, fileio_write, info);
-  thrd_detach(thrd);
+  info->reg = shred->reg;
+  info->mem = shred->mem;
+  threadpool_add(shred->info->vm->gwion->data->tpool, fileio_write, info);
 }
 
 static MFUN(file_open) {

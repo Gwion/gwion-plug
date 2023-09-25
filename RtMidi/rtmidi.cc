@@ -42,29 +42,29 @@ ANN static void error_callback(RtMidiError::Type type, const std::string &errorT
 
 struct MidiIn {
   RtMidiIn *in;
-  MUTEX_TYPE mutex;
+  gwtlock_t mutex;
   struct M_Vector_ msgs;
   struct Vector_   thru;
 };
 
 static DTOR(rtmidiin_dtor) {
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
-  MUTEX_TYPE mutex = min->mutex;
-  MUTEX_LOCK(mutex);
+  gwtlock_t  *mutex = &min->mutex;
+  gwt_lock(mutex);
   m_vector_release(&min->msgs);
   if(min->thru.ptr) {
     for(m_uint i = 0; i < vector_size(&min->thru); i++)
       _release((M_Object)vector_at(&min->thru, i), shred);
   }
   delete min->in;
-  MUTEX_UNLOCK(mutex);
-  MUTEX_CLEANUP(mutex);
+  gwt_unlock(mutex);
+  gwt_lock_end(mutex);
 }
 
 ANN static inline void min_add(struct MidiIn *min, unsigned char msg[3]) {
-  MUTEX_LOCK(min->mutex);
+  gwt_lock(&min->mutex);
   m_vector_add(&min->msgs, msg);
-  MUTEX_UNLOCK(min->mutex);
+  gwt_unlock(&min->mutex);
 }
 
 ANN static void callback(double timeStamp NUSED, std::vector<unsigned char> *message, void *data) {
@@ -102,7 +102,7 @@ ANN static void min_init(struct MidiIn *min, const M_Object o) {
   min->in = new RtMidiIn(RtMidi::Api::UNSPECIFIED, "Gwion In");
   min->in->setCallback(callback, o);
   min->in->setErrorCallback(error_callback, o);
-  MUTEX_SETUP(min->mutex);
+  gwt_lock_ini(&min->mutex);
   m_vector_init(&min->msgs, 4 * sizeof(m_bit), 0);
 }
 
@@ -151,7 +151,7 @@ static MFUN(rtmidiin_disconnect) {
 
 static MFUN(rtmidiin_read) {
   struct MidiIn *min = (MidiIn*)(o->data + SZ_INT);
-  MUTEX_LOCK(min->mutex);
+  gwt_lock(&min->mutex);
   const m_uint sz = m_vector_size(&min->msgs);
   if(sz) {
     const unsigned char *msg = (unsigned char*)(min->msgs.ptr + ARRAY_OFFSET);
@@ -162,7 +162,7 @@ static MFUN(rtmidiin_read) {
     *(m_uint*)RETURN = true;
   } else
     *(m_uint*)RETURN = false;
-  MUTEX_UNLOCK(min->mutex);
+  gwt_unlock(&min->mutex);
 }
 
 static MFUN(rtmidiin_ignore) {
