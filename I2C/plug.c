@@ -114,16 +114,6 @@ static MFUN(gw_i2c_select) {
 }
 */
 
-static void gw_i2c_read1_process(void *data) {
-  unsigned int iaddr = *(m_int*)(info->mem + SZ_INT);
-  uint8_t value;
-  if(i2c_read(GW_I2CDevice(o), iaddr, &value, 1) >= 0) {
-    *(m_int*)info->reg = value;
-    info->shred->reg = info->reg + SZ_INT;
-  }
-  else xfun_handle(shred, "I2CReadError");
-}
-
 static MFUN(gw_i2c_read1) {
   unsigned int iaddr = *(m_int*)MEM(SZ_INT);
   uint8_t value;
