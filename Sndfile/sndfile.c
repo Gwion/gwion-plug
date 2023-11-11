@@ -9,8 +9,7 @@
 #include "gwion_ast.h"
 #include "gwion_env.h"
 #include "vm.h"
-#include "plug.h"
-#include "driver.h"
+#include "gwion.h"
 
 // TODO: use arguments
 #define BUFSIZE 256
