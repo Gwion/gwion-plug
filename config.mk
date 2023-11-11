@@ -1,6 +1,6 @@
 BASEDIR  ?= ../..
 GWION    ?= ${BASEDIR}/gwion
-INC      := ${BASEDIR}/include -I${BASEDIR}/util/include -I${BASEDIR}/util/libtermcolor/include
+INC      := ${BASEDIR}/include -I${BASEDIR}/util/include
 INC      += -I${BASEDIR}/ast/include -I${BASEDIR}/ast/libprettyerr/src
 INC      += -I${BASEDIR}/libcmdapp/src -I${BASEDIR}/fmt/include
 CC       ?= gcc
