@@ -63,10 +63,6 @@ endif
 #LDLAGS += ../../util/libgwion-util.a
 #endif
 
-ifeq ($(shell uname), Darwin)
-LDFLAGS += -undefined dynamic_lookup
-endif
-
 ifeq (${USE_DOUBLE}, 1)
 CFLAGS +=-DUSE_DOUBLE
 endif
