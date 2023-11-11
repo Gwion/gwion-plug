@@ -14,7 +14,6 @@
 #include "operator.h"
 #include "import.h"
 #include "gwi.h"
-#include "threads.h"
 
 static DTOR(fileio_dtor) {
   fclose(IO_FILE(o));
@@ -76,12 +75,11 @@ static MFUN(file_flush) {
 }
 
 static MFUN(file2string) {
-  shreduler_remove(shred->tick->shreduler, shred, 0);
   struct FileIORead *info = mp_malloc2(shred->info->mp, sizeof(struct FileIORead));
   info->shred = shred;
   info->reg = shred->reg;
   info->mem = shred->mem;
-  threadpool_add(shred->info->vm->gwion->data->tpool, fileio_read, info);
+  shred_pool_run(shred->info->vm->gwion->data->tpool, fileio_read, info);
 }
 
 static MFUN(string2file) {
@@ -90,7 +88,7 @@ static MFUN(string2file) {
   info->shred = shred;
   info->reg = shred->reg;
   info->mem = shred->mem;
-  threadpool_add(shred->info->vm->gwion->data->tpool, fileio_write, info);
+  shred_pool_run(shred->info->vm->gwion->data->tpool, fileio_write, info);
 }
 
 static MFUN(file_open) {
