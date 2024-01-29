@@ -14,6 +14,8 @@
 #include "import.h"
 #include "gwi.h"
 
+#define N 48
+
 #define GWWS_HANDLE(ex) do{handle(shred,"WS2812b"ex);return;}while(0)
 
 typedef struct gwws {
@@ -27,6 +29,7 @@ typedef struct gwws {
 
 #define GWWS_IOCTL(ws, mode, data) ioctl(ws->fd, mode, data)
 
+static MFUN(ws2812b_setall);
 static MFUN(ws2812b_new) {
   *(M_Object*)RETURN = o;
   gwws *ws = GWWS(o);
@@ -52,7 +55,8 @@ static MFUN(ws2812b_new) {
   const int nled = *(m_int*)MEM(SZ_INT * 4);
   if(nled <= 0) GWWS_HANDLE("LedNumber");
   ws->nled = nled;
-  ws->buf = mp_calloc2(shred->info->mp, nled * 48);
+  ws->buf = mp_calloc2(shred->info->mp, nled * N);
+//  ws2812b_setall(shred, 0, RETURN);
 }
 
 static DTOR(ws2812b_dtor) {
@@ -60,22 +64,39 @@ static DTOR(ws2812b_dtor) {
   if(ws->fd < 0) return;
   close(ws->fd);
   if(ws->buf)
-    mp_free2(shred->info->mp, ws->nled * 48, ws->buf);
+    mp_free2(shred->info->mp, ws->nled * N, ws->buf);
 }
 
-static void write_one_frame(uint32_t rgb, uint8_t temp[48]) {
+// rather return it?
+static void write_one_frame(uint32_t rgb, uint8_t temp[N], bool even) {
+printf("color %x\n", rgb);
   const uint16_t one_code = 0xFFF8U;
   const uint16_t zero_code = 0xE000U;
+//  const uint16_t one_code =  0b0000111110000000;
+//  const uint16_t zero_code = 0b1110000000000000;
 
   const uint8_t r = (uint8_t)((rgb >> 16) & 0xFF);
   const uint8_t g = (uint8_t)((rgb >> 8) & 0xFF);
   const uint8_t b = (uint8_t)((rgb >> 0) & 0xFF);
   const uint32_t c = ((uint32_t)(g) << 16) | ((uint32_t)(r) << 8) | b;
 
-  // is this needed ?
-  memset(temp, 0, sizeof(uint8_t) * 30);
+uint32_t point = 0;
 
-  uint32_t point = 0;
+  // is this needed ?
+//  memset(temp, , sizeof(uint8_t) * 30);
+
+  for (uint8_t i = 0; i < 24; i++) {
+    if (((c >> (23 - i)) & 0x01) != 0) {
+//      temp[i*2] = 0b1111111111110000;
+      temp[i*2]     = 0b11111111;
+      temp[i*2 + 1] = 0b11110000;
+    } else {
+puts("what");
+      temp[i*2]     = 0b11110000;
+      temp[i*2 + 1] = 0b00000000;
+}
+  }
+return;
   for (uint8_t i = 0; i < 24; i++) {
     if (((c >> (23 - i)) & 0x01) != 0) {
       for (uint8_t j = 0; j < 16; j ++) {
@@ -96,7 +117,7 @@ static void write_one_frame(uint32_t rgb, uint8_t temp[48]) {
 static MFUN(ws2812b_write) {
   gwws *ws = GWWS(o);
   const m_int nled = ws->nled;
-  const m_int sz = nled * 48;
+  const m_int sz = nled * N;
   struct spi_ioc_transfer k = {
     .tx_buf = (__u64)ws->buf,
     .len = sz,
@@ -107,13 +128,17 @@ static MFUN(ws2812b_write) {
 
 static MFUN(ws2812b_set) {
   gwws *ws = GWWS(o);
-  write_one_frame(*(uint32_t*)MEM(SZ_INT*2), &ws->buf[*(m_int*)MEM(SZ_INT) * 48]);
+  const m_int idx = *(m_int*)MEM(SZ_INT);
+// check idx
+  write_one_frame(*(uint32_t*)MEM(SZ_INT*2), &ws->buf[idx * N], !(idx % 2));
 }
 
 static MFUN(ws2812b_setall) {
   gwws *ws = GWWS(o);
-  for(m_int i = ws->nled + 1; --i;)
-    write_one_frame(*(uint32_t*)MEM(SZ_INT), &ws->buf[(i-1) * 48]);
+//  for(m_int i = ws->nled + 1; --i;)
+//    write_one_frame(*(uint32_t*)MEM(SZ_INT), &ws->buf[(i-1) * 36], !(i % 2));
+  for(m_int i = 0; i < ws->nled; i++)
+    write_one_frame(*(uint32_t*)MEM(SZ_INT), &ws->buf[i * N], !(i % 2));
 }
 
 GWION_IMPORT(WS2812b) {

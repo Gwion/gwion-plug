@@ -97,7 +97,7 @@ struct WsMsg {
 typedef struct Ws_ {
   struct Vector_ v;
   struct Vector_ recv;
-  MUTEX_TYPE mutex;
+  gwtlock_t mutex;
   MemPool mp;
   THREAD_TYPE thread;
   M_Object self;
@@ -114,9 +114,9 @@ static MFUN(ws_send_string) {
   msg->size = len;
   msg->capa = sz;
   memcpy(msg->data, s, len);
-  MUTEX_LOCK(ws->mutex);
+  gwt_lock(&ws->mutex);
   vector_add(&ws->v, (m_uint)msg);
-  MUTEX_UNLOCK(ws->mutex);
+  gwt_unlock(&ws->mutex);
 }
 
 ANN static void wscb_read(struct lws *wsi, char *in, size_t len) {
@@ -125,23 +125,23 @@ ANN static void wscb_read(struct lws *wsi, char *in, size_t len) {
   m_str str = mp_malloc2(ws->mp, len + 1);
   strncat(str, (const char*)in, len);
   str[len] = '\0';
-  MUTEX_LOCK(ws->mutex);
+  gwt_lock(&ws->mutex);
   vector_add(&ws->recv, (m_uint)str);
-  MUTEX_UNLOCK(ws->mutex);
+  gwt_unlock(&ws->mutex);
   broadcast(o);
 }
 
 ANN static void wscb_write(struct lws *wsi) {
   M_Object o = lws_context_user(lws_get_context(wsi)); 
   Ws *const ws = &*(Ws*)(o->data + SZ_INT);
-  MUTEX_LOCK(ws->mutex);
+  gwt_lock(&ws->mutex);
   for(m_uint i = 0; i < vector_size(&ws->v); i++) {
     struct WsMsg *msg = (struct WsMsg*)vector_at(&ws->v, i);
     lws_write(wsi, msg->data, msg->size, LWS_WRITE_BINARY);
     mp_free2(ws->mp, msg->capa, msg);
   }
   vector_clear(&ws->v);
-  MUTEX_UNLOCK(ws->mutex);
+  gwt_unlock(&ws->mutex);
 }
 
 static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user NUSED, void *in, size_t len){
@@ -170,9 +170,9 @@ static void* ws_process(void* data) {
   Ws *const ws = &*(Ws*)(o->data + SZ_INT);
   struct lws_context_creation_info info =
     { .port=ws->port, .protocols=ws_protocols, .user=o };
-	struct lws_context *ctx = lws_create_context( &info );
+  struct lws_context *ctx = lws_create_context( &info );
   while(ws->run) lws_service(ctx, 0);
-	lws_context_destroy(ctx);
+  lws_context_destroy(ctx);
   return NULL;
 }
 
@@ -183,7 +183,7 @@ static MFUN(ws_new) {
   vector_init(&ws->recv);
   ws->self = o;
   ws->port = *(m_int*)MEM(SZ_INT);
-  MUTEX_SETUP(ws->mutex);
+  gwt_lock_ini(&ws->mutex);
   ws->mp = shred->info->mp;
   ws->run = true;
   THREAD_CREATE(ws->thread, ws_process, o);
@@ -204,7 +204,7 @@ static DTOR(ws_dtor) {
     free_mstr(ws->mp, str);
   }
   vector_release(&ws->recv);
-  MUTEX_CLEANUP(ws->mutex);
+  gwt_lock_end(&ws->mutex);
 	//lws_context_destroy(ws->ctx);
 }
 
@@ -224,6 +224,57 @@ static MFUN(ws_read) {
   } else xfun_handle(shred, "WebSocketNoMessage");
 }
 
+static SFUN(ws_new_client) {
+  m_str inputURL = STRING(*(M_Object*)MEM(0));
+  struct lws_client_connect_info clientConnectInfo;
+  const char *urlProtocol, *urlTempPath;
+  char urlPath[300]; // The final path string
+  if (lws_parse_uri(inputURL, &urlProtocol, &clientConnectInfo.address, &clientConnectInfo.port, &urlTempPath))
+	{
+		xfun_handle(shred, "WebSocketInvalidURL");
+    return;
+	}
+  urlPath[0] = '/';
+	strncpy(urlPath + 1, urlTempPath, sizeof(urlPath) - 2);
+	urlPath[sizeof(urlPath) - 1] = '\0';
+  clientConnectInfo.path = urlPath;
+struct lws_context_creation_info ctxCreationInfo; 
+  
+	// Set up the context creation info
+	//ctxCreationInfo.port = CONTEXT_PORT_NO_LISTEN; // We don't want this client to listen
+	ctxCreationInfo.protocols = protocols; // Use our protocol list
+	ctxCreationInfo.gid = -1; // Set the gid and uid to -1, isn't used much
+	ctxCreationInfo.uid = -1;
+	ctxCreationInfo.extensions = extensions; // Use our extensions list
+
+	// Create the context with the info
+	ctx = lws_create_context(&ctxCreationInfo);
+	if (ctx == NULL)
+	{
+		printf("Error creating context\n");
+		return 1;
+	}
+
+	// Set up the client creation info
+	clientConnectInfo.context = ctx; // Use our created context
+	clientConnectInfo.ssl_connection = 0; // Don't use SSL for this test
+	clientConnectInfo.host = clientConnectInfo.address; // Set the connections host to the address
+	clientConnectInfo.origin = clientConnectInfo.address; // Set the conntections origin to the address
+	clientConnectInfo.ietf_version_or_minus_one = -1; // IETF version is -1 (the latest one)
+	clientConnectInfo.protocol = protocols[PROTOCOL_TEST].name; // We use our test protocol
+	clientConnectInfo.pwsi = &wsiTest; // The created client should be fed inside the wsi_test variable
+
+	printf("Connecting to %s://%s:%d%s \n\n", urlProtocol, clientConnectInfo.address, clientConnectInfo.port, urlPath);
+
+	// Connect with the client info
+	lws_client_connect_via_info(&clientConnectInfo);
+	if (wsiTest == NULL)
+	{
+		printf("Error creating the client\n");
+		return 1;
+	}
+}
+
 GWION_IMPORT(WebSocket) {
 
   lws_set_log_level(LLL_ERR, NULL);
@@ -234,10 +285,15 @@ GWION_IMPORT(WebSocket) {
   gwi_class_xtor(gwi, NULL, ws_dtor);
   t_ws->nspc->offset += sizeof(Ws);
 
-  gwidoc(gwi, "Websocket construtor");
+  gwidoc(gwi, "Websocket constructor");
   GWI_BB(gwi_func_ini(gwi, "auto", "new"));
   GWI_BB(gwi_func_arg(gwi, "int", "port"));
   GWI_BB(gwi_func_end(gwi, ws_new, ae_flag_none));
+
+  gwidoc(gwi, "client constructor");
+  GWI_BB(gwi_func_ini(gwi, "WebSocket", "client"));
+  GWI_BB(gwi_func_arg(gwi, "string", "uri"));
+  GWI_BB(gwi_func_end(gwi, ws_new_client, ae_flag_static));
 
   gwidoc(gwi, "send function");
   GWI_BB(gwi_func_ini(gwi, "void", "send"));

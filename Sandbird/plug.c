@@ -1,4 +1,3 @@
-#include <threads.h>
 #include "gwion_util.h"
 #include "gwion_ast.h"
 #include "gwion_env.h"
@@ -28,7 +27,7 @@ printf("stream %p %p\n", ev->stream, EV(o));
   return 0;
 }
 
-static int process(void *data) {
+static void process(void *data) {
   const M_Object o = data;
   for (;;) {
     sb_poll_server(SRV(o), 1000);
@@ -43,8 +42,7 @@ static CTOR(sandbird_ctor) {
   };
   SRV(o) = sb_new_server(&opt);
   EV(o) = new_mp_vector(shred->info->mp, sb_Event, 1);
-  thrd_t thrd;
-  thrd_create(&thrd, process, o);
+  threadpool_add(shred, process, o); // long running
 }
 
 static DTOR(sandbird_dtor) {

@@ -233,7 +233,7 @@ static OP_CHECK(opck_func2cyt) {
       if(isa(arg->type, env->gwion->type[et_int]) < 0 &&
          isa(arg->type, env->gwion->type[et_string]) < 0 &&
          arg->type == fields && isa(arg->type, fields) < 0 )
-        ERR_N(arg->var_decl.pos, "invalid type in field assignment");
+        ERR_N(arg->var_decl.tag.pos, "invalid type in field assignment");
     }
   }
   return bin->lhs->type;

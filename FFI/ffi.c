@@ -101,7 +101,7 @@ static MFUN(ffivar_do_call) {
 */
 ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str name, const loc_t pos) {
   Type_Decl *td = new_type_decl(gwion->mp, insert_symbol(gwion->st, type), pos);
-  struct Var_Decl_ decl = { .xid = insert_symbol(gwion->st, name), .pos = pos };
+  struct Var_Decl_ decl = { .tag = MK_TAG(insert_symbol(gwion->st, name), pos) };
   SET_FLAG(td, static);
   return new_exp_decl(gwion->mp, td, &decl, pos);
 }
@@ -212,7 +212,7 @@ static OP_CHECK(opck_ffi_ctor) {
       sprintf(name, "FFIBASE.%s", actual->name);
       const loc_t pos = exp->pos;
       Type_Decl *td = str2td(env->gwion, name, pos);
-      struct Var_Decl_ var = { .pos = pos };
+      struct Var_Decl_ var = { .tag = {.loc = pos }};
       Arg arg = { .td = td, .var_decl = var };
       mp_vector_add(env->gwion->mp, &args, Arg, arg);
     } while((exp = exp->next));
@@ -253,7 +253,7 @@ static OP_CHECK(opck_ffi_ctor) {
   CHECK_BN(add_op(env->gwion, &opi));
   if(variadic) {
     const struct Op_Func opfunc = { .ck=ffi_var_cast };
-    CHECK_BN(add_op_func_check(env, t, &opfunc, 0);
+    CHECK_BN(add_op_func_check(env, t, &opfunc, 0));
   }
   uint n = 0;
   Exp e = call->args->next;

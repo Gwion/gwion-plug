@@ -7,7 +7,6 @@ extern "C" {
 #include "gack.h"
 #include "looper.h"
 #include "emit.h"
-#include <threads.h>
 }
 
 using namespace simdjson;

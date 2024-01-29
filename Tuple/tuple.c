@@ -266,7 +266,7 @@ ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, con
       type2td(gwion, type, pos) :
       new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
   td->flag -= ae_flag_late;
-  struct Var_Decl_ vd = { .xid = name, .pos = pos };
+  struct Var_Decl_ vd = { .tag = MK_TAG(name, pos) };
   return new_exp_decl(gwion->mp, td, &vd, pos);
 }
 
@@ -380,7 +380,7 @@ static OP_CHECK(unpack_ck) {
       e->d.exp_decl.type = env->gwion->type[et_auto];
       e->exp_type = ae_exp_decl;
       e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, e->pos);
-      e->d.exp_decl.vd = (Var_Decl){ .xid = var, .pos = e->pos};
+      e->d.exp_decl.vd = (Var_Decl){ .tag = MK_TAG(var, e->pos)};
     } else {
       e->d.prim.prim_type = ae_prim_nil;
 //      e->type = env->gwion->type[et_auto];
