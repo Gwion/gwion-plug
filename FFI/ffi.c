@@ -108,12 +108,12 @@ ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str nam
 
 ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slist, const m_str type, const m_str name, const loc_t loc, const uint i) {
   const Exp exp = decl_from_id(gwion, type, name, loc);
-  struct Stmt_ stmt = {
+  Stmt stmt = {
     .d = { .stmt_exp = { .val = exp } },
     .loc = loc,
     .stmt_type = ae_stmt_exp
   };
-  mp_vector_set(slist, struct Stmt_, i, stmt);
+  mp_vector_set(slist, Stmt, i, stmt);
 }
 
 static OP_CHECK(ctor_as_call) {
@@ -228,7 +228,7 @@ static OP_CHECK(opck_ffi_ctor) {
   Ast body = new_mp_vector(env->gwion->mp, Section, 2);
   mp_vector_set(body, Section, 0, section);
 {
-  Stmt_List slist = new_mp_vector(env->gwion->mp, struct Stmt_, 3);
+  Stmt_List slist = new_mp_vector(env->gwion->mp, Stmt, 3);
   stmt_list_from_id(env->gwion, slist, "cif", "ffi_cif", exp_self(call)->loc, 0);
   stmt_list_from_id(env->gwion, slist, "int", "func", exp_self(call)->loc, 1);
   stmt_list_from_id(env->gwion, slist, "int", "sz", exp_self(call)->loc, 2);

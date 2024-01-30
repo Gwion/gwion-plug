@@ -282,16 +282,16 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
     const Symbol sym = insert_symbol(env->gwion->st, name);
     const Type t = (Type)vector_at(v, i);
     Exp decl = decl_from_id(env->gwion, t, sym, loc);
-    struct Stmt_ stmt = {
+    Stmt stmt = {
       .stmt_type = ae_stmt_exp,
       .d = { .stmt_exp = { .val = decl } },
       .loc = loc
     };
     if(base) {
-      mp_vector_add(env->gwion->mp, &base, struct Stmt_, stmt);
+      mp_vector_add(env->gwion->mp, &base, Stmt, stmt);
     } else {
-      base = new_mp_vector(env->gwion->mp, struct Stmt_, 1);
-      mp_vector_set(base, struct Stmt_, 0, stmt);
+      base = new_mp_vector(env->gwion->mp, Stmt, 1);
+      mp_vector_set(base, Stmt, 0, stmt);
     }
   }
   Section section = {
