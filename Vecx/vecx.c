@@ -388,16 +388,16 @@ OP_CHECK(opck_vecx_ctor) {
 printf("t %p\n", call->func->type);
 //exit(3);
   if(i > t->size) {
-    env_err(env, last->pos, "extraneous component of %s value", t->name);
+    env_err(env, last->loc, "extraneous component of %s value", t->name);
     return NULL;
   }
   if(!call->args) {
-    call->args = last = new_prim_float(env->gwion->mp, 0.0, call->func->pos);
+    call->args = last = new_prim_float(env->gwion->mp, 0.0, call->func->loc);
     last->type = t_float;
     i += SZ_FLOAT;
   }
   while(i < t->size) {
-    last = (last->next = new_prim_float(env->gwion->mp, 0.0, last->pos));
+    last = (last->next = new_prim_float(env->gwion->mp, 0.0, last->loc));
     last->type = t_float;
     i += SZ_FLOAT;
   }

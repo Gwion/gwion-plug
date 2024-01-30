@@ -248,7 +248,7 @@ static INSTR(getoff) {
 
 static OP_CHECK(opck_json_array_each_val) {
   const Exp exp = (Exp)data;
-  const Type t = str2type(env->gwion, (m_str)"SimdJSON.element", exp->pos);
+  const Type t = str2type(env->gwion, (m_str)"SimdJSON.element", exp->loc);
   return t;
 }
 
@@ -286,7 +286,7 @@ static OP_EMIT(opem_json_array_each) {
    // pp
   const Instr instr = emit_add_instr(emit, json_array_loop);
   //puts(loop->exp->type->name);exit(12);
-  const Type t = str2type(emit->gwion, (m_str)"SimdJSON.element", loop->exp->pos);
+  const Type t = str2type(emit->gwion, (m_str)"SimdJSON.element", loop->exp->loc);
   instr->m_val = (m_uint)t;
   instr->m_val2 = loop->offset + SZ_INT;
   loop->instr = emit_add_instr(emit, BranchNeqInt);

@@ -88,7 +88,7 @@ ANN static bool tomsg_array(ToMsg *const msg, const Type t) {
   const M_Vector array = ARRAY(msg->obj);
   const Type base = t->array_depth == 1
     ? t->info->base_type
-    : array_type(msg->gwion->env, array_base(t), t->array_depth - 1);
+    : array_type(msg->gwion->env, array_base(t), t->array_depth - 1, t->info->cdef->base.tag.loc);
   msgpack_pack_array(msg->ctx, m_vector_size(array));
   m_bit *const ptr = array->ptr + ARRAY_OFFSET;
   for(m_uint i = 0; i < m_vector_size(array); i++)
@@ -175,13 +175,13 @@ static OP_CHECK(opck_pack_any) {
   Exp_Call *call = (Exp_Call *)data;
   const Exp name = call->args;
   if(!name || name->next)
-    ERR_N(call->func->pos, "MsgPack.pack takes only one argument");
+    ERR_N(call->func->loc, "MsgPack.pack takes only one argument");
   CHECK_ON(check_exp(env, name));
-  const Exp e = new_prim_int(env->gwion->mp, (m_uint)name->type, name->pos);
+  const Exp e = new_prim_int(env->gwion->mp, (m_uint)name->type, name->loc);
   e->type = env->gwion->type[et_int];
   e->next = name;
   call->args = e;
-  const loc_t loc = call->func->pos;
+  const loc_t loc = call->func->loc;
   free_exp(env->gwion->mp, call->func);
   const Exp base = new_prim_id(env->gwion->mp, insert_symbol(env->gwion->st, "MsgPack"), loc);
   call->func = new_exp_dot(env->gwion->mp, base, insert_symbol(env->gwion->st, "pack_internal"), loc);
@@ -448,15 +448,15 @@ static OP_CHECK(opck_unpack_any) {
   Exp_Call *call = (Exp_Call *)data;
   const Exp name = call->args;
   if(!name || name->next || check_exp(env, name) != env->gwion->type[et_string])
-    ERR_N(call->func->pos, "MsgPack.pack takes only one argument");
-  const Exp e = new_prim_int(env->gwion->mp, (m_uint)env->class_def, name->pos);
+    ERR_N(call->func->loc, "MsgPack.pack takes only one argument");
+  const Exp e = new_prim_int(env->gwion->mp, (m_uint)env->class_def, name->loc);
   e->type = env->gwion->type[et_int];
-  const Exp e2 = new_prim_int(env->gwion->mp, (m_uint)env->curr, name->pos);
+  const Exp e2 = new_prim_int(env->gwion->mp, (m_uint)env->curr, name->loc);
   e2->type = env->gwion->type[et_int];
   e->next = e2;
   e2->next = name;
   call->args = e;
-  const loc_t loc = call->func->pos;
+  const loc_t loc = call->func->loc;
   free_exp(env->gwion->mp, call->func);
   const Exp base = new_prim_id(env->gwion->mp, insert_symbol(env->gwion->st, "MsgPack"), loc);
   call->func = new_exp_dot(env->gwion->mp, base, insert_symbol(env->gwion->st, "unpack_internal"), loc);

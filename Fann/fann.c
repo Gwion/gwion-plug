@@ -162,7 +162,7 @@ static MFUN(layer) {
 
 static MFUN(layers) {
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   unsigned int j[size];
   fann_get_layer_array(FANN(o), j);
@@ -173,7 +173,7 @@ static MFUN(layers) {
 
 static MFUN(bias) {
   m_uint i, size = fann_get_num_layers(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   unsigned int j[size];
   fann_get_bias_array(FANN(o), j);
@@ -200,7 +200,7 @@ static M_Object from_fann(const VM_Shred shred, struct fann_connection c) {
 
 static MFUN(connection_array){
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   struct fann_connection c[size];
   fann_get_connection_array(FANN(o), c);
@@ -234,7 +234,7 @@ static MFUN(weigth) {
 
 static MFUN(get_weigths) {
   m_uint i, size = fann_get_total_connections(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   m_float f[size];
   fann_get_weights(FANN(o), f);
@@ -325,7 +325,7 @@ static MFUN(test) {
   for(i = 0; i < s_out; i++)
     m_vector_get(ARRAY(o_out), i, (char*)&out[i]);
   m_float* f = fann_test(FANN(o), in, out);
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, s_ret);
   for(i = 0; i < s_ret; i++)
     m_vector_set(ARRAY(o_out), i, (char*)&f[i]);
@@ -355,7 +355,7 @@ static MFUN(run) {
   m_float  ptr[size];
   for(i = 0; i < size; i++)
     m_vector_get(ARRAY(array), i, &ptr[i]);
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, fann_get_num_output(FANN(o)));
   m_float *f = fann_run(FANN(o), ptr);
   for(i = 0; i < fann_get_num_output(FANN(o)); i++)
@@ -527,7 +527,7 @@ static MFUN(train_input) {
   }
   m_float* f = fann_get_train_input(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
@@ -541,7 +541,7 @@ static MFUN(train_output) {
   }
   m_float* f = fann_get_train_output(DATA(o), *(m_uint*)MEM(SZ_INT));
   m_uint i, size = sizeof(f)/sizeof(m_float);
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   for(i = 0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&f[i]);
@@ -954,7 +954,7 @@ static MFUN(get_cascade_activation_functions_count) {
 static MFUN(get_cascade_activation_functions) {
   m_uint i, size = fann_get_cascade_activation_functions_count(FANN(o));
   enum fann_activationfunc_enum * tmp = fann_get_cascade_activation_functions(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);
@@ -979,7 +979,7 @@ static MFUN(get_cascade_activation_steepnesses_count) {
 static MFUN(get_cascade_activation_steepnesses) {
   m_uint i, size = fann_get_cascade_activation_steepnesses_count(FANN(o));
   m_float* tmp = fann_get_cascade_activation_steepnesses(FANN(o));
-  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1);
+  Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_float], 1, (loc_t){});
   M_Object ret = new_array(shred->info->mp, t, size);
   for(i=0; i < size; i++)
     m_vector_set(ARRAY(ret), i, (char*)&tmp[i]);

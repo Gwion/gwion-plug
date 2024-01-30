@@ -233,7 +233,7 @@ static OP_CHECK(opck_func2cyt) {
       if(isa(arg->type, env->gwion->type[et_int]) < 0 &&
          isa(arg->type, env->gwion->type[et_string]) < 0 &&
          arg->type == fields && isa(arg->type, fields) < 0 )
-        ERR_N(arg->var_decl.tag.pos, "invalid type in field assignment");
+        ERR_N(arg->var_decl.tag.loc, "invalid type in field assignment");
     }
   }
   return bin->lhs->type;
@@ -267,9 +267,9 @@ static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list)
       if(isa(type, env->gwion->type[et_int]) < 0 &&
         isa(type, env->gwion->type[et_string]) < 0 &&
         isa(type, fields) < 0)
-      ERR_B(stmt->d.stmt_exp.val->pos, "invalid type '%s' in Cytosol.field", type->name)
+      ERR_B(stmt->d.stmt_exp.val->loc, "invalid type '%s' in Cytosol.field", type->name)
    } else
-      ERR_B(stmt->pos, "invalid stmt in Cytosol.field")
+      ERR_B(stmt->loc, "invalid stmt in Cytosol.field")
   }
   return list->len;
 }
@@ -283,7 +283,7 @@ static OP_CHECK(opck_record_ctor) {
   while(arg) {
     const Type t = (Type)vector_at(v, i);
     if(isa(arg->type, t) < 0)
-       ERR_N(arg->pos, _("invalid type '%s' in '%s' constructor (expected '%s')"),
+       ERR_N(arg->loc, _("invalid type '%s' in '%s' constructor (expected '%s')"),
             arg->type->name, call->func->type->name, t->name);
     i++;
     arg = arg->next;

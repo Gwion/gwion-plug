@@ -176,7 +176,7 @@ static SFUN(machine_compile_replace_values) {
 
 static SFUN(machine_shreds) {
   VM* vm = shred->info->vm;
-  const Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1);
+  const Type t = array_type(shred->info->vm->gwion->env, shred->info->vm->gwion->type[et_int], 1, (loc_t){});
   const Vector v = &vm->shreduler->active_shreds;
   const M_Object obj = new_array(shred->info->mp, t, vector_size(v));
   for(m_uint i = 0; i < vector_size(v); i++) {

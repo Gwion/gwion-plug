@@ -96,7 +96,7 @@ ANN static void unpack_instr_decl(const Emitter emit, struct TupleEmit *te) {
   te->obj_offset = te->tmp_offset;
   do {
     if(te->e->exp_type == ae_exp_decl) {
-      const Value value = te->e->d.exp_decl.vd.value;
+      const Value value = te->e->d.exp_decl.var.vd.value;
       te->sz += value->type->size;
       sz += value->type->size;
       value->from->offset = emit_local(emit, value->type);
@@ -152,7 +152,7 @@ static inline void matcher_release(struct Matcher *m) {
   vector_release(&m->r);
 }
 
-static m_bool tuple_match(const Env env, const Type lhs, const Type rhs, const loc_t pos) {
+static m_bool tuple_match(const Env env, const Type lhs, const Type rhs, const loc_t loc) {
   struct Matcher m = { .undef= env->gwion->type[et_auto] };
   matcher_init(&m);
   get(&m.l, lhs);
@@ -161,13 +161,13 @@ static m_bool tuple_match(const Env env, const Type lhs, const Type rhs, const l
   matcher_release(&m);
   if(ret > 0)
     return GW_OK;
-  ERR_B(pos, _("Tuple types '%s' and '%s' do not match"), lhs->name, rhs->name)
+  ERR_B(loc, _("Tuple types '%s' and '%s' do not match"), lhs->name, rhs->name)
 }
 
 static OP_CHECK(opck_at_object_tuple) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   CHECK_NN(opck_rassign(env, data));
-  CHECK_BN(tuple_match(env, bin->lhs->type, bin->rhs->type, exp_self(bin)->pos));
+  CHECK_BN(tuple_match(env, bin->lhs->type, bin->rhs->type, exp_self(bin)->loc));
   exp_setvar(bin->rhs, 1);
   return bin->rhs->type;
 }
@@ -185,7 +185,7 @@ static OP_CHECK(opck_at_tuple_object) {
   CHECK_NN(opck_rassign(env, data));
   if(!bin->rhs->type->info->tuple)
     return bin->rhs->type;
-  CHECK_BN(tuple_match(env, bin->rhs->type, bin->lhs->type, exp_self(bin)->pos));
+  CHECK_BN(tuple_match(env, bin->rhs->type, bin->lhs->type, exp_self(bin)->loc));
   exp_setvar(bin->rhs, 1);
   set_decl_ref(bin->rhs);
   return bin->rhs->type;
@@ -193,7 +193,7 @@ static OP_CHECK(opck_at_tuple_object) {
 
 static OP_CHECK(opck_cast_tuple_object) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, exp_self(cast)->type, cast->exp->type, exp_self(cast)->pos));
+  CHECK_BN(tuple_match(env, exp_self(cast)->type, cast->exp->type, exp_self(cast)->loc));
   return exp_self(cast)->type;
 }
 
@@ -218,13 +218,13 @@ static OP_EMIT(opem_cast_tuple_object) {
 
 static OP_CHECK(opck_cast_tuple) {
   const Exp_Cast *cast = (Exp_Cast*)data;
-  CHECK_BN(tuple_match(env, cast->exp->type, exp_self(cast)->type, exp_self(cast)->pos));
+  CHECK_BN(tuple_match(env, cast->exp->type, exp_self(cast)->type, exp_self(cast)->loc));
   return exp_self(cast)->type;
 }
 
 static OP_CHECK(opck_impl_tuple) {
   struct Implicit *imp = (struct Implicit*)data;
-  CHECK_BN(tuple_match(env, imp->e->type, imp->t, imp->e->pos));
+  CHECK_BN(tuple_match(env, imp->e->type, imp->t, imp->e->loc));
   return imp->t;
 }
 
@@ -246,8 +246,8 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
   for(m_uint i = 0; i < vector_size(v); ++i) {
     const Type t = (Type)vector_at(v, i);
     if(t != (Type)1) {
-      struct loc_t_ pos = {};
-      const m_str str = type2str(env->gwion, t, pos);
+      loc_t loc = {};
+      const m_str str = type2str(env->gwion, t, loc);
       text_add(&text, str);
       free_mstr(env->gwion->mp, str);
     } else
@@ -261,16 +261,16 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
   return sym;
 }
 
-ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t pos) {
+ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t loc) {
   Type_Decl *td = type != (Type)1 ?
-      type2td(gwion, type, pos) :
-      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), pos);
+      type2td(gwion, type, loc) :
+      new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), loc);
   td->flag -= ae_flag_late;
-  struct Var_Decl_ vd = { .tag = MK_TAG(name, pos) };
-  return new_exp_decl(gwion->mp, td, &vd, pos);
+  struct Var_Decl_ vd = { .tag = MK_TAG(name, loc) };
+  return new_exp_decl(gwion->mp, td, &vd, loc);
 }
 
-ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
+ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
   const Symbol sym = tuple_sym(env, v);
   const Type exists = nspc_lookup_type1(env->curr, sym);
   if(exists)
@@ -281,11 +281,11 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
     sprintf(name, "@tuple member %"UINT_F, i);
     const Symbol sym = insert_symbol(env->gwion->st, name);
     const Type t = (Type)vector_at(v, i);
-    Exp decl = decl_from_id(env->gwion, t, sym, pos);
+    Exp decl = decl_from_id(env->gwion, t, sym, loc);
     struct Stmt_ stmt = {
       .stmt_type = ae_stmt_exp,
       .d = { .stmt_exp = { .val = decl } },
-      .pos = pos
+      .loc = loc
     };
     if(base) {
       mp_vector_add(env->gwion->mp, &base, struct Stmt_, stmt);
@@ -300,8 +300,8 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t pos) {
   };
   Ast body = new_mp_vector(env->gwion->mp, Section, 1);
   mp_vector_set(body, Section, 0, section);
-  Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), pos);
-  Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none, sym, td, body, pos);
+  Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), loc);
+  Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none, sym, td, body, loc);
   SET_FLAG(cdef, abstract | ae_flag_final);
   CHECK_BO(scan0_class_def(env, cdef));
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
@@ -319,15 +319,15 @@ static OP_CHECK(opck_tuple) {
   const Exp exp = array->exp;
   if(exp->exp_type != ae_exp_primary ||
      exp->d.prim.prim_type != ae_prim_num)
-    ERR_O(exp->pos, _("tuple subscripts must be litteral"))
+    ERR_O(exp->loc, _("tuple subscripts must be litteral"))
   const m_uint idx = exp->d.prim.d.gwint.num;
   const Vector v = array->type->info->tuple ?
     &array->type->info->tuple->types : NULL;
   if(!v || idx >= vector_size(v))
-    ERR_O(exp->pos, _("tuple subscripts too big"))
+    ERR_O(exp->loc, _("tuple subscripts too big"))
   const Type type = (Type)vector_at(v, idx);
   if(type == env->gwion->type[et_auto])
-    ERR_O(exp->pos, _("tuple subscripts is undefined at index %"UINT_F), idx)
+    ERR_O(exp->loc, _("tuple subscripts is undefined at index %"UINT_F), idx)
   if(!exp->next)
     return type;
   struct Array_Sub_ next = { exp->next, type, array->depth - 1 };
@@ -344,7 +344,7 @@ static OP_CHECK(opck_tuple_ctor) {
   Exp e = exp;
   do vector_add(&v, (m_uint)e->type);
   while((e = e->next));
-  const Type ret = tuple_type(env, &v, exp_self(call)->pos);
+  const Type ret = tuple_type(env, &v, exp_self(call)->loc);
   vector_release(&v);
   return ret;
 }
@@ -372,15 +372,15 @@ static OP_CHECK(unpack_ck) {
   Exp e = call->args;
   while(e) {
     if(e->exp_type != ae_exp_primary || e->d.prim.prim_type != ae_prim_id)
-      ERR_O(e->pos, _("invalid expression for unpack"))
+      ERR_O(e->loc, _("invalid expression for unpack"))
     if(e->d.prim.d.var != skip) {
       const Symbol var = e->d.prim.d.var;
       memset(&e->d, 0, sizeof(union exp_data));
       e->type = env->gwion->type[et_auto];
       e->d.exp_decl.type = env->gwion->type[et_auto];
       e->exp_type = ae_exp_decl;
-      e->d.exp_decl.td = new_type_decl(env->gwion->mp, decl, e->pos);
-      e->d.exp_decl.vd = (Var_Decl){ .tag = MK_TAG(var, e->pos)};
+      e->d.exp_decl.var.td = new_type_decl(env->gwion->mp, decl, e->loc);
+      e->d.exp_decl.var.vd = (Var_Decl){ .tag = MK_TAG(var, e->loc)};
     } else {
       e->d.prim.prim_type = ae_prim_nil;
 //      e->type = env->gwion->type[et_auto];
@@ -396,7 +396,7 @@ static OP_EMIT(unpack_em) {
   const Exp_Call *call = (Exp_Call*)data;
   if(exp_getmeta(exp_self(call)))
     return GW_OK;
-  env_err(emit->env, exp_self(call)->pos, _("unused Tuple unpack"));
+  env_err(emit->env, exp_self(call)->loc, _("unused Tuple unpack"));
   return GW_ERROR;
 }
 
@@ -419,10 +419,10 @@ static OP_CHECK(opck_at_unpack) {
       struct Vector_ v; // hoist?
       vector_init(&v);
       parents(env, t, &v);
-      Type_Decl *td = e->d.exp_decl.td;
-      td->xid = (Symbol)vector_front(&v);
+      Type_Decl *td = e->d.exp_decl.var.td;
+      td->tag.sym = (Symbol)vector_front(&v);
       for(m_uint i = 1; i < vector_size(&v); ++i)
-        td = (td->next = new_type_decl(env->gwion->mp, (Symbol)vector_at(&v, i), e->pos));
+        td = (td->next = new_type_decl(env->gwion->mp, (Symbol)vector_at(&v, i), e->loc));
       vector_release(&v);
       const Exp next = e->next;
       e->d.exp_decl.type = NULL;
@@ -465,7 +465,7 @@ static ANN Type scan_tuple(const Env env, const Type_Decl *td) {
   TmplArg_List tl = td->types;
   for(uint32_t i = 0; i < tl->len; i++) {
     Type_Decl *td = *mp_vector_at(tl, Type_Decl*, i);
-    const Type t = td->xid != insert_symbol(env->gwion->st, "_") ?
+    const Type t = td->tag.sym != insert_symbol(env->gwion->st, "_") ?
        known_type(env, td) : (Type)1;
     if(t)
       vector_add(&v, (m_uint)t);
@@ -474,7 +474,7 @@ static ANN Type scan_tuple(const Env env, const Type_Decl *td) {
       return env->gwion->type[et_error];
     }
   }
-  const Type ret = tuple_type(env, &v, td->pos);
+  const Type ret = tuple_type(env, &v, td->tag.loc);
   vector_release(&v);
   return ret;
 }

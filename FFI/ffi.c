@@ -99,18 +99,18 @@ static MFUN(ffivar_do_call) {
   FFI_CIF(t).nargs -= nvariadic;
 }
 */
-ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str name, const loc_t pos) {
-  Type_Decl *td = new_type_decl(gwion->mp, insert_symbol(gwion->st, type), pos);
-  struct Var_Decl_ decl = { .tag = MK_TAG(insert_symbol(gwion->st, name), pos) };
+ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str name, const loc_t loc) {
+  Type_Decl *td = new_type_decl(gwion->mp, insert_symbol(gwion->st, type), loc);
+  struct Var_Decl_ decl = { .tag = MK_TAG(insert_symbol(gwion->st, name), loc) };
   SET_FLAG(td, static);
-  return new_exp_decl(gwion->mp, td, &decl, pos);
+  return new_exp_decl(gwion->mp, td, &decl, loc);
 }
 
-ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slist, const m_str type, const m_str name, const loc_t pos, const uint i) {
-  const Exp exp = decl_from_id(gwion, type, name, pos);
+ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slist, const m_str type, const m_str name, const loc_t loc, const uint i) {
+  const Exp exp = decl_from_id(gwion, type, name, loc);
   struct Stmt_ stmt = {
     .d = { .stmt_exp = { .val = exp } },
-    .pos = pos,
+    .loc = loc,
     .stmt_type = ae_stmt_exp
   };
   mp_vector_set(slist, struct Stmt_, i, stmt);
@@ -157,12 +157,12 @@ static OP_CHECK(ffi_var_cast) {
   Exp exp = (Exp)data;
   Exp_Call *call = &exp->d.exp_call;
   CHECK_ON(check_exp(env, call->args));
-  struct loc_t_ loc = {};
+  loc_t loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE.CFFI", loc);
   Exp arg = call->args->next;
   while(arg) {
     if(isa(arg->type, ffi) < 0)
-      ERR_N(arg->pos, "FFI variadic arguments must be of FFI type");
+      ERR_N(arg->loc, "FFI variadic arguments must be of FFI type");
     arg = arg->next;
   }
   return NULL;
@@ -172,18 +172,18 @@ static OP_CHECK(opck_ffi_ctor) {
   const MemPool mp = env->gwion->mp;
   Exp_Call *call = (Exp_Call*)data;
   if(!call->tmpl)
-    ERR_N(exp_self(call)->pos, "'FFI' needs a return type as template");
+    ERR_N(exp_self(call)->loc, "'FFI' needs a return type as template");
   CHECK_ON(check_exp(env, call->func)); /* doesn't seem needed */
   if(!call->args)
-    ERR_N(exp_self(call)->pos, "'FFI' needs at least function name");
-  struct loc_t_ loc = {};
+    ERR_N(exp_self(call)->loc, "'FFI' needs at least function name");
+  loc_t loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE", loc);
   const Type ffivar = str2type(env->gwion, "FFIvar", loc);
   const m_bool variadic = isa(actual_type(env->gwion, call->func->type), ffivar) > 0;
   DECL_ON(const Type, ret_type, = check_ffi_types(env, ffi, call));
   Exp exp = call->args;
   if(exp->exp_type != ae_exp_primary || exp->d.prim.prim_type != ae_prim_id)
-    ERR_N(exp_self(call)->pos, "'FFI' first argument must be the name of a function");
+    ERR_N(exp_self(call)->loc, "'FFI' first argument must be the name of a function");
 
   const Symbol func_sym = exp->d.prim.d.var;
   const m_str func_name = s_name(func_sym);
@@ -197,7 +197,7 @@ static OP_CHECK(opck_ffi_ctor) {
   void* dlfunc = GetProcAddress(dl, func_name);
 #endif
   if(!dlfunc)
-    ERR_N(exp->pos, "can't open func '%s'", func_name);
+    ERR_N(exp->loc, "can't open func '%s'", func_name);
 
   exp = exp->next;
   Arg_List args = NULL;
@@ -207,20 +207,20 @@ static OP_CHECK(opck_ffi_ctor) {
     do {
       const Type actual = actual_type(env->gwion, exp->type);
       if(!is_class(env->gwion, exp->type) || isa(actual, cffi) < 0)
-        ERR_N(exp->pos, "Argument is not a FFI type");
+        ERR_N(exp->loc, "Argument is not a FFI type");
       char name[64];
       sprintf(name, "FFIBASE.%s", actual->name);
-      const loc_t pos = exp->pos;
-      Type_Decl *td = str2td(env->gwion, name, pos);
-      struct Var_Decl_ var = { .tag = {.loc = pos }};
-      Arg arg = { .td = td, .var_decl = var };
+      const loc_t loc = exp->loc;
+      Type_Decl *td = str2td(env->gwion, name, loc);
+      struct Var_Decl_ vd = { .tag = {.loc = loc }};
+      Arg arg = { .var = MK_VARIABLE(td, vd) };
       mp_vector_add(env->gwion->mp, &args, Arg, arg);
     } while((exp = exp->next));
   }
   char _ret_name[64];
   sprintf(_ret_name, "FFIBASE.%s", ret_type->name);
-  Type_Decl *td = str2td(env->gwion, _ret_name, call->func->pos);
-  Func_Base *fb = new_func_base(mp, td, insert_symbol(env->gwion->st, "call"), args, ae_flag_none, call->func->pos);
+  Type_Decl *td = str2td(env->gwion, _ret_name, call->func->loc);
+  Func_Base *fb = new_func_base(mp, td, insert_symbol(env->gwion->st, "call"), args, ae_flag_none, call->func->loc);
 //  if(variadic)
 //    set_fbflag(fb, fbflag_variadic);
   Func_Def fdef = new_func_def(mp, fb, NULL);
@@ -229,9 +229,9 @@ static OP_CHECK(opck_ffi_ctor) {
   mp_vector_set(body, Section, 0, section);
 {
   Stmt_List slist = new_mp_vector(env->gwion->mp, struct Stmt_, 3);
-  stmt_list_from_id(env->gwion, slist, "cif", "ffi_cif", exp_self(call)->pos, 0);
-  stmt_list_from_id(env->gwion, slist, "int", "func", exp_self(call)->pos, 1);
-  stmt_list_from_id(env->gwion, slist, "int", "sz", exp_self(call)->pos, 2);
+  stmt_list_from_id(env->gwion, slist, "cif", "ffi_cif", exp_self(call)->loc, 0);
+  stmt_list_from_id(env->gwion, slist, "int", "func", exp_self(call)->loc, 1);
+  stmt_list_from_id(env->gwion, slist, "int", "sz", exp_self(call)->loc, 2);
   Section section = {
     .d = { .stmt_list = slist },
     .section_type = ae_section_stmt
@@ -240,8 +240,8 @@ static OP_CHECK(opck_ffi_ctor) {
 }
   char ext_name[64];
   sprintf(ext_name, "FFI:[FFIBASE.%s]", ret_type->name);
-  Type_Decl *const ext = str2td(env->gwion, ext_name, call->func->pos);
-  const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, func_sym, ext, body, call->func->pos);
+  Type_Decl *const ext = str2td(env->gwion, ext_name, call->func->loc);
+  const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, func_sym, ext, body, call->func->loc);
   CHECK_BN(traverse_ffi(env, ffi, cdef));
   const Type t = cdef->base.type;
   const Func func = (Func)vector_front(&t->nspc->vtable);
@@ -249,7 +249,7 @@ static OP_CHECK(opck_ffi_ctor) {
   builtin_func(env->gwion, func, ffi_do_call);
   const struct Op_Func opfunc = { .ck=ctor_as_call };
   const struct Op_Import opi = { .rhs=t, .ret=ret_type,
-    .func=&opfunc, .data=(uintptr_t)func, .pos=call->func->pos, .op=insert_symbol(env->gwion->st, "call_type") };
+    .func=&opfunc, .data=(uintptr_t)func, .loc=call->func->loc, .op=insert_symbol(env->gwion->st, "call_type") };
   CHECK_BN(add_op(env->gwion, &opi));
   if(variadic) {
     const struct Op_Func opfunc = { .ck=ffi_var_cast };
@@ -282,7 +282,7 @@ static OP_CHECK(opck_ffi_ctor) {
   if(!variadic) {
     if(ffi_prep_cif(&FFI_CIF(t), FFI_DEFAULT_ABI,
         n, &ffi_type_sint, FFI_TYPES(t)) != FFI_OK)
-    ERR_N(exp_self(call)->pos, "can't prepare func '%s'", func_name);
+    ERR_N(exp_self(call)->loc, "can't prepare func '%s'", func_name);
   } else FFI_CIF(t).nargs = n;
   return t;
 }

@@ -78,7 +78,8 @@ ANN static void _tojson_array(ToJson *const json, const Type t) {
   *json->str << "[";
   const M_Vector array = ARRAY(json->obj);
   const Type base = t->array_depth == 1
-    ? t->info->base_type : array_type(json->gwion->env, array_base(t), t->array_depth - 1);
+    ? t->info->base_type : array_type(json->gwion->env, array_base(t), t->array_depth - 1,
+      t->info->cdef->base.tag.loc);
   bool init = false;
   const m_bit *ptr = array->ptr + ARRAY_OFFSET;
   for(m_uint i = 0; i < m_vector_size(array); i++) {
