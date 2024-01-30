@@ -1,9 +1,0 @@
-#import WebSocket
-<<< "hey" >>>;
-var WebSocket.Http server;
-
-while(server => now) {
-  "hey" => server.write;
-  server.completed();
-  <<< "hey!" >>>;
-}
