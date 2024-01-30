@@ -259,7 +259,7 @@ static OP_EMIT(opem_func2cyt) {
 
 static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list) {
   for(uint32_t i = 0; i < list->len; i++) {
-    Stmt stmt = mp_vector_at(list, struct Stmt_, i);
+    Stmt* stmt = mp_vector_at(list, struct Stmt_, i);
     if (stmt->stmt_type == ae_stmt_exp &&
         stmt->d.stmt_exp.val->exp_type == ae_exp_decl &&
         stmt->d.stmt_exp.val->d.exp_decl.list->len == 1) {
