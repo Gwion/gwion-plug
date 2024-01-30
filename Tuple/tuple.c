@@ -462,7 +462,7 @@ static OP_EMIT(opem_at_unpack) {
 static ANN Type scan_tuple(const Env env, const Type_Decl *td) {
   struct Vector_ v;
   vector_init(&v);
-  Type_List tl = td->types;
+  TmplArg_List tl = td->types;
   for(uint32_t i = 0; i < tl->len; i++) {
     Type_Decl *td = *mp_vector_at(tl, Type_Decl*, i);
     const Type t = td->xid != insert_symbol(env->gwion->st, "_") ?
