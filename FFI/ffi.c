@@ -99,7 +99,7 @@ static MFUN(ffivar_do_call) {
   FFI_CIF(t).nargs -= nvariadic;
 }
 */
-ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str name, const loc_t loc) {
+ANN static Exp* decl_from_id(const Gwion gwion, const m_str type, const m_str name, const loc_t loc) {
   Type_Decl *td = new_type_decl(gwion->mp, insert_symbol(gwion->st, type), loc);
   struct Var_Decl_ decl = { .tag = MK_TAG(insert_symbol(gwion->st, name), loc) };
   SET_FLAG(td, static);
@@ -107,14 +107,14 @@ ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str nam
 }
 
 ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slist, const m_str type, const m_str name, const loc_t loc, const uint i) {
-  const Exp exp = decl_from_id(gwion, type, name, loc);
+  Exp* exp = decl_from_id(gwion, type, name, loc);
   Stmt stmt = MK_STMT_EXP(loc, exp);
   mp_vector_set(slist, Stmt, i, stmt);
 }
 
 static OP_CHECK(ctor_as_call) {
   Exp_Call *const call = (Exp_Call*)data;
-  Exp func = cpy_exp(env->gwion->mp, call->func), e = call->func;
+  Exp* func = cpy_exp(env->gwion->mp, call->func), e = call->func;
   e->exp_type = ae_exp_dot;
   Exp_Dot *dot = &e->d.exp_dot;
   dot->base = func;
@@ -150,12 +150,12 @@ static inline Type check_ffi_types(const Env env, const Type ffi, const Exp_Call
 }
 
 static OP_CHECK(ffi_var_cast) {
-  Exp exp = (Exp)data;
+  Exp* exp = (Exp*)data;
   Exp_Call *call = &exp->d.exp_call;
   CHECK_ON(check_exp(env, call->args));
   loc_t loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE.CFFI", loc);
-  Exp arg = call->args->next;
+  Exp* arg = call->args->next;
   while(arg) {
     if(isa(arg->type, ffi) < 0)
       ERR_N(arg->loc, "FFI variadic arguments must be of FFI type");
@@ -177,7 +177,7 @@ static OP_CHECK(opck_ffi_ctor) {
   const Type ffivar = str2type(env->gwion, "FFIvar", loc);
   const m_bool variadic = isa(actual_type(env->gwion, call->func->type), ffivar) > 0;
   DECL_ON(const Type, ret_type, = check_ffi_types(env, ffi, call));
-  Exp exp = call->args;
+  Exp* exp = call->args;
   if(exp->exp_type != ae_exp_primary || exp->d.prim.prim_type != ae_prim_id)
     ERR_N(exp_self(call)->loc, "'FFI' first argument must be the name of a function");
 
@@ -249,7 +249,7 @@ static OP_CHECK(opck_ffi_ctor) {
     CHECK_BN(add_op_func_check(env, t, &opfunc, 0));
   }
   uint n = 0;
-  Exp e = call->args->next;
+  Exp* e = call->args->next;
   size_t arg_sz = 0;
   do {
     ++n;
@@ -259,7 +259,7 @@ static OP_CHECK(opck_ffi_ctor) {
 //  nspc_allocdata(mp, t->nspc);
 {
   ffi_type** types = FFI_TYPES(t);
-  Exp exp = call->args->next;
+  Exp* exp = call->args->next;
   uint i = 0;
   while(exp) {
     const m_str name = actual_type(env->gwion, exp->type)->name;

@@ -276,7 +276,7 @@ static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list)
 
 static OP_CHECK(opck_record_ctor) {
   Exp_Call *call = (Exp_Call*)data;
-  Exp arg = call->args;
+  Exp* arg = call->args;
   CHECK_NN(check_exp(env, arg));
   const Vector v = &actual_type(env->gwion, call->func->type)->info->tuple->contains;
   m_uint i = 0;

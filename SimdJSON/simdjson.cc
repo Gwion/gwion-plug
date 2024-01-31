@@ -247,7 +247,7 @@ static INSTR(getoff) {
 }
 
 static OP_CHECK(opck_json_array_each_val) {
-  const Exp exp = (Exp)data;
+  Exp* exp = (Exp*)data;
   const Type t = str2type(env->gwion, (m_str)"SimdJSON.element", exp->loc);
   return t;
 }

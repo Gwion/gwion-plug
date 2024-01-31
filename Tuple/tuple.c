@@ -21,7 +21,7 @@
 #undef insert_symbol
 
 struct TupleEmit {
-  Exp e;
+  Exp* e;
   Vector v;
   m_uint obj_offset;
   m_uint tmp_offset;
@@ -261,7 +261,7 @@ ANN static Symbol tuple_sym(const Env env, const Vector v) {
   return sym;
 }
 
-ANN static Exp decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t loc) {
+ANN static Exp* decl_from_id(const Gwion gwion, const Type type, Symbol name, const loc_t loc) {
   Type_Decl *td = type != (Type)1 ?
       type2td(gwion, type, loc) :
       new_type_decl(gwion->mp, insert_symbol(gwion->st, "@Undefined"), loc);
@@ -281,7 +281,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
     sprintf(name, "@tuple member %"UINT_F, i);
     const Symbol sym = insert_symbol(env->gwion->st, name);
     const Type t = (Type)vector_at(v, i);
-    Exp decl = decl_from_id(env->gwion, t, sym, loc);
+    Exp* decl = decl_from_id(env->gwion, t, sym, loc);
     Stmt stmt = MK_STMT_EXP(loc, decl);
     if(base) {
       mp_vector_add(env->gwion->mp, &base, Stmt, stmt);
@@ -309,7 +309,7 @@ ANN Type check_array_access(const Env env, const Array_Sub array);
 
 static OP_CHECK(opck_tuple) {
   const Array_Sub array = (Array_Sub)data;
-  const Exp exp = array->exp;
+  Exp* exp = array->exp;
   if(exp->exp_type != ae_exp_primary ||
      exp->d.prim.prim_type != ae_prim_num)
     ERR_O(exp->loc, _("tuple subscripts must be litteral"))
@@ -329,12 +329,12 @@ static OP_CHECK(opck_tuple) {
 
 static OP_CHECK(opck_tuple_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
-  const Exp exp = call->args;
+  Exp* exp = call->args;
   if(exp)
     CHECK_OO(check_exp(env, exp));
   struct Vector_ v;
   vector_init(&v);
-  Exp e = exp;
+  Exp* e = exp;
   do vector_add(&v, (m_uint)e->type);
   while((e = e->next));
   const Type ret = tuple_type(env, &v, exp_self(call)->loc);
@@ -344,7 +344,7 @@ static OP_CHECK(opck_tuple_ctor) {
 
 static OP_EMIT(opem_tuple_ctor) {
   const Exp_Call *call = (Exp_Call*)data;
-  Exp exp = call->args;
+  Exp* exp = call->args;
   m_int sz = -exp_self(call)->type->nspc->offset;
   while(exp) {
 //    const Type t = exp->cast_to ?: exp->type;
@@ -362,7 +362,7 @@ static OP_CHECK(unpack_ck) {
   const Exp_Call *call = (Exp_Call*)data;
   const Symbol decl = insert_symbol(env->gwion->st, "auto");
   const Symbol skip = insert_symbol(env->gwion->st, "_");
-  Exp e = call->args;
+  Exp* e = call->args;
   while(e) {
     if(e->exp_type != ae_exp_primary || e->d.prim.prim_type != ae_prim_id)
       ERR_O(e->loc, _("invalid expression for unpack"))
@@ -404,7 +404,7 @@ static void parents(const Env env, const Type t, const Vector v) {
 
 static OP_CHECK(opck_at_unpack) {
   const Exp_Binary *bin = (Exp_Binary*)data;
-  Exp e = bin->rhs->d.exp_call.args;
+  Exp* e = bin->rhs->d.exp_call.args;
   int i = 0;
   while(e) {
     if(e->exp_type == ae_exp_decl) {
@@ -417,7 +417,7 @@ static OP_CHECK(opck_at_unpack) {
       for(m_uint i = 1; i < vector_size(&v); ++i)
         td = (td->next = new_type_decl(env->gwion->mp, (Symbol)vector_at(&v, i), e->loc));
       vector_release(&v);
-      const Exp next = e->next;
+      Exp* next = e->next;
       e->d.exp_decl.type = NULL;
       e->next = NULL;
       e->type = NULL;
@@ -436,7 +436,7 @@ static OP_EMIT(opem_at_unpack) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   if(bin->rhs->d.exp_call.args) {
     const Type t_undef = emit->gwion->type[et_auto];
-    Exp e = bin->rhs->d.exp_call.args;
+    Exp* e = bin->rhs->d.exp_call.args;
     m_uint sz = 0;
     do if(e->type != t_undef)
       sz += e->type->size;

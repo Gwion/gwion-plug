@@ -136,7 +136,7 @@ OP_CHECK(opck_vecx_ctor);
 /*
 #define opem(type, first_name) static OP_EMIT(opem_##type##_dot) {               \
   const Exp_Dot *dot = (Exp_Dot*)data;                                           \
-  const Exp base = dot->base;                                                    \
+  Exp* base = dot->base;                                                    \
   exp_setvar(base, 1);                                                            \
   if(emit_exp(emit, base) < 0) return (Instr)GW_OK;                              \
   const m_bool is_first = !strcmp(#first_name, s_name(dot->xid));                \
@@ -372,7 +372,7 @@ EQUALITY_OPER(vec3, SZ_VEC3);
 
 OP_CHECK(opck_vecx_ctor) {
   Exp_Call *call = (Exp_Call*)data;
-  Exp e = call->args, last = NULL;
+  Exp* e = call->args, last = NULL;
   if(call->args)
     CHECK_ON(check_exp(env, call->args));
   size_t i = 0;
