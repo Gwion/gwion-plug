@@ -108,11 +108,7 @@ ANN static Exp decl_from_id(const Gwion gwion, const m_str type, const m_str nam
 
 ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slist, const m_str type, const m_str name, const loc_t loc, const uint i) {
   const Exp exp = decl_from_id(gwion, type, name, loc);
-  Stmt stmt = {
-    .d = { .stmt_exp = { .val = exp } },
-    .loc = loc,
-    .stmt_type = ae_stmt_exp
-  };
+  Stmt stmt = MK_STMT_EXP(loc, exp);
   mp_vector_set(slist, Stmt, i, stmt);
 }
 
@@ -224,7 +220,7 @@ static OP_CHECK(opck_ffi_ctor) {
 //  if(variadic)
 //    set_fbflag(fb, fbflag_variadic);
   Func_Def fdef = new_func_def(mp, fb, NULL);
-  Section section = { .d = { .func_def = fdef }, .section_type = ae_section_func };
+  Section section = MK_SECTION(func, func_def = fdef);
   Ast body = new_mp_vector(env->gwion->mp, Section, 2);
   mp_vector_set(body, Section, 0, section);
 {
@@ -232,10 +228,7 @@ static OP_CHECK(opck_ffi_ctor) {
   stmt_list_from_id(env->gwion, slist, "cif", "ffi_cif", exp_self(call)->loc, 0);
   stmt_list_from_id(env->gwion, slist, "int", "func", exp_self(call)->loc, 1);
   stmt_list_from_id(env->gwion, slist, "int", "sz", exp_self(call)->loc, 2);
-  Section section = {
-    .d = { .stmt_list = slist },
-    .section_type = ae_section_stmt
-  };
+  Section section = MK_SECTION(stmt, stmt_list, slist);
   mp_vector_set(body, Section, 1, section);
 }
   char ext_name[64];

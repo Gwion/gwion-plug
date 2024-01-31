@@ -282,11 +282,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
     const Symbol sym = insert_symbol(env->gwion->st, name);
     const Type t = (Type)vector_at(v, i);
     Exp decl = decl_from_id(env->gwion, t, sym, loc);
-    Stmt stmt = {
-      .stmt_type = ae_stmt_exp,
-      .d = { .stmt_exp = { .val = decl } },
-      .loc = loc
-    };
+    Stmt stmt = MK_STMT_EXP(loc, decl);
     if(base) {
       mp_vector_add(env->gwion->mp, &base, Stmt, stmt);
     } else {
@@ -294,10 +290,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
       mp_vector_set(base, Stmt, 0, stmt);
     }
   }
-  Section section = {
-    .section_type = ae_section_stmt,
-    .d = { .stmt_list = base }
-  };
+  Section section = MK_SECTION(stmt, stmt_list, base);
   Ast body = new_mp_vector(env->gwion->mp, Section, 1);
   mp_vector_set(body, Section, 0, section);
   Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), loc);
