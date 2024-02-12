@@ -195,9 +195,9 @@ static SFUN(machine_pass) {
     m_vector_get(array, i, &str);
     vector_add(&v, (vtype)str);
   }
-  const m_bool ret = pass_set(shred->info->vm->gwion, &v);
+  const bool ret = pass_set(shred->info->vm->gwion, &v);
   vector_release(&v);
-  if(ret == GW_ERROR) xfun_handle(shred, "InvalidPassSet");
+  if(!ret) xfun_handle(shred, "InvalidPassSet");
 }
 
 GWION_IMPORT(Machine) {

@@ -487,9 +487,9 @@ GWION_IMPORT(MsgPack) {
   GWI_BB(gwi_class_end(gwi));
 
   const struct Op_Func   opfunc0 = {.ck = opck_pack_any};
-  CHECK_BB(add_op_func_check(gwi->gwion->env, t_msgpack, &opfunc0, 0));
+  CHECK_B(add_op_func_check(gwi->gwion->env, t_msgpack, &opfunc0, 0));
   const struct Op_Func   opfunc1 = {.ck = opck_unpack_any};
-  CHECK_BB(add_op_func_check(gwi->gwion->env, t_msgpack, &opfunc1, 1));
+  CHECK_B(add_op_func_check(gwi->gwion->env, t_msgpack, &opfunc1, 1));
 
   return GW_OK;
 }

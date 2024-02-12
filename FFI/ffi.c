@@ -124,14 +124,14 @@ static OP_CHECK(ctor_as_call) {
   return check_exp_call1(env, call) ?: env->gwion->type[et_error];
 }
 
-static inline m_bool _traverse_ffi(const Env env, const Class_Def cdef) {
-  CHECK_BB(scan0_class_def(env, cdef));;
+static inline bool _traverse_ffi(const Env env, const Class_Def cdef) {
+  CHECK_B(scan0_class_def(env, cdef));;
   return traverse_class_def(env, cdef);
 }
 
-static inline m_bool traverse_ffi(const Env env, const Type ffi, const Class_Def cdef) {
+static inline bool traverse_ffi(const Env env, const Type ffi, const Class_Def cdef) {
   const m_uint scope = env_push_type(env, ffi);
-  const m_bool ret = _traverse_ffi(env, cdef);
+  const bool ret = _traverse_ffi(env, cdef);
   env_pop(env, scope);
   return ret;
 }
@@ -235,7 +235,7 @@ static OP_CHECK(opck_ffi_ctor) {
   sprintf(ext_name, "FFI:[FFIBASE.%s]", ret_type->name);
   Type_Decl *const ext = str2td(env->gwion, ext_name, call->func->loc);
   const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, func_sym, ext, body, call->func->loc);
-  CHECK_BN(traverse_ffi(env, ffi, cdef));
+  CHECK_0N(traverse_ffi(env, ffi, cdef));
   const Type t = cdef->base.type;
   const Func func = (Func)vector_front(&t->nspc->vtable);
   //builtin_func(env->gwion, func, !variadic ? ffi_do_call : ffivar_do_call);
@@ -243,10 +243,10 @@ static OP_CHECK(opck_ffi_ctor) {
   const struct Op_Func opfunc = { .ck=ctor_as_call };
   const struct Op_Import opi = { .rhs=t, .ret=ret_type,
     .func=&opfunc, .data=(uintptr_t)func, .loc=call->func->loc, .op=insert_symbol(env->gwion->st, "call_type") };
-  CHECK_BN(add_op(env->gwion, &opi));
+  CHECK_ON(add_op(env->gwion, &opi));
   if(variadic) {
     const struct Op_Func opfunc = { .ck=ffi_var_cast };
-    CHECK_BN(add_op_func_check(env, t, &opfunc, 0));
+    CHECK_ON(add_op_func_check(env, t, &opfunc, 0));
   }
   uint n = 0;
   Exp* e = call->args->next;
@@ -401,7 +401,7 @@ GWION_IMPORT(FFI) {
   GWI_BB(gwi_class_end(gwi))
 /*
   const struct Op_Func   opfunc1 = {.ck = opck_ffi_new};
-  CHECK_BB(add_op_func_check(gwi->gwion, f_ffib, &opfunc, 0));
+  CHECK_B(add_op_func_check(gwi->gwion, f_ffib, &opfunc, 0));
 */
   GWI_BB(gwi_oper_ini(gwi, NULL, "FFI", NULL))
   GWI_BB(gwi_oper_add(gwi, opck_ffi_scan))

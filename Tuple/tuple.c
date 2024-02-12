@@ -296,11 +296,11 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
   Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), loc);
   Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none, sym, td, body, loc);
   SET_FLAG(cdef, abstract | ae_flag_final);
-  CHECK_BO(scan0_class_def(env, cdef));
+  CHECK_O(scan0_class_def(env, cdef));
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
 //  set_tflag(cdef->base.type, tflag_empty);
 //const m_uint scope = env_push(env, NULL, env->global_nspc);
-  CHECK_BO(traverse_class_def(env, cdef));
+  CHECK_O(traverse_class_def(env, cdef));
 //env_pop(env, scope);
   return cdef->base.type;
 }
@@ -421,9 +421,9 @@ static OP_CHECK(opck_at_unpack) {
       e->d.exp_decl.type = NULL;
       e->next = NULL;
       e->type = NULL;
-      const m_bool ret = traverse_exp(env, e);
+      const bool ret = traverse_exp(env, e);
       e->next = next;
-      CHECK_BO(ret);
+      CHECK_O(ret);
       exp_setmeta(bin->rhs, 1);
     }
     ++i;

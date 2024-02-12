@@ -501,7 +501,7 @@ GWION_IMPORT(Lo) {
   GWI_BB(import_oscout(gwi));
   GWI_BB(import_oscin(gwi));
   if(!get_module(gwi->gwion, "Lo"))
-    CHECK_BB(set_module(gwi->gwion, "Lo", GWMODINI_NAME(Lo)(gwi->gwion, NULL)));
+    CHECK_b(set_module(gwi->gwion, "Lo", GWMODINI_NAME(Lo)(gwi->gwion, NULL)));
   return GW_OK;
 }
 

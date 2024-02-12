@@ -378,7 +378,7 @@ OP_CHECK(opck_vecx_ctor) {
   size_t i = 0;
   const Type t_float = env->gwion->type[et_float];
   while(e) {
-    CHECK_BN(check_implicit(env, e, t_float));
+    CHECK_ON(check_implicit(env, e, t_float));
     i += SZ_FLOAT;
     last = e;
     e = e->next;
