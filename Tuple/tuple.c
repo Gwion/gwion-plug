@@ -494,7 +494,7 @@ static OP_EMIT(opem_tuple_access) {
   const Type type = (Type)vector_at(&info->array.type->info->tuple->types, idx);
   struct Array_Sub_ next = { info->array.exp->next, type, info->array.depth - 1 };
   info->array = next;
-  return emit_array_access(emit, info);
+  return emit_array_access(emit, info) ? GW_OK : GW_ERROR;
 }
 
 GWION_IMPORT(Tuple) {
