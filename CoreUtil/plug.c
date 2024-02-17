@@ -311,90 +311,90 @@ static SFUN(core_delimiter) {
 
 GWION_IMPORT(CoreUtil) {
   gwidoc(gwi, "Provide file system utilities");
-  DECL_OB(const Type, t_coreutil, = gwi_struct_ini(gwi, "CoreUtil"));
+  DECL_B(const Type, t_coreutil, = gwi_struct_ini(gwi, "CoreUtil"));
 
   gwidoc(gwi, "list files using globbing");
-  GWI_BB(gwi_func_ini(gwi, "string[]", "glob"));
-  GWI_BB(gwi_func_arg(gwi, "string", "arg"));
-  GWI_BB(gwi_func_end(gwi, core_glob, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string[]", "glob"));
+  GWI_B(gwi_func_arg(gwi, "string", "arg"));
+  GWI_B(gwi_func_end(gwi, core_glob, ae_flag_static));
 
   gwidoc(gwi, "rename a file");
-  GWI_BB(gwi_func_ini(gwi, "bool", "mv"));
-  GWI_BB(gwi_func_arg(gwi, "string", "old"));
-  GWI_BB(gwi_func_arg(gwi, "string", "new"));
-  GWI_BB(gwi_func_end(gwi, core_mv, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "bool", "mv"));
+  GWI_B(gwi_func_arg(gwi, "string", "old"));
+  GWI_B(gwi_func_arg(gwi, "string", "new"));
+  GWI_B(gwi_func_end(gwi, core_mv, ae_flag_static));
 
   gwidoc(gwi, "create a file");
-  GWI_BB(gwi_func_ini(gwi, "bool", "touch"));
-  GWI_BB(gwi_func_arg(gwi, "string", "file"));
-  GWI_BB(gwi_func_end(gwi, core_touch, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "bool", "touch"));
+  GWI_B(gwi_func_arg(gwi, "string", "file"));
+  GWI_B(gwi_func_end(gwi, core_touch, ae_flag_static));
 
   gwidoc(gwi, "remove a file");
-  GWI_BB(gwi_func_ini(gwi, "bool", "rm"));
-  GWI_BB(gwi_func_arg(gwi, "string", "file"));
-  GWI_BB(gwi_func_end(gwi, core_rm, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "bool", "rm"));
+  GWI_B(gwi_func_arg(gwi, "string", "file"));
+  GWI_B(gwi_func_end(gwi, core_rm, ae_flag_static));
 
   gwidoc(gwi, "remove a directory (must be empty)");
-  GWI_BB(gwi_func_ini(gwi, "bool", "rmdir"));
-  GWI_BB(gwi_func_arg(gwi, "string", "file"));
-  GWI_BB(gwi_func_end(gwi, core_rmdir, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "bool", "rmdir"));
+  GWI_B(gwi_func_arg(gwi, "string", "file"));
+  GWI_B(gwi_func_end(gwi, core_rmdir, ae_flag_static));
 
   gwidoc(gwi, "get an environment variable");
-  GWI_BB(gwi_func_ini(gwi, "string", "env"));
-  GWI_BB(gwi_func_arg(gwi, "string", "key"));
-  GWI_BB(gwi_func_end(gwi, core_envget, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "env"));
+  GWI_B(gwi_func_arg(gwi, "string", "key"));
+  GWI_B(gwi_func_end(gwi, core_envget, ae_flag_static));
 
   gwidoc(gwi, "set an environment variable");
-  GWI_BB(gwi_func_ini(gwi, "string", "env"));
-  GWI_BB(gwi_func_arg(gwi, "string", "key"));
-  GWI_BB(gwi_func_arg(gwi, "string", "val"));
-  GWI_BB(gwi_func_end(gwi, core_envset, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "env"));
+  GWI_B(gwi_func_arg(gwi, "string", "key"));
+  GWI_B(gwi_func_arg(gwi, "string", "val"));
+  GWI_B(gwi_func_end(gwi, core_envset, ae_flag_static));
 
   gwidoc(gwi, "returns the realpath from a file");
-  GWI_BB(gwi_func_ini(gwi, "string", "realpath"));
-  GWI_BB(gwi_func_arg(gwi, "string", "path"));
-  GWI_BB(gwi_func_end(gwi, core_realpath, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "realpath"));
+  GWI_B(gwi_func_arg(gwi, "string", "path"));
+  GWI_B(gwi_func_end(gwi, core_realpath, ae_flag_static));
 
   gwidoc(gwi, "create a directory");
-  GWI_BB(gwi_func_ini(gwi, "bool", "mkdir"));
-  GWI_BB(gwi_func_arg(gwi, "string", "dir"));
-  GWI_BB(gwi_func_end(gwi, core_mkdir, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "bool", "mkdir"));
+  GWI_B(gwi_func_arg(gwi, "string", "dir"));
+  GWI_B(gwi_func_end(gwi, core_mkdir, ae_flag_static));
 
   gwidoc(gwi, "remove a directory recursively");
-  GWI_BB(gwi_func_ini(gwi, "bool", "rmdirr"));
-  GWI_BB(gwi_func_arg(gwi, "string", "dir"));
-  GWI_BB(gwi_func_end(gwi, core_rmdirr, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "bool", "rmdirr"));
+  GWI_B(gwi_func_arg(gwi, "string", "dir"));
+  GWI_B(gwi_func_end(gwi, core_rmdirr, ae_flag_static));
 
   gwidoc(gwi, "copy a file");
-  GWI_BB(gwi_func_ini(gwi, "int", "cp"));
-  GWI_BB(gwi_func_arg(gwi, "string", "old"));
-  GWI_BB(gwi_func_arg(gwi, "string", "new"));
-  GWI_BB(gwi_func_end(gwi, core_cp, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "int", "cp"));
+  GWI_B(gwi_func_arg(gwi, "string", "old"));
+  GWI_B(gwi_func_arg(gwi, "string", "new"));
+  GWI_B(gwi_func_end(gwi, core_cp, ae_flag_static));
 
   gwidoc(gwi, "link a file");
-  GWI_BB(gwi_func_ini(gwi, "int", "link"));
-  GWI_BB(gwi_func_arg(gwi, "string", "old"));
-  GWI_BB(gwi_func_arg(gwi, "string", "new"));
-  GWI_BB(gwi_func_end(gwi, core_link, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "int", "link"));
+  GWI_B(gwi_func_arg(gwi, "string", "old"));
+  GWI_B(gwi_func_arg(gwi, "string", "new"));
+  GWI_B(gwi_func_end(gwi, core_link, ae_flag_static));
 
   gwidoc(gwi, "unlink a file");
-  GWI_BB(gwi_func_ini(gwi, "int", "unlink"));
-  GWI_BB(gwi_func_arg(gwi, "string", "file"))
-  GWI_BB(gwi_func_end(gwi, core_unlink, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "int", "unlink"));
+  GWI_B(gwi_func_arg(gwi, "string", "file"))
+  GWI_B(gwi_func_end(gwi, core_unlink, ae_flag_static));
 
   gwidoc(gwi, "get the directory path of a file");
-  GWI_BB(gwi_func_ini(gwi, "string", "dirname"));
-  GWI_BB(gwi_func_arg(gwi, "string", "file"));
-  GWI_BB(gwi_func_end(gwi, core_dirname, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "dirname"));
+  GWI_B(gwi_func_arg(gwi, "string", "file"));
+  GWI_B(gwi_func_end(gwi, core_dirname, ae_flag_static));
 
   gwidoc(gwi, "get the path separator depending on os");
-  GWI_BB(gwi_func_ini(gwi, "char", "separator"));
-  GWI_BB(gwi_func_end(gwi, core_separator, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "char", "separator"));
+  GWI_B(gwi_func_end(gwi, core_separator, ae_flag_static));
 
   gwidoc(gwi, "get the path delimiter depending on os");
-  GWI_BB(gwi_func_ini(gwi, "char", "delimiter"));
-  GWI_BB(gwi_func_end(gwi, core_delimiter, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "char", "delimiter"));
+  GWI_B(gwi_func_end(gwi, core_delimiter, ae_flag_static));
 
-  GWI_BB(gwi_struct_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_struct_end(gwi));
+  return true;
 }

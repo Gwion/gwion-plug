@@ -32,15 +32,15 @@ static SFUN(gw_readline1) {
 }
 
 GWION_IMPORT(Readline) {
-  DECL_OB(const Type, t_readline, = gwi_struct_ini(gwi, "Readline"));
+  DECL_B(const Type, t_readline, = gwi_struct_ini(gwi, "Readline"));
 
-  GWI_BB(gwi_func_ini(gwi, "string", "run"));
-  GWI_BB(gwi_func_end(gwi, gw_readline0, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "run"));
+  GWI_B(gwi_func_end(gwi, gw_readline0, ae_flag_static));
 
-  GWI_BB(gwi_func_ini(gwi, "string", "run"));
-  GWI_BB(gwi_func_arg(gwi, "string", "prompt"));
-  GWI_BB(gwi_func_end(gwi, gw_readline1, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "run"));
+  GWI_B(gwi_func_arg(gwi, "string", "prompt"));
+  GWI_B(gwi_func_end(gwi, gw_readline1, ae_flag_static));
 
-  GWI_BB(gwi_struct_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_struct_end(gwi));
+  return true;
 }

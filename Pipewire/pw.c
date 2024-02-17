@@ -633,29 +633,29 @@ static SFUN(gwpw_list) {
 }
 
 GWION_IMPORT(Pipewire) {
-  GWI_OB(gwi_struct_ini(gwi, "Pipewire"));
+  GWI_B(gwi_struct_ini(gwi, "Pipewire"));
 
-  GWI_BB(gwi_func_ini(gwi, "void", "link"));
-  GWI_BB(gwi_func_arg(gwi, "string", "port1"));
-  GWI_BB(gwi_func_arg(gwi, "string", "port2"));
-  GWI_BB(gwi_func_end(gwi, gwpw_link, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "void", "link"));
+  GWI_B(gwi_func_arg(gwi, "string", "port1"));
+  GWI_B(gwi_func_arg(gwi, "string", "port2"));
+  GWI_B(gwi_func_end(gwi, gwpw_link, ae_flag_static));
 
-  GWI_BB(gwi_func_ini(gwi, "void", "unlink"));
-  GWI_BB(gwi_func_arg(gwi, "string", "port1"));
-  GWI_BB(gwi_func_arg(gwi, "string", "port2"));
-  GWI_BB(gwi_func_end(gwi, gwpw_unlink, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "void", "unlink"));
+  GWI_B(gwi_func_arg(gwi, "string", "port1"));
+  GWI_B(gwi_func_arg(gwi, "string", "port2"));
+  GWI_B(gwi_func_end(gwi, gwpw_unlink, ae_flag_static));
 
-  GWI_BB(gwi_enum_ini(gwi, "Type"));
-  GWI_BB(gwi_enum_add(gwi, "OUTPUT", MODE_LIST_OUTPUT));
-  GWI_BB(gwi_enum_add(gwi, "INPUT", MODE_LIST_INPUT));
-  GWI_BB(gwi_enum_add(gwi, "PORTS", MODE_LIST_PORTS));
-  GWI_BB(gwi_enum_add(gwi, "LINK", MODE_LIST_LINKS));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "Type"));
+  GWI_B(gwi_enum_add(gwi, "OUTPUT", MODE_LIST_OUTPUT));
+  GWI_B(gwi_enum_add(gwi, "INPUT", MODE_LIST_INPUT));
+  GWI_B(gwi_enum_add(gwi, "PORTS", MODE_LIST_PORTS));
+  GWI_B(gwi_enum_add(gwi, "LINK", MODE_LIST_LINKS));
+  GWI_B(gwi_enum_end(gwi));
 
-  GWI_BB(gwi_func_ini(gwi, "string[]", "list"));
-  GWI_BB(gwi_func_arg(gwi, "Type", "type"));
-  GWI_BB(gwi_func_end(gwi, gwpw_list, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string[]", "list"));
+  GWI_B(gwi_func_arg(gwi, "Type", "type"));
+  GWI_B(gwi_func_end(gwi, gwpw_list, ae_flag_static));
 
-  GWI_OB(gwi_struct_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_struct_end(gwi));
+  return true;
 }

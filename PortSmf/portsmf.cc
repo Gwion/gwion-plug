@@ -24,7 +24,7 @@ static MFUN(midifile_add_track);
 static MFUN(midifile_add_note);
 static MFUN(midifile_write);
 GWION_IMPORT(PortSmf) {
-  GWI_OB(gwi_class_ini(gwi, "MidiFileEv", "Event"))
+  GWI_B(gwi_class_ini(gwi, "MidiFileEv", "Event"))
 	gwi_item_ini(gwi,"int", "type");
   gwi_item_end(gwi, ae_flag_const, num, 0);
 	gwi_item_ini(gwi,"float", "pitch");
@@ -37,42 +37,42 @@ GWION_IMPORT(PortSmf) {
   gwi_item_end(gwi,   ae_flag_const, num, 0);
 	gwi_item_ini(gwi,"float", "dur");
   gwi_item_end(gwi,   ae_flag_const, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "MidiFile", NULL))
+  GWI_B(gwi_class_ini(gwi, "MidiFile", NULL))
   gwi_class_xtor(gwi, ctor, dtor);
 	gwi_item_ini(gwi,"int", "@seq");
   gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "void", "open");
     gwi_func_arg(gwi, "string", "filename");
     gwi_func_arg(gwi, "int", "smf");
-  GWI_BB(gwi_func_end(gwi, midifile_open, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, midifile_open, ae_flag_none))
   gwi_func_ini(gwi, "int", "tracks");
-  GWI_BB(gwi_func_end(gwi, midifile_tracks, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, midifile_tracks, ae_flag_none))
 
   gwi_func_ini(gwi, "int", "len");
     gwi_func_arg(gwi, "int", "track");
-  GWI_BB(gwi_func_end(gwi, midifile_track_len, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, midifile_track_len, ae_flag_none))
 
   gwi_func_ini(gwi, "MidiFileEv", "event");
     gwi_func_arg(gwi, "int", "track");
     gwi_func_arg(gwi, "int", "event_number");
 //    gwi_func_arg(gwi, "MidiFileEv", "event");
-  GWI_BB(gwi_func_end(gwi, midifile_event, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, midifile_event, ae_flag_none))
 
   gwi_func_ini(gwi, "void", "add_track");
     gwi_func_arg(gwi, "int", "number");
-  GWI_BB(gwi_func_end(gwi, midifile_add_track, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, midifile_add_track, ae_flag_none))
 
   gwi_func_ini(gwi, "int", "add_note");
     gwi_func_arg(gwi, "int", "track");
     gwi_func_arg(gwi, "MidiFileEv", "note");
-  GWI_BB(gwi_func_end(gwi, midifile_add_note, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, midifile_add_note, ae_flag_none))
 
   gwi_func_ini(gwi, "void", "write");
     gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, midifile_write, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_end(gwi, midifile_write, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
   return 1;
 }
 }

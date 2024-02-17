@@ -139,7 +139,7 @@ OP_CHECK(opck_vecx_ctor);
   Exp* base = dot->base;                                                    \
   exp_setvar(base, 1);                                                            \
   if(!emit_exp(emit, base)) return (Instr)true;                              \
-  const m_bool is_first = !strcmp(#first_name, s_name(dot->xid));                \
+  const bool is_first = !strcmp(#first_name, s_name(dot->xid));                \
   if(is_first && exp_self(dot)->emit_var)                                        \
     return (Instr)true;                                                         \
   const Instr instr = emit_add_instr(emit, is_first ? ComplexReal : ComplexImag);\
@@ -158,69 +158,69 @@ static MFUN(vec2_set) {
        *(m_float*)MEM(SZ_INT + SZ_FLOAT) * I);
 }
 
-ANN static m_bool import_complex(const Gwi gwi) {
+static GWION_IMPORT(complex) {
   const Type t_complex = gwi_struct_ini(gwi, "complex");
 SET_FLAG(t_complex, abstract);
-  GWI_BB(gwi_gack(gwi, t_complex, gack_complex))
+  GWI_B(gwi_gack(gwi, t_complex, gack_complex))
   gwi_item_ini(gwi, "float", "re");
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
+  GWI_B(gwi_item_end(gwi,   ae_flag_none, num, 0))
   gwi_item_ini(gwi, "float", "im");
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
+  GWI_B(gwi_item_end(gwi,   ae_flag_none, num, 0))
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "float", "re");
   gwi_func_arg(gwi, "float", "im");
-  GWI_BB(gwi_func_end(gwi, vec2_set, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec2_set, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
   const Type t_polar   = gwi_struct_ini(gwi, "polar");
-  GWI_BB(gwi_gack(gwi, t_polar, gack_polar))
-  GWI_BB(gwi_item_ini(gwi, "float", "mod"))
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "float", "phase"))
-  GWI_BB(gwi_item_end(gwi,   ae_flag_none, num, 0))
+  GWI_B(gwi_gack(gwi, t_polar, gack_polar))
+  GWI_B(gwi_item_ini(gwi, "float", "mod"))
+  GWI_B(gwi_item_end(gwi,   ae_flag_none, num, 0))
+  GWI_B(gwi_item_ini(gwi, "float", "phase"))
+  GWI_B(gwi_item_end(gwi,   ae_flag_none, num, 0))
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "float", "mod");
   gwi_func_arg(gwi, "float", "phase");
-  GWI_BB(gwi_func_end(gwi, vec2_set, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_end(gwi, vec2_set, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "complex", "complex", "bool"))
-  GWI_BB(gwi_oper_end(gwi, "==",          complex_eq))
-  GWI_BB(gwi_oper_end(gwi, "!=",          complex_ne))
-  GWI_BB(gwi_oper_ini(gwi, "complex", "complex", "complex"))
-  GWI_BB(gwi_oper_end(gwi, "+",          ComplexAdd))
-  GWI_BB(gwi_oper_end(gwi, "-",         ComplexSub))
-  GWI_BB(gwi_oper_end(gwi, "*",         ComplexMul))
-  GWI_BB(gwi_oper_end(gwi, "/",        ComplexDiv))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, ":=>",         ComplexRAssign))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "+=>",    ComplexRAdd))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "-=>",   ComplexRSub))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "*=>",   ComplexRMul))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "/=>",  ComplexRDiv))
-  GWI_BB(gwi_oper_ini(gwi, "polar", "polar", "bool"))
-  GWI_BB(gwi_oper_end(gwi, "==",          complex_eq))
-  GWI_BB(gwi_oper_end(gwi, "!=",          complex_ne))
-  GWI_BB(gwi_oper_ini(gwi, "polar", "polar", "polar"))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, ":=>",         ComplexRAssign))
-  GWI_BB(gwi_oper_end(gwi, "+",          PolarAdd))
-  GWI_BB(gwi_oper_end(gwi, "-",         PolarSub))
-  GWI_BB(gwi_oper_end(gwi, "*",         PolarMul))
-  GWI_BB(gwi_oper_end(gwi, "/",        PolarDiv))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "+=>",    PolarRAdd))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "-=>",   PolarRSub))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "*=>",   PolarRMul))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "/=>",  PolarRDiv))
-  return GW_OK;
+   GWI_B(gwi_oper_ini(gwi, "complex", "complex", "bool"))
+   GWI_B(gwi_oper_end(gwi, "==",          complex_eq))
+   GWI_B(gwi_oper_end(gwi, "!=",          complex_ne))
+   GWI_B(gwi_oper_ini(gwi, "complex", "complex", "complex"))
+   GWI_B(gwi_oper_end(gwi, "+",          ComplexAdd))
+   GWI_B(gwi_oper_end(gwi, "-",         ComplexSub))
+   GWI_B(gwi_oper_end(gwi, "*",         ComplexMul))
+   GWI_B(gwi_oper_end(gwi, "/",        ComplexDiv))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, ":=>",         ComplexRAssign))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "+=>",    ComplexRAdd))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "-=>",   ComplexRSub))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "*=>",   ComplexRMul))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "/=>",  ComplexRDiv))
+   GWI_B(gwi_oper_ini(gwi, "polar", "polar", "bool"))
+   GWI_B(gwi_oper_end(gwi, "==",          complex_eq))
+   GWI_B(gwi_oper_end(gwi, "!=",          complex_ne))
+   GWI_B(gwi_oper_ini(gwi, "polar", "polar", "polar"))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, ":=>",         ComplexRAssign))
+   GWI_B(gwi_oper_end(gwi, "+",          PolarAdd))
+   GWI_B(gwi_oper_end(gwi, "-",         PolarSub))
+   GWI_B(gwi_oper_end(gwi, "*",         PolarMul))
+   GWI_B(gwi_oper_end(gwi, "/",        PolarDiv))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "+=>",    PolarRAdd))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "-=>",   PolarRSub))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "*=>",   PolarRMul))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "/=>",  PolarRDiv))
+  return true;
 }
 
 INSTR(VecMember) {
@@ -406,74 +406,74 @@ exp_self(call)->type = t;
 //  return t;
 }
 
-ANN static m_bool import_vec3(const Gwi gwi) {
+static GWION_IMPORT(vec3) {
   const Type t_vec3 = gwi_struct_ini(gwi, "Vec3");
-  GWI_BB(gwi_gack(gwi, t_vec3, gack_vec3))
+  GWI_B(gwi_gack(gwi, t_vec3, gack_vec3))
   vecx_base(gwi);
   gwi_func_ini(gwi, "void", "set");
   gwi_func_arg(gwi, "float", "x");
   gwi_func_arg(gwi, "float", "y");
   gwi_func_arg(gwi, "float", "z");
-  GWI_BB(gwi_func_end(gwi, vec3_set, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_set, ae_flag_none))
     gwi_func_ini(gwi, "void", "setAll");
   gwi_func_arg(gwi, "float", "x");
-  GWI_BB(gwi_func_end(gwi, vec3_setAll, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_setAll, ae_flag_none))
     gwi_func_ini(gwi, "float", "magnitude");
-  GWI_BB(gwi_func_end(gwi, vec3_magnitude, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_magnitude, ae_flag_none))
     gwi_func_ini(gwi, "void", "normalize");
-  GWI_BB(gwi_func_end(gwi, vec3_normalize, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_normalize, ae_flag_none))
     gwi_func_ini(gwi, "float", "interp");
-  GWI_BB(gwi_func_end(gwi, vec3_interp, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_interp, ae_flag_none))
     gwi_func_ini(gwi, "float", "interp");
   gwi_func_arg(gwi, "float", "delta");
-  GWI_BB(gwi_func_end(gwi, vec3_float, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_float, ae_flag_none))
     gwi_func_ini(gwi, "float", "interp");
   gwi_func_arg(gwi, "dur", "delta");
-  GWI_BB(gwi_func_end(gwi, vec3_dur, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_dur, ae_flag_none))
     gwi_func_ini(gwi, "void", "update");
   gwi_func_arg(gwi, "float", "goal");
-  GWI_BB(gwi_func_end(gwi, vec3_update, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_update, ae_flag_none))
     gwi_func_ini(gwi, "void", "update");
   gwi_func_arg(gwi, "float", "goal");
   gwi_func_arg(gwi, "float", "slew");
-  GWI_BB(gwi_func_end(gwi, vec3_update_slew, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_update_slew, ae_flag_none))
     gwi_func_ini(gwi, "void", "supdate");
   gwi_func_arg(gwi, "float", "goalAndValue");
-  GWI_BB(gwi_func_end(gwi, vec3_update_set, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_update_set, ae_flag_none))
     gwi_func_ini(gwi, "void", "supdate");
   gwi_func_arg(gwi, "float", "goalAndValue");
   gwi_func_arg(gwi, "float", "slew");
-  GWI_BB(gwi_func_end(gwi, vec3_update_set_slew, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_update_set_slew, ae_flag_none))
 
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "float", "x");
   gwi_func_arg(gwi, "float", "y");
   gwi_func_arg(gwi, "float", "z");
-  GWI_BB(gwi_func_end(gwi, vec3_set, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec3_set, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "Vec3", "Vec3", "bool"))
-  GWI_BB(gwi_oper_end(gwi, "==",          vec3_eq))
-  GWI_BB(gwi_oper_end(gwi, "!=",          vec3_ne))
-  GWI_BB(gwi_oper_ini(gwi, "Vec3", "Vec3", "Vec3"))
-  GWI_BB(gwi_oper_end(gwi, "+", Vec3Add))
-  GWI_BB(gwi_oper_end(gwi, "-", Vec3Sub))
-  GWI_BB(gwi_oper_end(gwi, "*", Vec3Mul))
-  GWI_BB(gwi_oper_end(gwi, "/", Vec3Div))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, ":=>", Vec3RAssign))
-  GWI_BB(gwi_oper_ini(gwi, "Vec3", "float", "Vec3"))
-  GWI_BB(gwi_oper_end(gwi, "+",  Vec3AddFloat))
-  GWI_BB(gwi_oper_end(gwi, "-", Vec3SubFloat))
-  GWI_BB(gwi_oper_end(gwi, "*",  Vec3MulFloat))
-  GWI_BB(gwi_oper_end(gwi, "/", Vec3DivFloat))
-  GWI_BB(gwi_oper_ini(gwi, "float", "Vec3", "Vec3"))
-  GWI_BB(gwi_oper_end(gwi, "+",  FloatAddVec3))
-  GWI_BB(gwi_oper_end(gwi, "-",  FloatSubVec3))
-  GWI_BB(gwi_oper_end(gwi, "*",  FloatMulVec3))
-  GWI_BB(gwi_oper_end(gwi, "/",  FloatDivVec3))
-  return GW_OK;
+   GWI_B(gwi_oper_ini(gwi, "Vec3", "Vec3", "bool"))
+   GWI_B(gwi_oper_end(gwi, "==",          vec3_eq))
+   GWI_B(gwi_oper_end(gwi, "!=",          vec3_ne))
+   GWI_B(gwi_oper_ini(gwi, "Vec3", "Vec3", "Vec3"))
+   GWI_B(gwi_oper_end(gwi, "+", Vec3Add))
+   GWI_B(gwi_oper_end(gwi, "-", Vec3Sub))
+   GWI_B(gwi_oper_end(gwi, "*", Vec3Mul))
+   GWI_B(gwi_oper_end(gwi, "/", Vec3Div))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, ":=>", Vec3RAssign))
+   GWI_B(gwi_oper_ini(gwi, "Vec3", "float", "Vec3"))
+   GWI_B(gwi_oper_end(gwi, "+",  Vec3AddFloat))
+   GWI_B(gwi_oper_end(gwi, "-", Vec3SubFloat))
+   GWI_B(gwi_oper_end(gwi, "*",  Vec3MulFloat))
+   GWI_B(gwi_oper_end(gwi, "/", Vec3DivFloat))
+   GWI_B(gwi_oper_ini(gwi, "float", "Vec3", "Vec3"))
+   GWI_B(gwi_oper_end(gwi, "+",  FloatAddVec3))
+   GWI_B(gwi_oper_end(gwi, "-",  FloatSubVec3))
+   GWI_B(gwi_oper_end(gwi, "*",  FloatMulVec3))
+   GWI_B(gwi_oper_end(gwi, "/",  FloatDivVec3))
+  return true;
 }
 
 static MFUN(vec4_set) {
@@ -565,9 +565,9 @@ static GACK(gack_vec4) {
 
 EQUALITY_OPER(vec4, SZ_VEC4);
 
-ANN static m_bool import_vec4(const Gwi gwi) {
+static GWION_IMPORT(vec4) {
   const Type t_vec4 = gwi_struct_ini(gwi, "Vec4");
-  GWI_BB(gwi_gack(gwi, t_vec4, gack_vec4))
+  GWI_B(gwi_gack(gwi, t_vec4, gack_vec4))
   vecx_base(gwi);
   gwi_item_ini(gwi, "float", "w");
   gwi_item_end(gwi, ae_flag_none, num, 0);
@@ -576,48 +576,48 @@ ANN static m_bool import_vec4(const Gwi gwi) {
   gwi_func_arg(gwi, "float", "y");
   gwi_func_arg(gwi, "float", "z");
   gwi_func_arg(gwi, "float", "w");
-  GWI_BB(gwi_func_end(gwi, vec4_set, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec4_set, ae_flag_none))
     gwi_func_ini(gwi, "void", "setAll");
   gwi_func_arg(gwi, "float", "x");
-  GWI_BB(gwi_func_end(gwi, vec4_setAll, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec4_setAll, ae_flag_none))
     gwi_func_ini(gwi, "float", "magnitude");
-  GWI_BB(gwi_func_end(gwi, vec4_magnitude, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec4_magnitude, ae_flag_none))
     gwi_func_ini(gwi, "void", "normalize");
-  GWI_BB(gwi_func_end(gwi, vec4_normalize, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, vec4_normalize, ae_flag_none))
 
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "float", "x");
   gwi_func_arg(gwi, "float", "y");
   gwi_func_arg(gwi, "float", "z");
   gwi_func_arg(gwi, "float", "w");
-  GWI_BB(gwi_func_end(gwi, vec4_set, ae_flag_none))
-  GWI_BB(gwi_struct_end(gwi))
+  GWI_B(gwi_func_end(gwi, vec4_set, ae_flag_none))
+  GWI_B(gwi_struct_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "Vec4", "Vec4", "bool"))
-  GWI_BB(gwi_oper_end(gwi, "==",          vec4_eq))
-  GWI_BB(gwi_oper_end(gwi, "!=",          vec4_ne))
-  GWI_BB(gwi_oper_ini(gwi, "Vec4", "Vec4", "Vec4"))
-  GWI_BB(gwi_oper_end(gwi, "+",  Vec4Add))
-  GWI_BB(gwi_oper_end(gwi, "-", Vec4Sub))
-  GWI_BB(gwi_oper_end(gwi, "*", Vec4Mul))
-  GWI_BB(gwi_oper_end(gwi, "/", Vec4Div))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, ":=>", Vec4RAssign))
-  GWI_BB(gwi_oper_ini(gwi, "Vec4", "float", "Vec4"))
-  GWI_BB(gwi_oper_end(gwi, "+", Vec4AddFloat))
-  GWI_BB(gwi_oper_end(gwi, "-", Vec4SubFloat))
-  GWI_BB(gwi_oper_end(gwi, "*", Vec4MulFloat))
-  GWI_BB(gwi_oper_end(gwi, "/", Vec4DivFloat))
-  GWI_BB(gwi_oper_ini(gwi, "float", "Vec4", "Vec4"))
-  GWI_BB(gwi_oper_end(gwi, "+", FloatAddVec4))
-  GWI_BB(gwi_oper_end(gwi, "-", FloatSubVec4))
-  GWI_BB(gwi_oper_end(gwi, "*", FloatMulVec4))
-  return (m_bool)gwi_oper_end(gwi, "/", FloatDivVec4);
+   GWI_B(gwi_oper_ini(gwi, "Vec4", "Vec4", "bool"))
+   GWI_B(gwi_oper_end(gwi, "==",          vec4_eq))
+   GWI_B(gwi_oper_end(gwi, "!=",          vec4_ne))
+   GWI_B(gwi_oper_ini(gwi, "Vec4", "Vec4", "Vec4"))
+   GWI_B(gwi_oper_end(gwi, "+",  Vec4Add))
+   GWI_B(gwi_oper_end(gwi, "-", Vec4Sub))
+   GWI_B(gwi_oper_end(gwi, "*", Vec4Mul))
+   GWI_B(gwi_oper_end(gwi, "/", Vec4Div))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, ":=>", Vec4RAssign))
+   GWI_B(gwi_oper_ini(gwi, "Vec4", "float", "Vec4"))
+   GWI_B(gwi_oper_end(gwi, "+", Vec4AddFloat))
+   GWI_B(gwi_oper_end(gwi, "-", Vec4SubFloat))
+   GWI_B(gwi_oper_end(gwi, "*", Vec4MulFloat))
+   GWI_B(gwi_oper_end(gwi, "/", Vec4DivFloat))
+   GWI_B(gwi_oper_ini(gwi, "float", "Vec4", "Vec4"))
+   GWI_B(gwi_oper_end(gwi, "+", FloatAddVec4))
+   GWI_B(gwi_oper_end(gwi, "-", FloatSubVec4))
+   GWI_B(gwi_oper_end(gwi, "*", FloatMulVec4))
+  return gwi_oper_end(gwi, "/", FloatDivVec4);
 }
 
 GWION_IMPORT(Vecx) {
-  GWI_BB(import_complex(gwi))
-  GWI_BB(import_vec3(gwi))
-  GWI_BB(import_vec4(gwi))
-  return GW_OK;
+  GWI_B(import_complex(gwi))
+  GWI_B(import_vec3(gwi))
+  GWI_B(import_vec4(gwi))
+  return true;
 }

@@ -137,7 +137,7 @@ static MFUN(oscout_new2) {
   *(M_Object*)RETURN = o;
 }
 
-static ANN m_bool import_oscout(const Gwi gwi) {
+static GWION_IMPORT(oscout) {
   gwidoc(gwi, "A type to send Osc events");
   const Type t_loout = gwi_class_ini(gwi, "OscOut", "Object");
   gwi_class_xtor(gwi, NULL, loout_dtor);
@@ -145,42 +145,42 @@ static ANN m_bool import_oscout(const Gwi gwi) {
   t_loout->nspc->offset += sizeof(struct LoOut); // reserve
     gwidoc(gwi, "Send a message to `path`");
 
-    GWI_BB(gwi_enum_ini(gwi, "Proto"));
-    GWI_BB(gwi_enum_add(gwi, "UDP",  LO_UDP));
-    GWI_BB(gwi_enum_add(gwi, "TCP",  LO_TCP));
-    GWI_BB(gwi_enum_add(gwi, "UNIX", LO_UNIX));
-    GWI_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, "Proto"));
+    GWI_B(gwi_enum_add(gwi, "UDP",  LO_UDP));
+    GWI_B(gwi_enum_add(gwi, "TCP",  LO_TCP));
+    GWI_B(gwi_enum_add(gwi, "UNIX", LO_UNIX));
+    GWI_B(gwi_enum_end(gwi));
 
     gwi_func_ini(gwi, "auto", "new");
       gwi_func_arg(gwi, "string", "url");
-    GWI_BB(gwi_func_end(gwi, oscout_new0, ae_flag_none))
+    GWI_B(gwi_func_end(gwi, oscout_new0, ae_flag_none))
 
     gwi_func_ini(gwi, "auto", "new");
       gwi_func_arg(gwi, "string", "host");
       gwi_func_arg(gwi, "int", "port");
-    GWI_BB(gwi_func_end(gwi, oscout_new1, ae_flag_none))
+    GWI_B(gwi_func_end(gwi, oscout_new1, ae_flag_none))
 
     gwi_func_ini(gwi, "auto", "new");
       gwi_func_arg(gwi, "Proto", "proto");
       gwi_func_arg(gwi, "string", "host");
       gwi_func_arg(gwi, "int", "port");
-    GWI_BB(gwi_func_end(gwi, oscout_new2, ae_flag_none))
+    GWI_B(gwi_func_end(gwi, oscout_new2, ae_flag_none))
 
     gwi_func_ini(gwi, "bool", "send");
       gwi_func_arg(gwi, "string", "path");
-    GWI_BB(gwi_func_end(gwi, osc_send, ae_flag_none))
+    GWI_B(gwi_func_end(gwi, osc_send, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
 #define oscout_oper(name)                                                      \
   gwidoc(gwi, "Add an `" #name "` to the message");                            \
-  GWI_BB(gwi_oper_ini(gwi, #name, "OscOut", #name))                            \
-  GWI_BB(gwi_oper_end(gwi, "=>", oscsend_add_##name))
+   GWI_B(gwi_oper_ini(gwi, #name, "OscOut", #name))                            \
+   GWI_B(gwi_oper_end(gwi, "=>", oscsend_add_##name))
 
   oscout_oper(int) oscout_oper(float) oscout_oper(string)
 #undef oscout_oper
 
-      return GW_OK;
+      return true;
 }
 
 typedef struct LoMethod_ {
@@ -259,7 +259,7 @@ static int osc_method_handler(const char *path NUSED, const char *type, lo_arg *
         release_loarg(m->p, (LoArg)vector_at(&v, i));
       vector_release(&v);
       gw_err("unhandled osc arg type '%c'", type[i]);
-      return GW_OK;
+      return true;
     }
     vector_add(&v, (vtype)arg);
   }
@@ -451,7 +451,7 @@ static MFUN(osc_new) {
    handle(shred, "OscError");
 }
 
-static ANN m_bool import_oscin(const Gwi gwi) {
+static GWION_IMPORT(oscin) {
   gwidoc(gwi, "A type to receive OSC events");
   const Type t_loin = gwi_class_ini(gwi, "OscIn", "Event");
   gwi_class_xtor(gwi, NULL, loin_dtor);
@@ -462,46 +462,46 @@ static ANN m_bool import_oscin(const Gwi gwi) {
   gwidoc(gwi, "constructor");
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "int", "port");
-  GWI_BB(gwi_func_end(gwi, osc_new, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, osc_new, ae_flag_none))
 
   gwidoc(gwi, "add a new method");
   gwi_func_ini(gwi, "void", "add");
   gwi_func_arg(gwi, "string", "path");
   gwi_func_arg(gwi, "string", "type");
-  GWI_BB(gwi_func_end(gwi, osc_add_method, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, osc_add_method, ae_flag_none))
 
   gwidoc(gwi, "get the port");
   gwi_func_ini(gwi, "int", "port");
-  GWI_BB(gwi_func_end(gwi, osc_get_port, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, osc_get_port, ae_flag_none))
 
   gwidoc(gwi, "Receive an argument from the message");
   gwi_func_ini(gwi, "bool", "recv");
-  GWI_BB(gwi_func_end(gwi, osc_recv, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, osc_recv, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
 #define oscin_oper(name)                                                       \
   gwidoc(gwi, "Get an `" #name "` from the message");                          \
-  GWI_BB(gwi_oper_ini(gwi, "OscIn", #name, #name))                             \
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))                             \
-  GWI_BB(gwi_oper_end(gwi, "=>", oscin_get_##name))
+   GWI_B(gwi_oper_ini(gwi, "OscIn", #name, #name))                             \
+   GWI_B(gwi_oper_add(gwi, opck_rassign))                             \
+   GWI_B(gwi_oper_end(gwi, "=>", oscin_get_##name))
 
   oscin_oper(int);
   oscin_oper(float);
   oscin_oper(string);
 #undef oscin_oper
 
-  return GW_OK;
+  return true;
 }
 
 GWMODINI(Lo) { return new_map(gwion->mp); }
 GWMODEND(Lo) { return free_map(gwion->mp, (Map)self); }
 
 GWION_IMPORT(Lo) {
-  GWI_BB(import_oscout(gwi));
-  GWI_BB(import_oscin(gwi));
+  GWI_B(import_oscout(gwi));
+  GWI_B(import_oscin(gwi));
   if(!get_module(gwi->gwion, "Lo"))
-    CHECK_b(set_module(gwi->gwion, "Lo", GWMODINI_NAME(Lo)(gwi->gwion, NULL)));
-  return GW_OK;
+    CHECK_B(set_module(gwi->gwion, "Lo", GWMODINI_NAME(Lo)(gwi->gwion, NULL)));
+  return true;
 }
 

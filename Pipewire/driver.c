@@ -172,7 +172,7 @@ static const struct pw_stream_events out_stream_events = {
     .process = out_process,
 };
 
-static m_bool pw_ini(VM* vm, Driver* di) {
+static bool pw_ini(VM* vm, Driver* di) {
   const MemPool mp = vm->gwion->mp;
   int argc = 0; char **argv = NULL;
   struct drv_data *data = mp_malloc2(mp, sizeof(struct drv_data));
@@ -194,7 +194,7 @@ static m_bool pw_ini(VM* vm, Driver* di) {
     .sr = di->si->sr,
     .data = data,
   };
-  if(!new_node_data(mp, &data->in, &in_info, di->si->in)) return GW_ERROR;
+  if(!new_node_data(mp, &data->in, &in_info, di->si->in)) return false;
 
   struct node_info out_info = {
     .category = "Playback",
@@ -206,8 +206,8 @@ static m_bool pw_ini(VM* vm, Driver* di) {
     .sr = di->si->sr,
     .data = data,
   };
-  if(!new_node_data(mp, &data->out, &out_info, di->si->out)) return GW_ERROR;
-  return GW_OK;
+  if(!new_node_data(mp, &data->out, &out_info, di->si->out)) return false;
+  return true;
 }
 
 static void pw_run(VM* vm NUSED, Driver* di) {

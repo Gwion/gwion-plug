@@ -43,15 +43,15 @@ static MFUN(gwpd_close) {
 }
 
 GWION_IMPORT(Pd) {
-  DECL_OB(const Type, t_pd, = gwi_class_ini(gwi, "PD", "UGen"));
+  DECL_B(const Type, t_pd, = gwi_class_ini(gwi, "PD", "UGen"));
   gwi_class_xtor(gwi, pd_ctor, pd_dtor);
   t_pd->nspc->offset += SZ_INT;
-  GWI_BB(gwi_func_ini(gwi, "int", "open"))
-  GWI_BB(gwi_func_arg(gwi, "string", "basename"))
-  GWI_BB(gwi_func_arg(gwi, "string", "dirname"))
-  GWI_OB(gwi_func_end(gwi, gwpd_open, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "int", "close"))
-  GWI_OB(gwi_func_end(gwi, gwpd_close, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_func_ini(gwi, "int", "open"))
+  GWI_B(gwi_func_arg(gwi, "string", "basename"))
+  GWI_B(gwi_func_arg(gwi, "string", "dirname"))
+  GWI_B(gwi_func_end(gwi, gwpd_open, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "close"))
+  GWI_B(gwi_func_end(gwi, gwpd_close, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

@@ -88,9 +88,9 @@ static SFUN(machine_replace_values) {
   const M_Object str = *(M_Object*)MEM(SZ_INT);
   const M_Vector names = ARRAY(*(M_Object*)MEM(SZ_INT*2));
   MP_Vector *const values = get_values(shred, names);
-  const m_bool ret = compile_filename_xid_values(vm->gwion, STRING(str), xid, values);
+  const bool ret = compile_filename_xid_values(vm->gwion, STRING(str), xid, values);
   free_mp_vector(shred->info->mp, Value, values);
-  if(ret > 0) *(m_int*)RETURN = ret;
+  if(ret) *(m_int*)RETURN = ret;
   else xfun_handle(shred, "InvalidRuntimeCompilation");
 }
 
@@ -203,81 +203,81 @@ static SFUN(machine_pass) {
 GWION_IMPORT(Machine) {
   gwidoc(gwi, "A namespace for machine operations");
 
-  GWI_OB(gwi_struct_ini(gwi, "Machine"))
+  GWI_B(gwi_struct_ini(gwi, "Machine"))
 
   gwidoc(gwi, "compile and add a file");
   gwi_func_ini(gwi, "int",  "add");
   gwi_func_arg(gwi, "string",  "filename");
-  GWI_BB(gwi_func_end(gwi, machine_add, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_add, ae_flag_static))
 
   gwidoc(gwi, "compile and add a file with values");
   gwi_func_ini(gwi, "int",  "add_values:[...]");
   gwi_func_arg(gwi, "string",  "filename");
   gwi_func_arg(gwi, "string[]",  "varnames");
-  GWI_BB(gwi_func_end(gwi, machine_add_values, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_add_values, ae_flag_static))
 
   gwidoc(gwi, "remove a shred by id");
   gwi_func_ini(gwi, "void",  "remove");
   gwi_func_arg(gwi, "int", "id");
-  GWI_BB(gwi_func_end(gwi, machine_remove, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_remove, ae_flag_static))
 
   gwidoc(gwi, "replace a shred with a new one from file");
   gwi_func_ini(gwi, "void",  "replace");
   gwi_func_arg(gwi, "int", "id");
   gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, machine_replace, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_replace, ae_flag_static))
 
   gwidoc(gwi, "replace a shred with a new one from file with values");
   gwi_func_ini(gwi, "void",  "replace_values");
   gwi_func_arg(gwi, "int", "id");
   gwi_func_arg(gwi, "string", "filename");
   gwi_func_arg(gwi, "string[]",  "varnames");
-  GWI_BB(gwi_func_end(gwi, machine_replace_values, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_replace_values, ae_flag_static))
 
   gwidoc(gwi, "get an array of active shred ids");
   gwi_func_ini(gwi, "int[]", "shreds");
-  GWI_BB(gwi_func_end(gwi, machine_shreds, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_shreds, ae_flag_static))
 
   gwidoc(gwi, "compile code");
   gwi_func_ini(gwi, "int",  "check");
   gwi_func_arg(gwi, "string", "code");
-  GWI_BB(gwi_func_end(gwi, machine_check, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_check, ae_flag_static))
 
   gwidoc(gwi, "compile code with values");
   gwi_func_ini(gwi, "int",  "check");
   gwi_func_arg(gwi, "string", "code");
   gwi_func_arg(gwi, "string[]",  "varnames");
-  GWI_BB(gwi_func_end(gwi, machine_check_values, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_check_values, ae_flag_static))
 
   gwidoc(gwi, "compile file");
   gwi_func_ini(gwi, "int", "compile");
   gwi_func_arg(gwi, "string", "code");
-  GWI_BB(gwi_func_end(gwi, machine_compile, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_compile, ae_flag_static))
 
   gwidoc(gwi, "compile file with values");
   gwi_func_ini(gwi, "int", "compile");
   gwi_func_arg(gwi, "string", "code");
   gwi_func_arg(gwi, "string[]",  "varnames");
-  GWI_BB(gwi_func_end(gwi, machine_compile_values, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_compile_values, ae_flag_static))
 
   gwidoc(gwi, "remove a shred and replace it by compiling file");
   gwi_func_ini(gwi, "void", "compile_replace");
   gwi_func_arg(gwi, "int", "xid");
   gwi_func_arg(gwi, "string", "filename");
-  GWI_BB(gwi_func_end(gwi, machine_compile_replace, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_compile_replace, ae_flag_static))
 
   gwidoc(gwi, "remove a shred and replace it by compiling file with values");
   gwi_func_ini(gwi, "void", "compile_replace");
   gwi_func_arg(gwi, "int", "xid");
   gwi_func_arg(gwi, "string", "filename");
   gwi_func_arg(gwi, "string[]",  "varnames");
-  GWI_BB(gwi_func_end(gwi, machine_compile_replace_values, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_compile_replace_values, ae_flag_static))
 
   gwidoc(gwi, "get list of passes as a string");
   gwi_func_ini(gwi, "void", "pass");
   gwi_func_arg(gwi, "string[]", "passes");
-  GWI_BB(gwi_func_end(gwi, machine_pass, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, machine_pass, ae_flag_static))
 
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

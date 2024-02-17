@@ -86,22 +86,22 @@ static MFUN(gw_lsys_get) {
 }
 
 GWION_IMPORT(Lsys) {
-  GWI_OB(gwi_class_ini(gwi, "Lsys", "UGen"))
+  GWI_B(gwi_class_ini(gwi, "Lsys", "UGen"))
   gwi_class_xtor(gwi, NULL, dtor);
 
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
-    GWI_BB(gwi_func_arg(gwi, "int",    "ord"))
-    GWI_BB(gwi_func_arg(gwi, "string", "str"))
-  GWI_BB(gwi_func_end(gwi, gw_lsys_parse, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))
+    GWI_B(gwi_func_arg(gwi, "int",    "ord"))
+    GWI_B(gwi_func_arg(gwi, "string", "str"))
+  GWI_B(gwi_func_end(gwi, gw_lsys_parse, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "reset"))
-  GWI_BB(gwi_func_end(gwi, gw_lsys_reset, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "reset"))
+  GWI_B(gwi_func_end(gwi, gw_lsys_reset, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "size"))
-  GWI_BB(gwi_func_end(gwi, gw_lsys_size, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "size"))
+  GWI_B(gwi_func_end(gwi, gw_lsys_size, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "get"))
-  GWI_BB(gwi_func_end(gwi, gw_lsys_get, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_func_ini(gwi, "string", "get"))
+  GWI_B(gwi_func_end(gwi, gw_lsys_get, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

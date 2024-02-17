@@ -53,24 +53,24 @@ static MFUN(note_off) {
 }
 
 GWION_IMPORT(TinySF) {
-  DECL_OB(const Type, t_tinysf, = gwi_class_ini(gwi, "TinySF", "UGen"));
+  DECL_B(const Type, t_tinysf, = gwi_class_ini(gwi, "TinySF", "UGen"));
   t_tinysf->nspc->offset += sizeof(struct tsf);
   gwi_class_xtor(gwi, NULL, tinysf_dtor);
 
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
-  GWI_BB(gwi_func_arg(gwi, "string", "file"))
-  GWI_BB(gwi_func_end(gwi, tinysf_new, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))
+  GWI_B(gwi_func_arg(gwi, "string", "file"))
+  GWI_B(gwi_func_end(gwi, tinysf_new, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "noteOn"))
-  GWI_BB(gwi_func_arg(gwi, "int", "note"))
-  GWI_BB(gwi_func_arg(gwi, "float", "vel"))
-  GWI_BB(gwi_func_end(gwi, note_on, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "noteOn"))
+  GWI_B(gwi_func_arg(gwi, "int", "note"))
+  GWI_B(gwi_func_arg(gwi, "float", "vel"))
+  GWI_B(gwi_func_end(gwi, note_on, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "noteOff"))
-  GWI_BB(gwi_func_arg(gwi, "int", "note"))
-  GWI_BB(gwi_func_end(gwi, note_off, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "noteOff"))
+  GWI_B(gwi_func_arg(gwi, "int", "note"))
+  GWI_B(gwi_func_end(gwi, note_off, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  return GW_OK;
+  return true;
 }

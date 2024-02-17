@@ -34,25 +34,25 @@ static MFUN(evdevev_is_code) {
   *(m_int*)RETURN = libevdev_event_is_code(&ev, type, code);
 }
 
-ANN m_bool import_evdevev(const Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "Ev", NULL))
-  GWI_BB(gwi_item_ini(gwi, "int", "type"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "code"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "value"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "sec"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "usec"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0))
-  GWI_BB(gwi_func_ini(gwi, "int", "is_type"))
-  GWI_BB(gwi_func_arg(gwi, "int", "type"))
-  GWI_BB(gwi_func_end(gwi, evdevev_is_type, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "int", "is_code"))
-  GWI_BB(gwi_func_arg(gwi, "int", "type"))
-  GWI_BB(gwi_func_arg(gwi, "int", "code"))
-  GWI_BB(gwi_func_end(gwi, evdevev_is_code, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+GWION_IMPORT(evdevev) {
+  GWI_B(gwi_class_ini(gwi, "Ev", NULL))
+  GWI_B(gwi_item_ini(gwi, "int", "type"))
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "code"))
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "value"))
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "sec"))
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "usec"))
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0))
+  GWI_B(gwi_func_ini(gwi, "int", "is_type"))
+  GWI_B(gwi_func_arg(gwi, "int", "type"))
+  GWI_B(gwi_func_end(gwi, evdevev_is_type, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "is_code"))
+  GWI_B(gwi_func_arg(gwi, "int", "type"))
+  GWI_B(gwi_func_arg(gwi, "int", "code"))
+  GWI_B(gwi_func_end(gwi, evdevev_is_code, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

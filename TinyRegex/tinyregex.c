@@ -39,23 +39,23 @@ static SFUN(regex_get) {
 }
 
 GWION_IMPORT(TinyRegex) {
-  DECL_OB(const Type, t_tinyregex, = gwi_class_ini(gwi, "TinyRegex", "Object"));
+  DECL_B(const Type, t_tinyregex, = gwi_class_ini(gwi, "TinyRegex", "Object"));
 
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"));
-  GWI_BB(gwi_func_arg(gwi, "string", "pattern"));
-  GWI_BB(gwi_func_end(gwi, regex_new, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "auto", "new"));
+  GWI_B(gwi_func_arg(gwi, "string", "pattern"));
+  GWI_B(gwi_func_end(gwi, regex_new, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "run"));
-  GWI_BB(gwi_func_arg(gwi, "string", "text"));
-  GWI_BB(gwi_func_arg(gwi, "&int", "lenght"));
-  GWI_BB(gwi_func_end(gwi, regex_run, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "int", "run"));
+  GWI_B(gwi_func_arg(gwi, "string", "text"));
+  GWI_B(gwi_func_arg(gwi, "&int", "lenght"));
+  GWI_B(gwi_func_end(gwi, regex_run, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "get"));
-  GWI_BB(gwi_func_arg(gwi, "string", "pattern"));
-  GWI_BB(gwi_func_arg(gwi, "string", "text"));
-  GWI_BB(gwi_func_arg(gwi, "&int", "lenght"));
-  GWI_BB(gwi_func_end(gwi, regex_get, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "int", "get"));
+  GWI_B(gwi_func_arg(gwi, "string", "pattern"));
+  GWI_B(gwi_func_arg(gwi, "string", "text"));
+  GWI_B(gwi_func_arg(gwi, "&int", "lenght"));
+  GWI_B(gwi_func_end(gwi, regex_get, ae_flag_static));
 
-  GWI_BB(gwi_class_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi));
+  return true;
 }

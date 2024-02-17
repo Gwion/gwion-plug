@@ -109,7 +109,7 @@ static void cfile(const Gwi gwi, const Type t, const m_str name, FILE *const fil
 
 GWION_IMPORT(FileIO) {
   gwidoc(gwi, "Reading and writing text from/to a file.");
-  DECL_OB(const Type, t_fileio, = gwi_class_ini(gwi, "FileIO", "Object"));
+  DECL_B(const Type, t_fileio, = gwi_class_ini(gwi, "FileIO", "Object"));
   gwi_class_xtor(gwi, NULL, fileio_dtor);
   SET_FLAG(t_fileio, abstract | ae_flag_final);
   t_fileio->nspc->offset += SZ_INT;
@@ -118,30 +118,30 @@ GWION_IMPORT(FileIO) {
   gwi_func_ini(gwi, "auto", "new");
   gwi_func_arg(gwi, "string", "filename");
   gwi_func_arg(gwi, "string", "mode");
-  GWI_BB(gwi_func_end(gwi, file_open, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, file_open, ae_flag_none))
 
   gwidoc(gwi, "Read a line");
   gwi_func_ini(gwi, "string", "read");
-  GWI_BB(gwi_func_end(gwi, file2string, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, file2string, ae_flag_none))
 
   gwidoc(gwi, "Write a string");
   gwi_func_ini(gwi, "void", "write");
   gwi_func_arg(gwi, "string", "txt");
-  GWI_BB(gwi_func_end(gwi, string2file, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, string2file, ae_flag_none))
 
   gwidoc(gwi, "Check for EOF");
   gwi_func_ini(gwi, "int", "eof");
-  GWI_BB(gwi_func_end(gwi, file_eof, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, file_eof, ae_flag_none))
 
   gwidoc(gwi, "flush the file");
   gwi_func_ini(gwi, "int", "flush");
-  GWI_BB(gwi_func_end(gwi, file_flush, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, file_flush, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
   gwidoc(gwi, "stdin, stderr and stdout");
   cfile(gwi, t_fileio, "stdin", stdin);
   cfile(gwi, t_fileio, "stdout", stdout);
   cfile(gwi, t_fileio, "stderr", stderr);
-  return GW_OK;
+  return true;
 }

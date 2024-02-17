@@ -143,47 +143,47 @@ static MFUN(ws2812b_setall) {
 
 GWION_IMPORT(WS2812b) {
   gwidoc(gwi, "a class to handle ws2812b based led stripes");
-  DECL_OB(const Type, t_ws2812b, = gwi_class_ini(gwi, "WS2812b", "Object"));
+  DECL_B(const Type, t_ws2812b, = gwi_class_ini(gwi, "WS2812b", "Object"));
   gwi_class_xtor(gwi, NULL, ws2812b_dtor);
 
   gwidoc(gwi, "number of leds");
-  GWI_BB(gwi_item_ini(gwi, "int", "n_leds"));
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, num, 0));
+  GWI_B(gwi_item_ini(gwi, "int", "n_leds"));
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0));
 
   t_ws2812b->nspc->offset += sizeof(gwws) - SZ_INT;
 
   gwidoc(gwi, "spi modes");
-  GWI_BB(gwi_enum_ini(gwi, "Mode"));
-  GWI_BB(gwi_enum_add(gwi, "ZERO", SPI_MODE_0));
-  GWI_BB(gwi_enum_add(gwi, "ONE", SPI_MODE_1));
-  GWI_BB(gwi_enum_add(gwi, "TWO", SPI_MODE_2));
-  GWI_BB(gwi_enum_add(gwi, "THREE", SPI_MODE_3));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "Mode"));
+  GWI_B(gwi_enum_add(gwi, "ZERO", SPI_MODE_0));
+  GWI_B(gwi_enum_add(gwi, "ONE", SPI_MODE_1));
+  GWI_B(gwi_enum_add(gwi, "TWO", SPI_MODE_2));
+  GWI_B(gwi_enum_add(gwi, "THREE", SPI_MODE_3));
+  GWI_B(gwi_enum_end(gwi));
 
   gwidoc(gwi, "constructor");
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"));
-  GWI_BB(gwi_func_arg(gwi, "string", "spi_device"));
-  GWI_BB(gwi_func_arg(gwi, "WS2812b.Mode", "mode"));
-  GWI_BB(gwi_func_arg(gwi, "int", "freq"));
-  GWI_BB(gwi_func_arg(gwi, "int", "n_leds"));
-  GWI_OB(gwi_func_end(gwi, ws2812b_new, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "auto", "new"));
+  GWI_B(gwi_func_arg(gwi, "string", "spi_device"));
+  GWI_B(gwi_func_arg(gwi, "WS2812b.Mode", "mode"));
+  GWI_B(gwi_func_arg(gwi, "int", "freq"));
+  GWI_B(gwi_func_arg(gwi, "int", "n_leds"));
+  GWI_B(gwi_func_end(gwi, ws2812b_new, ae_flag_none));
 
 
   gwidoc(gwi, "write data");
-  GWI_BB(gwi_func_ini(gwi, "void", "write"));
-  GWI_BB(gwi_func_end(gwi, ws2812b_write, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "void", "write"));
+  GWI_B(gwi_func_end(gwi, ws2812b_write, ae_flag_none));
 
   gwidoc(gwi, "set a specifid led");
-  GWI_BB(gwi_func_ini(gwi, "void", "set"));
-  GWI_BB(gwi_func_arg(gwi, "int", "led"));
-  GWI_BB(gwi_func_arg(gwi, "int", "rgb"));
-  GWI_BB(gwi_func_end(gwi, ws2812b_set, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "void", "set"));
+  GWI_B(gwi_func_arg(gwi, "int", "led"));
+  GWI_B(gwi_func_arg(gwi, "int", "rgb"));
+  GWI_B(gwi_func_end(gwi, ws2812b_set, ae_flag_none));
 
   gwidoc(gwi, "set all leds");
-  GWI_BB(gwi_func_ini(gwi, "void", "set"));
-  GWI_BB(gwi_func_arg(gwi, "int", "rgb"));
-  GWI_BB(gwi_func_end(gwi, ws2812b_setall, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "void", "set"));
+  GWI_B(gwi_func_arg(gwi, "int", "rgb"));
+  GWI_B(gwi_func_end(gwi, ws2812b_setall, ae_flag_none));
 
-  GWI_BB(gwi_class_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi));
+  return true;
 }

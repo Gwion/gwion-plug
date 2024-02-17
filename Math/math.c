@@ -110,13 +110,13 @@ math2(_max)
 #define decl_math1(name, func)                   \
   gwi_func_ini(gwi, "float", name);              \
   gwi_func_arg(gwi, "float", "value");           \
-  GWI_BB(gwi_func_end(gwi, math_##func , ae_flag_static))    \
+  GWI_B(gwi_func_end(gwi, math_##func , ae_flag_static))    \
 
 #define decl_math2(name, func)                   \
   gwi_func_ini(gwi, "float", name);              \
   gwi_func_arg(gwi, "float", "value1");          \
   gwi_func_arg(gwi, "float", "value2");          \
-  GWI_BB(gwi_func_end(gwi, math_##func , ae_flag_static))    \
+  GWI_B(gwi_func_end(gwi, math_##func , ae_flag_static))    \
 
 static INSTR(op_ffpower) {
   POP_REG(shred, SZ_FLOAT);
@@ -139,22 +139,22 @@ static INSTR(op_ifpower) {
 }
 
 GWION_IMPORT(Math) {
-  GWI_OB(gwi_struct_ini(gwi, "Math"))
+  GWI_B(gwi_struct_ini(gwi, "Math"))
 
   gwi_func_ini(gwi, "int", "abs");
   gwi_func_arg(gwi, "int", "value");
-  GWI_BB(gwi_func_end(gwi, math_abs, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, math_abs, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "rand");
-  GWI_BB(gwi_func_end(gwi, math_rand, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, math_rand, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "rand2");
   gwi_func_arg(gwi, "int", "min");
   gwi_func_arg(gwi, "int", "max");
-  GWI_BB(gwi_func_end(gwi, math_rand2, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, math_rand2, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "randf");
-  GWI_BB(gwi_func_end(gwi, math_randf, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, math_randf, ae_flag_static))
 
   decl_math2("rand2f", rand2f)
 
@@ -193,19 +193,19 @@ GWION_IMPORT(Math) {
   decl_math2("remainder", remainder)
   decl_math2("min",       _min)
   decl_math2("max",       _max)
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "float", "float", "float"))
-  GWI_BB(gwi_oper_end(gwi, "**", op_ffpower))
+   GWI_B(gwi_oper_ini(gwi, "float", "float", "float"))
+   GWI_B(gwi_oper_end(gwi, "**", op_ffpower))
 
-  GWI_BB(gwi_oper_ini(gwi, "int", "float", "float"))
-  GWI_BB(gwi_oper_end(gwi, "**", op_ifpower))
+   GWI_B(gwi_oper_ini(gwi, "int", "float", "float"))
+   GWI_B(gwi_oper_end(gwi, "**", op_ifpower))
 
-  GWI_BB(gwi_oper_ini(gwi, "float", "int", "float"))
-  GWI_BB(gwi_oper_end(gwi, "**", op_fipower))
+   GWI_B(gwi_oper_ini(gwi, "float", "int", "float"))
+   GWI_B(gwi_oper_end(gwi, "**", op_fipower))
 
-  GWI_BB(gwi_oper_ini(gwi, "int", "int", "int"))
-  GWI_BB(gwi_oper_end(gwi, "**", op_iipower))
+   GWI_B(gwi_oper_ini(gwi, "int", "int", "int"))
+   GWI_B(gwi_oper_end(gwi, "**", op_iipower))
 
-  return GW_OK;
+  return true;
 }

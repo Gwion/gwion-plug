@@ -614,42 +614,42 @@ static MFUN(LiSa_get_sync) {
 
 GWION_IMPORT(LiSa) {
   gwidoc(gwi, "a (li)ve (sa)mpling unit generator; also popularly used for granular synthesis.");
-  DECL_OB(const Type, t_lisa, = gwi_class_ini(gwi, "LiSa", "UGen"));
+  DECL_B(const Type, t_lisa, = gwi_class_ini(gwi, "LiSa", "UGen"));
   gwi_class_xtor(gwi, NULL, LiSa_dtor);
   SET_FLAG(t_lisa, abstract | ae_flag_final);
   t_lisa->nspc->offset += sizeof(LiSa);
 
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"));
-  GWI_BB(gwi_func_arg(gwi, "int", "nchan"));
-  GWI_BB(gwi_func_arg(gwi, "int", "nvoice"));
-  GWI_BB(gwi_func_arg(gwi, "dur", "duration"));
-  GWI_BB(gwi_func_end(gwi, LiSa_new, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "auto", "new"));
+  GWI_B(gwi_func_arg(gwi, "int", "nchan"));
+  GWI_B(gwi_func_arg(gwi, "int", "nvoice"));
+  GWI_B(gwi_func_arg(gwi, "dur", "duration"));
+  GWI_B(gwi_func_end(gwi, LiSa_new, ae_flag_none));
 
   #define SET(type, name, func)                             \
-  GWI_BB(gwi_func_ini(gwi, type, name));                    \
-  GWI_BB(gwi_func_arg(gwi, type, "val"));                   \
-  GWI_BB(gwi_func_end(gwi, LiSa_set_##func, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, type, name));                    \
+  GWI_B(gwi_func_arg(gwi, type, "val"));                   \
+  GWI_B(gwi_func_end(gwi, LiSa_set_##func, ae_flag_none));
 
   #define GET(type, name, func)                             \
-  GWI_BB(gwi_func_ini(gwi, type, name));                    \
-  GWI_BB(gwi_func_end(gwi, LiSa_get_##func, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, type, name));                    \
+  GWI_B(gwi_func_end(gwi, LiSa_get_##func, ae_flag_none));
 
   #define SETGET(type, name, func)                          \
   SET(type, name, func);                                    \
   GET(type, name, func);
 
   #define VOICE_SET(type, name, func)                       \
-  GWI_BB(gwi_func_ini(gwi, type, name));                    \
-  GWI_BB(gwi_func_arg(gwi, "int", "voice"));                \
-  GWI_BB(gwi_func_arg(gwi, type, "val"));                   \
-  GWI_BB(gwi_func_end(gwi, LiSa_set_##func, ae_flag_none)); \
+  GWI_B(gwi_func_ini(gwi, type, name));                    \
+  GWI_B(gwi_func_arg(gwi, "int", "voice"));                \
+  GWI_B(gwi_func_arg(gwi, type, "val"));                   \
+  GWI_B(gwi_func_end(gwi, LiSa_set_##func, ae_flag_none)); \
 
 
   #define VOICE_SETGET(type, name, func)                    \
   VOICE_SET(type, name, func)                               \
-  GWI_BB(gwi_func_ini(gwi, type, name));                    \
-  GWI_BB(gwi_func_arg(gwi, "int", "voice"));                \
-  GWI_BB(gwi_func_end(gwi, LiSa_get_##func, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, type, name));                    \
+  GWI_B(gwi_func_arg(gwi, "int", "voice"));                \
+  GWI_B(gwi_func_end(gwi, LiSa_get_##func, ae_flag_none));
 
   // set/get buffer size
   SETGET("dur", "duration", size);
@@ -688,13 +688,13 @@ GWION_IMPORT(LiSa) {
   SETGET("bool", "loopRec", loop_rec);
 
 	// look at or put sample directly in record buffer, do not pass go
-  GWI_BB(gwi_func_ini(gwi, "float", "valueAt"));
-  GWI_BB(gwi_func_arg(gwi, "dur", "index"));
-  GWI_BB(gwi_func_arg(gwi, "float", "val"));
-  GWI_BB(gwi_func_end(gwi, LiSa_set_sample, ae_flag_none));
-  GWI_BB(gwi_func_ini(gwi, "float", "valueAt"));
-  GWI_BB(gwi_func_arg(gwi, "dur", "index"));
-  GWI_BB(gwi_func_end(gwi, LiSa_get_sample, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "float", "valueAt"));
+  GWI_B(gwi_func_arg(gwi, "dur", "index"));
+  GWI_B(gwi_func_arg(gwi, "float", "val"));
+  GWI_B(gwi_func_end(gwi, LiSa_set_sample, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "float", "valueAt"));
+  GWI_B(gwi_func_arg(gwi, "dur", "index"));
+  GWI_B(gwi_func_end(gwi, LiSa_get_sample, ae_flag_none));
 
 	// set/get gain
   VOICE_SETGET("float", "gain", gain);
@@ -707,9 +707,9 @@ GWION_IMPORT(LiSa) {
 
   // clear buffer
   GET("void", "clear", clear);
-//  GWI_BB(gwi_func_ini(gwi, "void", "clear"));
-//  GWI_BB(gwi_func_arg(gwi, "bool", "state"));
-//  GWI_BB(gwi_func_end(gwi, LiSa_set_clear, ae_flag_none));
+//  GWI_B(gwi_func_ini(gwi, "void", "clear"));
+//  GWI_B(gwi_func_arg(gwi, "bool", "state"));
+//  GWI_B(gwi_func_end(gwi, LiSa_set_clear, ae_flag_none));
 
   // get free voice
   GET("int", "voice", voice);
@@ -719,11 +719,11 @@ GWION_IMPORT(LiSa) {
   VOICE_SET("dur", "rampDown", rampdown);
   SET("dur", "recRamp", rec_ramplen);
 
-  GWI_BB(gwi_enum_ini(gwi, "Sync"));
-  GWI_BB(gwi_enum_add(gwi, "internal", INTERNAL));
-  GWI_BB(gwi_enum_add(gwi, "position", POSITION));
-  GWI_BB(gwi_enum_add(gwi, "duration", DURATION));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "Sync"));
+  GWI_B(gwi_enum_add(gwi, "internal", INTERNAL));
+  GWI_B(gwi_enum_add(gwi, "position", POSITION));
+  GWI_B(gwi_enum_add(gwi, "duration", DURATION));
+  GWI_B(gwi_enum_end(gwi));
   // sync
   SETGET("Sync", "sync", sync);
 

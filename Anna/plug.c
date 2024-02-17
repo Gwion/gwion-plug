@@ -49,14 +49,14 @@ static MFUN(anna_set_freq) {
 }
 
 GWION_IMPORT(Anna) {
-  DECL_OB(const Type, t_anna, = gwi_class_ini(gwi, "Anna", "UGen"));
+  DECL_B(const Type, t_anna, = gwi_class_ini(gwi, "Anna", "UGen"));
   gwi_class_xtor(gwi, ctor, dtor);
   t_anna->nspc->offset += SZ_INT; // room for the synth
 
-  GWI_BB(gwi_func_ini(gwi, "float", "freq"));
-  GWI_BB(gwi_func_arg(gwi, "float", "arg"));
-  GWI_BB(gwi_func_end(gwi, anna_set_freq, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "float", "freq"));
+  GWI_B(gwi_func_arg(gwi, "float", "arg"));
+  GWI_B(gwi_func_end(gwi, anna_set_freq, ae_flag_none));
 
-  GWI_BB(gwi_class_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi));
+  return true;
 }

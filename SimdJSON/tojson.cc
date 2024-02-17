@@ -54,7 +54,7 @@ ANN static void tojson_union(ToJson *const json, const Type t) {
 
 ANN static void tojson_pp(ToJson *const json, const Type t, const m_bit* data) {
   const Type *type = json->gwion->type;
-  if(isa(t, type[et_int]) > 0)
+  if(isa(t, type[et_int]))
     *json->str << *(m_int*)data;
   else if(tflag(t, tflag_float))
     *json->str << *(m_float*)data;
@@ -124,7 +124,7 @@ ANN static void _tojson(ToJson *const json, const Type t) {
     tojson_union(json, t);
     return;
   }
-  if(isa(t, json->gwion->type[et_dict]) > 0) {
+  if(isa(t, json->gwion->type[et_dict])) {
     tojson_dict(json, t);
     return;
   }

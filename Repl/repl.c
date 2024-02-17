@@ -85,9 +85,9 @@ static inline VM_Shred repl_shred(MemPool p) {
 ANN static bool eval(const VM* vm, const VM_Shred shred, const m_str line) {
   if(vm->shreduler->list && shred == vm->shreduler->list->self) {
     gw_err("shred[%"UINT_F"] is running.please use '\\C-f' to spork it\n", shred->tick->xid);
-    return GW_ERROR;
+    return false;
   }
-  return !!compile_string(vm->gwion, "repl", line);
+  return compile_string(vm->gwion, "repl", line);
 }
 
 struct Repl {

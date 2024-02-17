@@ -24,10 +24,10 @@ static MFUN(mfun) {
 }
 
 GWION_IMPORT(Emoji) {
-  DECL_OB(const Type, t_emoji, = gwi_class_ini(gwi, "Emoji", "string"));
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
-  GWI_BB(gwi_func_arg(gwi, "string", "arg"))
-  GWI_BB(gwi_func_end(gwi, mfun, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  DECL_B(const Type, t_emoji, = gwi_class_ini(gwi, "Emoji", "string"));
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))
+  GWI_B(gwi_func_arg(gwi, "string", "arg"))
+  GWI_B(gwi_func_end(gwi, mfun, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

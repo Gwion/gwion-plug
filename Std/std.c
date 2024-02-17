@@ -163,26 +163,26 @@ std(lintodb, 20.0 * log10)
 #define import_stdx(name, t1, t2)             \
   gwi_func_ini(gwi, #t1, #name);\
   gwi_func_arg(gwi, #t2, "value");            \
-  GWI_BB(gwi_func_end(gwi, std_##name  , ae_flag_static)) \
+  GWI_B(gwi_func_end(gwi, std_##name  , ae_flag_static)) \
 
 static SFUN(std_classname) {
   *(M_Object*)RETURN = new_string(shred->info->vm->gwion, o->type_ref->name);
 }
 
 GWION_IMPORT(Std) {
-  GWI_OB(gwi_struct_ini(gwi, "Std"))
+  GWI_B(gwi_struct_ini(gwi, "Std"))
 
   gwi_func_ini(gwi, "int", "clamp");
   gwi_func_arg(gwi, "int", "value");
   gwi_func_arg(gwi, "int", "min");
   gwi_func_arg(gwi, "int", "max");
-  GWI_BB(gwi_func_end(gwi, std_clamp, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_clamp, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "clampf");
   gwi_func_arg(gwi, "float", "value");
   gwi_func_arg(gwi, "float", "min");
   gwi_func_arg(gwi, "float", "max");
-  GWI_BB(gwi_func_end(gwi, std_clampf, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_clampf, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "scale");
   gwi_func_arg(gwi, "float", "value");
@@ -190,30 +190,30 @@ GWION_IMPORT(Std) {
   gwi_func_arg(gwi, "float", "srcmax");
   gwi_func_arg(gwi, "float", "dstmin");
   gwi_func_arg(gwi, "float", "dstmax");
-  GWI_BB(gwi_func_end(gwi, std_scale, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_scale, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "setenv");
   gwi_func_arg(gwi, "string", "key");
   gwi_func_arg(gwi, "string", "value");
-  GWI_BB(gwi_func_end(gwi, std_setenv, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_setenv, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "atoi");
   gwi_func_arg(gwi, "string", "key");
   gwi_func_arg(gwi, "Ref:[int]", "idx");
-  GWI_BB(gwi_func_end(gwi, std_atoi2, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_atoi2, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "atof");
   gwi_func_arg(gwi, "string", "key");
   gwi_func_arg(gwi, "Ref:[int]", "idx");
-  GWI_BB(gwi_func_end(gwi, std_atof2, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_atof2, ae_flag_static))
 
   gwi_func_ini(gwi, "int", "atoi");
   gwi_func_arg(gwi, "string", "key");
-  GWI_BB(gwi_func_end(gwi, std_atoi, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_atoi, ae_flag_static))
 
   gwi_func_ini(gwi, "float", "atof");
   gwi_func_arg(gwi, "string", "key");
-  GWI_BB(gwi_func_end(gwi, std_atof, ae_flag_static))
+  GWI_B(gwi_func_end(gwi, std_atof, ae_flag_static))
 
   import_stdx(system , int,    string)
   import_stdx(getenv , string, string)
@@ -226,10 +226,10 @@ GWION_IMPORT(Std) {
   import_stdx(dbtolin, float,  float)
   import_stdx(lintodb, float,  float)
 
-  GWI_BB(gwi_func_ini(gwi, "string", "classname"));
-  GWI_BB(gwi_func_arg(gwi, "Object", "arg"));
-  GWI_BB(gwi_func_end(gwi, std_classname, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "classname"));
+  GWI_B(gwi_func_arg(gwi, "Object", "arg"));
+  GWI_B(gwi_func_end(gwi, std_classname, ae_flag_static));
 
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

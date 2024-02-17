@@ -32,9 +32,9 @@ static SFUN(TermColor) {
 GWION_IMPORT(TermColor) {
   // Declare function `TermColor` that accepts a string argument and returns a
   // a new formatted string.
-  GWI_BB(gwi_func_ini(gwi, "string", "TermColor"));
-  GWI_BB(gwi_func_arg(gwi, "string", "str"));
-  GWI_BB(gwi_func_end(gwi, TermColor, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "string", "TermColor"));
+  GWI_B(gwi_func_arg(gwi, "string", "str"));
+  GWI_B(gwi_func_end(gwi, TermColor, ae_flag_none));
 
-  return GW_OK;
+  return true;
 }

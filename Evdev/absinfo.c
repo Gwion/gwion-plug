@@ -29,14 +29,14 @@ describe_absinfo(flat)
 describe_absinfo(resolution)
 
 #define _import_absinfo(name)                                   \
-  GWI_BB(gwi_func_ini(gwi, "int", #name))                       \
-  GWI_BB(gwi_func_end(gwi, absinfo_get_##name , ae_flag_none))  \
-  GWI_BB(gwi_func_ini(gwi, "int", #name))                       \
-  GWI_BB(gwi_func_arg(gwi, "int", "val"))                       \
-  GWI_BB(gwi_func_end(gwi, absinfo_set_##name , ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", #name))                       \
+  GWI_B(gwi_func_end(gwi, absinfo_get_##name , ae_flag_none))  \
+  GWI_B(gwi_func_ini(gwi, "int", #name))                       \
+  GWI_B(gwi_func_arg(gwi, "int", "val"))                       \
+  GWI_B(gwi_func_end(gwi, absinfo_set_##name , ae_flag_none))
 
-ANN m_bool import_absinfo(const Gwi gwi) {
-  DECL_OB(const Type, t_abs, = gwi_class_ini(gwi, "AbsInfo", NULL));
+GWION_IMPORT(absinfo) {
+  DECL_B(const Type, t_abs, = gwi_class_ini(gwi, "AbsInfo", NULL));
   t_abs->nspc->offset += SZ_INT;
   _import_absinfo(value)
   _import_absinfo(minimum)
@@ -44,6 +44,6 @@ ANN m_bool import_absinfo(const Gwi gwi) {
   _import_absinfo(fuzz)
   _import_absinfo(flat)
   _import_absinfo(resolution)
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

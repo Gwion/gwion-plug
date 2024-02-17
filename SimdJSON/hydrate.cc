@@ -63,7 +63,7 @@ ANN static void hydrate_union(Hydrate *const h, dom::element elem, const Type t)
 ANN static void hydrate_object(Hydrate *const h, dom::element elem, const Type t) {
   const M_Object tmp = new_object(h->gwion->mp, t);
   Hydrate next = { .gwion=h->gwion, .shred=h->shred, .obj=tmp };
-  if(isa(t, h->gwion->type[et_dict]) > 0)
+  if(isa(t, h->gwion->type[et_dict]))
     hydrate_dict(&next, elem, t);
   else _hydrate(&next, elem, t);
   *(M_Object*)(h->data) = tmp;
@@ -83,7 +83,7 @@ ANN static void hydrate_compound(Hydrate *const h, dom::element elem, const Type
 }
 
 ANN void hydrate(const Gwion gwion, const VM_Shred shred, dom::element elem, const Type t, m_bit *data) {
-  if(isa(t, gwion->type[et_int]) > 0)
+  if(isa(t, gwion->type[et_int]))
     *(m_int*)data = elem.get_int64();
   else if(tflag(t, tflag_float))
     *(m_float*)data = elem.get_double();

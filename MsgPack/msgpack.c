@@ -138,11 +138,11 @@ ANN void real_tomsg(ToMsg *const msg, const Type t, m_bit *const data) {
   ToMsg next = { .ctx=msg->ctx, .data=data, .gwion=msg->gwion };
   if(tflag(t, tflag_union))
     return tomsg_union(&next, t);
-  if(isa(t, msg->gwion->type[et_dict]) > 0)
+  if(isa(t, msg->gwion->type[et_dict]))
     return tomsg_dict(&next, t);
   // we can cache it
   int n = nmember(msg->gwion, t) + !!t->array_depth;
-  if(isa(t, msg->gwion->type[et_string]) > 0) n++;
+  if(isa(t, msg->gwion->type[et_string])) n++;
   msgpack_pack_array(msg->ctx, n + 1);
   const m_str name = type2str(msg->gwion, t, (loc_t){});
   tomsg_string(msg, name);
@@ -155,7 +155,7 @@ ANN void real_tomsg(ToMsg *const msg, const Type t, m_bit *const data) {
 
 ANN static void tomsg_pp(ToMsg *const msg, const Type t, m_bit *data) {
   const Type *type = msg->gwion->type;
-  if(isa(t, type[et_int]) > 0)
+  if(isa(t, type[et_int]))
     msgpack_pack_int64(msg->ctx, *(m_int*)data);
   else if(tflag(t, tflag_float))
     msgpack_pack_double(msg->ctx, *(m_float*)data);
@@ -339,7 +339,7 @@ ANN static bool unpack_object(const FromMsg *msg, const Type t, msgpack_object *
 }
 
 ANN static bool unpack(const FromMsg *msg, const Type t, msgpack_object o, m_bit *data) {
-  if(isa(t, msg->gwion->type[et_int]) > 0) {
+  if(isa(t, msg->gwion->type[et_int])) {
     if(o.type != MSGPACK_OBJECT_POSITIVE_INTEGER &&
        o.type != MSGPACK_OBJECT_NEGATIVE_INTEGER)
       return false;
@@ -372,7 +372,7 @@ ANN static bool unpack(const FromMsg *msg, const Type t, msgpack_object o, m_bit
     }
     if(o.type != MSGPACK_OBJECT_ARRAY)
       return false;
-    if(isa(t, msg->gwion->type[et_dict]) > 0)
+    if(isa(t, msg->gwion->type[et_dict]))
       return unpack_dict(msg, t, o, data);
     msgpack_object *p = o.via.array.ptr;
     m_str type_name = unpack_string(msg->gwion->mp, p);
@@ -465,31 +465,31 @@ static OP_CHECK(opck_unpack_any) {
 }
 
 GWION_IMPORT(MsgPack) {
-  DECL_OB(const Type, t_msgpack, = gwi_class_ini(gwi, "MsgPack", "Object"));
+  DECL_B(const Type, t_msgpack, = gwi_class_ini(gwi, "MsgPack", "Object"));
 
-  GWI_BB(gwi_func_ini(gwi, "string", "pack"));
-  GWI_BB(gwi_func_end(gwi, gwcw_pack, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "pack"));
+  GWI_B(gwi_func_end(gwi, gwcw_pack, ae_flag_static));
 
-  GWI_BB(gwi_func_ini(gwi, "string", "unpack"));
-  GWI_BB(gwi_func_end(gwi, gwcw_pack, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "unpack"));
+  GWI_B(gwi_func_end(gwi, gwcw_pack, ae_flag_static));
 
-  GWI_BB(gwi_func_ini(gwi, "string", "pack_internal:[T]"));
-  GWI_BB(gwi_func_arg(gwi, "int", "type"));
-  GWI_BB(gwi_func_arg(gwi, "T", "arg"));
-  GWI_BB(gwi_func_end(gwi, gwcw_pack, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "pack_internal:[T]"));
+  GWI_B(gwi_func_arg(gwi, "int", "type"));
+  GWI_B(gwi_func_arg(gwi, "T", "arg"));
+  GWI_B(gwi_func_end(gwi, gwcw_pack, ae_flag_static));
 
-  GWI_BB(gwi_func_ini(gwi, "T", "unpack_internal:[T]"));
-  GWI_BB(gwi_func_arg(gwi, "int", "owner_class"));
-  GWI_BB(gwi_func_arg(gwi, "int", "owner"));
-  GWI_BB(gwi_func_arg(gwi, "string", "arg"));
-  GWI_BB(gwi_func_end(gwi, gwcw_unpack, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "T", "unpack_internal:[T]"));
+  GWI_B(gwi_func_arg(gwi, "int", "owner_class"));
+  GWI_B(gwi_func_arg(gwi, "int", "owner"));
+  GWI_B(gwi_func_arg(gwi, "string", "arg"));
+  GWI_B(gwi_func_end(gwi, gwcw_unpack, ae_flag_static));
 
-  GWI_BB(gwi_class_end(gwi));
+  GWI_B(gwi_class_end(gwi));
 
   const struct Op_Func   opfunc0 = {.ck = opck_pack_any};
   CHECK_B(add_op_func_check(gwi->gwion->env, t_msgpack, &opfunc0, 0));
   const struct Op_Func   opfunc1 = {.ck = opck_unpack_any};
   CHECK_B(add_op_func_check(gwi->gwion->env, t_msgpack, &opfunc1, 1));
 
-  return GW_OK;
+  return true;
 }

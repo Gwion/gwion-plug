@@ -657,9 +657,9 @@ static CTOR(slider_ctor) {
 }
 
 GWION_IMPORT(Nuklear) {
-  GWI_OB(gwi_struct_ini(gwi, "Nk"))
+  GWI_B(gwi_struct_ini(gwi, "Nk"))
 
-  GWI_OB(gwi_class_ini(gwi, "Color", NULL))
+  GWI_B(gwi_class_ini(gwi, "Color", NULL))
   gwi_item_ini(gwi,"int", "r");
   gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"int", "g");
@@ -668,49 +668,49 @@ GWION_IMPORT(Nuklear) {
   gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"int", "a");
   gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_panel, = gwi_class_ini(gwi, "Panel", NULL));
+  DECL_B(const Type, t_panel, = gwi_class_ini(gwi, "Panel", NULL));
   gwi_class_xtor(gwi, nk_ctor, nk_dtor);
   t_panel->nspc->offset += SZ_INT;
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"));
+  DECL_B(const Type, t_widget, = gwi_class_ini(gwi, "Widget", "Event"));
   gwi_class_xtor(gwi, widget_ctor, NULL);
   t_widget->nspc->offset += SZ_INT*3;
   gwi_item_ini(gwi,"string", "name");
   o_nk_name = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Sval", "Widget"))
+  GWI_B(gwi_class_ini(gwi, "Sval", "Widget"))
   gwi_class_xtor(gwi, sval_ctor, NULL);
   gwi_item_ini(gwi, "int",  "align");
   o_nk_align = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Label", "Sval"))
+  GWI_B(gwi_class_ini(gwi, "Label", "Sval"))
   gwi_class_xtor(gwi, label_ctor, NULL);
   gwi_item_ini(gwi, "int",  "wrap");
   o_nk_wrap = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi, "Color",  "color");
   o_nk_labelcolor= gwi_item_end(gwi, ae_flag_late, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Text", "Sval"))
+  GWI_B(gwi_class_ini(gwi, "Text", "Sval"))
   gwi_class_xtor(gwi, text_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Stext", "Sval"))
+  GWI_B(gwi_class_ini(gwi, "Stext", "Sval"))
   gwi_class_xtor(gwi, stext_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "SLabel", "Sval"))
+  GWI_B(gwi_class_ini(gwi, "SLabel", "Sval"))
   gwi_class_xtor(gwi, slabel_ctor, NULL);
   gwi_item_ini(gwi, "int",  "selectable");
   o_nk_select = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Prog", "Widget"))
+  GWI_B(gwi_class_ini(gwi, "Prog", "Widget"))
   gwi_class_xtor(gwi, prog_ctor, NULL);
   gwi_item_ini(gwi,"int", "val");
   o_nk_prog = gwi_item_end(gwi, ae_flag_none, num, 0);
@@ -718,28 +718,28 @@ GWION_IMPORT(Nuklear) {
   o_nk_progmax = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"int", "mod");
   o_nk_progmod = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Button", "Widget"))
+  GWI_B(gwi_class_ini(gwi, "Button", "Widget"))
   gwi_class_xtor(gwi, button_ctor, NULL);
   gwi_item_ini(gwi, "int",  "behavior");
   o_nk_behavior = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi, "Color",  "color");
   o_nk_button_color= gwi_item_end(gwi, ae_flag_late, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Group", "Widget"))
+  GWI_B(gwi_class_ini(gwi, "Group", "Widget"))
   gwi_class_xtor(gwi, group_ctor, group_dtor);
 //  gwi_item_ini(gwi, "@internal", "@widget");
   gwi_item_ini(gwi, "int", "@widget");
   o_nk_list = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "void", "begin");
-  GWI_BB(gwi_func_end(gwi, group_begin, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, group_begin, ae_flag_none))
   gwi_func_ini(gwi, "void", "end");
-  GWI_BB(gwi_func_end(gwi, group_end, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_end(gwi, group_end, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Row", "Group"))
+  GWI_B(gwi_class_ini(gwi, "Row", "Group"))
   gwi_class_xtor(gwi, rowd_ctor, NULL);
   gwi_item_ini(gwi, "int",  "height");
   o_nk_rowh = gwi_item_end(gwi, ae_flag_none, num, 0);
@@ -749,9 +749,9 @@ GWION_IMPORT(Nuklear) {
   o_nk_rowcol = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi, "int",  "static");
   o_nk_static = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Layout", "Row"))
+  GWI_B(gwi_class_ini(gwi, "Layout", "Row"))
   gwi_class_xtor(gwi, layout_ctor, NULL);
   gwi_item_ini(gwi, "int",  "x");
   o_nk_x = gwi_item_end(gwi, ae_flag_none, num, 0);
@@ -777,40 +777,40 @@ GWION_IMPORT(Nuklear) {
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, NK_WINDOW_TITLE);
   gwi_item_ini(gwi,"int", "MENU");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, NK_PANEL_MENU);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Combo", "Row"))
+  GWI_B(gwi_class_ini(gwi, "Combo", "Row"))
   gwi_class_xtor(gwi, combo_ctor, NULL);
   gwi_item_ini(gwi, "int",  "val");
   o_nk_comboval = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "string", "add");
   gwi_func_arg(gwi, "string", "s");
-  GWI_BB(gwi_func_end(gwi, combo_add, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_end(gwi, combo_add, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Menu", "Group"))
+  GWI_B(gwi_class_ini(gwi, "Menu", "Group"))
   gwi_class_xtor(gwi, menu_ctor, NULL);
   gwi_item_ini(gwi, "int",  "val");
   o_nk_menuval = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_func_ini(gwi, "string", "add");
   gwi_func_arg(gwi, "string", "s");
-  GWI_BB(gwi_func_end(gwi, menu_add, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_end(gwi, menu_add, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "MenuBar", "Group"))
+  GWI_B(gwi_class_ini(gwi, "MenuBar", "Group"))
   gwi_class_xtor(gwi, menubar_ctor, NULL);
   gwi_func_ini(gwi, "void", "add");
   gwi_func_arg(gwi, "Menu", "s");
-  GWI_BB(gwi_func_end(gwi, menubar_add, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_end(gwi, menubar_add, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Tree", "Row"))
+  GWI_B(gwi_class_ini(gwi, "Tree", "Row"))
   gwi_class_xtor(gwi, tree_ctor, NULL);
   gwi_item_ini(gwi, "int",  "state");
   o_nk_state = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "String", "Row"))
+  GWI_B(gwi_class_ini(gwi, "String", "Row"))
   gwi_class_xtor(gwi, nkstring_ctor, NULL);
   gwi_item_ini(gwi,"int", "type");
   o_nk_edit_type= gwi_item_end(gwi, ae_flag_none, num, 0);
@@ -822,9 +822,9 @@ GWION_IMPORT(Nuklear) {
   gwi_item_end(gwi,    ae_flag_static | ae_flag_const, num, NK_EDIT_BOX);
   gwi_item_ini(gwi,"int", "EDITOR");
   gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, NK_EDIT_EDITOR);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Ival", "Widget"))
+  GWI_B(gwi_class_ini(gwi, "Ival", "Widget"))
   gwi_item_ini(gwi, "int",  "val");
   o_nk_ival = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi, "int",  "min");
@@ -835,21 +835,21 @@ GWION_IMPORT(Nuklear) {
   o_nk_istp = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"float", "inc");
   o_nk_iinc = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Propi", "Ival"))
+  GWI_B(gwi_class_ini(gwi, "Propi", "Ival"))
   gwi_class_xtor(gwi, propi_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "SliderI", "Ival"))
+  GWI_B(gwi_class_ini(gwi, "SliderI", "Ival"))
   gwi_class_xtor(gwi, slideri_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Check", "Ival"))
+  GWI_B(gwi_class_ini(gwi, "Check", "Ival"))
   gwi_class_xtor(gwi, check_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Fval", "Widget"))
+  GWI_B(gwi_class_ini(gwi, "Fval", "Widget"))
   gwi_item_ini(gwi, "float",  "val");
   o_nk_fval = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi, "float",  "min");
@@ -861,16 +861,16 @@ GWION_IMPORT(Nuklear) {
   o_nk_fstp = gwi_item_end(gwi, ae_flag_none, num, 0);
   gwi_item_ini(gwi,"float", "inc");
   o_nk_finc = gwi_item_end(gwi, ae_flag_none, num, 0);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "PropF", "Fval"))
+  GWI_B(gwi_class_ini(gwi, "PropF", "Fval"))
   gwi_class_xtor(gwi, propf_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_class_ini(gwi, "Slider", "Fval"))
+  GWI_B(gwi_class_ini(gwi, "Slider", "Fval"))
   gwi_class_xtor(gwi, slider_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_struct_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_struct_end(gwi))
+  return true;
 }

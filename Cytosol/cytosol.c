@@ -77,11 +77,11 @@ static cyt_value_buffer* cytosol_buffer(Type *types, const M_Object o) {
   cyt_value_buffer *buf = cyt_value_buffer_new(sz);
   for(m_uint i = 0; i < sz; i++) {
     const Type t = (Type)vector_at(v, i);
-    if(isa(t, types[et_int]) > 0)
+    if(isa(t, types[et_int]))
       cyt_value_buffer_set_int(buf, i, *(m_int*)(o->data + i*SZ_INT));
-    else if(isa(t, types[et_string]) > 0)
+    else if(isa(t, types[et_string]))
       cyt_value_buffer_set_string(buf, i, STRING(*(M_Object*)(o->data + i*SZ_INT)));
-    else if(isa(t, types[et_bool]) > 0)
+    else if(isa(t, types[et_bool]))
       cyt_value_buffer_set_bool(buf, i, *(m_uint*)(o->data + i*SZ_INT));
     else {
       cyt_value_buffer *_buf = cytosol_buffer(types, *(M_Object*)(o->data + i*SZ_INT));
@@ -139,15 +139,15 @@ ANN static bool cytosol_args(const Gwion gwion, struct CytosolArg *const ca) {
   for(m_uint i = 0; i < vector_size(v); i++) {
     const Type t = (Type)vector_at(v, i);
     m_bit *data = ca->data + i*SZ_INT;
-    if(isa(t, gwion->type[et_int]) > 0) {
+    if(isa(t, gwion->type[et_int])) {
       ptrdiff_t n;
       cyt_value_buffer_get_int(ca->buf, i, &n);
       *(m_int*)(ca->data + i*SZ_INT) = n;
-    } else if(isa(t, gwion->type[et_bool]) > 0) {
+    } else if(isa(t, gwion->type[et_bool])) {
       bool b;
       cyt_value_buffer_get_bool(ca->buf, i, &b);
       *(m_uint*)(ca->data + i*SZ_INT) = b;
-    } else if(isa(t, gwion->type[et_string]) > 0) {
+    } else if(isa(t, gwion->type[et_string])) {
       const char* data;
       size_t outlen;
       cyt_value_buffer_get_string(ca->buf, i, &data, &outlen);
@@ -230,9 +230,9 @@ static OP_CHECK(opck_func2cyt) {
   if(args) {
     for(uint32_t i = 0; i < args->len; i++) {
       Arg *arg = mp_vector_at(args, Arg, i);
-      if(isa(arg->type, env->gwion->type[et_int]) < 0 &&
-         isa(arg->type, env->gwion->type[et_string]) < 0 &&
-         arg->type == fields && isa(arg->type, fields) < 0 )
+      if(!isa(arg->type, env->gwion->type[et_int]) &&
+         !isa(arg->type, env->gwion->type[et_string]) &&
+         arg->type == fields && !isa(arg->type, fields))
         ERR_N(arg->var_decl.tag.loc, "invalid type in field assignment");
     }
   }
@@ -264,9 +264,9 @@ static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list)
         stmt->d.stmt_exp.val->exp_type == ae_exp_decl &&
         stmt->d.stmt_exp.val->d.exp_decl.list->len == 1) {
       const Type type = mp_vector_at(stmt->d.stmt_exp.val->d.exp_decl.list, struct Var_Decl_, 0)->value->type;
-      if(isa(type, env->gwion->type[et_int]) < 0 &&
-        isa(type, env->gwion->type[et_string]) < 0 &&
-        isa(type, fields) < 0)
+      if(!isa(type, env->gwion->type[et_int]) &&
+        !isa(type, env->gwion->type[et_string]) &&
+        !isa(type, fields))
       ERR_B(stmt->d.stmt_exp.val->loc, "invalid type '%s' in Cytosol.field", type->name)
    } else
       ERR_B(stmt->loc, "invalid stmt in Cytosol.field")
@@ -282,7 +282,7 @@ static OP_CHECK(opck_record_ctor) {
   m_uint i = 0;
   while(arg) {
     const Type t = (Type)vector_at(v, i);
-    if(isa(arg->type, t) < 0)
+    if(!isa(arg->type, t))
        ERR_N(arg->loc, _("invalid type '%s' in '%s' constructor (expected '%s')"),
             arg->type->name, call->func->type->name, t->name);
     i++;
@@ -315,62 +315,62 @@ static OP_EMIT(opem_record_ctor) {
 }
 
 GWION_IMPORT(Cytosol) {
-  DECL_OB(const Type, t_cytosol, = gwi_class_ini(gwi, "Cytosol", "Object"));
+  DECL_B(const Type, t_cytosol, = gwi_class_ini(gwi, "Cytosol", "Object"));
   gwi_class_xtor(gwi, cytosol_ctor, cytosol_dtor);
 
-    DECL_OB(const Type, t_fields, = gwi_class_ini(gwi, "Record", "Object"));
+    DECL_B(const Type, t_fields, = gwi_class_ini(gwi, "Record", "Object"));
     SET_FLAG(t_fields, abstract);
-    GWI_BB(gwi_class_end(gwi))
+    GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_enum_ini(gwi, "Type"))
-  GWI_BB(gwi_enum_add(gwi, "int_t", 0))
-  GWI_BB(gwi_enum_add(gwi, "string_t", 0))
-  GWI_BB(gwi_enum_add(gwi, "record_t", 0))
-  GWI_OB(gwi_enum_end(gwi))
+  GWI_B(gwi_enum_ini(gwi, "Type"))
+  GWI_B(gwi_enum_add(gwi, "int_t", 0))
+  GWI_B(gwi_enum_add(gwi, "string_t", 0))
+  GWI_B(gwi_enum_add(gwi, "record_t", 0))
+  GWI_B(gwi_enum_end(gwi))
   t_fields->nspc->offset += SZ_INT*5;
 
-  GWI_BB(gwi_func_ini(gwi, "void", "add_string"))
-  GWI_BB(gwi_func_arg(gwi, "string", "name"))
-  GWI_BB(gwi_func_arg(gwi, "string", "source"))
-  GWI_BB(gwi_func_end(gwi, file_from_string, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "add_string"))
+  GWI_B(gwi_func_arg(gwi, "string", "name"))
+  GWI_B(gwi_func_arg(gwi, "string", "source"))
+  GWI_B(gwi_func_end(gwi, file_from_string, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "add_path"))
-  GWI_BB(gwi_func_arg(gwi, "string", "path"))
-  GWI_BB(gwi_func_end(gwi, file_from_path, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "add_path"))
+  GWI_B(gwi_func_arg(gwi, "string", "path"))
+  GWI_B(gwi_func_end(gwi, file_from_path, ae_flag_none))
 
   // add enum?
-  GWI_BB(gwi_func_ini(gwi, "void", "run"))
-  GWI_BB(gwi_func_arg(gwi, "int", "bound"))
-  GWI_BB(gwi_func_end(gwi, cytosol_run, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "run"))
+  GWI_B(gwi_func_arg(gwi, "int", "bound"))
+  GWI_B(gwi_func_end(gwi, cytosol_run, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "bool", "run_single"))
-  GWI_BB(gwi_func_end(gwi, cytosol_run_single, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "bool", "run_single"))
+  GWI_B(gwi_func_end(gwi, cytosol_run_single, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "add_record"))
-  GWI_BB(gwi_func_arg(gwi, "int", "quantity"))
-  GWI_BB(gwi_func_arg(gwi, "Record", "fields"))
-  GWI_BB(gwi_func_end(gwi, cytosol_add_record, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "add_record"))
+  GWI_B(gwi_func_arg(gwi, "int", "quantity"))
+  GWI_B(gwi_func_arg(gwi, "Record", "fields"))
+  GWI_B(gwi_func_end(gwi, cytosol_add_record, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "bool", "compile"))
-  GWI_BB(gwi_func_end(gwi, cytosol_compile, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "bool", "compile"))
+  GWI_B(gwi_func_end(gwi, cytosol_compile, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "count"))
-  GWI_BB(gwi_func_arg(gwi, "string", "name"))
-  GWI_BB(gwi_func_end(gwi, cytosol_count, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "count"))
+  GWI_B(gwi_func_arg(gwi, "string", "name"))
+  GWI_B(gwi_func_end(gwi, cytosol_count, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
   // define operators at global scope
 
-  GWI_BB(gwi_oper_ini(gwi, "Cytosol", "function", "Cytosol"))
-  GWI_BB(gwi_oper_add(gwi, opck_func2cyt))
-  GWI_BB(gwi_oper_emi(gwi, opem_func2cyt))
-  GWI_BB(gwi_oper_end(gwi, "<<", NULL))
+   GWI_B(gwi_oper_ini(gwi, "Cytosol", "function", "Cytosol"))
+   GWI_B(gwi_oper_add(gwi, opck_func2cyt))
+   GWI_B(gwi_oper_emi(gwi, opem_func2cyt))
+   GWI_B(gwi_oper_end(gwi, "<<", NULL))
 
-  GWI_BB(gwi_oper_ini(gwi, NULL, "Cytosol.Record", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_record_ctor))
-  GWI_BB(gwi_oper_emi(gwi, opem_record_ctor))
-  GWI_BB(gwi_oper_end(gwi, "call_type", NULL))
+   GWI_B(gwi_oper_ini(gwi, NULL, "Cytosol.Record", NULL))
+   GWI_B(gwi_oper_add(gwi, opck_record_ctor))
+   GWI_B(gwi_oper_emi(gwi, opem_record_ctor))
+   GWI_B(gwi_oper_end(gwi, "call_type", NULL))
 
-  return GW_OK;
+  return true;
 }

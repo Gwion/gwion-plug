@@ -135,12 +135,12 @@ static MFUN(fft_compute) {
   *(m_uint*)RETURN = 1;
 }
 
-static m_bool import_fft(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "FFT", "UGen"))
+static GWION_IMPORT(fft) {
+  GWI_B(gwi_class_ini(gwi, "FFT", "UGen"))
   gwi_class_xtor(gwi, fft_ctor, fft_dtor);
   gwi_func_ini(gwi, "int", "init");
   gwi_func_arg(gwi, "int", "size");
-  GWI_BB(gwi_func_end(gwi, fft_init, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, fft_init, ae_flag_none))
   /*  gwi_func_ini(gwi, "int", "init"):
       gwi_func_arg(gwi, "int", "size");
       gwi_func_arg(gwi, "float[]", "window");
@@ -153,10 +153,10 @@ static m_bool import_fft(Gwi gwi) {
       gwi_func_arg(gwi, "string", "name");
     gwi_func_ini(gwi, "complex[]", "compute");*/
   gwi_func_ini(gwi, "void", "compute");
-  GWI_BB(gwi_func_end(gwi, fft_compute, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, fft_compute, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 typedef struct Ana {
@@ -469,72 +469,72 @@ static DTOR(ana_dtor) {
   free(*(Ana**)(o->data));
 }
 
-static m_bool import_ana(Gwi gwi) {
-  DECL_OB(const Type, t_ana, = gwi_class_ini(gwi, "ANA", NULL));
+static GWION_IMPORT(ana) {
+  DECL_B(const Type, t_ana, = gwi_class_ini(gwi, "ANA", NULL));
   gwi_class_xtor(gwi, ana_ctor, ana_dtor);
   t_ana->nspc->offset += SZ_INT*2;
-  GWI_BB(gwi_item_ini(gwi,"FFT", "_fft"));
-  GWI_BB(gwi_item_end(gwi,  ae_flag_late, num, 0));
-  GWI_BB(gwi_func_ini(gwi, "float", "compute"));
-  GWI_BB(gwi_func_end(gwi, ana_compute, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "FFT", "fft"));
-  GWI_BB(gwi_func_end(gwi, ana_get_fft, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "FFT", "fft"));
-  GWI_BB(gwi_func_arg(gwi, "FFT", "arg"));
-  GWI_BB(gwi_func_end(gwi, ana_set_fft, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_item_ini(gwi,"FFT", "_fft"));
+  GWI_B(gwi_item_end(gwi,  ae_flag_late, num, 0));
+  GWI_B(gwi_func_ini(gwi, "float", "compute"));
+  GWI_B(gwi_func_end(gwi, ana_compute, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "FFT", "fft"));
+  GWI_B(gwi_func_end(gwi, ana_get_fft, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "FFT", "fft"));
+  GWI_B(gwi_func_arg(gwi, "FFT", "arg"));
+  GWI_B(gwi_func_end(gwi, ana_set_fft, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(centroid_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_centroid;
 }
-static m_bool import_centroid(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "Centroid", "ANA"))
+static GWION_IMPORT(centroid) {
+  GWI_B(gwi_class_ini(gwi, "Centroid", "ANA"))
   gwi_class_xtor(gwi, centroid_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(spread_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_spread;
 }
-static m_bool import_spread(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "Spread", "ANA"))
+static GWION_IMPORT(spread) {
+  GWI_B(gwi_class_ini(gwi, "Spread", "ANA"))
   gwi_class_xtor(gwi, spread_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(skewness_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_skewness;
 }
-static m_bool import_skewness(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "Skewness", "ANA"))
+static GWION_IMPORT(skewness) {
+  GWI_B(gwi_class_ini(gwi, "Skewness", "ANA"))
   gwi_class_xtor(gwi, skewness_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(kurtosis_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_kurtosis;
 }
 
-static m_bool import_kurtosis(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "Kurtosis", "ANA"))
+static GWION_IMPORT(kurtosis) {
+  GWI_B(gwi_class_ini(gwi, "Kurtosis", "ANA"))
   gwi_class_xtor(gwi, kurtosis_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(rms_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_rms;
 }
-static m_bool import_rms(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "RMS", "ANA"))
+static GWION_IMPORT(rms) {
+  GWI_B(gwi_class_ini(gwi, "RMS", "ANA"))
   gwi_class_xtor(gwi, rms_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(rolloff_ctor) {
@@ -548,49 +548,49 @@ static MFUN(rolloff_set_percent) {
   Ana* ana = *(Ana**)(o->data);
   *(m_float*)RETURN = (ana->percent = *(m_float*)MEM(SZ_INT));
 }
-static m_bool import_rolloff(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "Rolloff", "ANA"))
+static GWION_IMPORT(rolloff) {
+  GWI_B(gwi_class_ini(gwi, "Rolloff", "ANA"))
   gwi_class_xtor(gwi, rolloff_ctor, NULL);
   gwi_func_ini(gwi, "float", "percent");
-  GWI_BB(gwi_func_end(gwi, rolloff_get_percent, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, rolloff_get_percent, ae_flag_none))
   gwi_func_ini(gwi, "float", "percent");
   gwi_func_arg(gwi, "float", "arg");
-  GWI_BB(gwi_func_end(gwi, rolloff_set_percent, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_func_end(gwi, rolloff_set_percent, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(freq_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_freq;
 }
 
-static m_bool import_freq(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "Freq", "ANA"))
+static GWION_IMPORT(freq) {
+  GWI_B(gwi_class_ini(gwi, "Freq", "ANA"))
   gwi_class_xtor(gwi, freq_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(asc_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_asc;
 }
 
-static m_bool import_asc(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "ASC", "ANA"))
+static GWION_IMPORT(asc) {
+  GWI_B(gwi_class_ini(gwi, "ASC", "ANA"))
   gwi_class_xtor(gwi, asc_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(ass_ctor) {
   *(f_analys*)(o->data + SZ_INT) = (f_analys)compute_ass;
 }
 
-static m_bool import_ass(Gwi gwi) {
-  GWI_OB(gwi_class_ini(gwi, "ASS", "ANA"))
+static GWION_IMPORT(ass) {
+  GWI_B(gwi_class_ini(gwi, "ASS", "ANA"))
   gwi_class_xtor(gwi, ass_ctor, NULL);
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 static CTOR(fc_ctor) {
@@ -671,38 +671,38 @@ static INSTR(fc_disconnect) {
   PUSH_REG(shred, SZ_INT);
 }
 
-static m_bool import_fc(Gwi gwi) {
-  DECL_OB(const Type, t_fc, = gwi_class_ini(gwi, "FC", NULL));
+static GWION_IMPORT(fc) {
+  DECL_B(const Type, t_fc, = gwi_class_ini(gwi, "FC", NULL));
   gwi_class_xtor(gwi, fc_ctor, fc_dtor);
   t_fc->nspc->offset += SZ_INT;
   gwi_func_ini(gwi, "float[]", "compute");
-  GWI_BB(gwi_func_end(gwi, fc_compute, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, fc_compute, ae_flag_none))
   gwi_func_ini(gwi, "ANA", "add");
   gwi_func_arg(gwi, "ANA", "arg");
-  GWI_BB(gwi_func_end(gwi, fc_add, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, fc_add, ae_flag_none))
   gwi_func_ini(gwi, "ANA", "rem");
   gwi_func_arg(gwi, "ANA", "arg");
-  GWI_BB(gwi_func_end(gwi, fc_rem, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_func_end(gwi, fc_rem, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }
 
 GWION_IMPORT(Analys) {
-  GWI_BB(import_fft(gwi))
-  GWI_BB(import_ana(gwi))
-  GWI_BB(import_centroid(gwi))
-  GWI_BB(import_spread(gwi))
-  GWI_BB(import_skewness(gwi))
-  GWI_BB(import_kurtosis(gwi))
-  GWI_BB(import_rms(gwi))
-  GWI_BB(import_rolloff(gwi))
-  GWI_BB(import_freq(gwi))
-  GWI_BB(import_asc(gwi))
-  GWI_BB(import_ass(gwi))
-  GWI_BB(import_fc(gwi))
-  GWI_BB(gwi_oper_ini(gwi, "ANA", "FC", "FC"))
-  GWI_BB(gwi_oper_end(gwi, "=>", fc_connect))
-  GWI_BB(gwi_oper_ini(gwi, "ANA", "FC", "FC"))
-  GWI_BB(gwi_oper_end(gwi, "=<", fc_disconnect))
-  return GW_OK;
+  GWI_B(import_fft(gwi))
+  GWI_B(import_ana(gwi))
+  GWI_B(import_centroid(gwi))
+  GWI_B(import_spread(gwi))
+  GWI_B(import_skewness(gwi))
+  GWI_B(import_kurtosis(gwi))
+  GWI_B(import_rms(gwi))
+  GWI_B(import_rolloff(gwi))
+  GWI_B(import_freq(gwi))
+  GWI_B(import_asc(gwi))
+  GWI_B(import_ass(gwi))
+  GWI_B(import_fc(gwi))
+   GWI_B(gwi_oper_ini(gwi, "ANA", "FC", "FC"))
+   GWI_B(gwi_oper_end(gwi, "=>", fc_connect))
+   GWI_B(gwi_oper_ini(gwi, "ANA", "FC", "FC"))
+   GWI_B(gwi_oper_end(gwi, "=<", fc_disconnect))
+  return true;
 }

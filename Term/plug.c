@@ -106,88 +106,88 @@ GWION_IMPORT(Term) {
 #ifndef BUILD_ON_WINDOWS
   signal(SIGWINCH, resize);
 #endif
-  DECL_OB(const Type, t_term, = gwi_class_ini(gwi, "Term", "Object"));
+  DECL_B(const Type, t_term, = gwi_class_ini(gwi, "Term", "Object"));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "cols"))
-  GWI_BB(gwi_func_end(gwi, term_dims_cols, ae_flag_static))
-  GWI_BB(gwi_func_ini(gwi, "int", "rows"))
-  GWI_BB(gwi_func_end(gwi, term_dims_rows, ae_flag_static))
-  GWI_BB(gwi_func_ini(gwi, "int", "width"))
-  GWI_BB(gwi_func_end(gwi, term_dims_width, ae_flag_static))
-  GWI_BB(gwi_func_ini(gwi, "int", "height"))
-  GWI_BB(gwi_func_end(gwi, term_dims_height, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "int", "cols"))
+  GWI_B(gwi_func_end(gwi, term_dims_cols, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "int", "rows"))
+  GWI_B(gwi_func_end(gwi, term_dims_rows, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "int", "width"))
+  GWI_B(gwi_func_end(gwi, term_dims_width, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "int", "height"))
+  GWI_B(gwi_func_end(gwi, term_dims_height, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "bool", "supportsUTF8"))
-  GWI_BB(gwi_func_end(gwi, term_func_SupportsUTF8, ae_flag_static))
-  GWI_BB(gwi_func_ini(gwi, "bool", "supportsColor"))
-  GWI_BB(gwi_func_end(gwi, term_func_SupportsColor, ae_flag_static))
-  GWI_BB(gwi_func_ini(gwi, "bool", "isBlocking"))
-  GWI_BB(gwi_func_end(gwi, term_func_IsBlocking, ae_flag_static))
-  GWI_BB(gwi_func_ini(gwi, "bool", "isLineBuffered"))
-  GWI_BB(gwi_func_end(gwi, term_func_IsLineBuffered, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "bool", "supportsUTF8"))
+  GWI_B(gwi_func_end(gwi, term_func_SupportsUTF8, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "bool", "supportsColor"))
+  GWI_B(gwi_func_end(gwi, term_func_SupportsColor, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "bool", "isBlocking"))
+  GWI_B(gwi_func_end(gwi, term_func_IsBlocking, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "bool", "isLineBuffered"))
+  GWI_B(gwi_func_end(gwi, term_func_IsLineBuffered, ae_flag_static))
 
-  GWI_BB(gwi_enum_ini(gwi, "Color"));
-  GWI_BB(gwi_enum_add(gwi, "black", 0));
-  GWI_BB(gwi_enum_add(gwi, "red", 1));
-  GWI_BB(gwi_enum_add(gwi, "green", 2));
-  GWI_BB(gwi_enum_add(gwi, "yellow", 3));
-  GWI_BB(gwi_enum_add(gwi, "blue", 4));
-  GWI_BB(gwi_enum_add(gwi, "magenta", 5));
-  GWI_BB(gwi_enum_add(gwi, "cyan", 6));
-  GWI_BB(gwi_enum_add(gwi, "white", 7));
-  GWI_BB(gwi_enum_add(gwi, "default", 9));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "Color"));
+  GWI_B(gwi_enum_add(gwi, "black", 0));
+  GWI_B(gwi_enum_add(gwi, "red", 1));
+  GWI_B(gwi_enum_add(gwi, "green", 2));
+  GWI_B(gwi_enum_add(gwi, "yellow", 3));
+  GWI_B(gwi_enum_add(gwi, "blue", 4));
+  GWI_B(gwi_enum_add(gwi, "magenta", 5));
+  GWI_B(gwi_enum_add(gwi, "cyan", 6));
+  GWI_B(gwi_enum_add(gwi, "white", 7));
+  GWI_B(gwi_enum_add(gwi, "default", 9));
+  GWI_B(gwi_enum_end(gwi));
 
-  GWI_BB(gwi_enum_ini(gwi, "Attr"));
-  GWI_BB(gwi_enum_add(gwi, "off", 0));
-  GWI_BB(gwi_enum_add(gwi, "bold", 1));
-  GWI_BB(gwi_enum_add(gwi, "dim", 2));
-  GWI_BB(gwi_enum_add(gwi, "italic", 3));
-  GWI_BB(gwi_enum_add(gwi, "underscore", 4));
-  GWI_BB(gwi_enum_add(gwi, "blink", 5));
-  GWI_BB(gwi_enum_add(gwi, "fastblink", 6));
-  GWI_BB(gwi_enum_add(gwi, "reverse", 7));
-  GWI_BB(gwi_enum_add(gwi, "concealed", 8));
-  GWI_BB(gwi_enum_add(gwi, "crossed", 9));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "Attr"));
+  GWI_B(gwi_enum_add(gwi, "off", 0));
+  GWI_B(gwi_enum_add(gwi, "bold", 1));
+  GWI_B(gwi_enum_add(gwi, "dim", 2));
+  GWI_B(gwi_enum_add(gwi, "italic", 3));
+  GWI_B(gwi_enum_add(gwi, "underscore", 4));
+  GWI_B(gwi_enum_add(gwi, "blink", 5));
+  GWI_B(gwi_enum_add(gwi, "fastblink", 6));
+  GWI_B(gwi_enum_add(gwi, "reverse", 7));
+  GWI_B(gwi_enum_add(gwi, "concealed", 8));
+  GWI_B(gwi_enum_add(gwi, "crossed", 9));
+  GWI_B(gwi_enum_end(gwi));
 
-  GWI_OB(gwi_class_ini(gwi, "AttrStr", "string"))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_ini(gwi, "AttrStr", "string"))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "color"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "foreground"))
-  GWI_BB(gwi_func_end(gwi, term_color1, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "string", "color"))
+  GWI_B(gwi_func_arg(gwi, "Color", "foreground"))
+  GWI_B(gwi_func_end(gwi, term_color1, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "color"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "foreground"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "background"))
-  GWI_BB(gwi_func_end(gwi, term_color2, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "string", "color"))
+  GWI_B(gwi_func_arg(gwi, "Color", "foreground"))
+  GWI_B(gwi_func_arg(gwi, "Color", "background"))
+  GWI_B(gwi_func_end(gwi, term_color2, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "color"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "foreground"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "background"))
-  GWI_BB(gwi_func_arg(gwi, "Attr",  "attribute"))
-  GWI_BB(gwi_func_end(gwi, term_color3, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "string", "color"))
+  GWI_B(gwi_func_arg(gwi, "Color", "foreground"))
+  GWI_B(gwi_func_arg(gwi, "Color", "background"))
+  GWI_B(gwi_func_arg(gwi, "Attr",  "attribute"))
+  GWI_B(gwi_func_end(gwi, term_color3, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "color"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "foreground"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "background"))
-  GWI_BB(gwi_func_arg(gwi, "AttrStr",  "attribute"))
-  GWI_BB(gwi_func_end(gwi, term_color4, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "string", "color"))
+  GWI_B(gwi_func_arg(gwi, "Color", "foreground"))
+  GWI_B(gwi_func_arg(gwi, "Color", "background"))
+  GWI_B(gwi_func_arg(gwi, "AttrStr",  "attribute"))
+  GWI_B(gwi_func_end(gwi, term_color4, ae_flag_static))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "Term.Attr", "Term.Attr", "Term.AttrStr"))
-  GWI_BB(gwi_oper_end(gwi, "|", term_attr_concat))
+   GWI_B(gwi_oper_ini(gwi, "Term.Attr", "Term.Attr", "Term.AttrStr"))
+   GWI_B(gwi_oper_end(gwi, "|", term_attr_concat))
 
-  GWI_BB(gwi_oper_ini(gwi, "Term.AttrStr", "Term.Attr", "Term.AttrStr"))
-  GWI_BB(gwi_oper_end(gwi, "|", term_str_attr_concat))
+   GWI_B(gwi_oper_ini(gwi, "Term.AttrStr", "Term.Attr", "Term.AttrStr"))
+   GWI_B(gwi_oper_end(gwi, "|", term_str_attr_concat))
 
-  GWI_BB(gwi_oper_ini(gwi, "Term.Attr", "Term.AttrStr", "Term.AttrStr"))
-  GWI_BB(gwi_oper_end(gwi, "|", term_attr_str_concat))
+   GWI_B(gwi_oper_ini(gwi, "Term.Attr", "Term.AttrStr", "Term.AttrStr"))
+   GWI_B(gwi_oper_end(gwi, "|", term_attr_str_concat))
 
-  GWI_BB(gwi_oper_ini(gwi, "Term.AttrStr", "Term.AttrStr", "Term.AttrStr"))
-  GWI_BB(gwi_oper_end(gwi, "|", term_str_str_concat))
+   GWI_B(gwi_oper_ini(gwi, "Term.AttrStr", "Term.AttrStr", "Term.AttrStr"))
+   GWI_B(gwi_oper_end(gwi, "|", term_str_str_concat))
 
-  return GW_OK;
+  return true;
 }

@@ -368,35 +368,35 @@ static MFUN(faust_code) {
 extern "C" {
 
 GWION_IMPORT(Faust) {
-  DECL_OB(const Type, t_faust, = gwi_class_ini(gwi, "Faust", "UGen"));
+  DECL_B(const Type, t_faust, = gwi_class_ini(gwi, "Faust", "UGen"));
   SET_FLAG(t_faust, abstract | ae_flag_final);
   gwi_class_xtor(gwi, NULL, faust_dtor);
 
-  GWI_BB(gwi_func_ini(gwi, "Faust", "eval"));
-  GWI_BB(gwi_func_arg(gwi, "string", "path"));
-  GWI_BB(gwi_func_end(gwi, faust_eval, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "Faust", "eval"));
+  GWI_B(gwi_func_arg(gwi, "string", "path"));
+  GWI_B(gwi_func_end(gwi, faust_eval, ae_flag_static));
 
-  GWI_BB(gwi_func_ini(gwi, "Faust", "compile"));
-  GWI_BB(gwi_func_arg(gwi, "string", "path"));
-  GWI_BB(gwi_func_end(gwi, faust_compile, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "Faust", "compile"));
+  GWI_B(gwi_func_arg(gwi, "string", "path"));
+  GWI_B(gwi_func_end(gwi, faust_compile, ae_flag_static));
 
-  GWI_BB(gwi_func_ini(gwi, "float", "v"));
-  GWI_BB(gwi_func_arg(gwi, "string", "key"));
-  GWI_BB(gwi_func_arg(gwi, "float", "value"));
-  GWI_BB(gwi_func_end(gwi, faust_v_set, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "float", "v"));
+  GWI_B(gwi_func_arg(gwi, "string", "key"));
+  GWI_B(gwi_func_arg(gwi, "float", "value"));
+  GWI_B(gwi_func_end(gwi, faust_v_set, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "float", "v"));
-  GWI_BB(gwi_func_arg(gwi, "string", "key"));
-  GWI_BB(gwi_func_end(gwi, faust_v_get, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "float", "v"));
+  GWI_B(gwi_func_arg(gwi, "string", "key"));
+  GWI_B(gwi_func_end(gwi, faust_v_get, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "void", "dump"));
-  GWI_BB(gwi_func_end(gwi, faust_dump, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "void", "dump"));
+  GWI_B(gwi_func_end(gwi, faust_dump, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "string", "code"));
-  GWI_BB(gwi_func_end(gwi, faust_code, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "string", "code"));
+  GWI_B(gwi_func_end(gwi, faust_code, ae_flag_none));
 
-  GWI_BB(gwi_item_ini(gwi, "int", "@f_data"));
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0));
+  GWI_B(gwi_item_ini(gwi, "int", "@f_data"));
+  GWI_B(gwi_item_end(gwi, ae_flag_none, num, 0));
 
   return gwi_class_end(gwi);
 }

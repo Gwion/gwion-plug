@@ -34,10 +34,10 @@ static DTOR(lebiniou_dtor) {
 }
 
 GWION_IMPORT(LeBiniou) {
-  DECL_OB(const Type, t_lebiniou, = gwi_class_ini(gwi, "@LeBiniou", "UGen"));
+  DECL_B(const Type, t_lebiniou, = gwi_class_ini(gwi, "@LeBiniou", "UGen"));
   gwi_class_xtor(gwi, NULL, lebiniou_dtor);
   t_lebiniou->nspc->offset += SZ_INT; // room for the lo_thread
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
 
   const M_Object o = new_object(gwi->gwion->mp, t_lebiniou);
@@ -49,7 +49,7 @@ GWION_IMPORT(LeBiniou) {
   BINIOU_ADDR(o) = lo_address_new("localhost", "9999");
   gwi_item_ini(gwi, "@LeBiniou", "LeBiniou");
   gwi_item_end(gwi, ae_flag_const, obj, o);
-  return GW_OK;
+  return true;
 }
 
 static const m_str deps[] = { "Lo", NULL };

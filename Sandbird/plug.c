@@ -114,74 +114,74 @@ printf("!stream %p %p %i!%i\n", ev, EV(o), ev->type, SB_EV_REQUEST);
 // void *sb_get_multipart
 
 GWION_IMPORT(Sandbird) {
-  DECL_OB(const Type, t_sandbird, = gwi_class_ini(gwi, "Sandbird", "Event"));
+  DECL_B(const Type, t_sandbird, = gwi_class_ini(gwi, "Sandbird", "Event"));
   t_sandbird->nspc->offset += SZ_INT*2;
   gwi_class_xtor(gwi, sandbird_ctor, sandbird_dtor);
 
-  GWI_BB(gwi_enum_ini(gwi, "Status"));
-  GWI_BB(gwi_enum_add(gwi, "sucess", SB_ESUCCESS));
-  GWI_BB(gwi_enum_add(gwi, "failure", SB_EFAILURE));
-  GWI_BB(gwi_enum_add(gwi, "outofmem", SB_EOUTOFMEM));
-  GWI_BB(gwi_enum_add(gwi, "truncated", SB_ETRUNCATED));
-  GWI_BB(gwi_enum_add(gwi, "badstate", SB_EBADSTATE));
-  GWI_BB(gwi_enum_add(gwi, "badresult", SB_EBADRESULT));
-  GWI_BB(gwi_enum_add(gwi, "cantopen", SB_ECANTOPEN));
-  GWI_BB(gwi_enum_add(gwi, "notfound", SB_ENOTFOUND));
-  GWI_BB(gwi_enum_add(gwi, "fdtoobig", SB_EFDTOOBIG));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "Status"));
+  GWI_B(gwi_enum_add(gwi, "sucess", SB_ESUCCESS));
+  GWI_B(gwi_enum_add(gwi, "failure", SB_EFAILURE));
+  GWI_B(gwi_enum_add(gwi, "outofmem", SB_EOUTOFMEM));
+  GWI_B(gwi_enum_add(gwi, "truncated", SB_ETRUNCATED));
+  GWI_B(gwi_enum_add(gwi, "badstate", SB_EBADSTATE));
+  GWI_B(gwi_enum_add(gwi, "badresult", SB_EBADRESULT));
+  GWI_B(gwi_enum_add(gwi, "cantopen", SB_ECANTOPEN));
+  GWI_B(gwi_enum_add(gwi, "notfound", SB_ENOTFOUND));
+  GWI_B(gwi_enum_add(gwi, "fdtoobig", SB_EFDTOOBIG));
+  GWI_B(gwi_enum_end(gwi));
 
-  GWI_BB(gwi_enum_ini(gwi, "Type"));
-  GWI_BB(gwi_enum_add(gwi, "connect", SB_EV_CONNECT));
-  GWI_BB(gwi_enum_add(gwi, "close", SB_EV_CLOSE));
-  GWI_BB(gwi_enum_add(gwi, "request", SB_EV_REQUEST));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "Type"));
+  GWI_B(gwi_enum_add(gwi, "connect", SB_EV_CONNECT));
+  GWI_B(gwi_enum_add(gwi, "close", SB_EV_CLOSE));
+  GWI_B(gwi_enum_add(gwi, "request", SB_EV_REQUEST));
+  GWI_B(gwi_enum_end(gwi));
 
-  GWI_BB(gwi_enum_ini(gwi, "res"));
-  GWI_BB(gwi_enum_add(gwi, "ok", SB_RES_OK));
-  GWI_BB(gwi_enum_add(gwi, "close", SB_RES_CLOSE));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, "res"));
+  GWI_B(gwi_enum_add(gwi, "ok", SB_RES_OK));
+  GWI_B(gwi_enum_add(gwi, "close", SB_RES_CLOSE));
+  GWI_B(gwi_enum_end(gwi));
 
-  GWI_BB(gwi_func_ini(gwi, "string", "errorstr"));
-  GWI_BB(gwi_func_arg(gwi, "int", "code"));
-  GWI_BB(gwi_func_end(gwi, error_str, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "string", "errorstr"));
+  GWI_B(gwi_func_arg(gwi, "int", "code"));
+  GWI_B(gwi_func_end(gwi, error_str, ae_flag_static));
 
-  DECL_OB(const Type, t_event, = gwi_class_ini(gwi, "Event", "Object"));
+  DECL_B(const Type, t_event, = gwi_class_ini(gwi, "Event", "Object"));
   t_event->nspc->offset += SZ_INT;
-  GWI_BB(gwi_item_ini(gwi, "int", "type"));
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, obj, 0));
-  GWI_BB(gwi_item_ini(gwi, "string", "address"));
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, obj, 0));
-  GWI_BB(gwi_item_ini(gwi, "string", "method"));
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, obj, 0));
-  GWI_BB(gwi_item_ini(gwi, "string", "path"));
-  GWI_BB(gwi_item_end(gwi, ae_flag_const, obj, 0));
+  GWI_B(gwi_item_ini(gwi, "int", "type"));
+  GWI_B(gwi_item_end(gwi, ae_flag_const, obj, 0));
+  GWI_B(gwi_item_ini(gwi, "string", "address"));
+  GWI_B(gwi_item_end(gwi, ae_flag_const, obj, 0));
+  GWI_B(gwi_item_ini(gwi, "string", "method"));
+  GWI_B(gwi_item_end(gwi, ae_flag_const, obj, 0));
+  GWI_B(gwi_item_ini(gwi, "string", "path"));
+  GWI_B(gwi_item_end(gwi, ae_flag_const, obj, 0));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "send_status"));
-  GWI_BB(gwi_func_arg(gwi, "int", "code"));
-  GWI_BB(gwi_func_arg(gwi, "string", "msg"));
-  GWI_BB(gwi_func_end(gwi, send_status, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "int", "send_status"));
+  GWI_B(gwi_func_arg(gwi, "int", "code"));
+  GWI_B(gwi_func_arg(gwi, "string", "msg"));
+  GWI_B(gwi_func_end(gwi, send_status, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "send_header"));
-  GWI_BB(gwi_func_arg(gwi, "string", "field"));
-  GWI_BB(gwi_func_arg(gwi, "string", "val"));
-  GWI_BB(gwi_func_end(gwi, send_header, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "int", "send_header"));
+  GWI_B(gwi_func_arg(gwi, "string", "field"));
+  GWI_B(gwi_func_arg(gwi, "string", "val"));
+  GWI_B(gwi_func_end(gwi, send_header, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "send_file"));
-  GWI_BB(gwi_func_arg(gwi, "string", "filename"));
-  GWI_BB(gwi_func_end(gwi, send_file, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "int", "send_file"));
+  GWI_B(gwi_func_arg(gwi, "string", "filename"));
+  GWI_B(gwi_func_end(gwi, send_file, ae_flag_none));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "write"));
-  GWI_BB(gwi_func_arg(gwi, "string", "data"));
-  GWI_BB(gwi_func_end(gwi, write, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "int", "write"));
+  GWI_B(gwi_func_arg(gwi, "string", "data"));
+  GWI_B(gwi_func_end(gwi, write, ae_flag_none));
 
-  GWI_BB(gwi_class_end(gwi));
+  GWI_B(gwi_class_end(gwi));
 
-//  GWI_BB(gwi_func_ini(gwi, "int", "recv"));
-  GWI_BB(gwi_func_ini(gwi, "Type", "recv"));
-  GWI_BB(gwi_func_arg(gwi, "Event", "ev"));
-  GWI_BB(gwi_func_end(gwi, recv, ae_flag_none));
+//  GWI_B(gwi_func_ini(gwi, "int", "recv"));
+  GWI_B(gwi_func_ini(gwi, "Type", "recv"));
+  GWI_B(gwi_func_arg(gwi, "Event", "ev"));
+  GWI_B(gwi_func_end(gwi, recv, ae_flag_none));
 
-  GWI_BB(gwi_class_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi));
+  return true;
 
 }

@@ -232,200 +232,200 @@ static INSTR(gwbmi_color_assign) {
 }
 
 GWION_IMPORT(BMI) {
-  DECL_OB(const Type, t_bmi, = gwi_class_ini(gwi, "BMI", "Object"));
+  DECL_B(const Type, t_bmi, = gwi_class_ini(gwi, "BMI", "Object"));
   gwi_class_xtor(gwi, NULL, bmi_dtor);
   t_bmi->nspc->offset += SZ_INT; //allocate room for the buffer
   // we don't want to create BMI by other means than provided constructors
 //  SET_FLAG(t_bmi, abstract);
 
 
-  DECL_OB(const Type, t_point, = gwi_class_ini(gwi, "Point", "Object"));
+  DECL_B(const Type, t_point, = gwi_class_ini(gwi, "Point", "Object"));
   gwi_gack(gwi, t_point, bmi_point_gack);
-  GWI_BB(gwi_item_ini(gwi, "int", "x"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "y"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
-  GWI_BB(gwi_func_arg(gwi, "int", "x"))
-  GWI_BB(gwi_func_arg(gwi, "int", "y"))
-  GWI_BB(gwi_func_end(gwi,  BMIPointCtor, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_item_ini(gwi, "int", "x"))
+  GWI_B(gwi_item_end(gwi, ae_flag_none, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "y"))
+  GWI_B(gwi_item_end(gwi, ae_flag_none, num, 0))
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))
+  GWI_B(gwi_func_arg(gwi, "int", "x"))
+  GWI_B(gwi_func_arg(gwi, "int", "y"))
+  GWI_B(gwi_func_end(gwi,  BMIPointCtor, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
   UNSET_FLAG(t_point, abstract);
 
-  GWI_BB(gwi_enum_ini(gwi, "Edge"))
-  GWI_BB(gwi_enum_add(gwi, "left", BMI_RECT_EDGE_LEFT))
-  GWI_BB(gwi_enum_add(gwi, "right", BMI_RECT_EDGE_RIGHT))
-  GWI_BB(gwi_enum_add(gwi, "top", BMI_RECT_EDGE_TOP))
-  GWI_BB(gwi_enum_add(gwi, "bottom", BMI_RECT_EDGE_BOTTOM))
-  GWI_OB(gwi_enum_end(gwi))
+  GWI_B(gwi_enum_ini(gwi, "Edge"))
+  GWI_B(gwi_enum_add(gwi, "left", BMI_RECT_EDGE_LEFT))
+  GWI_B(gwi_enum_add(gwi, "right", BMI_RECT_EDGE_RIGHT))
+  GWI_B(gwi_enum_add(gwi, "top", BMI_RECT_EDGE_TOP))
+  GWI_B(gwi_enum_add(gwi, "bottom", BMI_RECT_EDGE_BOTTOM))
+  GWI_B(gwi_enum_end(gwi))
 
-  DECL_OB(const Type, t_rect, = gwi_class_ini(gwi, "Rect", "Object"));
+  DECL_B(const Type, t_rect, = gwi_class_ini(gwi, "Rect", "Object"));
   gwi_gack(gwi, t_rect, bmi_rect_gack);
-  GWI_BB(gwi_item_ini(gwi, "int", "x"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "y"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "w"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "h"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_none, num, 0))
-  GWI_BB(gwi_func_ini(gwi, "void", "clipTo"))
-  GWI_BB(gwi_func_arg(gwi, "Rect", "rect"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_rect_clip, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "void", "inset")) //???
-  GWI_BB(gwi_func_arg(gwi, "int", "delta"))
-  GWI_BB(gwi_func_arg(gwi, "Edge", "edge")) // as we don't have the enum yet
-  GWI_BB(gwi_func_end(gwi, gwbmi_rect_inset, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "void", "set")) //???
-  GWI_BB(gwi_func_arg(gwi, "int", "width"))
-  GWI_BB(gwi_func_arg(gwi, "Edge", "edge")) // as we don't have the enum yet
-  GWI_BB(gwi_func_end(gwi, gwbmi_rect_set, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "auto", "new")) //???
-  GWI_BB(gwi_func_arg(gwi, "int", "a"))
-  GWI_BB(gwi_func_arg(gwi, "int", "b"))
-  GWI_BB(gwi_func_arg(gwi, "int", "c"))
-  GWI_BB(gwi_func_arg(gwi, "int", "d"))
-  GWI_BB(gwi_func_end(gwi, BMIRectCtor, ae_flag_none))
+  GWI_B(gwi_item_ini(gwi, "int", "x"))
+  GWI_B(gwi_item_end(gwi, ae_flag_none, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "y"))
+  GWI_B(gwi_item_end(gwi, ae_flag_none, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "w"))
+  GWI_B(gwi_item_end(gwi, ae_flag_none, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "h"))
+  GWI_B(gwi_item_end(gwi, ae_flag_none, num, 0))
+  GWI_B(gwi_func_ini(gwi, "void", "clipTo"))
+  GWI_B(gwi_func_arg(gwi, "Rect", "rect"))
+  GWI_B(gwi_func_end(gwi, gwbmi_rect_clip, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "inset")) //???
+  GWI_B(gwi_func_arg(gwi, "int", "delta"))
+  GWI_B(gwi_func_arg(gwi, "Edge", "edge")) // as we don't have the enum yet
+  GWI_B(gwi_func_end(gwi, gwbmi_rect_inset, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "set")) //???
+  GWI_B(gwi_func_arg(gwi, "int", "width"))
+  GWI_B(gwi_func_arg(gwi, "Edge", "edge")) // as we don't have the enum yet
+  GWI_B(gwi_func_end(gwi, gwbmi_rect_set, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "auto", "new")) //???
+  GWI_B(gwi_func_arg(gwi, "int", "a"))
+  GWI_B(gwi_func_arg(gwi, "int", "b"))
+  GWI_B(gwi_func_arg(gwi, "int", "c"))
+  GWI_B(gwi_func_arg(gwi, "int", "d"))
+  GWI_B(gwi_func_end(gwi, BMIRectCtor, ae_flag_none))
 
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
 // TODO: should inherit from component
-  DECL_OB(const Type, t_color, = gwi_mk_type(gwi, "Color", sizeof(bmi_component), NULL));
+  DECL_B(const Type, t_color, = gwi_mk_type(gwi, "Color", sizeof(bmi_component), NULL));
   gwi_add_type(gwi, t_color);
   gwi_gack(gwi, t_color, bmi_component_gack);
 
-  DECL_OB(const Type, t_flag, = gwi_struct_ini(gwi, "Flag"));
-  GWI_BB(gwi_item_ini(gwi, "int", "none"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, 0))
-  GWI_BB(gwi_item_ini(gwi, "int", "grayscale"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_FL_IS_GRAYSCALE))
-  GWI_BB(gwi_struct_end(gwi))
+  DECL_B(const Type, t_flag, = gwi_struct_ini(gwi, "Flag"));
+  GWI_B(gwi_item_ini(gwi, "int", "none"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static, num, 0))
+  GWI_B(gwi_item_ini(gwi, "int", "grayscale"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static, num, BMI_FL_IS_GRAYSCALE))
+  GWI_B(gwi_struct_end(gwi))
 
-  DECL_OB(const Type, t_rgb, = gwi_struct_ini(gwi, "RGB"));
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "White"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_WHITE()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Black"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_BLACK()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Red"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_RED()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Green"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_GREEN()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Blue"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_BLUE()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Magenta"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_MAGENTA()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Yellow"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_YELLOW()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Orange"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_ORANGE()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Cyan"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_CYAN()))
-  GWI_BB(gwi_struct_end(gwi))
+  DECL_B(const Type, t_rgb, = gwi_struct_ini(gwi, "RGB"));
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "White"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_WHITE()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Black"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_BLACK()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Red"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_RED()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Green"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_GREEN()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Blue"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_BLUE()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Magenta"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_MAGENTA()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Yellow"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_YELLOW()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Orange"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_ORANGE()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Cyan"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static | ae_flag_const, num, BMI_RGB_CYAN()))
+  GWI_B(gwi_struct_end(gwi))
 
-  GWI_BB(gwi_func_ini(gwi, "Color", "blend"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "color0"))
-  GWI_BB(gwi_func_arg(gwi, "float", "intensity0"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "color1"))
-  GWI_BB(gwi_func_arg(gwi, "float", "intensity1"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_color_blend, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "Color", "blend"))
+  GWI_B(gwi_func_arg(gwi, "Color", "color0"))
+  GWI_B(gwi_func_arg(gwi, "float", "intensity0"))
+  GWI_B(gwi_func_arg(gwi, "Color", "color1"))
+  GWI_B(gwi_func_arg(gwi, "float", "intensity1"))
+  GWI_B(gwi_func_end(gwi, gwbmi_color_blend, ae_flag_static))
 
-  DECL_OB(const Type, t_gry, = gwi_struct_ini(gwi, "Gray"));
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "White"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_GRY_WHITE()))
-  GWI_BB(gwi_item_ini(gwi, "BMI.Color", "Black"))
-  GWI_BB(gwi_item_end(gwi, ae_flag_static, num, BMI_GRY_BLACK()))
-  GWI_BB(gwi_struct_end(gwi))
+  DECL_B(const Type, t_gry, = gwi_struct_ini(gwi, "Gray"));
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "White"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static, num, BMI_GRY_WHITE()))
+  GWI_B(gwi_item_ini(gwi, "BMI.Color", "Black"))
+  GWI_B(gwi_item_end(gwi, ae_flag_static, num, BMI_GRY_BLACK()))
+  GWI_B(gwi_struct_end(gwi))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "draw_point"))
-  GWI_BB(gwi_func_arg(gwi, "Point", "point"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "color"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_draw_point, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "draw_point"))
+  GWI_B(gwi_func_arg(gwi, "Point", "point"))
+  GWI_B(gwi_func_arg(gwi, "Color", "color"))
+  GWI_B(gwi_func_end(gwi, gwbmi_draw_point, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "Color", "get"))
-  GWI_BB(gwi_func_arg(gwi, "Point", "point"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_get_pixel, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "Color", "get"))
+  GWI_B(gwi_func_arg(gwi, "Point", "point"))
+  GWI_B(gwi_func_end(gwi, gwbmi_get_pixel, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "overdraw"))
-  GWI_BB(gwi_func_arg(gwi, "Rect", "region"))
-  GWI_BB(gwi_func_arg(gwi, "BMI", "layer"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_overdraw, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "overdraw"))
+  GWI_B(gwi_func_arg(gwi, "Rect", "region"))
+  GWI_B(gwi_func_arg(gwi, "BMI", "layer"))
+  GWI_B(gwi_func_end(gwi, gwbmi_overdraw, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "fill_rect"))
-  GWI_BB(gwi_func_arg(gwi, "Rect", "rect"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "color"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_fill_rect, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "fill_rect"))
+  GWI_B(gwi_func_arg(gwi, "Rect", "rect"))
+  GWI_B(gwi_func_arg(gwi, "Color", "color"))
+  GWI_B(gwi_func_end(gwi, gwbmi_fill_rect, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void", "stroke_rect"))
-  GWI_BB(gwi_func_arg(gwi, "Rect", "rect"))
-  GWI_BB(gwi_func_arg(gwi, "int", "t"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "color"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_stroke_rect, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "stroke_rect"))
+  GWI_B(gwi_func_arg(gwi, "Rect", "rect"))
+  GWI_B(gwi_func_arg(gwi, "int", "t"))
+  GWI_B(gwi_func_arg(gwi, "Color", "color"))
+  GWI_B(gwi_func_end(gwi, gwbmi_stroke_rect, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "void",  "stroke_line"))
-  GWI_BB(gwi_func_arg(gwi, "Point", "start"))
-  GWI_BB(gwi_func_arg(gwi, "Point", "end"))
-  GWI_BB(gwi_func_arg(gwi, "int",   "thickness"))
-  GWI_BB(gwi_func_arg(gwi, "Color", "color"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_stroke_line, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void",  "stroke_line"))
+  GWI_B(gwi_func_arg(gwi, "Point", "start"))
+  GWI_B(gwi_func_arg(gwi, "Point", "end"))
+  GWI_B(gwi_func_arg(gwi, "int",   "thickness"))
+  GWI_B(gwi_func_arg(gwi, "Color", "color"))
+  GWI_B(gwi_func_end(gwi, gwbmi_stroke_line, ae_flag_none))
 
 
-  GWI_BB(gwi_func_ini(gwi, "Color", "newRGB"))
-  GWI_BB(gwi_func_arg(gwi, "int", "r"))
-  GWI_BB(gwi_func_arg(gwi, "int", "g"))
-  GWI_BB(gwi_func_arg(gwi, "int", "b"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_newrgb, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "Color", "newRGB"))
+  GWI_B(gwi_func_arg(gwi, "int", "r"))
+  GWI_B(gwi_func_arg(gwi, "int", "g"))
+  GWI_B(gwi_func_arg(gwi, "int", "b"))
+  GWI_B(gwi_func_end(gwi, gwbmi_newrgb, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "Color", "newGray"))
-  GWI_BB(gwi_func_arg(gwi, "int", "g"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_newgray, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "Color", "newGray"))
+  GWI_B(gwi_func_arg(gwi, "int", "g"))
+  GWI_B(gwi_func_end(gwi, gwbmi_newgray, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "test_ppm"))
-  GWI_BB(gwi_func_end(gwi, test_ppm, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "int", "test_ppm"))
+  GWI_B(gwi_func_end(gwi, test_ppm, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "to_file"))
-  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
-  GWI_BB(gwi_func_end(gwi, gwbmi2file, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "to_file"))
+  GWI_B(gwi_func_arg(gwi, "string", "filename"))
+  GWI_B(gwi_func_end(gwi, gwbmi2file, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "to_ppm"))
-  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
-  GWI_BB(gwi_func_end(gwi, gwbmi2ppm, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "to_ppm"))
+  GWI_B(gwi_func_arg(gwi, "string", "filename"))
+  GWI_B(gwi_func_end(gwi, gwbmi2ppm, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "int", "to_file"))
-  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
-  GWI_BB(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "to_file"))
+  GWI_B(gwi_func_arg(gwi, "string", "filename"))
+  GWI_B(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
-  GWI_BB(gwi_func_arg(gwi, "int", "width"))
-  GWI_BB(gwi_func_arg(gwi, "int", "height"))
-  GWI_BB(gwi_func_arg(gwi, "int", "flags"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_create, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))
+  GWI_B(gwi_func_arg(gwi, "int", "width"))
+  GWI_B(gwi_func_arg(gwi, "int", "height"))
+  GWI_B(gwi_func_arg(gwi, "int", "flags"))
+  GWI_B(gwi_func_end(gwi, gwbmi_create, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))
-  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
-  GWI_BB(gwi_func_end(gwi, gwbmi_from_file, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))
+  GWI_B(gwi_func_arg(gwi, "string", "filename"))
+  GWI_B(gwi_func_end(gwi, gwbmi_from_file, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "BMI", "to_file"))
-  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
-  GWI_BB(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "BMI", "to_file"))
+  GWI_B(gwi_func_arg(gwi, "string", "filename"))
+  GWI_B(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
 
-  GWI_BB(gwi_union_ini(gwi, "Result"))
-  GWI_BB(gwi_union_add(gwi, "BMI", "success"))
-  GWI_BB(gwi_union_add(gwi, "string", "error"))
-  GWI_OB(gwi_union_end(gwi, ae_flag_none))
+  GWI_B(gwi_union_ini(gwi, "Result"))
+  GWI_B(gwi_union_add(gwi, "BMI", "success"))
+  GWI_B(gwi_union_add(gwi, "string", "error"))
+  GWI_B(gwi_union_end(gwi, ae_flag_none))
 
   const Type t = str2type(gwi->gwion, "BMI.Result", gwi->loc);
   const m_uint scope = env_push_type(gwi->gwion->env, t);
-  GWI_BB(gwi_func_ini(gwi, "BMI", "to_file"))
-  GWI_BB(gwi_func_arg(gwi, "string", "filename"))
-  GWI_BB(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "BMI", "to_file"))
+  GWI_B(gwi_func_arg(gwi, "string", "filename"))
+  GWI_B(gwi_func_end(gwi, gwbmi2bmp, ae_flag_none))
   env_pop(gwi->gwion->env, scope);
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "BMI.Color", "BMI.Color", "BMI.Color"))
-  GWI_BB(gwi_oper_add(gwi, opck_rassign))
-  GWI_BB(gwi_oper_end(gwi, "=>", gwbmi_color_assign))
+   GWI_B(gwi_oper_ini(gwi, "BMI.Color", "BMI.Color", "BMI.Color"))
+   GWI_B(gwi_oper_add(gwi, opck_rassign))
+   GWI_B(gwi_oper_end(gwi, "=>", gwbmi_color_assign))
 
-  return GW_OK;
+  return true;
 }

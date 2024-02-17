@@ -11,13 +11,13 @@ typedef struct {
   int fd;
 } EvdevInfo;
 
-ANN m_bool import_absinfo(const Gwi gwi);
+GWION_IMPORT(absinfo);
 #define ABSINFO(o) *(struct input_absinfo**)(o->data)
 
-ANN m_bool import_uinput(const Gwi gwi);
+GWION_IMPORT(uinput);
 #define UINPUT(o) *(struct libevdev_uinput**)(o->data)
 
-ANN m_bool import_evdevev(const Gwi gwi);
+GWION_IMPORT(evdevev);
 typedef struct gw_input_event {
   m_int type;
   m_int code;

@@ -219,6 +219,6 @@
 "    % ctrl_cget_query %",
 "        // end import",
 "        gwi_class_end(gwi);",
-"    return GW_OK;",
+"    return true;",
 "  }",
 "}",

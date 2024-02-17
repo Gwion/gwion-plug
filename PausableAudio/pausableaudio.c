@@ -39,7 +39,7 @@ static DRVDEL(pausable_del) {
   mp_free(vm->gwion->mp, Pausable, pausable);
 }
 
-ANN static m_bool child_init(VM *vm, Driver *drv) {
+ANN static bool child_init(VM *vm, Driver *drv) {
   DECL_B(gwdriver_t, func, = driver_ini(vm->gwion, drv->si));
   func(drv->driver);
   return drv->driver->ini(vm, drv);
@@ -61,7 +61,7 @@ static DRVINI(pausable_ini) {
     .driver = &pausable->dd,
     .si = &si
   };
-  if(child_init(vm, &drv) > 0) return true;
+  if(child_init(vm, &drv)) return true;
   gw_err("{R}PausableAudio{0} error while initializing child driver\n");
   return false;
 }
@@ -87,12 +87,12 @@ static SFUN(toggle) {
 }
 
 GWION_IMPORT(PausableAudio) {
-  GWI_OB(gwi_struct_ini(gwi, "PausableAudio"));
-  GWI_BB(gwi_func_ini(gwi, "bool", "play"));
-  GWI_BB(gwi_func_end(gwi, get, ae_flag_static));
-  GWI_BB(gwi_func_ini(gwi, "void", "play"));
-  GWI_BB(gwi_func_arg(gwi, "bool", "p"));
-  GWI_BB(gwi_func_end(gwi, toggle, ae_flag_static));
-  GWI_BB(gwi_class_end(gwi));
-  return GW_OK;
+  GWI_B(gwi_struct_ini(gwi, "PausableAudio"));
+  GWI_B(gwi_func_ini(gwi, "bool", "play"));
+  GWI_B(gwi_func_end(gwi, get, ae_flag_static));
+  GWI_B(gwi_func_ini(gwi, "void", "play"));
+  GWI_B(gwi_func_arg(gwi, "bool", "p"));
+  GWI_B(gwi_func_end(gwi, toggle, ae_flag_static));
+  GWI_B(gwi_class_end(gwi));
+  return true;
 }

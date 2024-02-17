@@ -549,182 +549,182 @@ static MFUN(gw_gpiod_version_string) {
 }
 
 GWION_IMPORT(Gpio) {
-  DECL_OB(const Type, t_gpio, = gwi_class_ini(gwi, "Gpio", "Object"));
+  DECL_B(const Type, t_gpio, = gwi_class_ini(gwi, "Gpio", "Object"));
     t_gpio->nspc->offset += SZ_INT;
     gwi_class_xtor(gwi, NULL, gw_gpiod_dtor);
 
     gwidoc(gwi, "Get the API version of the library as a human-readable string.  ");
-    CHECK_BB(gwi_func_ini(gwi, "string", "version"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_version_string, ae_flag_static));
+    GWI_B(gwi_func_ini(gwi, "string", "version"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_version_string, ae_flag_static));
 /*
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"CB"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"NEXT", (m_uint)GPIOD_LINE_BULK_CB_NEXT));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"STOP", (m_uint)GPIOD_LINE_BULK_CB_STOP));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"CB"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"NEXT", (m_uint)GPIOD_LINE_BULK_CB_NEXT));
+    GWI_B(gwi_enum_add(gwi, (m_str)"STOP", (m_uint)GPIOD_LINE_BULK_CB_STOP));
+    GWI_B(gwi_enum_end(gwi));
 */
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"Direction"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"INPUT", (m_uint)GPIOD_LINE_DIRECTION_INPUT));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"OUTPUT", (m_uint)GPIOD_LINE_DIRECTION_OUTPUT));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"Direction"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"INPUT", (m_uint)GPIOD_LINE_DIRECTION_INPUT));
+    GWI_B(gwi_enum_add(gwi, (m_str)"OUTPUT", (m_uint)GPIOD_LINE_DIRECTION_OUTPUT));
+    GWI_B(gwi_enum_end(gwi));
 
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"State"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"HIGH", (m_uint)GPIOD_LINE_ACTIVE_STATE_HIGH));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"LOW", (m_uint)GPIOD_LINE_ACTIVE_STATE_LOW));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"State"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"HIGH", (m_uint)GPIOD_LINE_ACTIVE_STATE_HIGH));
+    GWI_B(gwi_enum_add(gwi, (m_str)"LOW", (m_uint)GPIOD_LINE_ACTIVE_STATE_LOW));
+    GWI_B(gwi_enum_end(gwi));
 /*
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"Drive"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"PUSH_PULL", (m_uint)GPIOD_LINE_DRIVE_PUSH_PULL));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_DRAIN", (m_uint)GPIOD_LINE_DRIVE_OPEN_DRAIN));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_SOURCE", (m_uint)GPIOD_LINE_DRIVE_OPEN_SOURCE));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"Drive"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"PUSH_PULL", (m_uint)GPIOD_LINE_DRIVE_PUSH_PULL));
+    GWI_B(gwi_enum_add(gwi, (m_str)"OPEN_DRAIN", (m_uint)GPIOD_LINE_DRIVE_OPEN_DRAIN));
+    GWI_B(gwi_enum_add(gwi, (m_str)"OPEN_SOURCE", (m_uint)GPIOD_LINE_DRIVE_OPEN_SOURCE));
+    GWI_B(gwi_enum_end(gwi));
 */
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"Bias"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"AS_IS", (m_uint)GPIOD_LINE_BIAS_AS_IS));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"DISABLE", (m_uint)GPIOD_LINE_BIAS_DISABLE));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"PULL_UP", (m_uint)GPIOD_LINE_BIAS_PULL_UP));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"PULL_DOWN", (m_uint)GPIOD_LINE_BIAS_PULL_DOWN));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"Bias"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"AS_IS", (m_uint)GPIOD_LINE_BIAS_AS_IS));
+    GWI_B(gwi_enum_add(gwi, (m_str)"DISABLE", (m_uint)GPIOD_LINE_BIAS_DISABLE));
+    GWI_B(gwi_enum_add(gwi, (m_str)"PULL_UP", (m_uint)GPIOD_LINE_BIAS_PULL_UP));
+    GWI_B(gwi_enum_add(gwi, (m_str)"PULL_DOWN", (m_uint)GPIOD_LINE_BIAS_PULL_DOWN));
+    GWI_B(gwi_enum_end(gwi));
 
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"Request"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"DIRECTION_AS_IS", (m_uint)GPIOD_LINE_REQUEST_DIRECTION_AS_IS));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"DIRECTION_INPUT", (m_uint)GPIOD_LINE_REQUEST_DIRECTION_INPUT));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"DIRECTION_OUTPUT", (m_uint)GPIOD_LINE_REQUEST_DIRECTION_OUTPUT));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"EVENT_FALLING_EDGE", (m_uint)GPIOD_LINE_REQUEST_EVENT_FALLING_EDGE));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"EVENT_RISING_EDGE", (m_uint)GPIOD_LINE_REQUEST_EVENT_RISING_EDGE));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"EVENT_BOTH_EDGES", (m_uint)GPIOD_LINE_REQUEST_EVENT_BOTH_EDGES));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"Request"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"DIRECTION_AS_IS", (m_uint)GPIOD_LINE_REQUEST_DIRECTION_AS_IS));
+    GWI_B(gwi_enum_add(gwi, (m_str)"DIRECTION_INPUT", (m_uint)GPIOD_LINE_REQUEST_DIRECTION_INPUT));
+    GWI_B(gwi_enum_add(gwi, (m_str)"DIRECTION_OUTPUT", (m_uint)GPIOD_LINE_REQUEST_DIRECTION_OUTPUT));
+    GWI_B(gwi_enum_add(gwi, (m_str)"EVENT_FALLING_EDGE", (m_uint)GPIOD_LINE_REQUEST_EVENT_FALLING_EDGE));
+    GWI_B(gwi_enum_add(gwi, (m_str)"EVENT_RISING_EDGE", (m_uint)GPIOD_LINE_REQUEST_EVENT_RISING_EDGE));
+    GWI_B(gwi_enum_add(gwi, (m_str)"EVENT_BOTH_EDGES", (m_uint)GPIOD_LINE_REQUEST_EVENT_BOTH_EDGES));
+    GWI_B(gwi_enum_end(gwi));
 
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"Flag"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_DRAIN", (m_uint)GPIOD_LINE_REQUEST_FLAG_OPEN_DRAIN));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"OPEN_SOURCE", (m_uint)GPIOD_LINE_REQUEST_FLAG_OPEN_SOURCE));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"ACTIVE_LOW", (m_uint)GPIOD_LINE_REQUEST_FLAG_ACTIVE_LOW));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"BIAS_DISABLE", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_DISABLE));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"BIAS_PULL_DOWN", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_DOWN));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"BIAS_PULL_UP", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"Flag"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"OPEN_DRAIN", (m_uint)GPIOD_LINE_REQUEST_FLAG_OPEN_DRAIN));
+    GWI_B(gwi_enum_add(gwi, (m_str)"OPEN_SOURCE", (m_uint)GPIOD_LINE_REQUEST_FLAG_OPEN_SOURCE));
+    GWI_B(gwi_enum_add(gwi, (m_str)"ACTIVE_LOW", (m_uint)GPIOD_LINE_REQUEST_FLAG_ACTIVE_LOW));
+    GWI_B(gwi_enum_add(gwi, (m_str)"BIAS_DISABLE", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_DISABLE));
+    GWI_B(gwi_enum_add(gwi, (m_str)"BIAS_PULL_DOWN", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_DOWN));
+    GWI_B(gwi_enum_add(gwi, (m_str)"BIAS_PULL_UP", (m_uint)GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP));
+    GWI_B(gwi_enum_end(gwi));
 
-    CHECK_BB(gwi_enum_ini(gwi, (m_str)"EvType"));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"RISING_EDGE", (m_uint)GPIOD_LINE_EVENT_RISING_EDGE));
-    CHECK_BB(gwi_enum_add(gwi, (m_str)"FALLING_EDGE", (m_uint)GPIOD_LINE_EVENT_FALLING_EDGE));
-    CHECK_OB(gwi_enum_end(gwi));
+    GWI_B(gwi_enum_ini(gwi, (m_str)"EvType"));
+    GWI_B(gwi_enum_add(gwi, (m_str)"RISING_EDGE", (m_uint)GPIOD_LINE_EVENT_RISING_EDGE));
+    GWI_B(gwi_enum_add(gwi, (m_str)"FALLING_EDGE", (m_uint)GPIOD_LINE_EVENT_FALLING_EDGE));
+    GWI_B(gwi_enum_end(gwi));
 
     gwidoc(gwi, "Open a gpiochip using smart function.");
-    CHECK_BB(gwi_func_ini(gwi, "auto", "new"));
-    CHECK_BB(gwi_func_arg(gwi, "string", "path"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_new, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "auto", "new"));
+    GWI_B(gwi_func_arg(gwi, "string", "path"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_new, ae_flag_none));
 
     gwidoc(gwi, "Open a gpiochip by path.");
-    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_path"));
-    CHECK_BB(gwi_func_arg(gwi, "string", "path"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_path, ae_flag_static));
+    GWI_B(gwi_func_ini(gwi, "Gpio", "open_by_path"));
+    GWI_B(gwi_func_arg(gwi, "string", "path"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_open_by_path, ae_flag_static));
 
     gwidoc(gwi, "Open a gpiochip by name.");
-    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_name"));
-    CHECK_BB(gwi_func_arg(gwi, "string", "name"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_name, ae_flag_static));
+    GWI_B(gwi_func_ini(gwi, "Gpio", "open_by_name"));
+    GWI_B(gwi_func_arg(gwi, "string", "name"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_open_by_name, ae_flag_static));
 
     gwidoc(gwi, "Open a gpiochip by label.");
-    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_label"));
-    CHECK_BB(gwi_func_arg(gwi, "string", "label"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_label, ae_flag_static));
+    GWI_B(gwi_func_ini(gwi, "Gpio", "open_by_label"));
+    GWI_B(gwi_func_arg(gwi, "string", "label"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_open_by_label, ae_flag_static));
 
     gwidoc(gwi, "Open a gpiochip by number.");
-    CHECK_BB(gwi_func_ini(gwi, "Gpio", "open_by_label"));
-    CHECK_BB(gwi_func_arg(gwi, "string", "label"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_open_by_number, ae_flag_static));
+    GWI_B(gwi_func_ini(gwi, "Gpio", "open_by_label"));
+    GWI_B(gwi_func_arg(gwi, "string", "label"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_open_by_number, ae_flag_static));
 
     gwidoc(gwi, "Get the GPIO chip name as represented in the kernel.");
-    CHECK_BB(gwi_func_ini(gwi, "string", "name"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_name, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "string", "name"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_name, ae_flag_none));
 
     gwidoc(gwi, "Get the GPIO chip label as represented in the kernel.");
-    CHECK_BB(gwi_func_ini(gwi, "string", "label"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_label, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "string", "label"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_label, ae_flag_none));
 
     gwidoc(gwi, "Get the number of GPIO lines exposed by this chip.");
-    CHECK_BB(gwi_func_ini(gwi, "int", "num_lines"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_num_lines, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "int", "num_lines"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_num_lines, ae_flag_none));
 
     gwidoc(gwi, "Structure holding event info.");
     const Type t_lineev = gwi_class_ini(gwi, "LineEv", "Object");
     t_lineev->nspc->offset += sizeof(struct gpiod_line_event);
     SET_FLAG(t_lineev, abstract | ae_flag_final);
 
-      CHECK_BB(gwi_func_ini(gwi, "dur", "ts"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_ts_get, ae_flag_none));
-      CHECK_BB(gwi_func_ini(gwi, "EvType", "event_type"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_event_type_get, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "dur", "ts"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_event_ts_get, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "EvType", "event_type"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_event_event_type_get, ae_flag_none));
 
-    CHECK_BB(gwi_class_end(gwi)); // LineEv
+    GWI_B(gwi_class_end(gwi)); // LineEv
 
-    DECL_OB(const Type, t_line, = gwi_class_ini(gwi, "Line", "Object"));
+    DECL_B(const Type, t_line, = gwi_class_ini(gwi, "Line", "Object"));
     t_line->nspc->offset += SZ_INT;
     SET_FLAG(t_line, abstract);
 
       gwidoc(gwi, "Read the GPIO line offset.");
-      CHECK_BB(gwi_func_ini(gwi, "int", "offset"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_offset, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "int", "offset"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_offset, ae_flag_none));
 
       gwidoc(gwi, "Read the GPIO line name.");
-      CHECK_BB(gwi_func_ini(gwi, "string", "name"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_name, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "string", "name"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_name, ae_flag_none));
 
       gwidoc(gwi, "Read the GPIO line consumer name.");
-      CHECK_BB(gwi_func_ini(gwi, "string", "consumer"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_consumer, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "string", "consumer"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_consumer, ae_flag_none));
 
       gwidoc(gwi, "Read current value of a single GPIO line.");
-      CHECK_BB(gwi_func_ini(gwi, "int", "value"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_get_value, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "int", "value"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_get_value, ae_flag_none));
 
       gwidoc(gwi, "Set the value of a single GPIO line.");
-      CHECK_BB(gwi_func_ini(gwi, "int", "value"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "value"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_value, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "int", "value"));
+      GWI_B(gwi_func_arg(gwi, "int", "value"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_value, ae_flag_none));
 
       gwidoc(gwi, "Read the GPIO line direction setting.");
-      CHECK_BB(gwi_func_ini(gwi, "Direction", "direction"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_direction, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "Direction", "direction"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_direction, ae_flag_none));
 
       gwidoc(gwi, "Read the GPIO line state setting.");
-      CHECK_BB(gwi_func_ini(gwi, "State", "state"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_state, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "State", "state"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_state, ae_flag_none));
 
       gwidoc(gwi, "Read the GPIO line bias setting.");
-      CHECK_BB(gwi_func_ini(gwi, "Bias", "bias"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bias, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "Bias", "bias"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_bias, ae_flag_none));
 
       gwidoc(gwi, "Check if the line is currently in use.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "is_used"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_used, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "bool", "is_used"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_is_used, ae_flag_none));
 
       gwidoc(gwi, "Check if the line is a open drain gpio.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "is_open_drain"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_open_drain, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "bool", "is_open_drain"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_is_open_drain, ae_flag_none));
 
       gwidoc(gwi, "Check if the line is a open source gpio.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "is_open_source"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_open_source, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "bool", "is_open_source"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_is_open_source, ae_flag_none));
 
       gwidoc(gwi, "Update the configuration flags of a single GPIO line.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "flags"));
-      CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_flags, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "flags"));
+      GWI_B(gwi_func_arg(gwi, "Flag", "flags"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_flags, ae_flag_none));
 
       /*gwidoc(gwi, "Get the handle to the GPIO chip controlling this line.");
-      CHECK_BB(gwi_func_ini(gwi, "Gpio", "get_chip"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_get_chip, ae_flag_none));*/
+      GWI_B(gwi_func_ini(gwi, "Gpio", "get_chip"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_get_chip, ae_flag_none));*/
 
       #define mk_request(name, f, doc)                                      \
       gwidoc(gwi, doc);                                                     \
-      CHECK_BB(gwi_func_ini(gwi, "void", #name));                           \
-      CHECK_BB(gwi_func_arg(gwi, "string", "consumer"));                    \
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_request_##f, ae_flag_none)); \
+      GWI_B(gwi_func_ini(gwi, "void", #name));                           \
+      GWI_B(gwi_func_arg(gwi, "string", "consumer"));                    \
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_request_##f, ae_flag_none)); \
       gwidoc(gwi, doc);    \
-      CHECK_BB(gwi_func_ini(gwi, "void", #name));\
-      CHECK_BB(gwi_func_arg(gwi, "string", "consumer"));\
-      CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));\
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_request_##f##_flags, ae_flag_none)); \
+      GWI_B(gwi_func_ini(gwi, "void", #name));\
+      GWI_B(gwi_func_arg(gwi, "string", "consumer"));\
+      GWI_B(gwi_func_arg(gwi, "Flag", "flags"));\
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_request_##f##_flags, ae_flag_none)); \
 
       mk_request(input, input, "Reserve and set the direction to input.");
       mk_request(rising, rising_edge_events, "Request rising edge event.");
@@ -732,76 +732,76 @@ GWION_IMPORT(Gpio) {
       mk_request(both_edges, both_edges_events, "Request all type events.");
 
       gwidoc(gwi, "Reserve and set the direction to output.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "output"));
-      CHECK_BB(gwi_func_arg(gwi, "string", "consumer"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "default_val"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_request_output, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "output"));
+      GWI_B(gwi_func_arg(gwi, "string", "consumer"));
+      GWI_B(gwi_func_arg(gwi, "int", "default_val"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_request_output, ae_flag_none));
 
       gwidoc(gwi, "Reserve a single line, set the direction to output.  ");
-      CHECK_BB(gwi_func_ini(gwi, "void", "output"));
-      CHECK_BB(gwi_func_arg(gwi, "string", "consumer"));
-      CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "default_val"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_request_output_flags, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "output"));
+      GWI_B(gwi_func_arg(gwi, "string", "consumer"));
+      GWI_B(gwi_func_arg(gwi, "Flag", "flags"));
+      GWI_B(gwi_func_arg(gwi, "int", "default_val"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_request_output_flags, ae_flag_none));
 
       gwidoc(gwi, "Update the configuration of a single GPIO line.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "config"));
-      CHECK_BB(gwi_func_arg(gwi, "Direction", "state"));
-      CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "value"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_config, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "config"));
+      GWI_B(gwi_func_arg(gwi, "Direction", "state"));
+      GWI_B(gwi_func_arg(gwi, "Flag", "flags"));
+      GWI_B(gwi_func_arg(gwi, "int", "value"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_config, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a single GPIO line to input.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "set_input"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_input, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "set_input"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_direction_input, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a single GPIO line to output.");
-      CHECK_BB(gwi_func_ini(gwi, "int", "set_output"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "value"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_output, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "int", "set_output"));
+      GWI_B(gwi_func_arg(gwi, "int", "value"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_direction_output, ae_flag_none));
 
       gwidoc(gwi, "Wait for an event on a single line.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "wait"));
-      CHECK_BB(gwi_func_arg(gwi, "dur", "timeout"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_wait, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "wait"));
+      GWI_B(gwi_func_arg(gwi, "dur", "timeout"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_event_wait, ae_flag_none));
 
       gwidoc(gwi, "Release a previously reserved line.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "release"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_release, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "release"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_release, ae_flag_none));
 
       gwidoc(gwi, "check if the calling user has ownership of the line.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "is_requested"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_requested, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "bool", "is_requested"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_is_requested, ae_flag_none));
 
       gwidoc(gwi, "check if the line is free.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "is_free"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_is_free, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "bool", "is_free"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_is_free, ae_flag_none));
 
       gwidoc(gwi, "Read next pending event from the GPIO line.  ");
-      CHECK_BB(gwi_func_ini(gwi, "LineEv", "read"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_read, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "LineEv", "read"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_event_read, ae_flag_none));
 
       gwidoc(gwi, "Read up to a certain number of events from the GPIO line.");
-      CHECK_BB(gwi_func_ini(gwi, "LineEv[]", "read"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "num_events"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_read_multiple, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "LineEv[]", "read"));
+      GWI_B(gwi_func_arg(gwi, "int", "num_events"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_event_read_multiple, ae_flag_none));
 
     gwi_class_end(gwi);
 
     gwidoc(gwi, "Get the handle to the GPIO line at given offset.");
-    CHECK_BB(gwi_func_ini(gwi, "Line", "line"));
-    CHECK_BB(gwi_func_arg(gwi, "int", "offset"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_get_line, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "Line", "line"));
+    GWI_B(gwi_func_arg(gwi, "int", "offset"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_get_line, ae_flag_none));
 
     gwidoc(gwi, "Find a Gpio line by name.");
-    CHECK_BB(gwi_func_ini(gwi, "int", "find_line"));
-    CHECK_BB(gwi_func_arg(gwi, "string", "name"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_find_line, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "int", "find_line"));
+    GWI_B(gwi_func_arg(gwi, "string", "name"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_find_line, ae_flag_none));
 
     gwidoc(gwi, "Find a set of Gpio lines by names.");
-    CHECK_BB(gwi_func_ini(gwi, "int", "find_line"));
-    CHECK_BB(gwi_func_arg(gwi, "string[]", "name"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_find_lines, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "int", "find_line"));
+    GWI_B(gwi_func_arg(gwi, "string[]", "name"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_find_lines, ae_flag_none));
 
     gwidoc(gwi, "Holds several lines");
     const Type t_bulk = gwi_class_ini(gwi, "Bulk", "Object");
@@ -809,18 +809,18 @@ GWION_IMPORT(Gpio) {
     SET_FLAG(t_line, abstract);
 
       gwidoc(gwi, "Reset a bulk object. Remove all lines and set size to 0.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "reset"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bulk_reset, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "reset"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_bulk_reset, ae_flag_none));
 
       // use <<
       gwidoc(gwi, "Add a single line to a GPIO bulk object.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "add_line"));
-      CHECK_BB(gwi_func_arg(gwi, "Line", "line"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bulk_add_line, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "add_line"));
+      GWI_B(gwi_func_arg(gwi, "Line", "line"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_bulk_add_line, ae_flag_none));
 
       gwidoc(gwi, "Retrieve the number of GPIO lines held by this line bulk object.");
-      CHECK_BB(gwi_func_ini(gwi, "int", "num_lines"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bulk_num_lines, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "int", "num_lines"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_bulk_num_lines, ae_flag_none));
 
       mk_request(input, bulk_input, "Reserve and set the direction to input.");
       mk_request(rising, bulk_rising_edge_events, "Request rising edge event.");
@@ -828,69 +828,69 @@ GWION_IMPORT(Gpio) {
       mk_request(both_edges, bulk_both_edges_events, "Request all type events.");
 
       gwidoc(gwi, "Reserve a set of GPIO lines, set the direction to output.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "output"));
-      CHECK_BB(gwi_func_arg(gwi, "string", "consumer"));
-      CHECK_BB(gwi_func_arg(gwi, "u32[]", "default_vals"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_request_bulk_output, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "output"));
+      GWI_B(gwi_func_arg(gwi, "string", "consumer"));
+      GWI_B(gwi_func_arg(gwi, "u32[]", "default_vals"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_request_bulk_output, ae_flag_none));
 
       gwidoc(gwi, "Update the configuration of a set of GPIO lines.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "config"));
-      CHECK_BB(gwi_func_arg(gwi, "Direction", "state"));
-      CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
-      CHECK_BB(gwi_func_arg(gwi, "u32[]", "values"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_config_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "config"));
+      GWI_B(gwi_func_arg(gwi, "Direction", "state"));
+      GWI_B(gwi_func_arg(gwi, "Flag", "flags"));
+      GWI_B(gwi_func_arg(gwi, "u32[]", "values"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_config_bulk, ae_flag_none));
 
       gwidoc(gwi, "Reserve a set of GPIO lines, set the direction to output.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "output"));
-      CHECK_BB(gwi_func_arg(gwi, "string", "consumer"));
-      CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
-      CHECK_BB(gwi_func_arg(gwi, "u32[]", "default_vals"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_request_bulk_output_flags, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "output"));
+      GWI_B(gwi_func_arg(gwi, "string", "consumer"));
+      GWI_B(gwi_func_arg(gwi, "Flag", "flags"));
+      GWI_B(gwi_func_arg(gwi, "u32[]", "default_vals"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_request_bulk_output_flags, ae_flag_none));
 
       gwidoc(gwi, "Update the configuration flags of a set of GPIO lines.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "flags"));
-      CHECK_BB(gwi_func_arg(gwi, "Flag", "flags"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_flags_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "flags"));
+      GWI_B(gwi_func_arg(gwi, "Flag", "flags"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_flags_bulk, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a set of GPIO lines to input.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "set_input"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_input_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "set_input"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_direction_input_bulk, ae_flag_none));
 
       gwidoc(gwi, "Read current values of a set of GPIO lines.");
-      CHECK_BB(gwi_func_ini(gwi, "u32[]", "value"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_get_value_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "u32[]", "value"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_get_value_bulk, ae_flag_none));
 
       gwidoc(gwi, "Set the values of a set of GPIO lines.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "value"));
-      CHECK_BB(gwi_func_arg(gwi, "u32[]", "values"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_value_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "value"));
+      GWI_B(gwi_func_arg(gwi, "u32[]", "values"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_value_bulk, ae_flag_none));
 
       gwidoc(gwi, "Set the direction of a set of GPIO lines to output.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "set_output"));
-      CHECK_BB(gwi_func_arg(gwi, "u32[]", "values"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_set_direction_output_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "set_output"));
+      GWI_B(gwi_func_arg(gwi, "u32[]", "values"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_set_direction_output_bulk, ae_flag_none));
 
       gwidoc(gwi, "Release a set of previously reserved lines.  ");
-      CHECK_BB(gwi_func_ini(gwi, "void", "release"));
-      CHECK_BB(gwi_func_arg(gwi, "Bulk", "bulk"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_release_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "release"));
+      GWI_B(gwi_func_arg(gwi, "Bulk", "bulk"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_release_bulk, ae_flag_none));
 
       gwidoc(gwi, "Retrieve the line handle from a line bulk object at given index.  ");
-      CHECK_BB(gwi_func_ini(gwi, "Line", "get_line"));
-      CHECK_BB(gwi_func_arg(gwi, "int", "index"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bulk_get_line, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "Line", "get_line"));
+      GWI_B(gwi_func_arg(gwi, "int", "index"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_bulk_get_line, ae_flag_none));
 
       gwidoc(gwi, "Wait for events on a set of lines.");
-      CHECK_BB(gwi_func_ini(gwi, "void", "wait"));
-      CHECK_BB(gwi_func_arg(gwi, "dur", "timeout"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_wait_bulk, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "void", "wait"));
+      GWI_B(gwi_func_arg(gwi, "dur", "timeout"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_event_wait_bulk, ae_flag_none));
 /*
 
       gwidoc(gwi, "Wait for events on a set of lines.");
-      CHECK_BB(gwi_func_ini(gwi, "bool", "wait"));
-      CHECK_BB(gwi_func_arg(gwi, "dur", "timeout"));
-      CHECK_BB(gwi_func_arg(gwi, "Bulk", "event_bulk"));
-      CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_event_wait_bulk2, ae_flag_none));
+      GWI_B(gwi_func_ini(gwi, "bool", "wait"));
+      GWI_B(gwi_func_arg(gwi, "dur", "timeout"));
+      GWI_B(gwi_func_arg(gwi, "Bulk", "event_bulk"));
+      GWI_B(gwi_func_end(gwi, gw_gpiod_line_event_wait_bulk2, ae_flag_none));
 */
     gwi_class_end(gwi);
 
@@ -898,31 +898,31 @@ GWION_IMPORT(Gpio) {
 
   // implement foreach instead?
   gwidoc(gwi, "Iterate over all lines held by this bulk object.  ");
-  CHECK_BB(gwi_func_ini(gwi, "void", "gpiod_line_bulk_foreach_line"));
-  CHECK_BB(gwi_func_arg(gwi, "int (gpiod_line *,void *)", "func"));
-  CHECK_BB(gwi_func_arg(gwi, "void", "data"));
-  CHECK_BB(gwi_func_end(gwi, gw_gpiod_line_bulk_foreach_line, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "void", "gpiod_line_bulk_foreach_line"));
+  GWI_B(gwi_func_arg(gwi, "int (gpiod_line *,void *)", "func"));
+  GWI_B(gwi_func_arg(gwi, "void", "data"));
+  GWI_B(gwi_func_end(gwi, gw_gpiod_line_bulk_foreach_line, ae_flag_none));
 */
     gwidoc(gwi, "Retrieve a set of lines and store them in a line bulk object.");
-    CHECK_BB(gwi_func_ini(gwi, "Bulk", "lines"));
-    CHECK_BB(gwi_func_arg(gwi, "u32[]", "offsets"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_get_lines, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "Bulk", "lines"));
+    GWI_B(gwi_func_arg(gwi, "u32[]", "offsets"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_get_lines, ae_flag_none));
 
     gwidoc(gwi, "Retrieve all lines exposed by a chip and store them in a bulk object.");
-    CHECK_BB(gwi_func_ini(gwi, "Bulk", "lines"));
-    CHECK_BB(gwi_func_end(gwi, gw_gpiod_chip_get_all_lines, ae_flag_none));
+    GWI_B(gwi_func_ini(gwi, "Bulk", "lines"));
+    GWI_B(gwi_func_end(gwi, gw_gpiod_chip_get_all_lines, ae_flag_none));
 
-  GWI_BB(gwi_class_end(gwi));
-
-  gwidoc(gwi, "Wait for an event");
-  CHECK_BB(gwi_oper_ini(gwi, "Gpio.Line", "@now", "void"));
-  CHECK_BB(gwi_oper_end(gwi, "=>", line2now));
+  GWI_B(gwi_class_end(gwi));
 
   gwidoc(gwi, "Wait for an event");
-  CHECK_BB(gwi_oper_ini(gwi, "Gpio.Bulk", "@now", "void"));
-  CHECK_BB(gwi_oper_end(gwi, "=>", bulk2now));
+  GWI_B(gwi_oper_ini(gwi, "Gpio.Line", "@now", "void"));
+  GWI_B(gwi_oper_end(gwi, "=>", line2now));
+
+  gwidoc(gwi, "Wait for an event");
+  GWI_B(gwi_oper_ini(gwi, "Gpio.Bulk", "@now", "void"));
+  GWI_B(gwi_oper_end(gwi, "=>", bulk2now));
 
   // bulk array access?
   // bulk << line?
-  return GW_OK;
+  return true;
 }

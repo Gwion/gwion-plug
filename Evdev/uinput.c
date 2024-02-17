@@ -46,22 +46,22 @@ static MFUN(uinput_write) {
     libevdev_uinput_write_event(uidev, type, code, value): -1;
 }
 
-ANN m_bool import_uinput(const Gwi gwi) {
-  DECL_OB(const Type, t_uinput, = gwi_class_ini(gwi, "Uinput", NULL));
+GWION_IMPORT(uinput) {
+  DECL_B(const Type, t_uinput, = gwi_class_ini(gwi, "Uinput", NULL));
   gwi_class_xtor(gwi, NULL, uinput_dtor);
   SET_FLAG(t_uinput, abstract);
   t_uinput->nspc->offset += SZ_INT;
-  GWI_BB(gwi_func_ini(gwi, "int", "fd"))
-  GWI_BB(gwi_func_end(gwi, uinput_fd, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "string", "syspath"))
-  GWI_BB(gwi_func_end(gwi, uinput_syspath, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "string", "devnode"))
-  GWI_BB(gwi_func_end(gwi, uinput_devnode, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "string", "write"))
-  GWI_BB(gwi_func_arg(gwi, "int", "type"))
-  GWI_BB(gwi_func_arg(gwi, "int", "code"))
-  GWI_BB(gwi_func_arg(gwi, "int", "value"))
-  GWI_BB(gwi_func_end(gwi, uinput_write, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_func_ini(gwi, "int", "fd"))
+  GWI_B(gwi_func_end(gwi, uinput_fd, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "syspath"))
+  GWI_B(gwi_func_end(gwi, uinput_syspath, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "devnode"))
+  GWI_B(gwi_func_end(gwi, uinput_devnode, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "write"))
+  GWI_B(gwi_func_arg(gwi, "int", "type"))
+  GWI_B(gwi_func_arg(gwi, "int", "code"))
+  GWI_B(gwi_func_arg(gwi, "int", "value"))
+  GWI_B(gwi_func_end(gwi, uinput_write, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

@@ -298,59 +298,59 @@ extern "C" {
 
 GWION_IMPORT(SimdJSON) {
 vector_init(&parser_vector);
-  GWI_OB(gwi_struct_ini(gwi, (m_str)"SimdJSON"));
+  GWI_B(gwi_struct_ini(gwi, (m_str)"SimdJSON"));
 
-  DECL_OB(const Type, t_json_array, = gwi_class_ini(gwi, "array", "Object"));
+  DECL_B(const Type, t_json_array, = gwi_class_ini(gwi, "array", "Object"));
   t_json_array->nspc->offset += sizeof(dom::array) + sizeof(uint32_t);
   SET_FLAG(t_json_array, abstract);
   gwi_class_xtor(gwi, NULL, json_dtor);
-  GWI_BB(gwi_func_ini(gwi, "int", "size"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)json_array_size, ae_flag_none))
-  GWI_BB(gwi_func_ini(gwi, "string", "pp"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)json_array_pp, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_ini(gwi, "int", "size"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)json_array_size, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "pp"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)json_array_pp, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_json_object, = gwi_class_ini(gwi, "object", "Object"));
+  DECL_B(const Type, t_json_object, = gwi_class_ini(gwi, "object", "Object"));
   t_json_object->nspc->offset += sizeof(dom::object) + sizeof(uint32_t);
   SET_FLAG(t_json_object, abstract);
   gwi_class_xtor(gwi, NULL, json_dtor);
-  GWI_BB(gwi_func_ini(gwi, "string", "pp"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)json_object_pp, ae_flag_none))
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_func_ini(gwi, "string", "pp"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)json_object_pp, ae_flag_none))
+  GWI_B(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_json_element, = gwi_class_ini(gwi, "element", "Object"));
+  DECL_B(const Type, t_json_element, = gwi_class_ini(gwi, "element", "Object"));
   t_json_element->nspc->offset += sizeof(dom::element) + sizeof(uint32_t);
   SET_FLAG(t_json_element, abstract);
   gwi_class_xtor(gwi, NULL, json_dtor);
 
-  GWI_BB(gwi_enum_ini(gwi, (m_str)"type"));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"ARRAY", (m_uint)dom::element_type::ARRAY));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"OBJECT", (m_uint)dom::element_type::OBJECT));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"INT64", (m_uint)dom::element_type::INT64));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"UINT64", (m_uint)dom::element_type::UINT64));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"DOUBLE", (m_uint)dom::element_type::DOUBLE));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"OBJECT", (m_uint)dom::element_type::OBJECT));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"STRING", (m_uint)dom::element_type::STRING));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"BOOL", (m_uint)dom::element_type::BOOL));
-  GWI_BB(gwi_enum_add(gwi, (m_str)"NULL_VALUE", (m_uint)dom::element_type::NULL_VALUE));
-  GWI_OB(gwi_enum_end(gwi));
+  GWI_B(gwi_enum_ini(gwi, (m_str)"type"));
+  GWI_B(gwi_enum_add(gwi, (m_str)"ARRAY", (m_uint)dom::element_type::ARRAY));
+  GWI_B(gwi_enum_add(gwi, (m_str)"OBJECT", (m_uint)dom::element_type::OBJECT));
+  GWI_B(gwi_enum_add(gwi, (m_str)"INT64", (m_uint)dom::element_type::INT64));
+  GWI_B(gwi_enum_add(gwi, (m_str)"UINT64", (m_uint)dom::element_type::UINT64));
+  GWI_B(gwi_enum_add(gwi, (m_str)"DOUBLE", (m_uint)dom::element_type::DOUBLE));
+  GWI_B(gwi_enum_add(gwi, (m_str)"OBJECT", (m_uint)dom::element_type::OBJECT));
+  GWI_B(gwi_enum_add(gwi, (m_str)"STRING", (m_uint)dom::element_type::STRING));
+  GWI_B(gwi_enum_add(gwi, (m_str)"BOOL", (m_uint)dom::element_type::BOOL));
+  GWI_B(gwi_enum_add(gwi, (m_str)"NULL_VALUE", (m_uint)dom::element_type::NULL_VALUE));
+  GWI_B(gwi_enum_end(gwi));
 
-  GWI_BB(gwi_func_ini(gwi, "type", "get_type"));
-  GWI_BB(gwi_func_end(gwi, json_element_type, ae_flag_none));
-  GWI_BB(gwi_func_ini(gwi, "string", "pp"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)json_elem_pp, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "type", "get_type"));
+  GWI_B(gwi_func_end(gwi, json_element_type, ae_flag_none));
+  GWI_B(gwi_func_ini(gwi, "string", "pp"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)json_elem_pp, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "T", "hydrate:[T]"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)Hydrate, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "T", "hydrate:[T]"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)Hydrate, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 #define import_arg(type, name)          \
-  GWI_BB(gwi_func_arg(gwi, type, name))
+  GWI_B(gwi_func_arg(gwi, type, name))
 
 #define _import_args(target, action, name, args)          \
-  GWI_BB(gwi_func_ini(gwi, #name, #action "_" #name) )                  \
+  GWI_B(gwi_func_ini(gwi, #name, #action "_" #name) )                  \
   args \
-  GWI_BB(gwi_func_end(gwi, (f_xfun)target##_##action##name, ae_flag_none))
+  GWI_B(gwi_func_end(gwi, (f_xfun)target##_##action##name, ae_flag_none))
 
 #define _import_as(name) _import_args(json_element, as, name,)
 #define _import_get(name) _import_args(json_object, get, name, import_arg("string", "key"))
@@ -374,33 +374,33 @@ def(element);\
   import_all(json_object, _import_get);
   import_all(json_element, _import_as);
 
-  GWI_BB(gwi_func_ini(gwi, "element", "load"))
-  GWI_BB(gwi_func_arg(gwi, "string", "path"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_load, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "element", "load"))
+  GWI_B(gwi_func_arg(gwi, "string", "path"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)simdjson_load, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "element", "parse"))
-  GWI_BB(gwi_func_arg(gwi, "string", "data"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)simdjson_parse, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "element", "parse"))
+  GWI_B(gwi_func_arg(gwi, "string", "data"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)simdjson_parse, ae_flag_static))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "tojson"))
-  GWI_BB(gwi_func_arg(gwi, "Object", "o"))
-  GWI_BB(gwi_func_end(gwi, (f_xfun)ToJson, ae_flag_static))
+  GWI_B(gwi_func_ini(gwi, "string", "tojson"))
+  GWI_B(gwi_func_arg(gwi, "Object", "o"))
+  GWI_B(gwi_func_end(gwi, (f_xfun)ToJson, ae_flag_static))
 
-  GWI_BB(gwi_struct_end(gwi))
+  GWI_B(gwi_struct_end(gwi))
 
-  GWI_BB(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "void"))
-  GWI_BB(gwi_oper_emi(gwi, opem_json_array_each_init));
-  GWI_BB(gwi_oper_end(gwi, "@each_init", NULL));
-  GWI_BB(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "int"))
-  GWI_BB(gwi_oper_emi(gwi, opem_json_array_each));
-  GWI_BB(gwi_oper_end(gwi, "@each", NULL));
-  GWI_BB(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "SimdJSON.element"))
-  GWI_BB(gwi_oper_add(gwi, opck_json_array_each_val));
-  GWI_BB(gwi_oper_end(gwi, "@each_val", NULL));
-  GWI_BB(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "int"))
-  GWI_BB(gwi_oper_end(gwi, "@each_idx", NULL));
+   GWI_B(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "void"))
+   GWI_B(gwi_oper_emi(gwi, opem_json_array_each_init));
+   GWI_B(gwi_oper_end(gwi, "@each_init", NULL));
+   GWI_B(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "int"))
+   GWI_B(gwi_oper_emi(gwi, opem_json_array_each));
+   GWI_B(gwi_oper_end(gwi, "@each", NULL));
+   GWI_B(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "SimdJSON.element"))
+   GWI_B(gwi_oper_add(gwi, opck_json_array_each_val));
+   GWI_B(gwi_oper_end(gwi, "@each_val", NULL));
+   GWI_B(gwi_oper_ini(gwi, "SimdJSON.array", NULL, "int"))
+   GWI_B(gwi_oper_end(gwi, "@each_idx", NULL));
 
-  return GW_OK;
+  return true;
 }
 }
 // T hydrate:[T : Codable]() or smth

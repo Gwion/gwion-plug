@@ -255,94 +255,94 @@ extern "C" {
 GWION_IMPORT(RtMidi) {
   #define import_ctor(io)                                     \
   gwidoc(gwi, "open default device");                         \
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))                    \
-  GWI_BB(gwi_func_end(gwi, rtmidi##io##_new0, ae_flag_none))  \
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))                    \
+  GWI_B(gwi_func_end(gwi, rtmidi##io##_new0, ae_flag_none))  \
                                                               \
   gwidoc(gwi, "open device at port n");                       \
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))                    \
-  GWI_BB(gwi_func_arg(gwi, "int", "n"))                       \
-  GWI_BB(gwi_func_end(gwi, rtmidi##io##_new1, ae_flag_none))  \
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))                    \
+  GWI_B(gwi_func_arg(gwi, "int", "n"))                       \
+  GWI_B(gwi_func_end(gwi, rtmidi##io##_new1, ae_flag_none))  \
                                                               \
   gwidoc(gwi, "open device at port n and set port name");     \
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))                    \
-  GWI_BB(gwi_func_arg(gwi, "int", "n"))                       \
-  GWI_BB(gwi_func_arg(gwi, "string", "name"))                 \
-  GWI_BB(gwi_func_end(gwi, rtmidi##io##_new2, ae_flag_none))  \
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))                    \
+  GWI_B(gwi_func_arg(gwi, "int", "n"))                       \
+  GWI_B(gwi_func_arg(gwi, "string", "name"))                 \
+  GWI_B(gwi_func_end(gwi, rtmidi##io##_new2, ae_flag_none))  \
                                                               \
   gwidoc(gwi, "open virtual device");                         \
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"))                    \
-  GWI_BB(gwi_func_arg(gwi, "string", "name"))                 \
-  GWI_BB(gwi_func_end(gwi, rtmidi##io##_new3, ae_flag_none))  \
+  GWI_B(gwi_func_ini(gwi, "auto", "new"))                    \
+  GWI_B(gwi_func_arg(gwi, "string", "name"))                 \
+  GWI_B(gwi_func_end(gwi, rtmidi##io##_new3, ae_flag_none))  \
 
   #define import_static(io)                                     \
   gwidoc(gwi, "returns device name at port n");                 \
-  GWI_BB(gwi_func_ini(gwi, "string", "name"))                   \
-  GWI_BB(gwi_func_arg(gwi, "int", "port"))                      \
-  GWI_BB(gwi_func_end(gwi, rtmidi##io##_name, ae_flag_static))  \
+  GWI_B(gwi_func_ini(gwi, "string", "name"))                   \
+  GWI_B(gwi_func_arg(gwi, "int", "port"))                      \
+  GWI_B(gwi_func_end(gwi, rtmidi##io##_name, ae_flag_static))  \
                                                                 \
   gwidoc(gwi, "return a list of device names");                 \
-  GWI_BB(gwi_func_ini(gwi, "string[]", "names"))                \
-  GWI_BB(gwi_func_end(gwi, rtmidi##io##_names, ae_flag_static)) \
+  GWI_B(gwi_func_ini(gwi, "string[]", "names"))                \
+  GWI_B(gwi_func_end(gwi, rtmidi##io##_names, ae_flag_static)) \
                                                                 \
   gwidoc(gwi, "count devices");                                 \
-  GWI_BB(gwi_func_ini(gwi, "int", "count"))                     \
-  GWI_BB(gwi_func_end(gwi, rtmidi##io##_count, ae_flag_static)) \
+  GWI_B(gwi_func_ini(gwi, "int", "count"))                     \
+  GWI_B(gwi_func_end(gwi, rtmidi##io##_count, ae_flag_static)) \
 
   #define import_common(io) import_ctor(io); import_static(io);
 
-  GWI_OB(gwi_struct_ini(gwi, (m_str)"RtMidi"));
+  GWI_B(gwi_struct_ini(gwi, (m_str)"RtMidi"));
 
-  DECL_OB(const Type, t_rtmidiout, = gwi_class_ini(gwi, "Out", "int[0]"));
+  DECL_B(const Type, t_rtmidiout, = gwi_class_ini(gwi, "Out", "int[0]"));
   SET_FLAG(t_rtmidiout, abstract | ae_flag_final);
   gwi_class_xtor(gwi, NULL, rtmidiout_dtor);
   t_rtmidiout->nspc->offset += SZ_INT;
   import_common(out);
 
   gwidoc(gwi, "send a midi message");
-  GWI_BB(gwi_func_ini(gwi, "void", "send"))
-  GWI_BB(gwi_func_end(gwi, rtmidiout_send, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "send"))
+  GWI_B(gwi_func_end(gwi, rtmidiout_send, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  DECL_OB(const Type, t_rtmidiin, = gwi_class_ini(gwi, "In", "Event"));
+  DECL_B(const Type, t_rtmidiin, = gwi_class_ini(gwi, "In", "Event"));
   SET_FLAG(t_rtmidiin, abstract | ae_flag_final);
   gwi_class_xtor(gwi, NULL, rtmidiin_dtor);
   t_rtmidiin->nspc->offset += sizeof(struct MidiIn);
   import_common(in);
 
   gwidoc(gwi, "read a midi message, return true if there's messages left");
-  GWI_BB(gwi_func_ini(gwi, "bool", "read"))
-  GWI_BB(gwi_func_arg(gwi, "&int", "status"))
-  GWI_BB(gwi_func_arg(gwi, "&int", "data1"))
-  GWI_BB(gwi_func_arg(gwi, "&int", "data2"))
-  GWI_BB(gwi_func_end(gwi, rtmidiin_read, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "bool", "read"))
+  GWI_B(gwi_func_arg(gwi, "&int", "status"))
+  GWI_B(gwi_func_arg(gwi, "&int", "data1"))
+  GWI_B(gwi_func_arg(gwi, "&int", "data2"))
+  GWI_B(gwi_func_end(gwi, rtmidiin_read, ae_flag_none))
 
   gwidoc(gwi, "ignore (or not) sysex, midiTime and MidiSense");
-  GWI_BB(gwi_func_ini(gwi, "void", "ignore"))
-  GWI_BB(gwi_func_arg(gwi, "bool", "sysex"))
-  GWI_BB(gwi_func_arg(gwi, "bool", "midiTime"))
-  GWI_BB(gwi_func_arg(gwi, "bool", "midiSense"))
-  GWI_BB(gwi_func_end(gwi, rtmidiin_ignore, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "ignore"))
+  GWI_B(gwi_func_arg(gwi, "bool", "sysex"))
+  GWI_B(gwi_func_arg(gwi, "bool", "midiTime"))
+  GWI_B(gwi_func_arg(gwi, "bool", "midiSense"))
+  GWI_B(gwi_func_end(gwi, rtmidiin_ignore, ae_flag_none))
 
   gwidoc(gwi, "set midi-thru");
-  GWI_BB(gwi_func_ini(gwi, "void", "connect"))
-  GWI_BB(gwi_func_arg(gwi, "Out", "out"))
-  GWI_BB(gwi_func_end(gwi, rtmidiin_connect, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "connect"))
+  GWI_B(gwi_func_arg(gwi, "Out", "out"))
+  GWI_B(gwi_func_end(gwi, rtmidiin_connect, ae_flag_none))
 
   gwidoc(gwi, "unset midi-thru");
-  GWI_BB(gwi_func_ini(gwi, "void", "disconnect"))
-  GWI_BB(gwi_func_arg(gwi, "Out", "out"))
-  GWI_BB(gwi_func_end(gwi, rtmidiin_disconnect, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "void", "disconnect"))
+  GWI_B(gwi_func_arg(gwi, "Out", "out"))
+  GWI_B(gwi_func_end(gwi, rtmidiin_disconnect, ae_flag_none))
 
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 
-  GWI_OB(gwi_struct_end(gwi));
+  GWI_B(gwi_struct_end(gwi));
 
   #undef import_static
   #undef import_ctor
   #undef import_common
 
-  return GW_OK;
+  return true;
 }
 }

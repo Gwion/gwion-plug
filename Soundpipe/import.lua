@@ -341,7 +341,7 @@ print("  sp_data *sp = get_module(vm->gwion, \"Soundpipe\");")
 print("  if(!sp) {")
 print("    sp_createn(&sp, gwi->gwion->vm->bbq->si->out); ")
 print("    sp->sr = gwi->gwion->vm->bbq->si->sr;")
-print("    CHECK_b(set_module(vm->gwion, \"Soundpipe\", sp));") 
+print("    CHECK_B(set_module(vm->gwion, \"Soundpipe\", sp));") 
 print("  }")
 print("  const M_Object o = new_M_UGen(gwi->gwion);")
 print("  ugen_ini(gwi->gwion, UGEN(o), 1, 1);")
@@ -351,7 +351,7 @@ print("  gwi_item_ini(gwi, \"UGen\", \"@soundpipe main ugen\");")
 print("  gwi_item_end(gwi, ae_flag_late | ae_flag_const, obj, o);")
 
 print("  ugen_connect(UGEN(o), (UGen)vector_front(&vm->ugen));")
-print("  DECL_OB(const Type, t_ftbl, = gwi_class_ini(gwi, \"ftbl\", NULL));")
+print("  DECL_B(const Type, t_ftbl, = gwi_class_ini(gwi, \"ftbl\", NULL));")
 print("  gwi_class_xtor(gwi, NULL, ftbl_dtor);")
 print("  t_ftbl->nspc->offset += SZ_INT;")
 for n in ipairs(a) do
@@ -367,10 +367,10 @@ for n in ipairs(a) do
         i = i+1
       end
     end
-    print("  GWI_BB(gwi_func_end(gwi, ftbl_"..gen_name..", ae_flag_none))")
+    print("  GWI_B(gwi_func_end(gwi, ftbl_"..gen_name..", ae_flag_none))")
   end
 end
-print("  GWI_BB(gwi_class_end(gwi))\n")
+print("  GWI_B(gwi_class_end(gwi))\n")
 
 for n in ipairs(a) do
   local mod_name = a[n]
@@ -378,7 +378,7 @@ for n in ipairs(a) do
   mkdoc(object)
   if not string.match(object.modtype, "gen") and not string.match(mod_name, "foo")then
     local title = string.format("%s%s", string.upper(mod_name:sub(1, 1)), string.sub(mod_name, 2))
-    print("  DECL_OB(const Type, t_"..mod_name..", = gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"));")
+    print("  DECL_B(const Type, t_"..mod_name..", = gwi_class_ini(gwi, \""..mod_name:gsub("^%l", string.upper).."\", \"UGen\"));")
     print("  SET_FLAG(t_"..mod_name..", final);")
     print("  gwi_class_xtor(gwi, NULL, "..mod_name.."_dtor);")
     local nmandatory = 0
@@ -395,7 +395,7 @@ for n in ipairs(a) do
         declare_gw_param(v)
       end
     end
-    print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_init, ae_flag_none))")
+    print("  GWI_B(gwi_func_end(gwi, "..mod_name.."_init, ae_flag_none))")
     local tbl = object.params.optional
     if tbl then
       for _, v in pairs(tbl) do
@@ -411,7 +411,7 @@ for n in ipairs(a) do
         elseif string.match(v.type, "sp_ftbl%s%*") then
           print("  gwi_func_ini(gwi, \"ftbl\", \""..fname.."\");")
         end
-        print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_get_"..v.name..", ae_flag_none))")
+        print("  GWI_B(gwi_func_end(gwi, "..mod_name.."_get_"..v.name..", ae_flag_none))")
         if string.match(v.type, "int") then
           print("  gwi_func_ini(gwi, \"int\", \""..fname.."\");")
         elseif string.match(v.type, "SPFLOAT") then
@@ -424,10 +424,10 @@ for n in ipairs(a) do
           print("  gwi_func_ini(gwi, \"ftbl\", \""..fname.."\");")
         end
         declare_gw_param(v)
-        print("  GWI_BB(gwi_func_end(gwi, "..mod_name.."_set_"..v.name..", ae_flag_none))")
+        print("  GWI_B(gwi_func_end(gwi, "..mod_name.."_set_"..v.name..", ae_flag_none))")
       end
     end
-    print("  GWI_BB(gwi_class_end(gwi))\n")
+    print("  GWI_B(gwi_class_end(gwi))\n")
   end
 end
-print("  return GW_OK;\n}")
+print("  return true;\n}")

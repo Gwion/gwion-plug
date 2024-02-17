@@ -16,7 +16,7 @@ typedef struct sporthData {
   plumber_data pd;
   SPFLOAT in;
   m_float var;
-  m_bool parsed;
+  bool parsed;
 } sporthData;
 
 static int sporth_chuck_in(sporth_stack *stack, void *ud) {
@@ -173,38 +173,38 @@ static MFUN(sporth_parse_file) {
 }
 
 GWION_IMPORT(Sporth) {
-  GWI_OB(gwi_class_ini(gwi, "Sporth", "UGen"))
+  GWI_B(gwi_class_ini(gwi, "Sporth", "UGen"))
   gwi_class_xtor(gwi, sporth_ctor, sporth_dtor);
 
-  GWI_BB(gwi_func_ini(gwi, "float", "p"))
-  GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_arg(gwi, "float", "val"))
-  GWI_BB(gwi_func_end(gwi, sporth_setp, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "float", "p"))
+  GWI_B(gwi_func_arg(gwi, "int", "index"))
+  GWI_B(gwi_func_arg(gwi, "float", "val"))
+  GWI_B(gwi_func_end(gwi, sporth_setp, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "float", "p"))
-  GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_end(gwi, sporth_getp, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "float", "p"))
+  GWI_B(gwi_func_arg(gwi, "int", "index"))
+  GWI_B(gwi_func_end(gwi, sporth_getp, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "float", "t"))
-  GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_arg(gwi, "float", "val"))
-  GWI_BB(gwi_func_arg(gwi, "string", "table"))
-  GWI_BB(gwi_func_end(gwi, sporth_set_table, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "float", "t"))
+  GWI_B(gwi_func_arg(gwi, "int", "index"))
+  GWI_B(gwi_func_arg(gwi, "float", "val"))
+  GWI_B(gwi_func_arg(gwi, "string", "table"))
+  GWI_B(gwi_func_end(gwi, sporth_set_table, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "float", "t"))
-  GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_arg(gwi, "string", "table"))
-  GWI_BB(gwi_func_end(gwi, sporth_get_table, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "float", "t"))
+  GWI_B(gwi_func_arg(gwi, "int", "index"))
+  GWI_B(gwi_func_arg(gwi, "string", "table"))
+  GWI_B(gwi_func_end(gwi, sporth_get_table, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "parse"))
-  GWI_BB(gwi_func_arg(gwi, "string", "arg"))
-  GWI_BB(gwi_func_end(gwi, sporth_parse_string, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "parse"))
+  GWI_B(gwi_func_arg(gwi, "string", "arg"))
+  GWI_B(gwi_func_end(gwi, sporth_parse_string, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "parsefile"))
-  GWI_BB(gwi_func_arg(gwi, "string", "arg"))
-  GWI_BB(gwi_func_end(gwi, sporth_parse_file, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "parsefile"))
+  GWI_B(gwi_func_arg(gwi, "string", "arg"))
+  GWI_B(gwi_func_end(gwi, sporth_parse_file, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
   return 1;
 }
 

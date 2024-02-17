@@ -12,14 +12,10 @@
 #include "import.h"
 #include "ugen.h"
 
-static m_int o_tinysr_ev;
-static m_int o_tinysr_idx;
-static m_int o_tinysr_score;
-
-#define TINY_SR(o) *(M_Object*)((o)->data + o_tinysr_sr)
-#define TINY_EV(o) *(M_Object*)((o)->data + o_tinysr_ev)
-#define TINY_IDX(o) *(m_int*)((o)->data + o_tinysr_idx)
-#define TINY_SCORE(o) *(m_float*)((o)->data + o_tinysr_score)
+#define TINY_SR(o) *(M_Object*)((o)->data + SZ_INT)
+#define TINY_EV(o) *(M_Object*)((o)->data + SZ_INT*2)
+#define TINY_IDX(o) *(m_int*)((o)->data + SZ_INT*3)
+#define TINY_SCORE(o) *(m_float*)((o)->data + SZ_INT*4)
 
 #define READ_SAMPS 128
 
@@ -125,35 +121,35 @@ static MFUN(state) {
 }
 
 GWION_IMPORT(TinySR) {
-  GWI_OB(gwi_mk_type(gwi, "TinySR", SZ_INT, "UGen"));
+  GWI_B(gwi_mk_type(gwi, "TinySR", SZ_INT, "UGen"));
 
-  GWI_OB(gwi_class_ini(gwi, "Tinysr", "UGen"))
+  GWI_B(gwi_class_ini(gwi, "Tinysr", "UGen"));
   gwi_class_xtor(gwi, tinysr_ctor, tinysr_dtor);
 
-  GWI_BB(gwi_item_ini(gwi, "Event", "ev"))
-  GWI_BB((o_tinysr_ev = gwi_item_end(gwi, ae_flag_const, num, 0)))
+  GWI_B(gwi_item_ini(gwi, "Event", "ev"));
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0));
 
-  GWI_BB(gwi_item_ini(gwi, "int", "index"))
-  GWI_BB((o_tinysr_idx = gwi_item_end(gwi, ae_flag_const , num, 0)))
+  GWI_B(gwi_item_ini(gwi, "int", "index"));
+  GWI_B(gwi_item_end(gwi, ae_flag_const , num, 0));
 
-  GWI_BB(gwi_item_ini(gwi, "float", "score"))
-  GWI_BB((o_tinysr_score = gwi_item_end(gwi, ae_flag_const, num, 0)))
+  GWI_B(gwi_item_ini(gwi, "float", "score"))
+  GWI_B(gwi_item_end(gwi, ae_flag_const, num, 0));
 
-  GWI_BB(gwi_func_ini(gwi, "int", "load"))
-  GWI_BB(gwi_func_arg(gwi, "string", "file"))
-  GWI_BB(gwi_func_end(gwi, load, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "int", "load"))
+  GWI_B(gwi_func_arg(gwi, "string", "file"))
+  GWI_B(gwi_func_end(gwi, load, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "word"))
-  GWI_BB(gwi_func_end(gwi, word, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "word"))
+  GWI_B(gwi_func_end(gwi, word, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "string", "word"))
-  GWI_BB(gwi_func_arg(gwi, "int", "index"))
-  GWI_BB(gwi_func_end(gwi, word_index, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "string", "word"))
+  GWI_B(gwi_func_arg(gwi, "int", "index"))
+  GWI_B(gwi_func_end(gwi, word_index, ae_flag_none))
 
-  GWI_BB(gwi_func_ini(gwi, "bool", "state"))
-  GWI_BB(gwi_func_ini(gwi, "bool", "arg"))
-  GWI_BB(gwi_func_end(gwi, state, ae_flag_none))
+  GWI_B(gwi_func_ini(gwi, "bool", "state"))
+  GWI_B(gwi_func_ini(gwi, "bool", "arg"))
+  GWI_B(gwi_func_end(gwi, state, ae_flag_none))
 
-  GWI_BB(gwi_class_end(gwi))
-  return GW_OK;
+  GWI_B(gwi_class_end(gwi))
+  return true;
 }

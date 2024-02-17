@@ -138,7 +138,7 @@ static inline bool traverse_ffi(const Env env, const Type ffi, const Class_Def c
 
 static inline Type _check_ffi_types(const Env env, const Exp_Call *call) {
   if(call->args->next)
-    CHECK_OO(check_exp(env, call->args->next));;
+    CHECK_O(check_exp(env, call->args->next));;
   return known_type(env, *mp_vector_at(call->tmpl->call, Type_Decl*, 0));
 }
 
@@ -157,7 +157,7 @@ static OP_CHECK(ffi_var_cast) {
   const Type ffi = str2type(env->gwion, "FFIBASE.CFFI", loc);
   Exp* arg = call->args->next;
   while(arg) {
-    if(isa(arg->type, ffi) < 0)
+    if(!isa(arg->type, ffi))
       ERR_N(arg->loc, "FFI variadic arguments must be of FFI type");
     arg = arg->next;
   }
@@ -175,7 +175,7 @@ static OP_CHECK(opck_ffi_ctor) {
   loc_t loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE", loc);
   const Type ffivar = str2type(env->gwion, "FFIvar", loc);
-  const bool variadic = isa(actual_type(env->gwion, call->func->type), ffivar) > 0;
+  const bool variadic = isa(actual_type(env->gwion, call->func->type), ffivar);
   DECL_ON(const Type, ret_type, = check_ffi_types(env, ffi, call));
   Exp* exp = call->args;
   if(exp->exp_type != ae_exp_primary || exp->d.prim.prim_type != ae_prim_id)
@@ -202,7 +202,7 @@ static OP_CHECK(opck_ffi_ctor) {
     args = new_mp_vector(env->gwion->mp, Arg, 0);
     do {
       const Type actual = actual_type(env->gwion, exp->type);
-      if(!is_class(env->gwion, exp->type) || isa(actual, cffi) < 0)
+      if(!is_class(env->gwion, exp->type) || !isa(actual, cffi))
         ERR_N(exp->loc, "Argument is not a FFI type");
       char name[64];
       sprintf(name, "FFIBASE.%s", actual->name);
@@ -338,7 +338,7 @@ FFI_GACK(complex_longdouble, complex long double, "%p")
 FFI_FUNC(pointer, void*, void*, SZ_INT, "%p")
 
 #define FFI_DECL(name, type)                                                      \
-  DECL_OB(const Type, t_##name, = gwi_mk_type(gwi, #name, sizeof(type), "CFFI")); \
+  DECL_B(const Type, t_##name, = gwi_mk_type(gwi, #name, sizeof(type), "CFFI")); \
   gwi_add_type(gwi, t_##name);                                                    \
   gwi_gack(gwi, t_##name, gack_ffi_##name);
 
@@ -359,24 +359,24 @@ static OP_CHECK(opck_ffi_scan) {
 }
 
 #define FFI_OPER2(name, gwname, ffiname)                                          \
-  GWI_BB(gwi_oper_ini(gwi, #gwname, "FFI." #ffiname, "FFI." #ffiname))    \
-  GWI_BB(gwi_oper_end(gwi, "$", name##2ffi))                                      \
-  GWI_BB(gwi_oper_add(gwi, opck2ffi))                                             \
-  GWI_BB(gwi_oper_end(gwi, "@implicit", name##2ffi))                              \
-  GWI_BB(gwi_oper_ini(gwi, "FFI." #ffiname, #gwname, #gwname))                \
-  GWI_BB(gwi_oper_end(gwi, "$", ffi2##name))                                      \
-  GWI_BB(gwi_oper_end(gwi, "@implicit", ffi2##name))
+   GWI_B(gwi_oper_ini(gwi, #gwname, "FFI." #ffiname, "FFI." #ffiname))    \
+   GWI_B(gwi_oper_end(gwi, "$", name##2ffi))                                      \
+   GWI_B(gwi_oper_add(gwi, opck2ffi))                                             \
+   GWI_B(gwi_oper_end(gwi, "@implicit", name##2ffi))                              \
+   GWI_B(gwi_oper_ini(gwi, "FFI." #ffiname, #gwname, #gwname))                \
+   GWI_B(gwi_oper_end(gwi, "$", ffi2##name))                                      \
+   GWI_B(gwi_oper_end(gwi, "@implicit", ffi2##name))
 
 #define FFI_OPER(gwname, ffiname) FFI_OPER2(gwname, gwname, ffiname)
 
 GWION_IMPORT(FFI) {
-  DECL_OB(const Type, t_ffib, = gwi_class_ini(gwi, "FFI:[RetType]", "Object"));
-  GWI_BB(gwi_func_ini(gwi, "auto", "new"));
-  GWI_BB(gwi_func_end(gwi, NULL, ae_flag_none));
+  DECL_B(const Type, t_ffib, = gwi_class_ini(gwi, "FFI:[RetType]", "Object"));
+  GWI_B(gwi_func_ini(gwi, "auto", "new"));
+  GWI_B(gwi_func_end(gwi, NULL, ae_flag_none));
 
-    DECL_OB(const Type, t_cif, = gwi_mk_type(gwi, "cif", sizeof(ffi_cif), NULL));
+    DECL_B(const Type, t_cif, = gwi_mk_type(gwi, "cif", sizeof(ffi_cif), NULL));
     gwi_add_type(gwi, t_cif);
-    DECL_OB(const Type, t_cffi, = gwi_mk_type(gwi, "CFFI", 0, NULL));
+    DECL_B(const Type, t_cffi, = gwi_mk_type(gwi, "CFFI", 0, NULL));
     gwi_add_type(gwi, t_cffi);
 
     FFI_DECL(int, int)
@@ -398,23 +398,23 @@ GWION_IMPORT(FFI) {
     FFI_DECL(complex_longdouble, complex long double)
 #endif
     FFI_DECL(pointer, void*)
-  GWI_BB(gwi_class_end(gwi))
+  GWI_B(gwi_class_end(gwi))
 /*
   const struct Op_Func   opfunc1 = {.ck = opck_ffi_new};
   CHECK_B(add_op_func_check(gwi->gwion, f_ffib, &opfunc, 0));
 */
-  GWI_BB(gwi_oper_ini(gwi, NULL, "FFI", NULL))
-  GWI_BB(gwi_oper_add(gwi, opck_ffi_scan))
-  //GWI_BB(gwi_oper_emi(gwi, opem_ffi_ctor))
-  GWI_BB(gwi_oper_end(gwi, "class", NULL))
+   GWI_B(gwi_oper_ini(gwi, NULL, "FFI", NULL))
+   GWI_B(gwi_oper_add(gwi, opck_ffi_scan))
+  // GWI_B(gwi_oper_emi(gwi, opem_ffi_ctor))
+   GWI_B(gwi_oper_end(gwi, "class", NULL))
 
-  //GWI_BB(gwi_oper_ini(gwi, NULL, "FFIBASE", NULL))
-  //GWI_BB(gwi_oper_add(gwi, opck_ffi_ctor))
-  //GWI_BB(gwi_oper_emi(gwi, opem_ffi_ctor))
-  //GWI_BB(gwi_oper_end(gwi, "@ctor", NULL))
+  // GWI_B(gwi_oper_ini(gwi, NULL, "FFIBASE", NULL))
+  // GWI_B(gwi_oper_add(gwi, opck_ffi_ctor))
+  // GWI_B(gwi_oper_emi(gwi, opem_ffi_ctor))
+  // GWI_B(gwi_oper_end(gwi, "@ctor", NULL))
 
-  //DECL_OB(const Type, t_ffivar, = gwi_class_ini(gwi, "FFIvar:[A]", "FFIBASE"));
-  //GWI_BB(gwi_class_end(gwi))
+  //DECL_B(const Type, t_ffivar, = gwi_class_ini(gwi, "FFIvar:[A]", "FFIBASE"));
+  //GWI_B(gwi_class_end(gwi))
 
   FFI_OPER(int, int)
   FFI_OPER(int, uint)
@@ -431,11 +431,11 @@ GWION_IMPORT(FFI) {
   FFI_OPER(float, longdouble)
   FFI_OPER2(pointer, int, pointer)
 
-  //GWI_BB(gwi_oper_ini(gwi, "Object", "FFIBASE.pointer", "FFIBASE.pointer"))
-  //GWI_BB(gwi_oper_end(gwi, "$", object2ffi))
-  //GWI_BB(gwi_oper_end(gwi, "@implicit", object2ffi))
-//  GWI_BB(gwi_oper_ini(gwi, "FFI." #ffiname, #gwname, #gwname))
-//  GWI_BB(gwi_oper_end(gwi, "$", ffi2##name))
-//  GWI_BB(gwi_oper_end(gwi, "@implicit", ffi2##name))
-  return GW_OK;
+  // GWI_B(gwi_oper_ini(gwi, "Object", "FFIBASE.pointer", "FFIBASE.pointer"))
+  // GWI_B(gwi_oper_end(gwi, "$", object2ffi))
+  // GWI_B(gwi_oper_end(gwi, "@implicit", object2ffi))
+//   GWI_B(gwi_oper_ini(gwi, "FFI." #ffiname, #gwname, #gwname))
+//   GWI_B(gwi_oper_end(gwi, "$", ffi2##name))
+//   GWI_B(gwi_oper_end(gwi, "@implicit", ffi2##name))
+  return true;
 }
