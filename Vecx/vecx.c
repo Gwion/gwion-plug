@@ -138,7 +138,7 @@ OP_CHECK(opck_vecx_ctor);
   const Exp_Dot *dot = (Exp_Dot*)data;                                           \
   Exp* base = dot->base;                                                    \
   exp_setvar(base, 1);                                                            \
-  if(emit_exp(emit, base) < 0) return (Instr)GW_OK;                              \
+  if(!emit_exp(emit, base)) return (Instr)GW_OK;                              \
   const m_bool is_first = !strcmp(#first_name, s_name(dot->xid));                \
   if(is_first && exp_self(dot)->emit_var)                                        \
     return (Instr)GW_OK;                                                         \
