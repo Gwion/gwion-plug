@@ -28,8 +28,8 @@ struct sr_data {
   tinysr_ctx_t* ctx;
   m_uint idx;
   samp_t smp[READ_SAMPS];
-  m_bool state;
-  m_bool ini;
+  bool state;
+  bool ini;
 };
 
 static struct sr_data* new_sr_data(M_Object obj, const m_uint rate) {

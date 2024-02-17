@@ -254,7 +254,7 @@ static OP_EMIT(opem_func2cyt) {
     }
   }
   instr->m_val = (m_uint)v.ptr;
-  return GW_OK;
+  return true;
 }
 
 static m_int cytosol_stmt_list(const Env env, const Type fields, Stmt_List list) {
@@ -311,7 +311,7 @@ static OP_EMIT(opem_record_ctor) {
   const Instr instr = emit_add_instr(emit, RecordCtor);
   instr->m_val = sz * SZ_INT;
   instr->m_val2 = (m_uint)t;
-  return GW_OK;
+  return true;
 }
 
 GWION_IMPORT(Cytosol) {

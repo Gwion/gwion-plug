@@ -10,7 +10,7 @@
 #include "operator.h"
 #include "import.h"
 
-static m_bool pd_init;
+static bool pd_init;
 
 #define PDFILE(o) (*(void**)(o->data + SZ_INT))
 

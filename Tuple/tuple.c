@@ -177,7 +177,7 @@ static OP_EMIT(opem_at_object_tuple) {
   const Exp_Binary *bin = (Exp_Binary*)data;
   const Instr instr = emit_add_instr(emit, TupleAt);
   instr->m_val = (m_uint)bin->rhs->type;
-  return GW_OK;
+  return true;
 }
 
 static OP_CHECK(opck_at_tuple_object) {
@@ -212,7 +212,7 @@ static OP_EMIT(opem_cast_tuple_object) {
   const Instr instr = emit_add_instr(emit, Tuple2Object);
   instr->m_val = (m_uint)exp_self(exp)->type;
   instr->m_val2 = SZ_INT;
-  return GW_OK;
+  return true;
 }
 */
 
@@ -355,7 +355,7 @@ static OP_EMIT(opem_tuple_ctor) {
   }
   const Instr instr = emit_add_instr(emit, TupleCtor);
   instr->m_val = (m_uint)exp_self(call)->type;
-  return GW_OK;
+  return true;
 }
 
 static OP_CHECK(unpack_ck) {
@@ -388,9 +388,9 @@ static OP_CHECK(unpack_ck) {
 static OP_EMIT(unpack_em) {
   const Exp_Call *call = (Exp_Call*)data;
   if(exp_getmeta(exp_self(call)))
-    return GW_OK;
+    return true;
   env_err(emit->env, exp_self(call)->loc, _("unused Tuple unpack"));
-  return GW_ERROR;
+  return false;
 }
 
 static void parents(const Env env, const Type t, const Vector v) {
@@ -449,7 +449,7 @@ static OP_EMIT(opem_at_unpack) {
 //    pop2->m_val = -SZ_INT;
 
   }
-  return GW_OK;
+  return true;
 }
 
 static ANN Type scan_tuple(const Env env, const Type_Decl *td) {
@@ -490,11 +490,11 @@ static OP_EMIT(opem_tuple_access) {
   const m_uint idx = info->array.exp->d.prim.d.gwint.num;
   tuple_access(emit, idx, (info->array.depth -1)? 0 : info->is_var);
   if(!info->array.exp->next)
-    return GW_OK;
+    return true;
   const Type type = (Type)vector_at(&info->array.type->info->tuple->types, idx);
   struct Array_Sub_ next = { info->array.exp->next, type, info->array.depth - 1 };
   info->array = next;
-  return emit_array_access(emit, info) ? GW_OK : GW_ERROR;
+  return emit_array_access(emit, info);
 }
 
 GWION_IMPORT(Tuple) {

@@ -258,7 +258,7 @@ static OP_EMIT(opem_json_array_each_init) {
   const Instr instr = emit_add_instr(emit, getoff);
   instr->m_val = loop->offset;
   //loop->instr = instr;
-  return GW_OK;
+  return true;
 }
 
 static INSTR(json_array_loop) {
@@ -290,7 +290,7 @@ static OP_EMIT(opem_json_array_each) {
   instr->m_val = (m_uint)t;
   instr->m_val2 = loop->offset + SZ_INT;
   loop->instr = emit_add_instr(emit, BranchNeqInt);
-  return GW_OK;
+  return true;
 
 }
 

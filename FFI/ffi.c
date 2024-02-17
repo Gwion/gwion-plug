@@ -175,7 +175,7 @@ static OP_CHECK(opck_ffi_ctor) {
   loc_t loc = {};
   const Type ffi = str2type(env->gwion, "FFIBASE", loc);
   const Type ffivar = str2type(env->gwion, "FFIvar", loc);
-  const m_bool variadic = isa(actual_type(env->gwion, call->func->type), ffivar) > 0;
+  const bool variadic = isa(actual_type(env->gwion, call->func->type), ffivar) > 0;
   DECL_ON(const Type, ret_type, = check_ffi_types(env, ffi, call));
   Exp* exp = call->args;
   if(exp->exp_type != ae_exp_primary || exp->d.prim.prim_type != ae_prim_id)
@@ -290,7 +290,7 @@ static OP_EMIT(opem_ffi_ctor) {
   const Type t = exp_self(call)->type;
   const Instr instr = emit_add_instr(emit, FFICtor);
   instr->m_val = (m_uint)t;
-  return GW_OK;
+  return true;
 }
 
 #define FFI_GACK(name, type, fmt)   \
