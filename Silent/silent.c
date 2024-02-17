@@ -6,7 +6,7 @@
 #include "driver.h"
 
 static DRVINI(Silent_ini) {
-  return GW_OK;
+  return true;
 }
 
 static DRVRUN(Silent_run) {

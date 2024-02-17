@@ -45,7 +45,7 @@ static DRVINI(pa_ini) {
   } else
     info->out = NULL;
   di->driver->data = info;
-  return !error ? GW_OK : GW_ERROR;
+  return !error;
 }
 
 static DRVRUN(pa_run) {

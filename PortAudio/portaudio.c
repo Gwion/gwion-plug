@@ -37,7 +37,7 @@ static DRVINI(portaudio_ini) {
   struct PaInfo* info = (struct PaInfo*)xmalloc(sizeof(struct PaInfo));
   di->driver->data = info;
   if(Pa_Initialize() != paNoError)
-    return GW_ERROR;
+    return false;
   info->outputParameters.device = Pa_GetDefaultOutputDevice();
   if(info->outputParameters.device == paNoDevice) {
     gw_err("Error: No default output device.\n");
@@ -77,10 +77,10 @@ static DRVINI(portaudio_ini) {
         callback,
         vm) != paNoError)
     goto error;
-  return GW_OK;
+  return true;
 error:
   Pa_Terminate();
-  return GW_ERROR;
+  return false;
 }
 
 static DRVDEL(portaudio_del) {

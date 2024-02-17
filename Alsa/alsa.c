@@ -33,7 +33,7 @@ struct AlsaInfo {
   uint chan, bufnum;
 };
 
-static int sp_alsa_init(Driver* di, const char* device,
+static bool sp_alsa_init(Driver* di, const char* device,
     int stream, int mode) {
   struct AlsaInfo* info = (struct AlsaInfo*)di->driver->data;
   static snd_pcm_t* handle;
@@ -41,42 +41,42 @@ static int sp_alsa_init(Driver* di, const char* device,
   int dir = 0;
 
   if(snd_pcm_open(&handle, device, stream, mode) > 0 || !handle)
-    return GW_ERROR;
+    return false;
   snd_pcm_hw_params_alloca(&params);
 
   if(snd_pcm_hw_params_any(handle, params) > 0) {
     snd_pcm_close(handle);
-    return GW_ERROR;
+    return false;
   }
   if(!snd_pcm_hw_params_test_access(handle, params, SP_ALSA_ACCESS))
     snd_pcm_hw_params_set_access(handle, params, SP_ALSA_ACCESS);
-  else return GW_ERROR;
+  else return false;
 
   if(!snd_pcm_hw_params_test_format(handle, params, ALSA_FORMAT))
     snd_pcm_hw_params_set_format(handle, params, ALSA_FORMAT);
-  else return GW_ERROR;
+  else return false;
 
   if(!snd_pcm_hw_params_test_rate(handle, params, di->si->sr, dir))
     snd_pcm_hw_params_set_rate_near(handle, params, &di->si->sr, &dir);
-  else return GW_ERROR;
+  else return false;
 
   if(!snd_pcm_hw_params_test_channels(handle, params, (uint)info->chan))
     snd_pcm_hw_params_set_channels(handle, params, (uint)info->chan);
-  else return GW_ERROR;
+  else return false;
 
   if(snd_pcm_hw_params_set_periods_near(handle, params, &info->bufnum, &dir))
-    return GW_ERROR;
+    return false;
 
   if(snd_pcm_hw_params_set_period_size_near(handle, params, &info->bufsize, &dir))
-    return GW_ERROR;
+    return false;
   if(snd_pcm_hw_params(handle, params) < 0)
-    return GW_ERROR;
+    return false;
 
 //  snd_pcm_hw_params_get_rate_max(params, &di->si->sr, &dir);
 //  snd_pcm_hw_params_set_rate_near(handle, params, &di->si->sr, &dir);
 //  snd_pcm_prepare(handle); // new
   info->handle = handle;
-  return GW_OK;
+  return false;
 }
 
 static void alsa_run_init(Driver* d) {
@@ -110,22 +110,22 @@ di->si->arg = "default";
 //di->si->arg = "PulseAudio";
 info->chan = di->si->out;
   di->driver->data = info;
-  if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_PLAYBACK, 0) < 0) {
+  if(!sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_PLAYBACK, 0)) {
     gw_err("problem with playback");
-    return GW_ERROR;
+    return false;
   }
   info->pcm_out = info->handle;
   di->si->out = info->chan;
 info->chan = di->si->in;
 //  if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_CAPTURE, SND_PCM_ASYNC |
-  if(sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_CAPTURE, 0 |
-      SND_PCM_NONBLOCK) < 0) {
+  if(!sp_alsa_init(di, di->si->arg, SND_PCM_STREAM_CAPTURE, 0 |
+      SND_PCM_NONBLOCK)) {
     gw_err("problem with capture");
-    return GW_ERROR;
+    return false;
   }
   info->pcm_in = info->handle;
   di->si->in = info->chan;
-  return GW_OK;
+  return true;
 }
 
 static void alsa_run_init_non_interleaved(Driver* di) {

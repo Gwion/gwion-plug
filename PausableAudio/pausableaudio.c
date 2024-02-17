@@ -40,7 +40,7 @@ static DRVDEL(pausable_del) {
 }
 
 ANN static m_bool child_init(VM *vm, Driver *drv) {
-  DECL_OB(gwdriver_t, func, = driver_ini(vm->gwion, drv->si));
+  DECL_B(gwdriver_t, func, = driver_ini(vm->gwion, drv->si));
   func(drv->driver);
   return drv->driver->ini(vm, drv);
 }
@@ -50,7 +50,7 @@ static DRVINI(pausable_ini) {
   char *arg = strchr(old_arg, '=');
   if(!arg) {
     gw_err("{R}PausableAudio{0} driver needs an argument\n");
-    return GW_ERROR;
+    return false;
   }
   arg++;
   struct SoundInfo_ si = *di->si;
@@ -61,9 +61,9 @@ static DRVINI(pausable_ini) {
     .driver = &pausable->dd,
     .si = &si
   };
-  if(child_init(vm, &drv) > 0) return GW_OK;
+  if(child_init(vm, &drv) > 0) return true;
   gw_err("{R}PausableAudio{0} error while initializing child driver\n");
-  return GW_ERROR;
+  return false;
 }
 
 GWDRIVER(PausableAudio) {

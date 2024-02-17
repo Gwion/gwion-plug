@@ -25,7 +25,7 @@ DRVINI(sndfile_ini) {
   else
     sprintf(tmp, "%s.wav", FILENAME);
   di->driver->data = sf_open(tmp, SFM_WRITE, &info);
-  return GW_OK;
+  return true;
 }
 
 DRVRUN(sndfile_run) {
