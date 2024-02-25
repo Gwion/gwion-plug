@@ -114,7 +114,8 @@ ANN static inline void stmt_list_from_id(const Gwion gwion, const Stmt_List slis
 
 static OP_CHECK(ctor_as_call) {
   Exp_Call *const call = (Exp_Call*)data;
-  Exp* func = cpy_exp(env->gwion->mp, call->func), e = call->func;
+  Exp *func = cpy_exp(env->gwion->mp, call->func);
+  Exp *e = call->func;
   e->exp_type = ae_exp_dot;
   Exp_Dot *dot = &e->d.exp_dot;
   dot->base = func;
@@ -209,7 +210,7 @@ static OP_CHECK(opck_ffi_ctor) {
       const loc_t loc = exp->loc;
       Type_Decl *td = str2td(env->gwion, name, loc);
       struct Var_Decl_ vd = { .tag = {.loc = loc }};
-      Arg arg = { .var = MK_VARIABLE(td, vd) };
+      Arg arg = { .var = MK_VAR(td, vd) };
       mp_vector_add(env->gwion->mp, &args, Arg, arg);
     } while((exp = exp->next));
   }
@@ -220,7 +221,7 @@ static OP_CHECK(opck_ffi_ctor) {
 //  if(variadic)
 //    set_fbflag(fb, fbflag_variadic);
   Func_Def fdef = new_func_def(mp, fb, NULL);
-  Section section = MK_SECTION(func, func_def = fdef);
+  Section section = MK_SECTION(func, func_def, fdef, fdef->base->tag.loc);
   Ast body = new_mp_vector(env->gwion->mp, Section, 2);
   mp_vector_set(body, Section, 0, section);
 {
@@ -228,14 +229,14 @@ static OP_CHECK(opck_ffi_ctor) {
   stmt_list_from_id(env->gwion, slist, "cif", "ffi_cif", exp_self(call)->loc, 0);
   stmt_list_from_id(env->gwion, slist, "int", "func", exp_self(call)->loc, 1);
   stmt_list_from_id(env->gwion, slist, "int", "sz", exp_self(call)->loc, 2);
-  Section section = MK_SECTION(stmt, stmt_list, slist);
+  Section section = MK_SECTION(stmt, stmt_list, slist, fdef->base->tag.loc);
   mp_vector_set(body, Section, 1, section);
 }
   char ext_name[64];
   sprintf(ext_name, "FFI:[FFIBASE.%s]", ret_type->name);
   Type_Decl *const ext = str2td(env->gwion, ext_name, call->func->loc);
-  const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, func_sym, ext, body, call->func->loc);
-  CHECK_0N(traverse_ffi(env, ffi, cdef));
+  const Class_Def cdef = new_class_def(mp, ae_flag_abstract | ae_flag_final, MK_TAG(func_sym, call->func->loc), ext, body);
+  CHECK_N(traverse_ffi(env, ffi, cdef));
   const Type t = cdef->base.type;
   const Func func = (Func)vector_front(&t->nspc->vtable);
   //builtin_func(env->gwion, func, !variadic ? ffi_do_call : ffivar_do_call);
