@@ -498,8 +498,8 @@ GWMODINI(Lo) { return new_map(gwion->mp); }
 GWMODEND(Lo) { return free_map(gwion->mp, (Map)self); }
 
 GWION_IMPORT(Lo) {
-  GWI_B(import_oscout(gwi));
-  GWI_B(import_oscin(gwi));
+  GWI_B(gwimport_oscout(gwi));
+  GWI_B(gwimport_oscin(gwi));
   if(!get_module(gwi->gwion, "Lo"))
     CHECK_B(set_module(gwi->gwion, "Lo", GWMODINI_NAME(Lo)(gwi->gwion, NULL)));
   return true;
