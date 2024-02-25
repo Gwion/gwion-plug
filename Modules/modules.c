@@ -282,13 +282,13 @@ static GWION_IMPORT(zerox) {
 }
 
 GWION_IMPORT(Modules) {
-  GWI_B(import_sinosc(gwi))
-  GWI_B(import_gain(gwi))
-  GWI_B(import_impulse(gwi))
-  GWI_B(import_fullrect(gwi))
-  GWI_B(import_halfrect(gwi))
-  GWI_B(import_step(gwi))
-  GWI_B(import_zerox(gwi))
+  GWI_B(gwimport_sinosc(gwi))
+  GWI_B(gwimport_gain(gwi))
+  GWI_B(gwimport_impulse(gwi))
+  GWI_B(gwimport_fullrect(gwi))
+  GWI_B(gwimport_halfrect(gwi))
+  GWI_B(gwimport_step(gwi))
+  GWI_B(gwimport_zerox(gwi))
 
   GWI_B(gwi_typedef_ini(gwi, "Bltriangle", "TriOsc"))
   GWI_B(gwi_typedef_end(gwi, ae_flag_none))
