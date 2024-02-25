@@ -132,7 +132,7 @@ static void jack_run(VM* vm, Driver* di) {
   }
 //  signal(SIGINT, sig);
 //  signal(SIGTERM, sig);
-  if(init_ports(info, di->si->out, 0) < 0 || init_ports(info, di->si->in,  1) < 0)
+  if(!init_ports(info, di->si->out, 0) || !init_ports(info, di->si->in,  1))
     return;
 //  while(vm->bbq->is_running && run)
 //    usleep(10);
