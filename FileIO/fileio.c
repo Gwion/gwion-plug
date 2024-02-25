@@ -52,7 +52,7 @@ static void fileio_read(void *data) {
 static void fileio_write(void *data) {
   struct FileIORead *info = data;
   VM_Shred shred = info->shred;
-  m_bit *reg = info->reg;
+  //m_bit *reg = info->reg;
   m_bit *mem = info->mem;
   mp_free2(shred->info->mp, sizeof(struct FileIORead), data);
   const M_Object o = *(M_Object*)(mem);
@@ -79,7 +79,7 @@ static MFUN(file2string) {
   info->shred = shred;
   info->reg = shred->reg;
   info->mem = shred->mem;
-  shred_pool_run(shred->info->vm->gwion->data->tpool, fileio_read, info);
+  shred_pool_run(shred, fileio_read, info);
 }
 
 static MFUN(string2file) {
@@ -88,7 +88,7 @@ static MFUN(string2file) {
   info->shred = shred;
   info->reg = shred->reg;
   info->mem = shred->mem;
-  shred_pool_run(shred->info->vm->gwion->data->tpool, fileio_write, info);
+  shred_pool_run(shred, fileio_write, info);
 }
 
 static MFUN(file_open) {
