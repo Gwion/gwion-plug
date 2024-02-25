@@ -160,7 +160,7 @@ static bool tuple_match(const Env env, const Type lhs, const Type rhs, const loc
   const bool ret = matcher_run(&m);
   matcher_release(&m);
   if(ret) return true;
-  ERR_B(loc, _("Tuple types '%s' and '%s' do not match"), lhs->name, rhs->name)
+  ERR_B(loc, _("Tuple types '%s' and '%s' do not match"), lhs->name, rhs->name);
 }
 
 static OP_CHECK(opck_at_object_tuple) {
@@ -289,11 +289,11 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
       mp_vector_set(base, Stmt, 0, stmt);
     }
   }
-  Section section = MK_SECTION(stmt, stmt_list, base);
+  Section section = MK_SECTION(stmt, stmt_list, base, loc);
   Ast body = new_mp_vector(env->gwion->mp, Section, 1);
   mp_vector_set(body, Section, 0, section);
   Type_Decl *td = new_type_decl(env->gwion->mp, insert_symbol(env->gwion->st, TUPLE_NAME), loc);
-  Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none, sym, td, body, loc);
+  Class_Def cdef = new_class_def(env->gwion->mp, ae_flag_none, MK_TAG(sym, loc), td, body);
   SET_FLAG(cdef, abstract | ae_flag_final);
   CHECK_O(scan0_class_def(env, cdef));
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
@@ -311,15 +311,15 @@ static OP_CHECK(opck_tuple) {
   Exp* exp = array->exp;
   if(exp->exp_type != ae_exp_primary ||
      exp->d.prim.prim_type != ae_prim_num)
-    ERR_O(exp->loc, _("tuple subscripts must be litteral"))
+    ERR_O(exp->loc, _("tuple subscripts must be litteral"));
   const m_uint idx = exp->d.prim.d.gwint.num;
   const Vector v = array->type->info->tuple ?
     &array->type->info->tuple->types : NULL;
   if(!v || idx >= vector_size(v))
-    ERR_O(exp->loc, _("tuple subscripts too big"))
+    ERR_O(exp->loc, _("tuple subscripts too big"));
   const Type type = (Type)vector_at(v, idx);
   if(type == env->gwion->type[et_auto])
-    ERR_O(exp->loc, _("tuple subscripts is undefined at index %"UINT_F), idx)
+    ERR_O(exp->loc, _("tuple subscripts is undefined at index %"UINT_F), idx);
   if(!exp->next)
     return type;
   struct Array_Sub_ next = { exp->next, type, array->depth - 1 };
@@ -364,7 +364,7 @@ static OP_CHECK(unpack_ck) {
   Exp* e = call->args;
   while(e) {
     if(e->exp_type != ae_exp_primary || e->d.prim.prim_type != ae_prim_id)
-      ERR_O(e->loc, _("invalid expression for unpack"))
+      ERR_O(e->loc, _("invalid expression for unpack"));
     if(e->d.prim.d.var != skip) {
       const Symbol var = e->d.prim.d.var;
       memset(&e->d, 0, sizeof(union exp_data));

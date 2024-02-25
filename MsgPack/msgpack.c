@@ -144,7 +144,7 @@ ANN void real_tomsg(ToMsg *const msg, const Type t, m_bit *const data) {
   int n = nmember(msg->gwion, t) + !!t->array_depth;
   if(isa(t, msg->gwion->type[et_string])) n++;
   msgpack_pack_array(msg->ctx, n + 1);
-  const m_str name = type2str(msg->gwion, t, (loc_t){});
+  const m_str name = type2str(msg->gwion, t, t->info->value->from->loc);
   tomsg_string(msg, name);
   free_mstr(msg->gwion->mp, name);
   if(!tflag(t, tflag_struct)) {
@@ -378,7 +378,7 @@ ANN static bool unpack(const FromMsg *msg, const Type t, msgpack_object o, m_bit
     m_str type_name = unpack_string(msg->gwion->mp, p);
 // envset?
     const uint32_t scope = env_push(msg->gwion->env, msg->owner_class, msg->owner);
-    const Type base = str2type(msg->gwion, type_name, (loc_t){});
+    const Type base = str2type(msg->gwion, type_name, t->info->value->from->loc);
     env_pop(msg->gwion->env, scope);
     free_mstr(msg->gwion->mp, type_name);
     if(!base)return false;

@@ -372,7 +372,8 @@ EQUALITY_OPER(vec3, SZ_VEC3);
 
 OP_CHECK(opck_vecx_ctor) {
   Exp_Call *call = (Exp_Call*)data;
-  Exp* e = call->args, last = NULL;
+  Exp* e = call->args;
+  Exp *last = NULL;
   if(call->args)
     CHECK_ON(check_exp(env, call->args));
   size_t i = 0;
@@ -616,8 +617,8 @@ static GWION_IMPORT(vec4) {
 }
 
 GWION_IMPORT(Vecx) {
-  GWI_B(import_complex(gwi))
-  GWI_B(import_vec3(gwi))
-  GWI_B(import_vec4(gwi))
+  GWI_B(gwimport_complex(gwi))
+  GWI_B(gwimport_vec3(gwi))
+  GWI_B(gwimport_vec4(gwi))
   return true;
 }
