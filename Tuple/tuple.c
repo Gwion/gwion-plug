@@ -298,7 +298,7 @@ ANN Type tuple_type(const Env env, const Vector v, const loc_t loc) {
   CHECK_O(scan0_class_def(env, cdef));
 //  SET_FLAG(cdef->base.type, abstract | ae_flag_final | ae_flag_late);
 //  set_tflag(cdef->base.type, tflag_empty);
-//const m_uint scope = env_push(env, NULL, env->global_nspc);
+//const m_uint scope = env_push_nspc(env, env->global_nspc);
   CHECK_O(traverse_class_def(env, cdef));
 //env_pop(env, scope);
   return cdef->base.type;
