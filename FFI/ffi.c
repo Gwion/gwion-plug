@@ -211,7 +211,7 @@ static OP_CHECK(opck_ffi_ctor) {
       const loc_t loc = exp->loc;
       Type_Decl *td = str2td(env->gwion, name, loc);
       struct Var_Decl_ vd = { .tag = {.loc = loc }};
-      Arg arg = { .var = MK_VAR(td, vd) };
+      Arg arg = { .var = MK_VAR(td, vd), .loc = loc };
       arglist_add(env->gwion->mp, &args, arg);
     } while((exp = exp->next));
   }
